@@ -1,6 +1,6 @@
 const bcryptjs = require("bcryptjs");
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = process.env.JWT_SECRET || "sisgra_secret_2026_change_in_production";
+const { JWT_SECRET } = require('../middleware/auth');
 
 const REAL_HASH = bcryptjs.hashSync("sisgra2026", 10);
 
