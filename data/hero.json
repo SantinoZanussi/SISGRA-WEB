@@ -1,4 +1,5 @@
 {
+  "plantilla": "1",
   "badge": "Infraestructura Corporativa de Elite",
   "titulo1": "Soluciones que",
   "titulo2": "Impulsan el Crecimiento",
@@ -8,5 +9,20 @@
   "stat1_numero": "+25",
   "stat1_label": "Años de Trayectoria",
   "stat2_numero": "+500",
-  "stat2_label": "Clientes Activos"
+  "stat2_label": "Clientes Activos",
+  "p2_eyebrow": "25 años de confianza",
+  "p2_titulo": "Infraestructura que no falla.",
+  "p2_subtitulo": "Conectamos el futuro de tu empresa.",
+  "p2_descripcion": "Diseñamos, instalamos y mantenemos la infraestructura tecnológica que impulsa a las empresas líderes de Argentina.",
+  "p2_boton_primario": "Solicitar presupuesto",
+  "p2_boton_secundario": "Ver proyectos",
+  "p2_tag1": "Certificación Cat8",
+  "p2_tag2": "Fibra Óptica",
+  "p2_tag3": "Soporte 24/7",
+  "p2_metric1_num": "+500",
+  "p2_metric1_label": "Clientes activos",
+  "p2_metric2_num": "99.9%",
+  "p2_metric2_label": "Disponibilidad",
+  "p2_metric3_num": "25+",
+  "p2_metric3_label": "Años de experiencia"
 }
