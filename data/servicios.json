@@ -1,0 +1,22 @@
+{
+  "cards": [
+    {
+      "id": "instalaciones",
+      "titulo": "Instalaciones",
+      "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
+      "enlace": "./html/cableado_estructurado.html"
+    },
+    {
+      "id": "soporte",
+      "titulo": "Soporte IT",
+      "descripcion": "Mantenimiento integral de infraestructura y asistencia técnica corporativa especializada.",
+      "enlace": "./html/soporte_it.html"
+    },
+    {
+      "id": "software",
+      "titulo": "Software",
+      "descripcion": "Soluciones a medida para optimizar procesos logísticos y gestión de datos empresariales.",
+      "enlace": "./html/desarrollo.html"
+    }
+  ]
+}

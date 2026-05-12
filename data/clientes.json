@@ -1,0 +1,21 @@
+{
+  "titulo_seccion": "Nuestros Clientes",
+  "carrusel_activo": true,
+  "auto_scroll": true,
+  "clientes": [
+    {
+      "id": "c1",
+      "nombre": "San Cristóbal",
+      "imagen": "/img/sancristobal.png",
+      "url": "",
+      "activo": true
+    },
+    {
+      "id": "c2",
+      "nombre": "Syngenta",
+      "imagen": "/img/syngenta.png",
+      "url": "",
+      "activo": true
+    }
+  ]
+}

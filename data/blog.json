@@ -1,0 +1,36 @@
+{
+  "titulo_seccion": "Novedades & Blog",
+  "visible": true,
+  "posts": [
+    {
+      "id": "post-1",
+      "titulo": "¿Por qué tu empresa necesita fibra óptica ya?",
+      "categoria": "Fibra Óptica",
+      "estado": "publicado",
+      "fecha": "2026-05-08",
+      "extracto": "La migración a fibra óptica no es solo velocidad: hablamos de confiabilidad, escalabilidad y el futuro de tu conectividad.",
+      "contenido": "<p>La migración a fibra óptica no es solo velocidad: hablamos de confiabilidad, escalabilidad y el futuro de tu conectividad empresarial.</p>",
+      "imagen": ""
+    },
+    {
+      "id": "post-2",
+      "titulo": "SISGRA cumple 25 años en la industria",
+      "categoria": "Empresa",
+      "estado": "publicado",
+      "fecha": "2026-05-01",
+      "extracto": "Un cuarto de siglo conectando empresas, integrando tecnología y formando parte del crecimiento de Rosario y el país.",
+      "contenido": "<p>Un cuarto de siglo conectando empresas, integrando tecnología y formando parte del crecimiento de Rosario y el país.</p>",
+      "imagen": ""
+    },
+    {
+      "id": "post-3",
+      "titulo": "Cableado Categoría 8: Todo lo que necesitás saber",
+      "categoria": "Infraestructura",
+      "estado": "borrador",
+      "fecha": "2026-05-12",
+      "extracto": "Una guía completa sobre los estándares Cat8 y por qué son la elección correcta para infraestructura crítica moderna.",
+      "contenido": "<p>Una guía completa sobre los estándares Cat8.</p>",
+      "imagen": ""
+    }
+  ]
+}

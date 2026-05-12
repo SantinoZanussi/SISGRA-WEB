@@ -210,7 +210,7 @@
         <p class="panel-desc">Cuéntenos sobre su organización. Un asesor se comunicará para recomendarle la mejor solución.</p>
       </div>
       <div class="action-buttons">
-        <a href="https://wa.me/5493413220052" class="btn btn-whatsapp">
+        <a href="https://wa.me/0341 8610863" class="btn btn-whatsapp">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
             <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 00.61.61l6.037-1.471A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.804 9.804 0 01-5.026-1.381l-.36-.214-3.733.909.925-3.733-.234-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/>
@@ -264,14 +264,13 @@
     <div class="footer-links">
       <a href="/html/cableado_estructurado.html">Cableado Estructurado</a>
       <a href="/html/fibra_optica.html">Fibra Óptica</a>
-      <a href="/html/seguridad_electronica.html">Seguridad Electrónica</a>
+      <a href="/html/seguridad.html">Seguridad Electrónica</a>
       <a href="/html/soporte_it.html">Soporte IT</a>
-      <a href="/html/desarrollo_software.html">Desarrollo de Software</a>
+      <a href="/html/desarrollo.html">Desarrollo de Software</a>
     </div>
     <div class="footer-social">
       <a href="https://www.facebook.com/sisgra.srl" class="social-btn" aria-label="Facebook">FB</a>
-      <a href="#" class="social-btn" aria-label="Instagram">IG</a>
-    </div>
+        </div>
   </div>
  
   <!-- COPYRIGHT -->
@@ -283,28 +282,44 @@
 </footer>
 <script>
     function sendGmail() {
-        const nombre = document.getElementById("nombre").value;
-        const empresa = document.getElementById("empresa").value;
-        const telefono = document.getElementById("telefono").value;
-        const email = document.getElementById("email").value;
-        const mensaje = document.getElementById("mensaje").value;
+    const nombre = document.getElementById("nombre").value;
+    const empresa = document.getElementById("empresa").value;
+    const telefono = document.getElementById("telefono").value;
+    const email = document.getElementById("email").value;
+    const mensaje = document.getElementById("mensaje").value;
 
-        const asunto = `Consulta de presupuesto proveniente de "${nombre} | ${empresa}"`;
+    // Validación de campos requeridos
+    const campos = { nombre, empresa, telefono, email, mensaje };
+let hayError = false;
 
-        const mensajeBody = `
-        Datos del usuario: Nombre: ${nombre} | Tel: ${telefono} | Email: ${email} | Empresa: "${empresa}"
-
-        ${mensaje}
-        `;
-
-        const url =
-        `https://mail.google.com/mail/?view=cm&fs=1` +
-        `&to=asdasdsasadsa@gmail.com` +
-        `&su=${encodeURIComponent(asunto)}` +
-        `&body=${encodeURIComponent(mensajeBody)}`;
-    
-        window.open(url, "_blank");
+for (const [id, valor] of Object.entries(campos)) {
+    const el = document.getElementById(id);
+    if (!valor) {
+        el.style.border = "2px solid red";
+        hayError = true;
+    } else {
+        el.style.border = ""; // limpia el error si ya fue completado
     }
+}
+
+if (hayError) return;
+
+    const asunto = `Consulta de presupuesto proveniente de "${nombre} | ${empresa}"`;
+
+    const mensajeBody = `
+    Datos del usuario: Nombre: ${nombre} | Tel: ${telefono} | Email: ${email} | Empresa: "${empresa}"
+
+    ${mensaje}
+    `;
+
+    const url =
+    `https://mail.google.com/mail/?view=cm&fs=1` +
+    `&to=asdasdsasadsa@gmail.com` +
+    `&su=${encodeURIComponent(asunto)}` +
+    `&body=${encodeURIComponent(mensajeBody)}`;
+
+    window.open(url, "_blank");
+}
 
 </script>
 

@@ -1,0 +1,12 @@
+{
+  "direccion": "Lamadrid 468, Rosario, Argentina",
+  "telefono": "+54 341 322-0052",
+  "email": "info@sisgra.com.ar",
+  "whatsapp": "5493413220052",
+  "facebook": "https://www.facebook.com/sisgra.srl",
+  "instagram": "#",
+  "formulario_activo": true,
+  "email_destino": "consultas@sisgra.com.ar",
+  "asunto_defecto": "Consulta desde el sitio web",
+  "formulario_descripcion": "Cuéntenos sobre su organización. Un asesor se comunicará para recomendarle la mejor solución."
+}

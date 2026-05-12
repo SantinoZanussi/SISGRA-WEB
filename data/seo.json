@@ -1,0 +1,26 @@
+{
+  "home": {
+    "title": "SISGRA S.R.L. - Integrando el Futuro",
+    "description": "Implementamos redes de alta velocidad, fibra óptica certificada y sistemas de gestión avanzados para la industria moderna en Rosario, Argentina."
+  },
+  "cableado": {
+    "title": "Cableado Estructurado · SISGRA S.R.L.",
+    "description": "Certificación Cat8, normativa TIA/EIA 568 y velocidades de hasta 40Gbps. Cableado estructurado para empresas en Rosario."
+  },
+  "fibra": {
+    "title": "Fibra Óptica · SISGRA S.R.L.",
+    "description": "Instalación de fibra óptica monomodo y multimodo. Empalmes certificados y backbones industriales para su empresa."
+  },
+  "seguridad": {
+    "title": "Seguridad Electrónica · SISGRA S.R.L.",
+    "description": "CCTV 4K con IA, control de acceso biométrico y monitoreo 24/7. Seguridad electrónica integral para empresas."
+  },
+  "soporte": {
+    "title": "Soporte IT · SISGRA S.R.L.",
+    "description": "Soporte IT corporativo con respuesta en menos de 45 minutos. Mantenimiento preventivo y seguridad proactiva."
+  },
+  "desarrollo": {
+    "title": "Desarrollo de Software · SISGRA S.R.L.",
+    "description": "Software logístico a medida, ERP, CRM e integración IoT. Desarrollo de sistemas para la industria moderna en Rosario."
+  }
+}
