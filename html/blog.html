@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - SISGRA S.R.L.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Reutilizamos tus bases -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout_home.css">
+    <link rel="stylesheet" href="css/components.css">
+    <style>
+        /* ESTILOS ESPECÍFICOS PARA BLOG (Integrados aquí para facilidad) */
+        .blog-hero {
+            background-color: var(--sisgra-blue);
+            padding: 10rem 1rem 5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .blog-section {
+            padding: 5rem 1rem;
+            background-color: #f8fafc;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .blog-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-2xl);
+            border-color: var(--blue-500);
+        }
+
+        .blog-card-img {
+            height: 240px;
+            overflow: hidden;
+            background: #0A1D37;
+        }
+
+        .blog-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            transition: 0.5s;
+        }
+
+        .blog-card:hover .blog-card-img img {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .blog-card-content {
+            padding: 2rem;
+            flex-grow: 1;
+        }
+
+        .blog-tag {
+            font-size: 0.7rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: var(--blue-500);
+            letter-spacing: 0.15em;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .blog-card-title {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: var(--sisgra-blue);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            font-style: italic;
+            line-height: 1.2;
+        }
+
+        .blog-card-desc {
+            font-size: 0.9rem;
+            color: var(--slate-500);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .blog-card-link {
+            font-weight: 900;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--sisgra-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: auto;
+        }
+
+        /* SIMULACIÓN PANEL ADMIN PARA TU JEFE */
+        .admin-simulator {
+            margin-top: 8rem;
+            padding: 4rem;
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+        }
+        
+        .admin-form-mockup {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            max-width: 600px;
+        }
+
+        .admin-form-mockup h4 { margin-bottom: 1.5rem; color: var(--sisgra-blue); }
+        .input-mock { width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #ddd; background: #fafafa; }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR (Actualizado con link Blog) -->
+    <nav>
+        <div class="max-w-1400">
+            <div class="nav-inner">
+                <a href="index.html" class="nav-logo">
+                    <img src="img/logo sisgra.png" alt="SISGRA" style="height: 40px;">
+                </a>
+
+                <div class="nav-menu">
+                    <div class="nav-menu-list">
+                        <a href="index.html#servicios" class="nav-link">Servicios</a>
+                        <a href="./soporte_it.html" class="nav-link">Soporte IT</a>
+                        <a href="./desarrollo.html" class="nav-link">Software</a>
+                        <!-- NUEVO LINK -->
+                        <a href="blog.html" class="nav-link" style="color: var(--blue-400);">Blog</a>
+                    </div>
+                </div>
+
+                <div class="nav-contact-wrap">
+                    <a href="https://wa.me/0341 8610863" class="btn-contact">Contáctese</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- BLOG HERO -->
+    <header class="blog-hero">
+        <div class="max-w-7xl">
+            <div class="hero-badge">Knowledge Hub</div>
+            <h1 class="hero-title">Insights <span><i>Tecnológicos</i></span></h1>
+            <p class="hero-desc" style="color: rgba(255,255,255,0.7); max-width: 600px; margin: 0 auto;">
+                Analizamos las tendencias en infraestructura, ciberseguridad y software que están transformando la industria moderna.
+            </p>
+        </div>
+    </header>
+
+    <!-- BLOG CONTENT -->
+    <section class="blog-section">
+        <div class="max-w-7xl">
+            <div class="blog-grid">
+                
+                <!-- POST 1 -->
+                <article class="blog-card">
+                    <div class="blog-card-img">
+                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc48?q=80&w=1000" alt="Cableado">
+                    </div>
+                    <div class="blog-card-content">
+                        <span class="blog-tag">Infraestructura</span>
+                        <h3 class="blog-card-title">Tendencias en Cableado Categoría 8 para el 2024</h3>
+                        <p class="blog-card-desc">Por qué la certificación de nodos es crítica para evitar la latencia en grandes centros de datos industriales...</p>
+                        <a href="#" class="blog-card-link">Leer Artículo <span style="color: var(--blue-500);">→</span></a>
+                    </div>
+                </article>
+
+                <!-- POST 2 -->
+                <article class="blog-card">
+                    <div class="blog-card-img">
+                        <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1000" alt="Seguridad">
+                    </div>
+                    <div class="blog-card-content">
+                        <span class="blog-tag">Ciberseguridad</span>
+                        <h3 class="blog-card-title">Protegiendo el perímetro digital corporativo</h3>
+                        <p class="blog-card-desc">Estrategias de monitoreo activo y backups automatizados para garantizar la continuidad del negocio.</p>
+                        <a href="#" class="blog-card-link">Leer Artículo <span style="color: var(--blue-500);">→</span></a>
+                    </div>
+                </article>
+
+                <!-- POST 3 -->
+                <article class="blog-card">
+                    <div class="blog-card-img">
+                        <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1000" alt="Software">
+                    </div>
+                    <div class="blog-card-content">
+                        <span class="blog-tag">Software</span>
+                        <h3 class="blog-card-title">Software a medida: La clave de la eficiencia logística</h3>
+                        <p class="blog-card-desc">Cómo la integración de sistemas ERP optimiza el control de inventarios en tiempo real.</p>
+                        <a href="#" class="blog-card-link">Leer Artículo <span style="color: var(--blue-500);">→</span></a>
+                    </div>
+                </article>
+
+            </div>
+
+            <!-- SECCIÓN PARA TU JEFE: MOCKUP DEL PANEL ADMIN -->
+            <div class="admin-simulator">
+                <p class="about-eyebrow" style="color: var(--slate-500);">Vista Previa del Administrador (Boceto)</p>
+                <h3 class="about-title" style="font-size: 2rem; margin-bottom: 2rem;">¿Cómo se editaría esto?</h3>
+                <div class="admin-form-mockup">
+                    <h4>Panel de Gestión de Blog</h4>
+                    <label style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase;">Título del Post</h4abel>
+                    <input class="input-mock" type="text" placeholder="Ej: Nueva instalación de Fibra Óptica...">
+                    
+                    <label style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase;">Categoría</label>
+                    <select class="input-mock">
+                        <option>Infraestructura</option>
+                        <option>Soporte IT</option>
+                        <option>Software</option>
+                    </select>
+
+                    <label style="font-size: 0.7rem; font-weight: 900; text-transform: uppercase;">Contenido</label>
+                    <textarea class="input-mock" style="height: 100px;" placeholder="Escriba el resumen del artículo aquí..."></textarea>
+                    
+                    <button class="btn-hero-primary" style="background: var(--sisgra-blue); color: white; width: 100%;">Publicar en la Web</button>
+                </div>
+                <p style="margin-top: 1.5rem; color: var(--slate-500); font-size: 0.8rem; font-style: italic;">
+                    * Este panel le permite a usted o a su equipo subir contenido nuevo sin depender de programadores.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER (Reutilizado del original) -->
+    <footer style="background: var(--sisgra-blue); padding: 4rem 1rem; color: white; text-align: center;">
+        <div class="max-w-7xl">
+            <span class="brand-name">SISGRA <sup>SRL</sup></span>
+            <p style="opacity: 0.5; margin-top: 1rem; font-size: 0.8rem;">© 2026 SISGRA S.R.L. — Todos los derechos reservados</p>
+        </div>
+    </footer>
+
+</body>
+</html>

@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISGRA S.R.L. - Integrando el Futuro</title>
+    <title id="meta-title">SISGRA S.R.L. - Integrando el Futuro</title>
+    <meta name="description" id="meta-desc" content="">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="./img/sdesigra.png">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout_home.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/pages/home.css">
+    
 </head>
-
 <body>
 
     <!-- NAVBAR -->
@@ -26,171 +26,74 @@
                         </div>
                     </div>
                 </a>
-
                 <div class="nav-menu">
                     <div class="nav-menu-list">
                         <div class="nav-dropdown">
                             <a href="#instalaciones" class="nav-dropdown-trigger">
                                 Instalaciones
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                        d="M19 9l-7 7-7-7"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/>
                                 </svg>
                             </a>
                             <div class="dropdown-content">
                                 <a href="./html/cableado_estructurado.html">Cableado Estructurado</a>
                                 <a href="./html/fibra_optica.html">Fibra Óptica</a>
                                 <a href="./html/seguridad.html">Seguridad Electrónica</a>
+                                
                             </div>
                         </div>
                         <a href="./html/soporte_it.html" class="nav-link">Soporte IT</a>
                         <a href="./html/desarrollo.html" class="nav-link">Desarrollo de Software</a>
+                        <a href="./html/seguridad.html">Seguridad Electrónica</a>
                     </div>
                 </div>
-
                 <div class="nav-contact-wrap">
-                    <a href="https://wa.me/0341 8610863" class="btn-contact">Contáctese</a>
+                    <a id="nav-whatsapp" href="#" class="btn-contact">Contáctese</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- HERO -->
-    <header class="hero">
-        <div class="hero-dots"></div>
-        <div class="max-w-7xl hero-inner">
-            <div class="hero-grid">
-                <div>
-                    <div class="hero-badge">Infraestructura Corporativa de Elite</div>
-                    <h1 class="hero-title">
-                        Soluciones que <span><i>Impulsan el Crecimiento</i></span>
-                    </h1>
-                    <p class="hero-desc">
-                        Implementamos redes de alta velocidad, fibra óptica certificada y sistemas de gestión avanzados
-                        para la industria moderna.
-                    </p>
-                    <div class="hero-buttons">
-                        <a href="#servicios"><button class="btn-hero-primary">Ver Soluciones</button></a>
-                        <a href="#nosotros"><button class="btn-hero-secondary">Nuestra Empresa</button></a>
-                    </div>
-                </div>
+    <!-- HERO — contenedor dinámico -->
+    <div id="hero-container"></div>
 
-                <div class="hero-stats">
-                    <div class="stat-card-dark">
-                        <div class="stat-number-white">+25</div>
-                        <div class="stat-label-blue">Años de Trayectoria</div>
-                    </div>
-                    <div class="stat-card-light">
-                        <div class="stat-number-dark">+500</div>
-                        <div class="stat-label-gray">Clientes Activos</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- LOGOS CLIENTES  -->
-    <section class="logos-section">
+    <!-- LOGOS CLIENTES -->
+    <section class="logos-section" id="section-clientes">
         <div class="max-w-7xl">
             <div class="logos-header">
-                <h2 id="empresas" class="logos-title">Nuestros Clientes</h2>
+                <h2 class="logos-title" id="logos-titulo">Nuestros Clientes</h2>
             </div>
             <div class="logos-track-wrapper">
-                <div class="logos-track" id="logosTrack">
-        
-                    <div class="logos-cell">
-                        <img src="/img/sancristobal.png" alt="San Cristóbal">
-                    </div>
-                    <div class="logos-cell">
-                        <img src="/img/syngenta.png" alt="Syngenta">
-                    </div>
-                    <div class="logos-cell">
-                        <div class="logos-cell-text">imagen</div>
-                    </div>
-                    <div class="logos-cell">
-                        <div class="logos-cell-text">imagen</div>
-                    </div>
-        
-                </div>
+                <div class="logos-track" id="logosTrack"></div>
             </div>
         </div>
     </section>
 
-    <!-- SERVICES -->
+    <!-- SERVICIOS -->
     <section id="servicios" class="services-section">
         <div class="max-w-7xl">
             <div class="services-header">
                 <h2 id="instalaciones" class="services-title">Portafolio de Soluciones</h2>
             </div>
-
-            <div class="cards-grid">
-                <div class="service-card">
-                    <div class="card-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="card-title">Instalaciones</h3>
-                    <p class="card-desc">Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de
-                        vanguardia.</p>
-                    <a href="./html/cableado_estructurado.html" class="card-link">
-                        Ver Detalles <span>→</span>
-                    </a>
-                </div>
-
-                <div class="service-card">
-                    <div class="card-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="card-title">Soporte IT</h3>
-                    <p class="card-desc">Mantenimiento integral de infraestructura y asistencia técnica corporativa
-                        especializada.</p>
-                    <a href="./html/soporte_it.html" class="card-link">
-                        Ver Detalles <span>→</span>
-                    </a>
-                </div>
-
-                <div class="service-card">
-                    <div class="card-icon">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                        </svg>
-                    </div>
-                    <h3 class="card-title">Software</h3>
-                    <p class="card-desc">Soluciones a medida para optimizar procesos logísticos y gestión de datos
-                        empresariales.</p>
-                    <a href="./html/desarrollo.html" class="card-link">
-                        Ver Detalles <span>→</span>
-                    </a>
-                </div>
+            <div class="cards-grid" id="servicios-grid">
+                <!-- Renderizado por JS -->
             </div>
         </div>
     </section>
 
-    <!-- ABOUT -->
+    <!-- NOSOTROS -->
     <section id="nosotros" class="about-section">
         <div class="max-w-7xl">
             <div class="about-inner">
                 <div class="about-img-wrap">
                     <div class="about-img-frame">
-                        <img src="img/img1.png" alt="Imagen Corporativa">
+                        <img id="about-img" src="img/img1.png" alt="Imagen Corporativa">
                     </div>
                 </div>
                 <div class="about-content">
-                    <p class="about-eyebrow">Excelencia Corporativa</p>
-                    <h3 class="about-title">Liderando la industria <br>desde el año 1999.</h3>
-                    <p class="about-desc">
-                        En SISGRA, entendemos que la infraestructura crítica no permite errores. Nos dedicamos a
-                        integrar soluciones que garantizan la continuidad operativa y la escalabilidad técnica de su
-                        negocio.
-                    </p>
+                    <p class="about-eyebrow" id="about-eyebrow">Excelencia Corporativa</p>
+                    <h3 class="about-title" id="about-titulo">Liderando la industria <br>desde el año 1999.</h3>
+                    <p class="about-desc" id="about-desc"></p>
                 </div>
             </div>
         </div>
@@ -198,129 +101,274 @@
 
     <!-- FOOTER -->
     <footer>
- 
-  <!-- PARTE SUPERIOR: FORMULARIO -->
-  <div class="footer-top">
- 
-    <!-- IZQUIERDA -->
-    <div class="panel-left">
-      <div>
-        <p class="section-label">Contacto</p>
-        <h2>Solicite un presupuesto</h2>
-        <p class="panel-desc">Cuéntenos sobre su organización. Un asesor se comunicará para recomendarle la mejor solución.</p>
-      </div>
-      <div class="action-buttons">
-        <a href="https://wa.me/0341 8610863" class="btn btn-whatsapp">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 00.61.61l6.037-1.471A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.804 9.804 0 01-5.026-1.381l-.36-.214-3.733.909.925-3.733-.234-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/>
-          </svg>
-          Consultar por WhatsApp
-        </a>
-        
-      </div>
-    </div>
- 
-    <!-- DERECHA: FORM -->
-    <div class="panel-right">
-      <p class="form-title">Complete el formulario</p>
-      <div class="form-grid">
-        <div class="field">
-          <label for="nombre">Nombre</label>
-          <input id="nombre" type="text" placeholder="Su nombre completo" required/>
+      <div class="footer-top">
+        <div class="panel-left">
+          <div>
+            <p class="section-label">Contacto</p>
+            <h2>Solicite un presupuesto</h2>
+            <p class="panel-desc" id="footer-form-desc">Cuéntenos sobre su organización. Un asesor se comunicará para recomendarle la mejor solución.</p>
+          </div>
+          <div class="action-buttons">
+            <a id="footer-whatsapp" href="#" class="btn btn-whatsapp">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 00.61.61l6.037-1.471A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.804 9.804 0 01-5.026-1.381l-.36-.214-3.733.909.925-3.733-.234-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/>
+              </svg>
+              Consultar por WhatsApp
+            </a>
+          </div>
         </div>
-        <div class="field">
-          <label for="empresa">Empresa</label>
-          <input id="empresa" type="text" placeholder="Nombre de la organización" required/>
-        </div>
-        <div class="field">
-          <label for="telefono">Teléfono</label>
-          <input id="telefono" type="tel" placeholder="Ej.: 341 0000000" required/>
-        </div>
-        <div class="field">
-          <label for="email">Email</label>
-          <input id="email" type="email" placeholder="nombre@empresa.com" required/> 
-        </div>
-        <div class="field full">
-          <label for="mensaje">Mensaje</label>
-          <textarea id="mensaje" placeholder="Cuéntenos qué necesita resolver"> </textarea>
+        <div class="panel-right">
+          <p class="form-title">Complete el formulario</p>
+          <div class="form-grid">
+            <div class="field"><label for="f-nombre">Nombre</label><input id="f-nombre" type="text" placeholder="Su nombre completo" required/></div>
+            <div class="field"><label for="f-empresa">Empresa</label><input id="f-empresa" type="text" placeholder="Nombre de la organización" required/></div>
+            <div class="field"><label for="f-telefono">Teléfono</label><input id="f-telefono" type="tel" placeholder="Ej.: 341 0000000" required/></div>
+            <div class="field"><label for="f-email">Email</label><input id="f-email" type="email" placeholder="nombre@empresa.com" required/></div>
+            <div class="field full"><label for="f-mensaje">Mensaje</label><textarea id="f-mensaje" placeholder="Cuéntenos qué necesita resolver"></textarea></div>
+          </div>
+          <button class="btn-submit" onclick="sendGmail()">Enviar consulta</button>
+          <div class="success-msg" id="successMsg">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            ¡Consulta enviada! Nos contactaremos pronto.
+          </div>
         </div>
       </div>
-      <button class="btn-submit" onclick="sendGmail()">Enviar consulta</button>
-      <div class="success-msg" id="successMsg">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        ¡Consulta enviada! Nos contactaremos pronto.
-      </div>
-    </div>
- 
-  </div>
- 
-  <!-- PARTE INFERIOR: BARRA FINAL -->
-  <div class="footer-bottom">
-    <div class="footer-brand">
-      <img src="/img/logo sisgra.png" alt="">
-    </div>
-    <div class="footer-links">
-      <a href="/html/cableado_estructurado.html">Cableado Estructurado</a>
-      <a href="/html/fibra_optica.html">Fibra Óptica</a>
-      <a href="/html/seguridad.html">Seguridad Electrónica</a>
-      <a href="/html/soporte_it.html">Soporte IT</a>
-      <a href="/html/desarrollo.html">Desarrollo de Software</a>
-    </div>
-    <div class="footer-social">
-      <a href="https://www.facebook.com/sisgra.srl" class="social-btn" aria-label="Facebook">FB</a>
-        </div>
-  </div>
- 
-  <!-- COPYRIGHT -->
-  <div class="footer-copy">
-    <span>© 2026 SISGRA S.R.L. — Todos los derechos reservados</span>
-    <span class="motto">Integrando el Futuro</span>
-  </div>
- 
-</footer>
-<script>
-    function sendGmail() {
-    const nombre = document.getElementById("nombre").value;
-    const empresa = document.getElementById("empresa").value;
-    const telefono = document.getElementById("telefono").value;
-    const email = document.getElementById("email").value;
-    const mensaje = document.getElementById("mensaje").value;
 
-    // Validación de campos requeridos
-    const campos = { nombre, empresa, telefono, email, mensaje };
-let hayError = false;
+      <div class="footer-bottom">
+        <div class="footer-brand"><img src="/img/logo sisgra.png" alt="SISGRA"></div>
+        <div class="footer-links">
+          <a href="/html/cableado_estructurado.html">Cableado Estructurado</a>
+          <a href="/html/fibra_optica.html">Fibra Óptica</a>
+          <a href="/html/seguridad.html">Seguridad Electrónica</a>
+          <a href="/html/soporte_it.html">Soporte IT</a>
+          <a href="/html/desarrollo.html">Desarrollo de Software</a>
+        </div>
+        <div class="footer-social">
+          <a id="footer-fb" href="#" class="social-btn" aria-label="Facebook">FB</a>
+        </div>
+      </div>
 
-for (const [id, valor] of Object.entries(campos)) {
-    const el = document.getElementById(id);
-    if (!valor) {
-        el.style.border = "2px solid red";
-        hayError = true;
-    } else {
-        el.style.border = ""; // limpia el error si ya fue completado
+      <div class="footer-copy">
+        <span>© 2026 SISGRA S.R.L. — Todos los derechos reservados</span>
+        <span class="motto">Integrando el Futuro</span>
+      </div>
+    </footer>
+
+    <script>
+    const API = 'http://localhost:3000/api';
+
+    const SERVICE_ICONS = {
+      instalaciones: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>`,
+      soporte:       `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>`,
+      software:      `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>`,
+    };
+
+    async function loadData(file) {
+      try {
+        const r = await fetch(`${API}/data/${file}`);
+        if (!r.ok) return null;
+        return r.json();
+      } catch { return null; }
     }
-}
 
-if (hayError) return;
+    function renderHeroP1(h) {
+      return `
+        <header class="hero">
+          <div class="hero-dots"></div>
+          <div class="max-w-7xl hero-inner">
+            <div class="hero-grid">
+              <div>
+                <div class="hero-badge">${h.badge || ''}</div>
+                <h1 class="hero-title">
+                  ${h.titulo1 || ''} <span><i>${h.titulo2 || ''}</i></span>
+                </h1>
+                <p class="hero-desc">${h.descripcion || ''}</p>
+                <div class="hero-buttons">
+                  <a href="#servicios"><button class="btn-hero-primary">${h.boton_primario || 'Ver Soluciones'}</button></a>
+                  <a href="#nosotros"><button class="btn-hero-secondary">${h.boton_secundario || 'Nuestra Empresa'}</button></a>
+                </div>
+              </div>
+              <div class="hero-stats">
+                <div class="stat-card-dark">
+                  <div class="stat-number-white">${h.stat1_numero || ''}</div>
+                  <div class="stat-label-blue">${h.stat1_label || ''}</div>
+                </div>
+                <div class="stat-card-light">
+                  <div class="stat-number-dark">${h.stat2_numero || ''}</div>
+                  <div class="stat-label-gray">${h.stat2_label || ''}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>`;
+    }
 
-    const asunto = `Consulta de presupuesto proveniente de "${nombre} | ${empresa}"`;
 
-    const mensajeBody = `
-    Datos del usuario: Nombre: ${nombre} | Tel: ${telefono} | Email: ${email} | Empresa: "${empresa}"
+    function renderHeroP2(h) {
+      const tags = [h.p2_tag1, h.p2_tag2, h.p2_tag3].filter(Boolean);
+      const metrics = [
+        { num: h.p2_metric1_num, label: h.p2_metric1_label },
+        { num: h.p2_metric2_num, label: h.p2_metric2_label },
+        { num: h.p2_metric3_num, label: h.p2_metric3_label },
+      ].filter(m => m.num);
 
-    ${mensaje}
-    `;
+      return `
+        <header class="hero-p2">
+          <div class="hero-p2-inner">
+            <div class="hero-p2-eyebrow">${h.p2_eyebrow || ''}</div>
+            <h1 class="hero-p2-title">${h.p2_titulo || ''}</h1>
+            <p class="hero-p2-subtitle">${h.p2_subtitulo || ''}</p>
+            <p class="hero-p2-desc">${h.p2_descripcion || ''}</p>
+            ${tags.length ? `<div class="hero-p2-tags">${tags.map(t => `<span class="hero-p2-tag">${t}</span>`).join('')}</div>` : ''}
+            <div class="hero-p2-buttons">
+              <a href="#servicios"><button class="btn-hero-primary">${h.p2_boton_primario || 'Ver Soluciones'}</button></a>
+              <a href="#nosotros"><button class="btn-hero-secondary">${h.p2_boton_secundario || 'Nuestra Empresa'}</button></a>
+            </div>
+            ${metrics.length ? `
+              <div class="hero-p2-metrics">
+                ${metrics.map(m => `
+                  <div class="hero-p2-metric">
+                    <span class="hero-p2-metric-num">${m.num}</span>
+                    <span class="hero-p2-metric-label">${m.label}</span>
+                  </div>`).join('')}
+              </div>` : ''}
+          </div>
+        </header>`;
+    }
 
-    const url =
-    `https://mail.google.com/mail/?view=cm&fs=1` +
-    `&to=asdasdsasadsa@gmail.com` +
-    `&su=${encodeURIComponent(asunto)}` +
-    `&body=${encodeURIComponent(mensajeBody)}`;
+    function renderClientes(data) {
+      const track = document.getElementById('logosTrack');
+      const titulo = document.getElementById('logos-titulo');
+      const section = document.getElementById('section-clientes');
 
-    window.open(url, "_blank");
-}
+      if (!data || data.carrusel_activo === false) {
+        section.style.display = 'none';
+        return;
+      }
+      if (titulo && data.titulo_seccion) titulo.textContent = data.titulo_seccion;
 
-</script>
+      const clientes = (data.clientes || []).filter(c => c.activo !== false);
+      // Duplicamos para el loop infinito
+      const cells = [...clientes, ...clientes].map(c => `
+        <div class="logos-cell">
+          ${c.imagen
+            ? `<img src="${c.imagen}" alt="${c.nombre}">`
+            : `<div class="logos-cell-text">${c.nombre}</div>`}
+        </div>`).join('');
 
+      track.innerHTML = cells;
+      if (data.auto_scroll !== false) track.classList.add('is-animating');
+    }
+
+    function renderServicios(data) {
+      const grid = document.getElementById('servicios-grid');
+      if (!data || !data.cards) return;
+      grid.innerHTML = data.cards.map(c => `
+        <div class="service-card">
+          <div class="card-icon">${SERVICE_ICONS[c.id] || ''}</div>
+          <h3 class="card-title">${c.titulo}</h3>
+          <p class="card-desc">${c.descripcion}</p>
+          <a href="${c.enlace}" class="card-link">Ver Detalles <span>→</span></a>
+        </div>`).join('');
+    }
+
+    function renderNosotros(data) {
+      if (!data) return;
+      const eyebrow = document.getElementById('about-eyebrow');
+      const titulo  = document.getElementById('about-titulo');
+      const desc    = document.getElementById('about-desc');
+      const img     = document.getElementById('about-img');
+      if (eyebrow) eyebrow.textContent = data.eyebrow || '';
+      if (titulo)  titulo.innerHTML    = (data.titulo || '').replace(/\n/g, '<br>');
+      if (desc)    desc.textContent    = data.descripcion || '';
+      if (img && data.imagen) img.src  = data.imagen;
+    }
+
+    function applySEO(seo) {
+      if (!seo || !seo.home) return;
+      const titleEl = document.getElementById('meta-title');
+      const descEl  = document.getElementById('meta-desc');
+      if (titleEl) titleEl.textContent = seo.home.title || 'SISGRA S.R.L.';
+      if (descEl)  descEl.setAttribute('content', seo.home.description || '');
+    }
+
+    function applyContacto(data) {
+      if (!data) return;
+      const wa = data.whatsapp ? `https://wa.me/${data.whatsapp}` : '#';
+      const navWa   = document.getElementById('nav-whatsapp');
+      const footWa  = document.getElementById('footer-whatsapp');
+      const footFb  = document.getElementById('footer-fb');
+      const formDesc = document.getElementById('footer-form-desc');
+      if (navWa)    navWa.href   = wa;
+      if (footWa)   footWa.href  = wa;
+      if (footFb && data.facebook) footFb.href = data.facebook;
+      if (formDesc && data.formulario_descripcion) formDesc.textContent = data.formulario_descripcion;
+    }
+
+    let contactoData = {};
+    function sendGmail() {
+      const campos = {
+        'f-nombre':   document.getElementById('f-nombre'),
+        'f-empresa':  document.getElementById('f-empresa'),
+        'f-telefono': document.getElementById('f-telefono'),
+        'f-email':    document.getElementById('f-email'),
+      };
+      let hayError = false;
+      Object.values(campos).forEach(el => {
+        if (!el.value.trim()) { el.classList.add('error'); hayError = true; }
+        else el.classList.remove('error');
+      });
+      if (hayError) return;
+
+      const { nombre, empresa, telefono, email } = {
+        nombre:   document.getElementById('f-nombre').value,
+        empresa:  document.getElementById('f-empresa').value,
+        telefono: document.getElementById('f-telefono').value,
+        email:    document.getElementById('f-email').value,
+      };
+      const mensaje  = document.getElementById('f-mensaje').value;
+      const destino  = contactoData.email_destino || 'info@sisgra.com.ar';
+      const asunto   = contactoData.asunto_defecto || 'Consulta desde el sitio web';
+      const body     = `Datos del usuario:\nNombre: ${nombre} | Tel: ${telefono} | Email: ${email} | Empresa: ${empresa}\n\n${mensaje}`;
+
+      window.open(
+        `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(destino)}&su=${encodeURIComponent(asunto)}&body=${encodeURIComponent(body)}`,
+        '_blank'
+      );
+      document.getElementById('successMsg').style.display = 'flex';
+    }
+
+    // ── Bootstrap ─────────────────────────────────────────────────
+    async function bootstrap() {
+      const [hero, clientes, servicios, nosotros, seo, contacto] = await Promise.all([
+        loadData('hero'),
+        loadData('clientes'),
+        loadData('servicios'),
+        loadData('nosotros'),
+        loadData('seo'),
+        loadData('contacto'),
+      ]);
+
+      // Hero
+      const container = document.getElementById('hero-container');
+      if (hero) {
+        const plantilla = hero.plantilla || '1';
+        container.innerHTML = plantilla === '2' ? renderHeroP2(hero) : renderHeroP1(hero);
+      }
+
+      renderClientes(clientes);
+      renderServicios(servicios);
+      renderNosotros(nosotros);
+      applySEO(seo);
+
+      if (contacto) {
+        contactoData = contacto;
+        applyContacto(contacto);
+      }
+    }
+
+    bootstrap();
+    </script>
 </body>
 </html>

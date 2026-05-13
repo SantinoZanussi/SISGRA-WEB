@@ -402,3 +402,119 @@
     line-height: 1.625;
     font-weight: 500;
 }
+
+.hero-p2 {
+        position: relative;
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 8rem;
+        padding-bottom: 6rem;
+        overflow: hidden;
+        background-color: var(--sisgra-blue);
+        text-align: center;
+      }
+      .hero-p2::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: url("/img/fondoinicio.png");
+        opacity: .18;
+        pointer-events: none;
+      }
+      .hero-p2-inner { position: relative; z-index: 10; width: 100%; max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+      .hero-p2-eyebrow {
+        display: inline-block;
+        font-size: .625rem;
+        font-weight: 700;
+        letter-spacing: .4em;
+        text-transform: uppercase;
+        color: var(--blue-300);
+        border: 1px solid rgba(255,255,255,.15);
+        padding: .35rem 1rem;
+        margin-bottom: 2.5rem;
+      }
+      .hero-p2-title {
+        font-size: clamp(2.5rem, 7vw, 5rem);
+        font-weight: 900;
+        color: var(--white);
+        line-height: 1.0;
+        letter-spacing: -.04em;
+        text-transform: uppercase;
+        font-style: italic;
+        margin-bottom: 1rem;
+      }
+      .hero-p2-subtitle {
+        font-size: clamp(1.25rem, 3vw, 2rem);
+        font-weight: 700;
+        color: var(--blue-300);
+        letter-spacing: -.02em;
+        margin-bottom: 2rem;
+        font-style: italic;
+      }
+      .hero-p2-desc {
+        font-size: 1.125rem;
+        color: rgba(255,255,255,.65);
+        line-height: 1.7;
+        font-weight: 400;
+        max-width: 580px;
+        margin: 0 auto 2.5rem;
+      }
+      .hero-p2-tags {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: .75rem;
+        margin-bottom: 2.5rem;
+      }
+      .hero-p2-tag {
+        font-size: .625rem;
+        font-weight: 900;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+        color: var(--white);
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.15);
+        padding: .4rem 1rem;
+      }
+      .hero-p2-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 5rem;
+      }
+      .hero-p2-metrics {
+        display: flex;
+        justify-content: center;
+        gap: 0;
+        border-top: 1px solid rgba(255,255,255,.1);
+        padding-top: 3rem;
+        flex-wrap: wrap;
+      }
+      .hero-p2-metric {
+        flex: 1;
+        min-width: 160px;
+        padding: 1rem 2rem;
+        border-right: 1px solid rgba(255,255,255,.1);
+        text-align: center;
+      }
+      .hero-p2-metric:last-child { border-right: none; }
+      .hero-p2-metric-num {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: var(--white);
+        letter-spacing: -.05em;
+        font-style: italic;
+        display: block;
+      }
+      .hero-p2-metric-label {
+        font-size: .5625rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .2em;
+        color: var(--blue-300);
+        margin-top: .35rem;
+        display: block;
+      }
