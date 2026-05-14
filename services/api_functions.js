@@ -1,5 +1,5 @@
 import { initApp } from './api_service.js'; 
-const API_BASE = "http://localhost:3000/api";
+const API_BASE = "http://192.168.1.61:3000/api";
 let authToken = sessionStorage.getItem("sisgra_token") || null;
 
 export async function doLogin() {

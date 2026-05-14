@@ -26,6 +26,7 @@
     .max-w-7xl {
         padding-left: 4rem;
         padding-right: 4rem;
+        padding: in;
     }
 }
 
@@ -216,11 +217,6 @@ nav {
   padding: 0;
 }
  
-body {
-  font-family: 'Sora', sans-serif;
-  background: #081527;
-}
- 
 /* ================================================══════
    FOOTER
 ================================================══════ */
@@ -228,6 +224,7 @@ footer {
   background: var(--sisgra-blue);
   position: relative;
   overflow: hidden;
+  font-family: 'Sora', sans-serif;
 }
  
 /* Glow decorativo */
@@ -535,14 +532,6 @@ footer::before {
   font-size: 11px;
   color: var(--slate-500);
   letter-spacing: 0.06em;
-}
- 
-.footer-copy .motto {
-  font-size: 11px;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.1);
-  font-weight: 500;
 }
  
 /* ── RESPONSIVE ─────────────────────────────────────── */

@@ -3,16 +3,6 @@
   "visible": true,
   "posts": [
     {
-      "id": "post-1",
-      "titulo": "¿Por qué tu empresa necesita fibra óptica ya?",
-      "categoria": "Fibra Óptica",
-      "estado": "publicado",
-      "fecha": "2026-05-08",
-      "extracto": "La migración a fibra óptica no es solo velocidad: hablamos de confiabilidad, escalabilidad y el futuro de tu conectividad.",
-      "contenido": "<p>La migración a fibra óptica no es solo velocidad: hablamos de confiabilidad, escalabilidad y el futuro de tu conectividad empresarial.</p>",
-      "imagen": ""
-    },
-    {
       "id": "post-2",
       "titulo": "SISGRA cumple 25 años en la industria",
       "categoria": "Empresa",

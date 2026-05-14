@@ -2,7 +2,7 @@ const bcryptjs = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../middleware/auth');
 
-const REAL_HASH = bcryptjs.hashSync("sisgra2026", 10);
+const REAL_HASH = bcryptjs.hashSync("admin", 10);
 
 // login
 exports.loginUser = async (req, res) => {

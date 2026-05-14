@@ -1,539 +1,1081 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SISGRA — Panel Administrativo</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
-<link rel="icon" href="../img/sdesigra.png">
-<link rel="stylesheet" href="../css/admin/header.css">
-<link rel="stylesheet" href="../css/admin/main.css">
-<link rel="stylesheet" href="../css/admin/misc.css">
-</head>
-<body>
-
-<!-- ══════════════════════════════════════════════════════════════
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SISGRA — Panel Administrativo</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="../img/sdesigra.png" />
+    <link rel="stylesheet" href="../css/admin/header.css" />
+    <link rel="stylesheet" href="../css/admin/main.css" />
+    <link rel="stylesheet" href="../css/admin/misc.css" />
+  </head>
+  <body>
+    <!-- ══════════════════════════════════════════════════════════════
      LOGIN
 ══════════════════════════════════════════════════════════════ -->
-<div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">SISGRA</div>
-    <div class="login-sub">Panel Administrativo</div>
-    <label class="login-label" for="l-user">Usuario</label>
-    <input class="login-input" id="l-user" type="text" placeholder="admin" autocomplete="username">
-    <label class="login-label" for="l-pass">Contraseña</label>
-    <input class="login-input" id="l-pass" type="password" placeholder="•••••••••••••" autocomplete="current-password">
-    <button class="login-btn" id="login-btn">Ingresar al Sistema</button>
-    <div class="login-error" id="login-error">Usuario o contraseña incorrectos.</div>
-    <div class="login-spinner" id="login-spinner">Verificando...</div>
-  </div>
-</div>
+    <div id="login-screen">
+      <div class="login-box">
+        <div class="login-logo">SISGRA</div>
+        <div class="login-sub">Panel Administrativo</div>
+        <label class="login-label" for="l-user">Usuario</label>
+        <input
+          class="login-input"
+          id="l-user"
+          type="text"
+          placeholder="admin"
+          autocomplete="username"
+        />
+        <label class="login-label" for="l-pass">Contraseña</label>
+        <input
+          class="login-input"
+          id="l-pass"
+          type="password"
+          placeholder="•••••••••••••"
+          autocomplete="current-password"
+        />
+        <button class="login-btn" id="login-btn">Ingresar al Sistema</button>
+        <div class="login-error" id="login-error">
+          Usuario o contraseña incorrectos.
+        </div>
+        <div class="login-spinner" id="login-spinner">Verificando...</div>
+      </div>
+    </div>
 
-<!-- ══════════════════════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════════════════════
      APP
 ══════════════════════════════════════════════════════════════ -->
-<div id="app">
-  <div class="layout">
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="sidebar-brand">
-        <div class="sidebar-brand-name">SISGRA</div>
-        <div class="sidebar-brand-tag">Admin Panel · v2.1</div>
-      </div>
-
-      <div class="sidebar-section-label">General</div>
-      <div class="sidebar-item active" data-panel="dashboard">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" stroke-width="2"/><rect x="14" y="3" width="7" height="7" stroke-width="2"/><rect x="3" y="14" width="7" height="7" stroke-width="2"/><rect x="14" y="14" width="7" height="7" stroke-width="2"/></svg>
-        Dashboard
-      </div>
-
-      <div class="sidebar-section-label">Contenido</div>
-      <div class="sidebar-item" data-panel="home">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="9,22 9,12 15,12 15,22"/></svg>
-        Inicio (Hero)
-      </div>
-      <div class="sidebar-item" data-panel="nosotros">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4" stroke-width="2"/></svg>
-        Nosotros
-      </div>
-      <div class="sidebar-item" data-panel="clientes">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1"/></svg>
-        Clientes / Logos
-      </div>
-      <div class="sidebar-item" data-panel="blog">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828z"/></svg>
-        Blog / Noticias
-      </div>
-
-      <div class="sidebar-section-label">Páginas</div>
-      <div class="sidebar-item" data-panel="p-cableado">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-        Cableado Estructurado
-      </div>
-      <div class="sidebar-item" data-panel="p-fibra">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-        Fibra Óptica
-      </div>
-      <div class="sidebar-item" data-panel="p-seguridad">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-        Seguridad Electrónica
-      </div>
-      <div class="sidebar-item" data-panel="p-soporte">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-        Soporte IT
-      </div>
-      <div class="sidebar-item" data-panel="p-desarrollo">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-        Desarrollo de Software
-      </div>
-
-      <div class="sidebar-section-label">Config</div>
-      <div class="sidebar-item" data-panel="contacto">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-        Datos de Contacto
-      </div>
-      <div class="sidebar-item" data-panel="seo">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35"/></svg>
-        SEO &amp; Meta
-      </div>
-
-      <div class="sidebar-footer">
-        <div class="sidebar-user">
-          <div class="sidebar-avatar">AD</div>
-          <div>
-            <div class="sidebar-user-name">Administrador</div>
-            <div class="sidebar-user-role" id="api-status-label">Conectando...</div>
-          </div>
-          <button class="sidebar-logout" title="Cerrar sesión" id="logout-btn">✕</button>
-        </div>
-      </div>
-    </aside>
-
-    <!-- MAIN -->
-    <main class="main">
-      <div class="topbar">
-        <div style="display:flex;align-items:center;gap:1rem;">
-          <span class="topbar-title" id="topbar-title">Dashboard</span>
-          <span class="api-indicator" id="api-indicator">
-            <span class="api-dot" id="api-dot"></span>
-            <span id="api-indicator-text">API</span>
-          </span>
-        </div>
-        <div class="topbar-actions">
-          <button class="btn-secondary" onclick="window.open('../index.html','_blank')">Vista previa</button>
-          <button class="btn-save" id="btn-guardar">Guardar cambios</button>
-        </div>
-      </div>
-
-      <div class="content-area">
-
-        <!-- ── DASHBOARD ───────────────────────────────────────────── -->
-        <div class="panel active" id="panel-dashboard">
-          <div class="page-header">
-            <div class="page-title">Dashboard</div>
-            <div class="page-desc">Resumen general del sitio y estado del contenido.</div>
-          </div>
-          <div class="stats-row">
-            <div class="stat-card">
-              <div class="stat-card-label">Páginas activas</div>
-              <div class="stat-card-value">6</div>
-              <div class="stat-card-sub"><span class="stat-card-indicator ind-green"></span>Todas publicadas</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-card-label">Posts de blog</div>
-              <div class="stat-card-value" id="dash-blog-count">—</div>
-              <div class="stat-card-sub" id="dash-blog-sub"><span class="stat-card-indicator ind-amber"></span>Cargando...</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-card-label">Clientes / Logos</div>
-              <div class="stat-card-value" id="dash-clientes-count">—</div>
-              <div class="stat-card-sub"><span class="stat-card-indicator ind-blue"></span>Carrusel</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-card-label">Última edición</div>
-              <div class="stat-card-value" style="font-size:1.1rem;padding-top:.4rem;">Hoy</div>
-              <div class="stat-card-sub" id="dash-date"></div>
-            </div>
-          </div>
-          <div class="section-card">
-            <div class="section-card-header"><span class="section-card-title">Accesos rápidos</span></div>
-            <div class="section-card-body" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
-              <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="nuevo-post">+ Nuevo post de blog</button>
-              <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="nuevo-cliente">+ Agregar cliente</button>
-              <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="editar-hero">Editar Hero principal</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── HERO / INICIO ───────────────────────────────────────── -->
-        <div class="panel" id="panel-home">
-          <div class="page-header">
-            <div class="page-title">Inicio — Hero &amp; Plantillas</div>
-            <div class="page-desc">Elegí la estructura visual del hero y personalizá su contenido.</div>
+    <div id="app">
+      <div class="layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+          <div class="nav-logo-row">
+            <img src="../img/logo sisgra.png" alt="SISGRA" height="38px" width="190px"/>
           </div>
 
-          <!-- Selector de plantilla -->
-          <div class="section-card">
-            <div class="section-card-header"><span class="section-card-title">Plantilla activa</span></div>
-            <div class="section-card-body">
-              <div class="form-row">
-                <div class="form-group">
-                  <label class="form-label">Elegir plantilla del Hero</label>
-                  <select class="form-select" id="hero-plantilla" style="max-width:320px;">
-                    <option value="1">Plantilla 1 — Clásica con estadísticas (actual)</option>
-                    <option value="2">Plantilla 2 — Texto centrado con métricas en fila</option>
-                  </select>
-                  <div class="form-hint">El cambio se aplica al guardar. Podés editar el contenido de ambas plantillas abajo.</div>
+          <div class="sidebar-section-label">General</div>
+          <div class="sidebar-item active" data-panel="dashboard">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <rect x="3" y="3" width="7" height="7" stroke-width="2" />
+              <rect x="14" y="3" width="7" height="7" stroke-width="2" />
+              <rect x="3" y="14" width="7" height="7" stroke-width="2" />
+              <rect x="14" y="14" width="7" height="7" stroke-width="2" />
+            </svg>
+            Dashboard
+          </div>
+
+          <div class="sidebar-section-label">Contenido</div>
+          <div class="sidebar-item" data-panel="home">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"
+              />
+              <polyline
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                points="9,22 9,12 15,12 15,22"
+              />
+            </svg>
+            Inicio (Hero)
+          </div>
+          <div class="sidebar-item" data-panel="nosotros">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"
+              />
+              <circle cx="9" cy="7" r="4" stroke-width="2" />
+            </svg>
+            Nosotros
+          </div>
+          <div class="sidebar-item" data-panel="clientes">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1"
+              />
+            </svg>
+            Clientes / Logos
+          </div>
+          <div class="sidebar-item" data-panel="blog">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828z"
+              />
+            </svg>
+            Blog / Noticias
+          </div>
+
+          <div class="sidebar-section-label">Páginas</div>
+          <div class="sidebar-item" data-panel="p-cableado">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+            Cableado Estructurado
+          </div>
+          <div class="sidebar-item" data-panel="p-fibra">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+            Fibra Óptica
+          </div>
+          <div class="sidebar-item" data-panel="p-seguridad">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+              />
+            </svg>
+            Seguridad Electrónica
+          </div>
+          <div class="sidebar-item" data-panel="p-soporte">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"
+              />
+            </svg>
+            Soporte IT
+          </div>
+          <div class="sidebar-item" data-panel="p-desarrollo">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+              />
+            </svg>
+            Desarrollo de Software
+          </div>
+
+          <div class="sidebar-section-label">Config</div>
+          <div class="sidebar-item" data-panel="contacto">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
+            </svg>
+            Datos de Contacto
+          </div>
+          <div class="sidebar-item" data-panel="seo">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <circle cx="11" cy="11" r="8" stroke-width="2" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-4.35-4.35"
+              />
+            </svg>
+            SEO &amp; Meta
+          </div>
+
+          <div class="sidebar-footer">
+            <div class="sidebar-user">
+              <div class="sidebar-avatar">AD</div>
+              <div>
+                <div class="sidebar-user-name">Administrador</div>
+                <div class="sidebar-user-role" id="api-status-label">
+                  Conectando...
+                </div>
+              </div>
+              <button
+                class="sidebar-logout"
+                title="Cerrar sesión"
+                id="logout-btn"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- MAIN -->
+        <main class="main">
+          <div class="topbar">
+            <div style="display: flex; align-items: center; gap: 1rem">
+              <span class="topbar-title" id="topbar-title">Dashboard</span>
+              <span class="api-indicator" id="api-indicator">
+                <span class="api-dot" id="api-dot"></span>
+                <span id="api-indicator-text">API</span>
+              </span>
+            </div>
+            <div class="topbar-actions">
+              <button
+                class="btn-secondary"
+                onclick="window.open('../index.html', '_blank')"
+              >
+                Vista previa
+              </button>
+              <button class="btn-save" id="btn-guardar">Guardar cambios</button>
+            </div>
+          </div>
+
+          <div class="content-area">
+            <!-- ── DASHBOARD ───────────────────────────────────────────── -->
+            <div class="panel active" id="panel-dashboard">
+              <div class="page-header">
+                <div class="page-title">Dashboard</div>
+                <div class="page-desc">
+                  Resumen general del sitio y estado del contenido.
+                </div>
+              </div>
+              <div class="stats-row">
+                <div class="stat-card">
+                  <div class="stat-card-label">Páginas activas</div>
+                  <div class="stat-card-value">6</div>
+                  <div class="stat-card-sub">
+                    <span class="stat-card-indicator ind-green"></span>Todas
+                    publicadas
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-card-label">Posts de blog</div>
+                  <div class="stat-card-value" id="dash-blog-count">—</div>
+                  <div class="stat-card-sub" id="dash-blog-sub">
+                    <span class="stat-card-indicator ind-amber"></span
+                    >Cargando...
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-card-label">Clientes / Logos</div>
+                  <div class="stat-card-value" id="dash-clientes-count">—</div>
+                  <div class="stat-card-sub">
+                    <span class="stat-card-indicator ind-blue"></span>Carrusel
+                  </div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-card-label">Última edición</div>
+                  <div
+                    class="stat-card-value"
+                    style="font-size: 1.1rem; padding-top: 0.4rem"
+                  >
+                    Hoy
+                  </div>
+                  <div class="stat-card-sub" id="dash-date"></div>
+                </div>
+              </div>
+              <div class="section-card">
+                <div class="section-card-header">
+                  <span class="section-card-title">Accesos rápidos</span>
+                </div>
+                <div
+                  class="section-card-body"
+                  style="
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 1rem;
+                  "
+                >
+                  <button
+                    class="btn-secondary"
+                    style="padding: 0.75rem; font-size: 0.625rem"
+                    id="nuevo-post"
+                  >
+                    + Nuevo post de blog
+                  </button>
+                  <button
+                    class="btn-secondary"
+                    style="padding: 0.75rem; font-size: 0.625rem"
+                    id="nuevo-cliente"
+                  >
+                    + Agregar cliente
+                  </button>
+                  <button
+                    class="btn-secondary"
+                    style="padding: 0.75rem; font-size: 0.625rem"
+                    id="editar-hero"
+                  >
+                    Editar Hero principal
+                  </button>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Plantilla 1 -->
-          <div id="hero-plantilla-1-fields">
-            <div class="section-card">
-              <div class="section-card-header">
-                <span class="section-card-title">Plantilla 1 — Contenido principal</span>
-                <span style="font-size:.5625rem;color:var(--slate-400);font-weight:700;letter-spacing:.1em;">Hero con cards de estadísticas a la derecha</span>
-              </div>
-              <div class="section-card-body">
-                <div class="form-row">
-                  <div class="form-group"><label class="form-label">Badge superior</label><input class="form-input" id="hero-badge"></div>
-                </div>
-                <div class="form-row cols-2">
-                  <div class="form-group"><label class="form-label">Título (línea 1)</label><input class="form-input" id="hero-titulo1"></div>
-                  <div class="form-group"><label class="form-label">Título (línea 2 — acento)</label><input class="form-input" id="hero-titulo2"></div>
-                </div>
-                <div class="form-row">
-                  <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="hero-descripcion"></textarea></div>
-                </div>
-                <div class="form-row cols-2">
-                  <div class="form-group"><label class="form-label">Botón primario</label><input class="form-input" id="hero-boton_primario"></div>
-                  <div class="form-group"><label class="form-label">Botón secundario</label><input class="form-input" id="hero-boton_secundario"></div>
+            <!-- ── HERO / INICIO ───────────────────────────────────────── -->
+            <div class="panel" id="panel-home">
+              <div class="page-header">
+                <div class="page-title">Inicio — Hero &amp; Plantillas</div>
+                <div class="page-desc">
+                  Elegí la estructura visual del hero y personalizá su
+                  contenido.
                 </div>
               </div>
-            </div>
-            <div class="section-card">
-              <div class="section-card-header"><span class="section-card-title">Plantilla 1 — Estadísticas</span></div>
-              <div class="section-card-body">
-                <div class="form-row cols-2">
-                  <div class="form-group"><label class="form-label">Stat 1 — Número</label><input class="form-input" id="hero-stat1_numero"></div>
-                  <div class="form-group"><label class="form-label">Stat 1 — Descripción</label><input class="form-input" id="hero-stat1_label"></div>
-                </div>
-                <div class="form-row cols-2">
-                  <div class="form-group"><label class="form-label">Stat 2 — Número</label><input class="form-input" id="hero-stat2_numero"></div>
-                  <div class="form-group"><label class="form-label">Stat 2 — Descripción</label><input class="form-input" id="hero-stat2_label"></div>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Plantilla 2 -->
-          <div id="hero-plantilla-2-fields" style="display:none;">
-            <div class="section-card">
-              <div class="section-card-header">
-                <span class="section-card-title">Plantilla 2 — Contenido principal</span>
-                <span style="font-size:.5625rem;color:var(--slate-400);font-weight:700;letter-spacing:.1em;">Hero centrado con métricas en fila y tags de tecnología</span>
-              </div>
-              <div class="section-card-body">
-                <div class="form-row">
-                  <div class="form-group"><label class="form-label">Eyebrow / texto superior</label><input class="form-input" id="hero-p2_eyebrow"></div>
+              <!-- Selector de plantilla -->
+              <div class="section-card">
+                <div class="section-card-header">
+                  <span class="section-card-title">Plantilla activa</span>
                 </div>
-                <div class="form-row cols-2">
-                  <div class="form-group"><label class="form-label">Título principal</label><input class="form-input" id="hero-p2_titulo"></div>
-                  <div class="form-group"><label class="form-label">Subtítulo (acento)</label><input class="form-input" id="hero-p2_subtitulo"></div>
-                </div>
-                <div class="form-row">
-                  <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="hero-p2_descripcion"></textarea></div>
-                </div>
-                <div class="form-row cols-2">
-                  <div class="form-group"><label class="form-label">Botón primario</label><input class="form-input" id="hero-p2_boton_primario"></div>
-                  <div class="form-group"><label class="form-label">Botón secundario</label><input class="form-input" id="hero-p2_boton_secundario"></div>
-                </div>
-              </div>
-            </div>
-            <div class="section-card">
-              <div class="section-card-header"><span class="section-card-title">Plantilla 2 — Tags de tecnología</span></div>
-              <div class="section-card-body">
-                <div class="form-row cols-3">
-                  <div class="form-group"><label class="form-label">Tag 1</label><input class="form-input" id="hero-p2_tag1"></div>
-                  <div class="form-group"><label class="form-label">Tag 2</label><input class="form-input" id="hero-p2_tag2"></div>
-                  <div class="form-group"><label class="form-label">Tag 3</label><input class="form-input" id="hero-p2_tag3"></div>
+                <div class="section-card-body">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label"
+                        >Elegir plantilla del Hero</label
+                      >
+                      <select
+                        class="form-select"
+                        id="hero-plantilla"
+                        style="max-width: 320px"
+                      >
+                        <option value="1">
+                          Plantilla 1 — Clásica con estadísticas (actual)
+                        </option>
+                        <option value="2">
+                          Plantilla 2 — Texto centrado con métricas en fila
+                        </option>
+                      </select>
+                      <div class="form-hint">
+                        El cambio se aplica al guardar. Podés editar el
+                        contenido de ambas plantillas abajo.
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="section-card">
-              <div class="section-card-header"><span class="section-card-title">Plantilla 2 — Métricas (fila inferior)</span></div>
-              <div class="section-card-body">
-                <div class="form-row cols-3">
-                  <div class="form-group"><label class="form-label">Métrica 1 — Número</label><input class="form-input" id="hero-p2_metric1_num"></div>
-                  <div class="form-group"><label class="form-label">Métrica 1 — Label</label><input class="form-input" id="hero-p2_metric1_label"></div>
-                  <div></div>
+
+              <!-- Plantilla 1 -->
+              <div id="hero-plantilla-1-fields">
+                <div class="section-card">
+                  <div class="section-card-header">
+                    <span class="section-card-title"
+                      >Plantilla 1 — Contenido principal</span
+                    >
+                    <span
+                      style="
+                        font-size: 0.5625rem;
+                        color: var(--slate-400);
+                        font-weight: 700;
+                        letter-spacing: 0.1em;
+                      "
+                      >Hero con cards de estadísticas a la derecha</span
+                    >
+                  </div>
+                  <div class="section-card-body">
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Badge superior</label
+                        ><input class="form-input" id="hero-badge" />
+                      </div>
+                    </div>
+                    <div class="form-row cols-2">
+                      <div class="form-group">
+                        <label class="form-label">Título (línea 1)</label
+                        ><input class="form-input" id="hero-titulo1" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label"
+                          >Título (línea 2 — acento)</label
+                        ><input class="form-input" id="hero-titulo2" />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Descripción</label
+                        ><textarea
+                          class="form-textarea"
+                          id="hero-descripcion"
+                        ></textarea>
+                      </div>
+                    </div>
+                    <div class="form-row cols-2">
+                      <div class="form-group">
+                        <label class="form-label">Botón primario</label
+                        ><input class="form-input" id="hero-boton_primario" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Botón secundario</label
+                        ><input class="form-input" id="hero-boton_secundario" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="form-row cols-3">
-                  <div class="form-group"><label class="form-label">Métrica 2 — Número</label><input class="form-input" id="hero-p2_metric2_num"></div>
-                  <div class="form-group"><label class="form-label">Métrica 2 — Label</label><input class="form-input" id="hero-p2_metric2_label"></div>
-                  <div></div>
+                <div class="section-card">
+                  <div class="section-card-header">
+                    <span class="section-card-title"
+                      >Plantilla 1 — Estadísticas</span
+                    >
+                  </div>
+                  <div class="section-card-body">
+                    <div class="form-row cols-2">
+                      <div class="form-group">
+                        <label class="form-label">Stat 1 — Número</label
+                        ><input class="form-input" id="hero-stat1_numero" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Stat 1 — Descripción</label
+                        ><input class="form-input" id="hero-stat1_label" />
+                      </div>
+                    </div>
+                    <div class="form-row cols-2">
+                      <div class="form-group">
+                        <label class="form-label">Stat 2 — Número</label
+                        ><input class="form-input" id="hero-stat2_numero" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Stat 2 — Descripción</label
+                        ><input class="form-input" id="hero-stat2_label" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="form-row cols-3">
-                  <div class="form-group"><label class="form-label">Métrica 3 — Número</label><input class="form-input" id="hero-p2_metric3_num"></div>
-                  <div class="form-group"><label class="form-label">Métrica 3 — Label</label><input class="form-input" id="hero-p2_metric3_label"></div>
-                  <div></div>
+              </div>
+
+              <!-- Plantilla 2 -->
+              <div id="hero-plantilla-2-fields" style="display: none">
+                <div class="section-card">
+                  <div class="section-card-header">
+                    <span class="section-card-title"
+                      >Plantilla 2 — Contenido principal</span
+                    >
+                    <span
+                      style="
+                        font-size: 0.5625rem;
+                        color: var(--slate-400);
+                        font-weight: 700;
+                        letter-spacing: 0.1em;
+                      "
+                      >Hero centrado con métricas en fila y tags de
+                      tecnología</span
+                    >
+                  </div>
+                  <div class="section-card-body">
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label"
+                          >Eyebrow / texto superior</label
+                        ><input class="form-input" id="hero-p2_eyebrow" />
+                      </div>
+                    </div>
+                    <div class="form-row cols-2">
+                      <div class="form-group">
+                        <label class="form-label">Título principal</label
+                        ><input class="form-input" id="hero-p2_titulo" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Subtítulo (acento)</label
+                        ><input class="form-input" id="hero-p2_subtitulo" />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">Descripción</label
+                        ><textarea
+                          class="form-textarea"
+                          id="hero-p2_descripcion"
+                        ></textarea>
+                      </div>
+                    </div>
+                    <div class="form-row cols-2">
+                      <div class="form-group">
+                        <label class="form-label">Botón primario</label
+                        ><input
+                          class="form-input"
+                          id="hero-p2_boton_primario"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Botón secundario</label
+                        ><input
+                          class="form-input"
+                          id="hero-p2_boton_secundario"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="section-card">
+                  <div class="section-card-header">
+                    <span class="section-card-title"
+                      >Plantilla 2 — Tags de tecnología</span
+                    >
+                  </div>
+                  <div class="section-card-body">
+                    <div class="form-row cols-3">
+                      <div class="form-group">
+                        <label class="form-label">Tag 1</label
+                        ><input class="form-input" id="hero-p2_tag1" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Tag 2</label
+                        ><input class="form-input" id="hero-p2_tag2" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Tag 3</label
+                        ><input class="form-input" id="hero-p2_tag3" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="section-card">
+                  <div class="section-card-header">
+                    <span class="section-card-title"
+                      >Plantilla 2 — Métricas (fila inferior)</span
+                    >
+                  </div>
+                  <div class="section-card-body">
+                    <div class="form-row cols-3">
+                      <div class="form-group">
+                        <label class="form-label">Métrica 1 — Número</label
+                        ><input class="form-input" id="hero-p2_metric1_num" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Métrica 1 — Label</label
+                        ><input class="form-input" id="hero-p2_metric1_label" />
+                      </div>
+                      <div></div>
+                    </div>
+                    <div class="form-row cols-3">
+                      <div class="form-group">
+                        <label class="form-label">Métrica 2 — Número</label
+                        ><input class="form-input" id="hero-p2_metric2_num" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Métrica 2 — Label</label
+                        ><input class="form-input" id="hero-p2_metric2_label" />
+                      </div>
+                      <div></div>
+                    </div>
+                    <div class="form-row cols-3">
+                      <div class="form-group">
+                        <label class="form-label">Métrica 3 — Número</label
+                        ><input class="form-input" id="hero-p2_metric3_num" />
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Métrica 3 — Label</label
+                        ><input class="form-input" id="hero-p2_metric3_label" />
+                      </div>
+                      <div></div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        <!-- ── NOSOTROS ────────────────────────────────────────────── -->
-        <div class="panel" id="panel-nosotros">
-          <div class="page-header"><div class="page-title">Nosotros</div><div class="page-desc">Información corporativa.</div></div>
-          <div class="section-card">
-            <div class="section-card-header"><span class="section-card-title">Texto corporativo</span></div>
-            <div class="section-card-body">
-              <div class="form-row"><div class="form-group"><label class="form-label">Eyebrow</label><input class="form-input" id="nosotros-eyebrow"></div></div>
-              <div class="form-row"><div class="form-group"><label class="form-label">Título</label><input class="form-input" id="nosotros-titulo"></div></div>
-              <div class="form-row"><div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="nosotros-descripcion"></textarea></div></div>
-              <div class="form-row cols-3">
-                <div class="form-group"><label class="form-label">Año fundación</label><input class="form-input" id="nosotros-anio_fundacion"></div>
-                <div class="form-group"><label class="form-label">Empleados</label><input class="form-input" id="nosotros-empleados"></div>
-                <div class="form-group"><label class="form-label">Ciudad</label><input class="form-input" id="nosotros-ciudad"></div>
+            <!-- ── NOSOTROS ────────────────────────────────────────────── -->
+            <div class="panel" id="panel-nosotros">
+              <div class="page-header">
+                <div class="page-title">Nosotros</div>
+                <div class="page-desc">Información corporativa.</div>
               </div>
-              <div class="form-row"><div class="form-group"><label class="form-label">Ruta imagen</label><input class="form-input" id="nosotros-imagen"><div class="form-hint">Ej: img/img1.png</div></div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── CLIENTES ────────────────────────────────────────────── -->
-        <div class="panel" id="panel-clientes">
-          <div class="page-header"><div class="page-title">Clientes / Logos</div><div class="page-desc">Logos del carrusel.</div></div>
-          <div class="section-card">
-            <div class="section-card-header"><span class="section-card-title">Configuración del carrusel</span></div>
-            <div class="section-card-body">
-              <div class="toggle-row">
-                <div class="toggle-info"><div class="toggle-name">Carrusel activo</div><div class="toggle-desc">Mostrar la sección en inicio</div></div>
-                <label class="toggle"><input type="checkbox" id="clientes-carrusel_activo"><span class="toggle-slider"></span></label>
-              </div>
-              <div class="toggle-row">
-                <div class="toggle-info"><div class="toggle-name">Auto-scroll animado</div></div>
-                <label class="toggle"><input type="checkbox" id="clientes-auto_scroll"><span class="toggle-slider"></span></label>
-              </div>
-              <div class="form-divider"></div>
-              <div class="form-row cols-2">
-                <div class="form-group"><label class="form-label">Título sección</label><input class="form-input" id="clientes-titulo_seccion"></div>
-              </div>
-            </div>
-          </div>
-          <div class="section-card">
-            <div class="section-card-header">
-              <span class="section-card-title">Logos actuales</span>
-              <button class="btn-add" id="abrir-modal-cliente">+ Agregar</button>
-            </div>
-            <div class="section-card-body" style="padding:0;">
-              <table class="data-table">
-                <thead><tr><th>Nombre</th><th>Imagen</th><th>URL</th><th>Estado</th><th>Acciones</th></tr></thead>
-                <tbody id="clientes-tbody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── BLOG ───────────────────────────────────────────────── -->
-        <div class="panel" id="panel-blog">
-          <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;">
-            <div><div class="page-title">Blog / Noticias</div><div class="page-desc">Artículos del blog corporativo.</div></div>
-            <button class="btn-add" id="abrir-modal-blog">+ Nuevo artículo</button>
-          </div>
-          <div class="section-card">
-            <div class="section-card-header"><span class="section-card-title">Configuración</span></div>
-            <div class="section-card-body">
-              <div class="toggle-row">
-                <div class="toggle-info"><div class="toggle-name">Blog visible</div></div>
-                <label class="toggle"><input type="checkbox" id="blog-visible"><span class="toggle-slider"></span></label>
-              </div>
-              <div class="form-divider"></div>
-              <div class="form-row cols-2">
-                <div class="form-group"><label class="form-label">Título sección</label><input class="form-input" id="blog-titulo_seccion"></div>
+              <div class="section-card">
+                <div class="section-card-header">
+                  <span class="section-card-title">Texto corporativo</span>
+                </div>
+                <div class="section-card-body">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Eyebrow</label
+                      ><input class="form-input" id="nosotros-eyebrow" />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Título</label
+                      ><input class="form-input" id="nosotros-titulo" />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Descripción</label
+                      ><textarea
+                        class="form-textarea"
+                        id="nosotros-descripcion"
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div class="form-row cols-3">
+                    <div class="form-group">
+                      <label class="form-label">Año fundación</label
+                      ><input class="form-input" id="nosotros-anio_fundacion" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Empleados</label
+                      ><input class="form-input" id="nosotros-empleados" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Ciudad</label
+                      ><input class="form-input" id="nosotros-ciudad" />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label">Ruta imagen</label
+                      ><input class="form-input" id="nosotros-imagen" />
+                      <div class="form-hint">Ej: img/img1.png</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="blog-grid" id="blog-list"></div>
-        </div>
 
-        <!-- ── PÁGINAS DE SERVICIO ─────────────────────────────────── -->
-        <div class="panel" id="panel-p-cableado">
-          <div class="page-header"><div class="page-title">Cableado Estructurado</div></div>
-          <div id="svc-editor-cableado"></div>
-        </div>
-        <div class="panel" id="panel-p-fibra">
-          <div class="page-header"><div class="page-title">Fibra Óptica</div></div>
-          <div id="svc-editor-fibra"></div>
-        </div>
-        <div class="panel" id="panel-p-seguridad">
-          <div class="page-header"><div class="page-title">Seguridad Electrónica</div></div>
-          <div id="svc-editor-seguridad"></div>
-        </div>
-        <div class="panel" id="panel-p-soporte">
-          <div class="page-header"><div class="page-title">Soporte IT</div></div>
-          <div id="svc-editor-soporte"></div>
-        </div>
-        <div class="panel" id="panel-p-desarrollo">
-          <div class="page-header"><div class="page-title">Desarrollo de Software</div></div>
-          <div id="svc-editor-desarrollo"></div>
-        </div>
-
-        <!-- ── CONTACTO ───────────────────────────────────────────── -->
-        <div class="panel" id="panel-contacto">
-          <div class="page-header"><div class="page-title">Datos de Contacto</div></div>
-          <div class="section-card">
-            <div class="section-card-header"><span class="section-card-title">Información de la empresa</span></div>
-            <div class="section-card-body">
-              <div class="form-row cols-2">
-                <div class="form-group"><label class="form-label">Dirección</label><input class="form-input" id="contacto-direccion"></div>
-                <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="contacto-telefono"></div>
+            <!-- ── CLIENTES ────────────────────────────────────────────── -->
+            <div class="panel" id="panel-clientes">
+              <div class="page-header">
+                <div class="page-title">Clientes / Logos</div>
+                <div class="page-desc">Logos del carrusel.</div>
               </div>
-              <div class="form-row cols-2">
-                <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="contacto-email"></div>
-                <div class="form-group"><label class="form-label">WhatsApp (número sin +)</label><input class="form-input" id="contacto-whatsapp"></div>
+              <div class="section-card">
+                <div class="section-card-header">
+                  <span class="section-card-title"
+                    >Configuración del carrusel</span
+                  >
+                </div>
+                <div class="section-card-body">
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-name">Carrusel activo</div>
+                      <div class="toggle-desc">
+                        Mostrar la sección en inicio
+                      </div>
+                    </div>
+                    <label class="toggle"
+                      ><input
+                        type="checkbox"
+                        id="clientes-carrusel_activo" /><span
+                        class="toggle-slider"
+                      ></span
+                    ></label>
+                  </div>
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-name">Auto-scroll animado</div>
+                    </div>
+                    <label class="toggle"
+                      ><input type="checkbox" id="clientes-auto_scroll" /><span
+                        class="toggle-slider"
+                      ></span
+                    ></label>
+                  </div>
+                  <div class="form-divider"></div>
+                  <div class="form-row cols-2">
+                    <div class="form-group">
+                      <label class="form-label">Título sección</label
+                      ><input class="form-input" id="clientes-titulo_seccion" />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="form-row cols-2">
-                <div class="form-group"><label class="form-label">Facebook URL</label><input class="form-input" id="contacto-facebook"></div>
-                <div class="form-group"><label class="form-label">Instagram URL</label><input class="form-input" id="contacto-instagram"></div>
+              <div class="section-card">
+                <div class="section-card-header">
+                  <span class="section-card-title">Logos actuales</span>
+                  <button class="btn-add" id="abrir-modal-cliente">
+                    + Agregar
+                  </button>
+                </div>
+                <div class="section-card-body" style="padding: 0">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Nombre</th>
+                        <th>Imagen</th>
+                        <th>URL</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody id="clientes-tbody"></tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="section-card">
-            <div class="section-card-header"><span class="section-card-title">Formulario de contacto</span></div>
-            <div class="section-card-body">
-              <div class="toggle-row">
-                <div class="toggle-info"><div class="toggle-name">Formulario activo</div></div>
-                <label class="toggle"><input type="checkbox" id="contacto-formulario_activo"><span class="toggle-slider"></span></label>
+
+            <!-- ── BLOG ───────────────────────────────────────────────── -->
+            <div class="panel" id="panel-blog">
+              <div
+                class="page-header"
+                style="
+                  display: flex;
+                  align-items: flex-start;
+                  justify-content: space-between;
+                "
+              >
+                <div>
+                  <div class="page-title">Blog / Noticias</div>
+                  <div class="page-desc">Artículos del blog corporativo.</div>
+                </div>
+                <button class="btn-add" id="abrir-modal-blog">
+                  + Nuevo artículo
+                </button>
               </div>
-              <div class="form-divider"></div>
-              <div class="form-row cols-2">
-                <div class="form-group"><label class="form-label">Email destino</label><input class="form-input" id="contacto-email_destino"></div>
-                <div class="form-group"><label class="form-label">Asunto por defecto</label><input class="form-input" id="contacto-asunto_defecto"></div>
+              <div class="section-card">
+                <div class="section-card-header">
+                  <span class="section-card-title">Configuración</span>
+                </div>
+                <div class="section-card-body">
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-name">Blog visible</div>
+                    </div>
+                    <label class="toggle"
+                      ><input type="checkbox" id="blog-visible" /><span
+                        class="toggle-slider"
+                      ></span
+                    ></label>
+                  </div>
+                  <div class="form-divider"></div>
+                  <div class="form-row cols-2">
+                    <div class="form-group">
+                      <label class="form-label">Título sección</label
+                      ><input class="form-input" id="blog-titulo_seccion" />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="form-row"><div class="form-group"><label class="form-label">Descripción del formulario</label><textarea class="form-textarea" id="contacto-formulario_descripcion"></textarea></div></div>
+              <div class="blog-grid" id="blog-list"></div>
+            </div>
+
+            <!-- ── PÁGINAS DE SERVICIO ─────────────────────────────────── -->
+            <div class="panel" id="panel-p-cableado">
+              <div class="page-header">
+                <div class="page-title">Cableado Estructurado</div>
+              </div>
+              <div id="svc-editor-cableado"></div>
+            </div>
+            <div class="panel" id="panel-p-fibra">
+              <div class="page-header">
+                <div class="page-title">Fibra Óptica</div>
+              </div>
+              <div id="svc-editor-fibra"></div>
+            </div>
+            <div class="panel" id="panel-p-seguridad">
+              <div class="page-header">
+                <div class="page-title">Seguridad Electrónica</div>
+              </div>
+              <div id="svc-editor-seguridad"></div>
+            </div>
+            <div class="panel" id="panel-p-soporte">
+              <div class="page-header">
+                <div class="page-title">Soporte IT</div>
+              </div>
+              <div id="svc-editor-soporte"></div>
+            </div>
+            <div class="panel" id="panel-p-desarrollo">
+              <div class="page-header">
+                <div class="page-title">Desarrollo de Software</div>
+              </div>
+              <div id="svc-editor-desarrollo"></div>
+            </div>
+
+            <!-- ── CONTACTO ───────────────────────────────────────────── -->
+            <div class="panel" id="panel-contacto">
+              <div class="page-header">
+                <div class="page-title">Datos de Contacto</div>
+              </div>
+              <div class="section-card">
+                <div class="section-card-header">
+                  <span class="section-card-title"
+                    >Información de la empresa</span
+                  >
+                </div>
+                <div class="section-card-body">
+                  <div class="form-row cols-2">
+                    <div class="form-group">
+                      <label class="form-label">Dirección</label
+                      ><input class="form-input" id="contacto-direccion" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Teléfono</label
+                      ><input class="form-input" id="contacto-telefono" />
+                    </div>
+                  </div>
+                  <div class="form-row cols-2">
+                    <div class="form-group">
+                      <label class="form-label">Email</label
+                      ><input class="form-input" id="contacto-email" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">WhatsApp (número sin +)</label
+                      ><input class="form-input" id="contacto-whatsapp" />
+                    </div>
+                  </div>
+                  <div class="form-row cols-2">
+                    <div class="form-group">
+                      <label class="form-label">Facebook URL</label
+                      ><input class="form-input" id="contacto-facebook" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Instagram URL</label
+                      ><input class="form-input" id="contacto-instagram" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="section-card">
+                <div class="section-card-header">
+                  <span class="section-card-title">Formulario de contacto</span>
+                </div>
+                <div class="section-card-body">
+                  <div class="toggle-row">
+                    <div class="toggle-info">
+                      <div class="toggle-name">Formulario activo</div>
+                    </div>
+                    <label class="toggle"
+                      ><input
+                        type="checkbox"
+                        id="contacto-formulario_activo" /><span
+                        class="toggle-slider"
+                      ></span
+                    ></label>
+                  </div>
+                  <div class="form-divider"></div>
+                  <div class="form-row cols-2">
+                    <div class="form-group">
+                      <label class="form-label">Email destino</label
+                      ><input class="form-input" id="contacto-email_destino" />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Asunto por defecto</label
+                      ><input class="form-input" id="contacto-asunto_defecto" />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label"
+                        >Descripción del formulario</label
+                      ><textarea
+                        class="form-textarea"
+                        id="contacto-formulario_descripcion"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── SEO ────────────────────────────────────────────────── -->
+            <div class="panel" id="panel-seo">
+              <div class="page-header">
+                <div class="page-title">SEO &amp; Metadatos</div>
+              </div>
+              <div class="tab-row" id="seo-tabs">
+                <div class="tab-item active" id="boton-seo-home">Inicio</div>
+                <div class="tab-item" id="boton-seo-cableado">Cableado</div>
+                <div class="tab-item" id="boton-seo-fibra">Fibra Óptica</div>
+                <div class="tab-item" id="boton-seo-seguridad">Seguridad</div>
+                <div class="tab-item" id="boton-seo-soporte">Soporte IT</div>
+                <div class="tab-item" id="boton-seo-desarrollo">Desarrollo</div>
+              </div>
+              <div id="seo-tabs-content"></div>
             </div>
           </div>
-        </div>
+          <!-- /content-area -->
+        </main>
+      </div>
+    </div>
 
-        <!-- ── SEO ────────────────────────────────────────────────── -->
-        <div class="panel" id="panel-seo">
-          <div class="page-header"><div class="page-title">SEO &amp; Metadatos</div></div>
-          <div class="tab-row" id="seo-tabs">
-            <div class="tab-item active" id="boton-seo-home">Inicio</div>
-            <div class="tab-item" id="boton-seo-cableado">Cableado</div>
-            <div class="tab-item" id="boton-seo-fibra">Fibra Óptica</div>
-            <div class="tab-item" id="boton-seo-seguridad">Seguridad</div>
-            <div class="tab-item" id="boton-seo-soporte">Soporte IT</div>
-            <div class="tab-item" id="boton-seo-desarrollo">Desarrollo</div>
-          </div>
-          <div id="seo-tabs-content"></div>
-        </div>
-
-      </div><!-- /content-area -->
-    </main>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════
+    <!-- ══════════════════════════════════════════════════════════════
      MODALES
 ══════════════════════════════════════════════════════════════ -->
-<!-- Modal: Cliente -->
-<div class="modal-overlay" id="modal-cliente">
-  <div class="modal">
-    <div class="modal-header">
-      <span class="modal-title" id="modal-cliente-title">Agregar Cliente</span>
-      <button class="modal-close" id="cerrar-modal-cliente">×</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="c-id">
-      <div class="form-row"><div class="form-group"><label class="form-label">Nombre del cliente</label><input class="form-input" id="c-name" placeholder="Ej.: San Cristóbal Seguros"></div></div>
-      <div class="form-row"><div class="form-group"><label class="form-label">Ruta de la imagen</label><input class="form-input" id="c-img" placeholder="/img/logo-cliente.png"></div></div>
-      <div class="form-row"><div class="form-group"><label class="form-label">URL destino (opcional)</label><input class="form-input" id="c-url" placeholder="https://..."></div></div>
-      <div class="form-divider"></div>
-      <div class="toggle-row">
-        <div class="toggle-info"><div class="toggle-name">Visible en carrusel</div></div>
-        <label class="toggle"><input type="checkbox" id="c-active" checked><span class="toggle-slider"></span></label>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" id="cerrar-modal-cliente-footer">Cancelar</button>
-      <button class="btn-save" id="guardar-cliente-btn">Guardar cliente</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal: Blog -->
-<div class="modal-overlay" id="modal-blog">
-  <div class="modal" style="max-width:740px;">
-    <div class="modal-header">
-      <span class="modal-title" id="modal-blog-title">Nuevo artículo</span>
-      <button class="modal-close" id="cerrar-modal-blog">×</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="b-id">
-      <div class="form-row cols-2">
-        <div class="form-group"><label class="form-label">Título</label><input class="form-input" id="b-title" placeholder="Título del artículo"></div>
-        <div class="form-group"><label class="form-label">Categoría</label>
-          <select class="form-select" id="b-categoria">
-            <option>Infraestructura</option><option>Fibra Óptica</option><option>Seguridad</option>
-            <option>Soporte IT</option><option>Software</option><option>Empresa</option>
-          </select>
+    <!-- Modal: Cliente -->
+    <div class="modal-overlay" id="modal-cliente">
+      <div class="modal">
+        <div class="modal-header">
+          <span class="modal-title" id="modal-cliente-title"
+            >Agregar Cliente</span
+          >
+          <button class="modal-close" id="cerrar-modal-cliente">×</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="c-id" />
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nombre del cliente</label
+              ><input
+                class="form-input"
+                id="c-name"
+                placeholder="Ej.: San Cristóbal Seguros"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Ruta de la imagen</label
+              ><input
+                class="form-input"
+                id="c-img"
+                placeholder="/img/logo-cliente.png"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">URL destino (opcional)</label
+              ><input class="form-input" id="c-url" placeholder="https://..." />
+            </div>
+          </div>
+          <div class="form-divider"></div>
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <div class="toggle-name">Visible en carrusel</div>
+            </div>
+            <label class="toggle"
+              ><input type="checkbox" id="c-active" checked /><span
+                class="toggle-slider"
+              ></span
+            ></label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" id="cerrar-modal-cliente-footer">
+            Cancelar
+          </button>
+          <button class="btn-save" id="guardar-cliente-btn">
+            Guardar cliente
+          </button>
         </div>
       </div>
-      <div class="form-row cols-2">
-        <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" type="date" id="b-fecha"></div>
-        <div class="form-group"><label class="form-label">Estado</label>
-          <select class="form-select" id="b-estado"><option value="borrador">Borrador</option><option value="publicado">Publicado</option></select>
+    </div>
+
+    <!-- Modal: Blog -->
+    <div class="modal-overlay" id="modal-blog">
+      <div class="modal" style="max-width: 740px">
+        <div class="modal-header">
+          <span class="modal-title" id="modal-blog-title">Nuevo artículo</span>
+          <button class="modal-close" id="cerrar-modal-blog">×</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="b-id" />
+          <div class="form-row cols-2">
+            <div class="form-group">
+              <label class="form-label">Título</label
+              ><input
+                class="form-input"
+                id="b-title"
+                placeholder="Título del artículo"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Categoría</label>
+              <select class="form-select" id="b-categoria">
+                <option>Infraestructura</option>
+                <option>Fibra Óptica</option>
+                <option>Seguridad</option>
+                <option>Soporte IT</option>
+                <option>Software</option>
+                <option>Empresa</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row cols-2">
+            <div class="form-group">
+              <label class="form-label">Fecha</label
+              ><input class="form-input" type="date" id="b-fecha" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Estado</label>
+              <select class="form-select" id="b-estado">
+                <option value="borrador">Borrador</option>
+                <option value="publicado">Publicado</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Extracto</label
+              ><textarea
+                class="form-textarea"
+                id="b-extracto"
+                placeholder="Resumen breve..."
+              ></textarea>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 1rem">
+            <label class="form-label">Contenido</label>
+            <div class="rich-editor-toolbar">
+              <button class="rich-btn" id="bold"><b>N</b></button>
+              <button class="rich-btn" id="italic"><i>K</i></button>
+              <button class="rich-btn" id="underline"><u>S</u></button>
+              <button class="rich-btn" id="insertUnorderedList">≡</button>
+              <button class="rich-btn" id="formatBlockh2">H2</button>
+              <button class="rich-btn" id="formatBlockp">¶</button>
+            </div>
+            <div
+              class="rich-editor-content"
+              contenteditable="true"
+              id="b-content"
+            ></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Imagen destacada (ruta)</label
+              ><input
+                class="form-input"
+                id="b-img"
+                placeholder="/img/blog/articulo.jpg"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" id="cerrar-modal-blog-footer">
+            Cancelar
+          </button>
+          <button class="btn-save" id="guardar-blog">Guardar artículo</button>
         </div>
       </div>
-      <div class="form-row"><div class="form-group"><label class="form-label">Extracto</label><textarea class="form-textarea" id="b-extracto" placeholder="Resumen breve..."></textarea></div></div>
-      <div class="form-group" style="margin-bottom:1rem;">
-        <label class="form-label">Contenido</label>
-        <div class="rich-editor-toolbar">
-          <button class="rich-btn" id="bold"><b>N</b></button>
-          <button class="rich-btn" id="italic"><i>K</i></button>
-          <button class="rich-btn" id="underline"><u>S</u></button>
-          <button class="rich-btn" id="insertUnorderedList">≡</button>
-          <button class="rich-btn" id="formatBlockh2">H2</button>
-          <button class="rich-btn" id="formatBlockp">¶</button>
-        </div>
-        <div class="rich-editor-content" contenteditable="true" id="b-content"></div>
-      </div>
-      <div class="form-row"><div class="form-group"><label class="form-label">Imagen destacada (ruta)</label><input class="form-input" id="b-img" placeholder="/img/blog/articulo.jpg"></div></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn-secondary" id="cerrar-modal-blog-footer">Cancelar</button>
-      <button class="btn-save" id="guardar-blog">Guardar artículo</button>
-    </div>
-  </div>
-</div>
 
-<!-- Notificación toast -->
-<div class="save-notif success" id="save-notif"></div>
+    <!-- Notificación toast -->
+    <div class="save-notif success" id="save-notif"></div>
 
-<!-- Entry point: módulo principal -->
-<script type="module" src="../services/app.js"></script>
+    <!-- Entry point: módulo principal -->
+    <script type="module" src="../services/app.js"></script>
 
-<!-- Script extra: visibilidad de plantilla en tiempo real -->
-<script>
-  document.addEventListener('change', function(e) {
-    if (e.target && e.target.id === 'hero-plantilla') {
-      const val = e.target.value;
-      document.getElementById('hero-plantilla-1-fields').style.display = val === '2' ? 'none' : 'block';
-      document.getElementById('hero-plantilla-2-fields').style.display = val === '2' ? 'block' : 'none';
-    }
-  });
-  // Cerrar modal footer (duplicados con id distinto)
-  document.getElementById('cerrar-modal-cliente-footer')?.addEventListener('click', () =>
-    document.getElementById('modal-cliente').classList.remove('open'));
-  document.getElementById('cerrar-modal-blog-footer')?.addEventListener('click', () =>
-    document.getElementById('modal-blog').classList.remove('open'));
-</script>
-
-</body>
+    <!-- Script extra: visibilidad de plantilla en tiempo real -->
+    <script>
+      document.addEventListener("change", function (e) {
+        if (e.target && e.target.id === "hero-plantilla") {
+          const val = e.target.value;
+          document.getElementById("hero-plantilla-1-fields").style.display =
+            val === "2" ? "none" : "block";
+          document.getElementById("hero-plantilla-2-fields").style.display =
+            val === "2" ? "block" : "none";
+        }
+      });
+      // Cerrar modal footer (duplicados con id distinto)
+      document
+        .getElementById("cerrar-modal-cliente-footer")
+        ?.addEventListener("click", () =>
+          document.getElementById("modal-cliente").classList.remove("open"),
+        );
+      document
+        .getElementById("cerrar-modal-blog-footer")
+        ?.addEventListener("click", () =>
+          document.getElementById("modal-blog").classList.remove("open"),
+        );
+    </script>
+  </body>
 </html>

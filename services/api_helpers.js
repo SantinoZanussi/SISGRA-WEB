@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:3000/api";
+const API_BASE = "http://192.168.1.61:3000/api";
 
 export async function apiGet(path) {
   const r = await fetch(`${API_BASE}${path}`);

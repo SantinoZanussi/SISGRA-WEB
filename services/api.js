@@ -1,6 +1,6 @@
 import { authToken } from './store.js';
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'http://192.168.1.61:3000/api';
 
 function authHeaders() {
   return {

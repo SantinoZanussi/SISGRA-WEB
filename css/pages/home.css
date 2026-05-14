@@ -258,6 +258,30 @@
     opacity: 0.4;
 }
 
+.blog-section {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+    background-color: var(--white);
+}
+
+.blog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+    border-bottom: 1px solid var(--slate-200);
+    padding-bottom: 2.5rem;
+}
+
+.blog-title {
+    font-size: 2.25rem;
+    font-weight: 900;
+    color: var(--sisgra-blue);
+    text-transform: uppercase;
+    letter-spacing: -0.05em;
+    font-style: italic;
+}
+
 .services-section {
     padding-top: 6rem;
     padding-bottom: 6rem;
