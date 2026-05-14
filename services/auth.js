@@ -1,7 +1,5 @@
-import { setAuthToken, clearAuthToken } from './store.js';
+import { setAuthToken, clearAuthToken, API_BASE } from './store.js';
 import { showNotif } from './ui.js';
-
-const API_BASE = 'http://192.168.1.61:3000/api';
 
 export async function doLogin() {
   const usuario  = document.getElementById('l-user').value.trim();

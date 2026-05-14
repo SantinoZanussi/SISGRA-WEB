@@ -283,8 +283,8 @@
 }
 
 .services-section {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
+    padding-top: 12rem;
+    padding-bottom: 17rem;
     background-color: var(--white);
 }
 
@@ -352,9 +352,9 @@
 }
 
 .about-section {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
-    background-color: var(--slate-50);
+    padding-top: 12rem;
+    padding-bottom: 21rem;
+    background-color: white;
 }
 
 .about-inner {
