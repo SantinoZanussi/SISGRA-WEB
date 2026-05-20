@@ -448,10 +448,6 @@
       </div>
 
       <div class="sidebar-section-label">Contenido</div>
-      <div class="sidebar-item" data-panel="nosotros">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4" stroke-width="2"/></svg>
-        Nosotros
-      </div>
       <div class="sidebar-item" data-panel="clientes">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1"/></svg>
         Clientes / Logos
@@ -501,7 +497,7 @@
           </span>
         </div>
         <div class="topbar-actions">
-          <button class="btn-secondary" onclick="window.open('../index.html','_blank')">Vista previa</button>
+          <button class="btn-secondary" onclick="window.open('index.html','_blank')">Vista previa</button>
           <button class="btn-save" id="btn-guardar">Guardar cambios</button>
         </div>
       </div>
@@ -542,24 +538,6 @@
               <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-nuevo-post">+ Nuevo post de blog</button>
               <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-nuevo-cliente">+ Agregar cliente</button>
               <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-editar-home">Gestionar Plantillas</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- NOSOTROS -->
-        <div class="panel" id="panel-nosotros">
-          <div class="page-header"><div class="page-title">Nosotros</div><div class="page-desc">Información corporativa.</div></div>
-          <div class="section-card">
-            <div class="section-card-header"><span class="section-card-title">Texto corporativo</span></div>
-            <div class="section-card-body">
-              <div class="form-row"><div class="form-group"><label class="form-label">Eyebrow</label><input class="form-input" id="nosotros-eyebrow"/></div></div>
-              <div class="form-row"><div class="form-group"><label class="form-label">Título</label><input class="form-input" id="nosotros-titulo"/></div></div>
-              <div class="form-row"><div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="nosotros-descripcion"></textarea></div></div>
-              <div class="form-row cols-3">
-                <div class="form-group"><label class="form-label">Año fundación</label><input class="form-input" id="nosotros-anio"/></div>
-                <div class="form-group"><label class="form-label">Empleados</label><input class="form-input" id="nosotros-empleados"/></div>
-                <div class="form-group"><label class="form-label">Ciudad</label><input class="form-input" id="nosotros-ciudad"/></div>
-              </div>
             </div>
           </div>
         </div>
@@ -794,6 +772,13 @@ const SECTION_TYPES = [
   },
 ];
 
+
+const apiGet = (...args) => window.__svc?.apiGet(...args);
+const apiPut = (...args) => window.__svc?.apiPut(...args);
+const apiPost = (...args) => window.__svc?.apiPost(...args);
+const apiPatch = (...args) => window.__svc?.apiPatch(...args);
+const apiDelete = (...args) => window.__svc?.apiDelete(...args);
+
 /* ══════════════════════════════════════════════
    HELPERS
 ══════════════════════════════════════════════ */
@@ -826,7 +811,7 @@ function showPanel(id){
   if(sideEl) sideEl.classList.add('active');
 
   const NAMES = {
-    dashboard:'Dashboard', nosotros:'Nosotros', clientes:'Clientes / Logos',
+    dashboard:'Dashboard', clientes:'Clientes / Logos',
     blog:'Blog / Noticias', contacto:'Datos de Contacto', seo:'SEO & Meta',
     plantillas:'Plantillas', 'tpl-editor':'Editor de Plantilla',
   };
@@ -1599,6 +1584,72 @@ function handleCreateTemplate(){
   openTemplateEditor(newTpl.id);
 }
 
+
+async function saveCurrentPanel(){
+  const active = document.querySelector('.panel.active')?.id?.replace('panel-','');
+  if(active==='blog'){
+    const d = { ...(state.blog||{}) };
+    d.titulo_seccion = document.getElementById('blog-titulo-seccion')?.value || d.titulo_seccion || '';
+    d.visible = document.getElementById('blog-visible')?.checked ?? !!d.visible;
+    const r = await apiPut('/data/blog', d);
+    state.blog = r.data;
+    return showNotif('✓ Blog guardado');
+  }
+  if(active==='clientes'){
+    const d = { ...(state.clientes||{}) };
+    d.titulo_seccion = document.getElementById('clientes-titulo-seccion')?.value || d.titulo_seccion || '';
+    const r = await apiPut('/data/clientes', d);
+    state.clientes = r.data;
+    return showNotif('✓ Clientes guardado');
+  }
+  showNotif('✓ Sin cambios para guardar en este panel');
+}
+
+function renderBlogList(){
+  const list = document.getElementById('blog-list');
+  const posts = state.blog?.posts || [];
+  list.innerHTML = posts.map(p=>`<div class="blog-item"><div class="blog-info"><div class="blog-title-text">${p.titulo||''}</div><div class="blog-meta">${p.fecha||''} · ${p.categoria||''}</div><div class="blog-excerpt">${p.extracto||''}</div></div><div class="blog-actions"><button class="btn-edit-small" onclick="editPost('${p.id}')">Editar</button><button class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="deletePost('${p.id}')">Eliminar</button></div></div>`).join('');
+}
+
+function openNewPost(){
+  state.editingPostId = null;
+  const mt = document.getElementById('modal-blog')?.querySelector('.modal-title'); if(mt) mt.textContent = 'Nuevo artículo';
+  const t = document.getElementById('b-title'); if(t) t.value='';
+  const f = document.getElementById('b-fecha'); if(f) f.value = new Date().toISOString().split('T')[0];
+  const ex = document.getElementById('b-extracto'); if(ex) ex.value='';
+  const img = document.getElementById('b-img'); if(img) img.value='';
+  const c = document.getElementById('b-content'); if(c) c.innerHTML='';
+  const e = document.getElementById('b-estado'); if(e) e.value='borrador';
+  openModal('modal-blog');
+}
+window.editPost = function(id){
+  const p = (state.blog?.posts||[]).find(x=>x.id===id); if(!p) return;
+  state.editingPostId = id;
+  const mt = document.getElementById('modal-blog')?.querySelector('.modal-title'); if(mt) mt.textContent = 'Editar artículo';
+  const t = document.getElementById('b-title'); if(t) t.value=p.titulo||'';
+  const f = document.getElementById('b-fecha'); if(f) f.value=p.fecha||'';
+  const ex = document.getElementById('b-extracto'); if(ex) ex.value=p.extracto||'';
+  const img = document.getElementById('b-img'); if(img) img.value=p.imagen||'';
+  const c = document.getElementById('b-content'); if(c) c.innerHTML=p.contenido||'';
+  const cat = document.getElementById('b-categoria'); if(cat) cat.value=p.categoria||'Infraestructura';
+  const e = document.getElementById('b-estado'); if(e) e.value=p.estado||'borrador';
+  openModal('modal-blog');
+}
+window.deletePost = async function(id){
+  if(!confirm('¿Eliminar este artículo?')) return;
+  await apiDelete('/data/blog/posts/'+id);
+  state.blog.posts = (state.blog.posts||[]).filter(x=>x.id!==id);
+  renderBlogList();
+  showNotif('✓ Artículo eliminado');
+}
+async function saveBlogPost(){
+  const item={titulo:document.getElementById('b-title').value.trim(),categoria:document.getElementById('b-categoria').value,estado:document.getElementById('b-estado').value,fecha:document.getElementById('b-fecha').value,extracto:document.getElementById('b-extracto').value.trim(),contenido:document.getElementById('b-content').innerHTML,imagen:document.getElementById('b-img').value.trim()};
+  if(!item.titulo) return showNotif('El título es requerido','error');
+  if(state.editingPostId){ await apiPatch('/data/blog/posts/'+state.editingPostId,item); const i=state.blog.posts.findIndex(x=>x.id===state.editingPostId); if(i>-1) state.blog.posts[i]={...state.blog.posts[i],...item}; }
+  else { const r=await apiPost('/data/blog/posts',item); state.blog.posts = state.blog.posts||[]; state.blog.posts.unshift(r.item); }
+  closeModal('modal-blog'); renderBlogList(); showNotif('✓ Artículo guardado');
+}
+
 /* ══════════════════════════════════════════════
    AUTH
 ══════════════════════════════════════════════ */
@@ -1606,14 +1657,21 @@ function doLogin(){
   const u = document.getElementById('l-user').value.trim();
   const p = document.getElementById('l-pass').value.trim();
   const err = document.getElementById('login-error');
-  if(u==='admin' && p==='admin'){
+  fetch(`http://${window.location.hostname}:3000/api/auth/login`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({usuario:u,password:p})
+  }).then(async r=>{
+    const data = await r.json().catch(()=>({}));
+    if(!r.ok || !data.token) throw new Error(data.error||'Usuario o contraseña incorrectos.');
+    window.__svc?.setAuthToken(data.token);
     err.style.display='none';
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='block';
     initApp();
-  } else {
+  }).catch(()=>{
     err.style.display='block';
-  }
+  });
 }
 
 /* ══════════════════════════════════════════════
@@ -1654,6 +1712,7 @@ function initApp(){
 
   renderSidebarTemplates();
   renderTemplateOverview();
+  Promise.all([apiGet('/data/blog').catch(()=>null), apiGet('/data/clientes').catch(()=>null)]).then(([blog,clientes])=>{ if(blog) state.blog=blog; if(clientes) state.clientes=clientes; renderBlogList(); });
 
   document.querySelectorAll('.sidebar-item[data-panel]').forEach(item=>{
     item.addEventListener('click',()=>{
@@ -1667,7 +1726,6 @@ function initApp(){
   document.getElementById('btn-nueva-plantilla-main')?.addEventListener('click', ()=>openModal('modal-nueva-plantilla'));
   document.getElementById('crear-plantilla-btn')?.addEventListener('click', handleCreateTemplate);
 
-  document.getElementById('dash-nuevo-post')?.addEventListener('click',()=>{ showPanel('blog'); openModal('modal-blog'); });
   document.getElementById('dash-nuevo-cliente')?.addEventListener('click',()=>{ showPanel('clientes'); openModal('modal-cliente'); });
   document.getElementById('dash-editar-home')?.addEventListener('click',()=>{ showPanel('plantillas'); renderTemplateOverview(); });
 
@@ -1701,14 +1759,23 @@ function initApp(){
     document.getElementById('login-screen').style.display='flex';
   });
 
-  document.getElementById('btn-guardar')?.addEventListener('click',()=>showNotif('✓ Cambios guardados'));
+  document.getElementById('btn-guardar')?.addEventListener('click',saveCurrentPanel);
 
   document.getElementById('abrir-modal-cliente')?.addEventListener('click',()=>openModal('modal-cliente'));
-  document.getElementById('abrir-modal-blog')?.addEventListener('click',()=>openModal('modal-blog'));
+  document.getElementById('abrir-modal-blog')?.addEventListener('click',openNewPost);
+  document.getElementById('dash-nuevo-post')?.addEventListener('click',()=>{ showPanel('blog'); openNewPost(); });
+  document.getElementById('guardar-blog')?.addEventListener('click',saveBlogPost);
 }
 
 document.getElementById('login-btn').addEventListener('click', doLogin);
 document.getElementById('l-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+</script>
+<script type="module">
+  import { apiGet, apiPut, apiPost, apiPatch, apiDelete } from './services/api.js';
+  import { showNotif, openModal, closeModal } from './services/ui.js';
+  import { setAuthToken } from './services/store.js';
+
+  window.__svc = { apiGet, apiPut, apiPost, apiPatch, apiDelete, showNotif, openModal, closeModal, setAuthToken };
 </script>
 </body>
 </html>
