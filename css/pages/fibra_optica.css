@@ -110,6 +110,7 @@
 .fibra-text {
     width: 100%;
     order: 1;
+    margin-top: 40px;
 }
 
 @media (min-width: 1024px) {

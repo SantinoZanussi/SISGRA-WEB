@@ -1,13 +1,37 @@
 .section-cableado {
-    padding: 8rem 8rem 8rem 8rem;
+    padding: 4rem 1.25rem;
     background-color: var(--slate-50);
     overflow: hidden;
     border-top: 1px solid var(--slate-200);
     border-bottom: 1px solid var(--slate-200);
 }
 
+@media (min-width: 768px) {
+    .section-cableado {
+        padding: 6rem 3rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .section-cableado {
+        padding: 8rem;
+    }
+}
+
 .section-header {
-    margin-bottom: 6rem;
+    margin-bottom: 3rem;
+}
+
+@media (min-width: 768px) {
+    .section-header {
+        margin-bottom: 4.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .section-header {
+        margin-bottom: 6rem;
+    }
 }
 
 .badge-infra {
@@ -17,28 +41,40 @@
     font-size: .625rem;
     font-weight: 900;
     padding: .375rem 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.25rem;
     letter-spacing: .4em;
     text-transform: uppercase;
     background: #fff;
     font-style: italic;
+}
 
+@media (min-width: 768px) {
+    .badge-infra {
+        margin-bottom: 2rem;
+    }
 }
 
 .section-title {
-    font-size: 3rem;
+    font-size: 2.25rem;
     font-weight: 900;
     color: var(--sisgra-blue);
     line-height: .95;
     letter-spacing: -.05em;
     text-transform: uppercase;
     font-style: italic;
-    margin-bottom: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (min-width: 480px) {
+    .section-title {
+        font-size: 3rem;
+    }
 }
 
 @media (min-width: 768px) {
     .section-title {
         font-size: 4.5rem;
+        margin-bottom: 2.5rem;
     }
 }
 
@@ -49,50 +85,88 @@
 
 .title-bar {
     height: .25rem;
-    width: 8rem;
+    width: 5rem;
     background-color: var(--blue-600);
+}
+
+@media (min-width: 768px) {
+    .title-bar {
+        width: 8rem;
+    }
 }
 
 /* Grid */
 .cableado-grid {
     display: grid;
-    gap: 5rem;
+    gap: 3rem;
+}
+
+@media (min-width: 768px) {
+    .cableado-grid {
+        gap: 4rem;
+    }
 }
 
 @media (min-width: 1024px) {
     .cableado-grid {
         grid-template-columns: 1fr 1fr;
         align-items: start;
+        gap: 5rem;
     }
 }
 
 .col-left {
     display: flex;
     flex-direction: column;
-    gap: 2.5rem;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .col-left {
+        gap: 2.5rem;
+    }
 }
 
 .col-left p {
-    font-size: 1.25rem;
+    font-size: 1.0625rem;
     color: var(--slate-600);
     line-height: 1.625;
     font-weight: 500;
 }
 
+@media (min-width: 768px) {
+    .col-left p {
+        font-size: 1.25rem;
+    }
+}
+
 .cards-stack {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.25rem;
+}
+
+@media (min-width: 768px) {
+    .cards-stack {
+        gap: 2rem;
+    }
 }
 
 .spec-card {
     display: flex;
-    gap: 1.5rem;
-    padding: 2rem;
+    gap: 1rem;
+    padding: 1.25rem;
     border: 1px solid #fff;
     background: #fff;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
     transition: border-color .2s, transform .3s;
+}
+
+@media (min-width: 768px) {
+    .spec-card {
+        gap: 1.5rem;
+        padding: 2rem;
+    }
 }
 
 .spec-card:hover {
@@ -101,8 +175,8 @@
 
 .spec-badge {
     flex-shrink: 0;
-    width: 3rem;
-    height: 3rem;
+    width: 2.5rem;
+    height: 2.5rem;
     background-color: var(--sisgra-blue);
     color: #fff;
     display: flex;
@@ -111,7 +185,15 @@
     border-radius: .125rem;
     text-transform: uppercase;
     font-weight: 900;
-    font-size: .75rem;
+    font-size: .6875rem;
+}
+
+@media (min-width: 768px) {
+    .spec-badge {
+        width: 3rem;
+        height: 3rem;
+        font-size: .75rem;
+    }
 }
 
 .spec-card h4 {
@@ -119,14 +201,28 @@
     color: var(--slate-900);
     text-transform: uppercase;
     letter-spacing: -.025em;
-    margin-bottom: .5rem;
+    margin-bottom: .375rem;
     font-style: italic;
+    font-size: .875rem;
+}
+
+@media (min-width: 768px) {
+    .spec-card h4 {
+        font-size: 1rem;
+        margin-bottom: .5rem;
+    }
 }
 
 .spec-card p {
-    font-size: .875rem;
+    font-size: .8125rem;
     color: var(--slate-500);
     line-height: 1.625;
+}
+
+@media (min-width: 768px) {
+    .spec-card p {
+        font-size: .875rem;
+    }
 }
 
 /* Right column – dark panel */
@@ -136,31 +232,50 @@
 
 .dark-panel {
     background-color: var(--sisgra-blue);
-    padding: 3rem;
+    padding: 2rem;
     color: #fff;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, .25);
     position: relative;
     z-index: 10;
 }
 
+@media (min-width: 768px) {
+    .dark-panel {
+        padding: 3rem;
+    }
+}
+
 .panel-header {
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
     border-bottom: 1px solid rgba(255, 255, 255, .1);
-    padding-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
     text-transform: uppercase;
     font-weight: 700;
     font-size: .625rem;
     letter-spacing: .4em;
 }
 
+@media (min-width: 768px) {
+    .panel-header {
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+    }
+}
+
 .panel-body {
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 2rem;
     font-style: italic;
+}
+
+@media (min-width: 768px) {
+    .panel-body {
+        gap: 3rem;
+    }
 }
 
 .panel-row {
@@ -173,6 +288,8 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+    flex-wrap: wrap;
+    gap: .5rem;
 }
 
 .panel-label {
@@ -184,10 +301,16 @@
 }
 
 .panel-value {
-    font-size: 2.25rem;
+    font-size: 1.75rem;
     font-weight: 900;
     letter-spacing: -.05em;
     text-transform: uppercase;
+}
+
+@media (min-width: 480px) {
+    .panel-value {
+        font-size: 2.25rem;
+    }
 }
 
 .progress-track {
@@ -206,8 +329,14 @@
 .panel-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2.5rem;
+    gap: 1.5rem;
     text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+    .panel-stats {
+        gap: 2.5rem;
+    }
 }
 
 .stat-label {
@@ -219,7 +348,14 @@
 }
 
 .stat-value {
-    font-size: 1.875rem;
+    font-size: 1.5rem;
     font-weight: 900;
     letter-spacing: -.05em;
 }
+
+@media (min-width: 480px) {
+    .stat-value {
+        font-size: 1.875rem;
+    }
+}
+

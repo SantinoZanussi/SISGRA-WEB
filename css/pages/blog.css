@@ -20,7 +20,6 @@
 .news-row {
     display: flex;
     background: #ffffff;
-    border: 1px solid #eee;
     overflow: hidden;
     transition: all 0.3s ease;
 }
@@ -56,6 +55,9 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    background-color: #1e3a8a;
+    border-radius: 30px;
+    margin-top: 70px;
 }
 
 .news-meta {
@@ -70,7 +72,7 @@
     font-size: 0.65rem;
     font-weight: 900;
     text-transform: uppercase;
-    color: var(--blue-500);
+    color: var(--blue-300);
     letter-spacing: 0.15em;
     
 }
@@ -83,7 +85,7 @@
 .news-title {
     font-size: 1.5rem;
     font-weight: 900;
-    color: var(--sisgra-blue);
+    color: #ffffff;
     text-transform: uppercase;
     font-style: italic;
     line-height: 1.2;
@@ -92,7 +94,7 @@
 
 .news-excerpt {
     font-size: 0.95rem;
-    color: #666;
+    color: #ffffff;
     line-height: 1.7;
     margin-bottom: 2rem;
 }
@@ -101,7 +103,7 @@
     font-weight: 900;
     font-size: 0.75rem;
     text-transform: uppercase;
-    color: var(--sisgra-blue);
+    color: #ffffff;
     display: flex;
     align-items: center;
     gap: 0.5rem;

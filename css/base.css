@@ -34,14 +34,15 @@ html {
 body {
     font-family: 'Inter', sans-serif;
     background-color: #ffffff;
-    color: #0f172a;
+    color: #ffffff;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
 }
 
 a {
-    text-decoration: none;
-    color: inherit;
+    text-decoration:none;
+    color: #ffffff
 }
 
 img {

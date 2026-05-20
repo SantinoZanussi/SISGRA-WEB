@@ -42,21 +42,40 @@
                                 <a href="./html/cableado_estructurado.html">Cableado Estructurado</a>
                                 <a href="./html/fibra_optica.html">Fibra Óptica</a>
                                 <a href="./html/seguridad.html">Seguridad Electrónica</a>
-                                
                             </div>
                         </div>
-                         <a href="./html/blog.html" class="nav-link">Blog</a>
+                        <a href="./html/blog.html" class="nav-link">Blog</a>
                         <a href="./html/soporte_it.html" class="nav-link">Soporte IT</a>
                         <a href="./html/desarrollo.html" class="nav-link">Desarrollo de Software</a>
-                       
                     </div>
                 </div>
                 <div class="nav-contact-wrap">
-                    <a id="nav-whatsapp" href="#" class="btn-contact">Contáctese</a>
+                    <a id="nav-whatsapp" href="https://wa.me/548101220065" class="btn-contact">Contáctese</a>
                 </div>
+
+                <!-- HAMBURGER BUTTON -->
+                <button class="nav-mobile-toggle" aria-label="Abrir menú">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
             </div>
         </div>
     </nav>
+
+    <!-- MOBILE DRAWER -->
+    <div class="nav-mobile-drawer">
+        <span class="nav-mobile-section-title">Instalaciones</span>
+        <a href="./html/cableado_estructurado.html">Cableado Estructurado</a>
+        <a href="./html/fibra_optica.html">Fibra Óptica</a>
+        <a href="./html/seguridad.html">Seguridad Electrónica</a>
+        <span class="nav-mobile-section-title">Servicios</span>
+        <a href="./html/blog.html">Blog</a>
+        <a href="./html/soporte_it.html">Soporte IT</a>
+        <a href="./html/desarrollo.html">Desarrollo de Software</a>
+        <a id="nav-whatsapp-mobile" href="https://wa.me/548101220065" class="nav-mobile-cta">Contáctese por WhatsApp</a>
+    </div>
 
     <!-- HERO — contenedor dinámico -->
     <div id="hero-container"></div>
@@ -83,13 +102,13 @@
                 <!-- POST 1 -->
                 <article class="blog-card">
                     <div class="blog-card-img">
-                        <img src="https://chatgpt.com/backend-api/estuary/content?id=file_00000000204471fb97c7fd7372bc0dde&ts=494081&p=fs&cid=1&sig=4c7d50a7b8a8a3c21e4759e7ec1d044caa9b8f6c16bccc523ac02a2c5956452d&v=0" alt="Cableado">
+                        <img src="img/chatgptfoto.png" alt="Cableado">
                     </div>
                     <div class="blog-card-content">
                         <span class="blog-tag">Infraestructura</span>
                         <h3 class="blog-card-title">Tendencias en Cableado Categoría 8 para el 2024</h3>
                         <p class="blog-card-desc">Por qué la certificación de nodos es crítica para evitar la latencia en grandes centros de datos industriales...</p>
-                        <a href="#" class="blog-card-link">Leer Artículo <span style="color: var(--blue-500);">→</span></a>
+                        <a href="html/articulo.html" class="blog-card-link">Leer Artículo <span style="color: var(--blue-500);">→</span></a>
                     </div>
                 </article>
 
@@ -136,8 +155,6 @@
         </div>
     </section>
 
-
-
     <!-- NOSOTROS -->
     <section id="nosotros" class="about-section">
         <div class="max-w-7xl">
@@ -166,7 +183,7 @@
             <p class="panel-desc" id="footer-form-desc">Cuéntenos sobre su organización. Un asesor se comunicará para recomendarle la mejor solución.</p>
           </div>
           <div class="action-buttons">
-            <a id="footer-whatsapp" href="#" class="btn btn-whatsapp">
+            <a id="footer-whatsapp" href="https://wa.me/548101220065" class="btn btn-whatsapp">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
                 <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 00.61.61l6.037-1.471A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.804 9.804 0 01-5.026-1.381l-.36-.214-3.733.909.925-3.733-.234-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/>
@@ -213,7 +230,7 @@
     </footer>
 
     <script>
-    const API = 'http://192.168.1.61:3000/api';
+    const API = 'http://10.0.11.106:3000/api';
 
     const SERVICE_ICONS = {
       instalaciones: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>`,
@@ -261,7 +278,6 @@
         </header>`;
     }
 
-
     function renderHeroP2(h) {
       const tags = [h.p2_tag1, h.p2_tag2, h.p2_tag3].filter(Boolean);
       const metrics = [
@@ -306,8 +322,7 @@
       if (titulo && data.titulo_seccion) titulo.textContent = data.titulo_seccion;
 
       const clientes = (data.clientes || []).filter(c => c.activo !== false);
-      // Duplicamos para el loop infinito
-      const cells = [...clientes, ...clientes].map(c => `
+      const cells = [...clientes, ...clientes, ...clientes].map(c => `
         <div class="logos-cell">
           ${c.imagen
             ? `<img src="${c.imagen}" alt="${c.nombre}">`
@@ -353,12 +368,14 @@
     function applyContacto(data) {
       if (!data) return;
       const wa = data.whatsapp ? `https://wa.me/${data.whatsapp}` : '#';
-      const navWa   = document.getElementById('nav-whatsapp');
-      const footWa  = document.getElementById('footer-whatsapp');
-      const footFb  = document.getElementById('footer-fb');
-      const formDesc = document.getElementById('footer-form-desc');
-      if (navWa)    navWa.href   = wa;
-      if (footWa)   footWa.href  = wa;
+      const navWa        = document.getElementById('nav-whatsapp');
+      const navWaMobile  = document.getElementById('nav-whatsapp-mobile');
+      const footWa       = document.getElementById('footer-whatsapp');
+      const footFb       = document.getElementById('footer-fb');
+      const formDesc     = document.getElementById('footer-form-desc');
+      if (navWa)       navWa.href       = wa;
+      if (navWaMobile) navWaMobile.href = wa;
+      if (footWa)      footWa.href      = wa;
       if (footFb && data.facebook) footFb.href = data.facebook;
       if (formDesc && data.formulario_descripcion) formDesc.textContent = data.formulario_descripcion;
     }
@@ -396,7 +413,27 @@
       document.getElementById('successMsg').style.display = 'flex';
     }
 
-    // ── Bootstrap ─────────────────────────────────────────────────
+    // ── Mobile nav toggle ──────────────────────────────────────────
+    const mobileToggle = document.querySelector('.nav-mobile-toggle');
+    const mobileDrawer = document.querySelector('.nav-mobile-drawer');
+
+    if (mobileToggle && mobileDrawer) {
+      mobileToggle.addEventListener('click', () => {
+        const isOpen = mobileDrawer.classList.toggle('open');
+        mobileToggle.classList.toggle('open', isOpen);
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      });
+
+      mobileDrawer.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileDrawer.classList.remove('open');
+          mobileToggle.classList.remove('open');
+          document.body.style.overflow = '';
+        });
+      });
+    }
+
+    // ── Bootstrap ──────────────────────────────────────────────────
     async function bootstrap() {
       const [hero, clientes, servicios, nosotros, seo, contacto] = await Promise.all([
         loadData('hero'),
@@ -407,7 +444,6 @@
         loadData('contacto'),
       ]);
 
-      // Hero
       const container = document.getElementById('hero-container');
       if (hero) {
         const plantilla = hero.plantilla || '1';

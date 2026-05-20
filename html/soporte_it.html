@@ -4,19 +4,289 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SiSGRA S.R.L. - Integrando el Futuro</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="icon" href="../img/sdesigra.png">
+
     <link rel="stylesheet" href="../css/base.css">
     <link rel="stylesheet" href="../css/layout.css">
     <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="../css/pages/soporte_it.css">
+
+    <style>
+
+        /* ── NAV MOBILE ───────────────────────────── */
+
+        .nav-mobile-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: transparent;
+            border: transparent;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+            padding: 0;
+        }
+
+        .nav-mobile-btn span {
+            display: block;
+            width: 1.25rem;
+            height: 2px;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .nav-mobile-btn.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .nav-mobile-btn.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .nav-mobile-btn.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        @media (min-width: 1024px) {
+            .nav-mobile-btn {
+                display: none;
+            }
+        }
+
+        .mobile-nav-menu {
+            display: none;
+            position: fixed;
+            top: 6rem;
+            left: 0;
+            right: 0;
+            background: var(--sisgra-blue);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 999;
+            padding: 1.5rem 1.5rem 2rem;
+            flex-direction: column;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .mobile-nav-menu.open {
+            display: flex;
+        }
+
+        .mobile-nav-link {
+            display: block;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.07);
+            text-decoration: none;
+        }
+
+        .mobile-nav-section {
+            font-size: 0.5625rem;
+            font-weight: 900;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--blue-400);
+            padding: 1.25rem 0 0.5rem;
+        }
+
+        .mobile-nav-sub {
+            display: block;
+            color: rgba(255,255,255,0.55);
+            font-size: 0.8125rem;
+            font-weight: 600;
+            padding: 0.65rem 0 0.65rem 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            text-decoration: none;
+        }
+
+        .mobile-nav-cta {
+            margin-top: 1.5rem;
+            display: block;
+            text-align: center;
+            background: var(--blue-600);
+            color: white;
+            padding: 0.875rem;
+            font-size: 0.6875rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+        /* ── HERO RESPONSIVE ───────────────────────── */
+
+        @media (max-width: 1023px) {
+
+            .hero-section {
+                padding: 7rem 0 5rem;
+            }
+
+            .hero-grid {
+                grid-template-columns: 1fr !important;
+                gap: 3rem;
+            }
+
+            .hero-content {
+                order: 2;
+            }
+
+            .hero-dashboard {
+                order: 1;
+            }
+
+            .dashboard-box {
+                width: 100%;
+            }
+
+            .hero-title {
+                font-size: 4rem;
+                line-height: 0.95;
+            }
+
+            .hero-description {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 639px) {
+
+            .hero-section {
+                padding: 6rem 0 4rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .hero-title {
+                font-size: 2.7rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .hero-description {
+                font-size: 0.95rem;
+            }
+
+            .badge {
+                font-size: 0.6rem;
+                letter-spacing: 0.2em;
+            }
+
+            .features-list {
+                gap: 1rem;
+            }
+
+            .feature-card {
+                padding: 1rem;
+                flex-direction: row;
+                align-items: flex-start;
+            }
+
+            .feature-icon {
+                font-size: 1.5rem;
+            }
+
+            .dashboard-box {
+                padding: 1.25rem;
+                margin-top: 40px;
+            }
+
+            .dash-main-value {
+                font-size: 3rem;
+            }
+
+            .dash-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .btn-remote {
+                width: 100%;
+                font-size: 0.75rem;
+                padding: 1rem;
+            }
+        }
+
+        /* ── FOOTER RESPONSIVE ─────────────────────── */
+
+        @media (max-width: 1023px) {
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-col:last-child {
+                grid-column: 1 / -1;
+            }
+
+            .map-wrapper,
+            .map-wrapper iframe {
+                min-height: 220px;
+            }
+        }
+
+        @media (max-width: 639px) {
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-col:last-child {
+                grid-column: 1;
+            }
+
+            .footer-col {
+                padding: 1.5rem !important;
+                border-right: none !important;
+                border-bottom: 1px solid var(--rule);
+            }
+
+            .footer-col:last-child {
+                border-bottom: none;
+            }
+
+            .wordmark-band {
+                padding: 2rem 1.5rem 1.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .wordmark-band h1 {
+                font-size: clamp(52px, 18vw, 80px);
+            }
+
+            .footer-bottom {
+                padding: 1.25rem 1.5rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .footer-bottom .copy {
+                font-size: 0.5625rem;
+            }
+        }
+
+    </style>
 </head>
+
 <body>
 
     <!-- NAVBAR -->
     <nav>
         <div class="max-w-1400">
+
             <div class="nav-inner">
+
                 <a href="/index.html" class="nav-logo">
                     <div class="nav-logo-wrap">
                         <div class="nav-logo-row">
@@ -24,186 +294,366 @@
                         </div>
                     </div>
                 </a>
+
                 <div class="nav-menu">
                     <div class="nav-menu-list">
+
                         <div class="nav-dropdown">
                             <a href="#instalaciones" class="nav-dropdown-trigger">
                                 Instalaciones
+
                                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/>
+                                    <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="3"
+                                        d="M19 9l-7 7-7-7">
+                                    </path>
                                 </svg>
                             </a>
+
                             <div class="dropdown-content">
                                 <a href="/html/cableado_estructurado.html">Cableado Estructurado</a>
                                 <a href="/html/fibra_optica.html">Fibra Óptica</a>
                                 <a href="/html/seguridad.html">Seguridad Electrónica</a>
-                                
                             </div>
                         </div>
-                         <a href="/html/blog.html" class="nav-link">Blog</a>
+
+                        <a href="/html/blog.html" class="nav-link">Blog</a>
                         <a href="/html/soporte_it.html" class="nav-link">Soporte IT</a>
                         <a href="/html/desarrollo.html" class="nav-link">Desarrollo de Software</a>
-                       
+
                     </div>
                 </div>
+
                 <div class="nav-contact-wrap">
-                    <a id="nav-whatsapp" href="#" class="btn-contact">Contáctese</a>
+                    <a href="https://wa.me/03418610863" class="btn-contact">
+                        Contáctese
+                    </a>
                 </div>
+
+                <!-- MOBILE BTN -->
+                <button class="nav-mobile-btn" id="mobileMenuBtn" aria-label="Abrir menú">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+
             </div>
         </div>
     </nav>
 
+    <!-- MOBILE MENU -->
+    <div class="mobile-nav-menu" id="mobileMenu">
+
+        <span class="mobile-nav-section">Instalaciones</span>
+
+        <a href="/html/cableado_estructurado.html" class="mobile-nav-sub">
+            Cableado Estructurado
+        </a>
+
+        <a href="/html/fibra_optica.html" class="mobile-nav-sub">
+            Fibra Óptica
+        </a>
+
+        <a href="/html/seguridad.html" class="mobile-nav-sub">
+            Seguridad Electrónica
+        </a>
+
+        <a href="/html/blog.html" class="mobile-nav-link">
+            Blog
+        </a>
+
+        <a href="/html/soporte_it.html" class="mobile-nav-link">
+            Soporte IT
+        </a>
+
+        <a href="/html/desarrollo.html" class="mobile-nav-link">
+            Desarrollo de Software
+        </a>
+
+        <a href="https://wa.me/03418610863" class="mobile-nav-cta">
+            Contáctese
+        </a>
+
+    </div>
+
     <!-- HERO SECTION -->
     <section id="soporte-it" class="hero-section">
+
         <div class="container hero-grid">
-            <!-- Columna de Texto -->
+
+            <!-- TEXT -->
             <div class="hero-content">
-                <div class="badge">Continuidad Operativa Garantizada</div>
+
+                <div class="badge">
+                    Continuidad Operativa Garantizada
+                </div>
+
                 <h2 class="hero-title">
                     Soporte <br />
                     <span class="text-blue">IT Integral.</span>
                 </h2>
+
                 <p class="hero-description">
-                    Minimizamos el tiempo de inactividad de su empresa. Actuamos como su departamento de sistemas externo, brindando soluciones rápidas y escalables.
+                    Minimizamos el tiempo de inactividad de su empresa.
+                    Actuamos como su departamento de sistemas externo,
+                    brindando soluciones rápidas y escalables.
                 </p>
 
                 <div class="features-list">
-                    <!-- Feature Item 1 -->
+
                     <div class="feature-card">
                         <div class="feature-icon">⚙️</div>
+
                         <div>
-                            <h4 class="feature-title">Mantenimiento Preventivo</h4>
-                            <p class="feature-text">Monitoreo constante de servidores y terminales.</p>
+                            <h4 class="feature-title">
+                                Mantenimiento Preventivo
+                            </h4>
+
+                            <p class="feature-text">
+                                Monitoreo constante de servidores y terminales.
+                            </p>
                         </div>
                     </div>
-                    <!-- Feature Item 2 -->
+
                     <div class="feature-card">
+
                         <div class="feature-icon">🛡️</div>
+
                         <div>
-                            <h4 class="feature-title">Seguridad Proactiva</h4>
-                            <p class="feature-text">Protección de datos y backups automatizados.</p>
+                            <h4 class="feature-title">
+                                Seguridad Proactiva
+                            </h4>
+
+                            <p class="feature-text">
+                                Protección de datos y backups automatizados.
+                            </p>
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
 
-            <!-- Columna Dashboard -->
+            <!-- DASHBOARD -->
             <div class="hero-dashboard">
+
                 <div class="dashboard-box">
+
                     <div class="dash-header">
+
                         <div class="dash-dots">
-                            <span></span><span></span><span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
                         </div>
+
                         <div class="dash-pulse"></div>
+
                     </div>
 
                     <div class="dash-body">
+
                         <div class="dash-stat-group">
-                            <span class="dash-label">Monitoreo de las actividades</span>
-                            <div class="dash-main-value">99.9%</div>
+
+                            <span class="dash-label">
+                                Monitoreo de las actividades
+                            </span>
+
+                            <div class="dash-main-value">
+                                99.9%
+                            </div>
+
                         </div>
 
                         <div class="dash-grid">
+
                             <div>
-                                <span class="dash-sublabel">Tiempo de respuesta</span>
-                                <div class="dash-subvalue">&lt; 45 min</div>
+                                <span class="dash-sublabel">
+                                    Tiempo de respuesta
+                                </span>
+
+                                <div class="dash-subvalue">
+                                    &lt; 45 min
+                                </div>
                             </div>
+
                             <div>
-                                <span class="dash-sublabel">Vida del Sistema</span>
-                                <div class="dash-subvalue text-green">OPTIMIZADO</div>
+                                <span class="dash-sublabel">
+                                    Vida del Sistema
+                                </span>
+
+                                <div class="dash-subvalue text-green">
+                                    OPTIMIZADO
+                                </div>
                             </div>
+
                         </div>
 
                         <button class="btn-remote">
                             Acceder al Soporte Remoto Inmediato 🎧
+                            
+                        
                         </button>
+
                     </div>
+
                 </div>
+
                 <div class="dash-decor"></div>
+
             </div>
+
         </div>
+
     </section>
 
     <!-- FOOTER -->
     <footer>
- 
-  <!-- WORDMARK BAND -->
-  <div class="wordmark-band">
-    <h1>SISGRA</h1>
-    
-  </div>
- 
-  <!-- MAIN GRID -->
-  <div class="footer-grid">
- 
-    <!-- COL 1: SERVICIOS -->
-    <div class="footer-col">
-      <div class="col-label">Servicios</div>
-      <ul class="services-list">
-        <li><a href="/html/cableado_estructurado.html">Cableado Estructurado</a></li>
-        <li><a href="/html/fibra_optica.html">Fibra Óptica</a></li>
-        <li><a href="/html/seguridad.html">Seguridad Electrónica</a></li>
-        <li><a href="/html/soporte_it.html">Soporte IT</a></li>
-        <li><a href="/html/desarrollo.html">Desarrollo de Software</a></li>
-        <li><a href="/html/blog.html">Blog</a></li>
-      </ul>
-    </div>
- 
-    <!-- COL 2: CONTACTO -->
-    <div class="footer-col">
-      <div class="col-label">Contacto</div>
-      <div class="contact-stack">
-        <div class="contact-item">
-          <div class="ci-type">Oficina</div>
-          <div class="ci-value">Lamadrid 468<br>(ZONA I) NAVE 2 - Oficina 05 - NODO ROSARIO</div>
+
+        <div class="wordmark-band">
+            <h1>SISGRA</h1>
         </div>
-        <div class="contact-item">
-          <div class="ci-type">Teléfono</div>
-          <div class="ci-value"><a href="tel:+5403413220052">+54 341 322-0052</a></div>
+
+        <div class="footer-grid">
+
+            <!-- SERVICIOS -->
+            <div class="footer-col">
+
+                <div class="col-label">Servicios</div>
+
+                <ul class="services-list">
+                    <li><a href="/html/cableado_estructurado.html">Cableado Estructurado</a></li>
+                    <li><a href="/html/fibra_optica.html">Fibra Óptica</a></li>
+                    <li><a href="/html/seguridad.html">Seguridad Electrónica</a></li>
+                    <li><a href="/html/soporte_it.html">Soporte IT</a></li>
+                    <li><a href="/html/desarrollo.html">Desarrollo de Software</a></li>
+                    <li><a href="/html/blog.html">Blog</a></li>
+                </ul>
+
+            </div>
+
+            <!-- CONTACTO -->
+            <div class="footer-col">
+
+                <div class="col-label">Contacto</div>
+
+                <div class="contact-stack">
+
+                    <div class="contact-item">
+                        <div class="ci-type">Oficina</div>
+
+                        <div class="ci-value">
+                            Lamadrid 468
+                            <br>
+                            (ZONA I) NAVE 2 - Oficina 05 - NODO ROSARIO
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+                        <div class="ci-type">Teléfono</div>
+
+                        <div class="ci-value">
+                            <a href="tel:+5403413220052">
+                                +54 341 322-0052
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="contact-item">
+
+                        <div class="ci-type">Email</div>
+
+                        <div class="ci-value">
+                            <a href="mailto:info@sisgra.com.ar">
+                                info@sisgra.com.ar
+                            </a>
+                        </div>
+
+                    </div>
+
+                    <div class="contact-item">
+
+                        <div class="ci-type">Redes</div>
+
+                        <div class="social-row">
+                            <a class="social-btn"
+                               href="https://www.facebook.com/sisgra.srl"
+                               aria-label="Facebook">
+                                FB
+                            </a>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- MAP -->
+            <div class="footer-col map-col" style="padding:0;">
+
+                <div class="map-wrapper">
+
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3348.9!2d-60.6530!3d-32.9440!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b652f52c9a5e3b%3A0x0!2sLamadrid+468%2C+Rosario%2C+Argentina!5e0!3m2!1ses!2sar!4v1680000000000"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Ubicación SISGRA">
+                    </iframe>
+
+                    <div class="map-overlay-label">
+                        Rosario · ARG
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
-        <div class="contact-item">
-          <div class="ci-type">Email</div>
-          <div class="ci-value"><a href="mailto:info@sisgra.com.ar">info@sisgra.com.ar</a></div>
+
+        <!-- BOTTOM -->
+        <div class="footer-bottom">
+            <p class="copy">
+                © 2026 <span>SISGRA S.R.L.</span>
+                — Todos los derechos reservados
+            </p>
         </div>
-        <div class="contact-item">
-          <div class="ci-type">Redes</div>
-          <div class="social-row">
-            <a class="social-btn" href="https://www.facebook.com/sisgra.srl" aria-label="Facebook">FB</a>
-            
-          </div>
-        </div>
-      </div>
-    </div>
- 
-    <!-- COL 3: MAPA -->
-    <div class="footer-col map-col" style="padding:0;">
-      <div class="map-wrapper">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3348.9!2d-60.6530!3d-32.9440!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b652f52c9a5e3b%3A0x0!2sLamadrid+468%2C+Rosario%2C+Argentina!5e0!3m2!1ses!2sar!4v1680000000000"
-          allowfullscreen=""
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          title="Ubicación SISGRA">
-        </iframe>
-        <div class="map-overlay-label">Rosario · ARG</div>
-      </div>
-    </div>
- 
-  </div>
- 
-  <!-- BOTTOM BAR -->
-  <div class="footer-bottom">
-    <p class="copy">© 2026 <span>SISGRA S.R.L.</span> — Todos los derechos reservados</p>
-    
-  </div>
- 
-</footer>
+
+    </footer>
 
     <script>
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-        }
+
+        const btn = document.getElementById('mobileMenuBtn');
+        const menu = document.getElementById('mobileMenu');
+
+        btn.addEventListener('click', () => {
+
+            const isOpen = menu.classList.toggle('open');
+
+            btn.classList.toggle('open', isOpen);
+
+            btn.setAttribute(
+                'aria-label',
+                isOpen ? 'Cerrar menú' : 'Abrir menú'
+            );
+        });
+
+        menu.querySelectorAll('a').forEach(link => {
+
+            link.addEventListener('click', () => {
+
+                menu.classList.remove('open');
+                btn.classList.remove('open');
+
+            });
+
+        });
+
     </script>
+
 </body>
 </html>

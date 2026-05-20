@@ -98,6 +98,7 @@
     padding: 3rem;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     border-left: 12px solid var(--blue-600);
+    border-radius: 12px;
 }
 
 .dash-header {

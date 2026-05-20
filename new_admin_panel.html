@@ -1,0 +1,1714 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SISGRA — Panel Administrativo</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:ital,wght@0,400;0,500;0,700;0,900;1,700;1,900&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --sisgra-blue:#0A1D37;
+      --blue-300:#93c5fd;
+      --blue-400:#60a5fa;
+      --blue-500:#3b82f6;
+      --blue-600:#2563eb;
+      --blue-900:#1e3a8a;
+      --slate-50:#f8fafc;
+      --slate-100:#f1f5f9;
+      --slate-200:#e2e8f0;
+      --slate-300:#cbd5e1;
+      --slate-400:#94a3b8;
+      --slate-500:#64748b;
+      --slate-600:#475569;
+      --slate-700:#334155;
+      --slate-800:#1e293b;
+      --slate-900:#0f172a;
+      --white:#ffffff;
+      --green-500:#22c55e;
+      --red-400:#f87171;
+      --amber-400:#fbbf24;
+      --sidebar-w:268px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;font-family:'Inter',sans-serif;background:#f0f4f8;color:var(--slate-900);-webkit-font-smoothing:antialiased;}
+    a{text-decoration:none;color:inherit;}
+    button{cursor:pointer;font-family:'Inter',sans-serif;}
+    input,textarea,select{font-family:'Inter',sans-serif;}
+
+    /* ── LOGIN ── */
+    #login-screen{position:fixed;inset:0;background:var(--sisgra-blue);display:flex;align-items:center;justify-content:center;z-index:1000;}
+    #login-screen::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(59,130,246,.15) 0,transparent 55%),radial-gradient(circle at 80% 20%,rgba(37,99,235,.1) 0,transparent 50%);pointer-events:none;}
+    .login-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);padding:3rem;width:100%;max-width:400px;position:relative;}
+    .login-logo{font-family:'IBM Plex Mono',monospace;font-size:1.75rem;font-weight:600;color:var(--white);letter-spacing:.1em;margin-bottom:.25rem;}
+    .login-sub{font-size:.625rem;font-weight:700;letter-spacing:.4em;text-transform:uppercase;color:var(--blue-400);margin-bottom:2.5rem;}
+    .login-label{font-size:.625rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.5rem;display:block;}
+    .login-input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--white);padding:.75rem 1rem;font-size:.875rem;outline:none;margin-bottom:1rem;transition:border-color .2s;}
+    .login-input:focus{border-color:var(--blue-400);}
+    .login-input::placeholder{color:rgba(255,255,255,.25);}
+    .login-btn{width:100%;padding:.875rem;background:var(--blue-600);color:var(--white);border:none;font-weight:700;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;transition:background .2s,transform .1s;margin-top:.5rem;}
+    .login-btn:hover{background:var(--blue-500);}
+    .login-btn:active{transform:scale(.98);}
+    .login-error{font-size:.75rem;color:var(--red-400);margin-top:.75rem;display:none;}
+
+    /* ── APP LAYOUT ── */
+    #app{display:none;height:100vh;overflow:hidden;}
+    .layout{display:flex;height:100%;}
+    .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+    .content-area{flex:1;overflow-y:auto;padding:2rem;}
+
+    /* ── SIDEBAR ── */
+    .sidebar{width:var(--sidebar-w);background:var(--sisgra-blue);display:flex;flex-direction:column;flex-shrink:0;border-right:1px solid rgba(255,255,255,.07);overflow-y:auto;}
+    .sidebar-brand{padding:1.25rem 1.25rem .75rem;border-bottom:1px solid rgba(255,255,255,.07);}
+    .sidebar-section-label{font-size:.5rem;font-weight:900;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.25);padding:.75rem 1.25rem .4rem;}
+    .sidebar-item{display:flex;align-items:center;gap:.75rem;padding:.6rem 1.25rem;font-size:.75rem;font-weight:600;letter-spacing:.03em;color:rgba(255,255,255,.5);transition:color .15s,background .15s;cursor:pointer;border-left:2px solid transparent;}
+    .sidebar-item svg{width:1rem;height:1rem;flex-shrink:0;opacity:.7;}
+    .sidebar-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.04);}
+    .sidebar-item.active{color:var(--white);background:rgba(59,130,246,.15);border-left-color:var(--blue-400);}
+    .sidebar-item.active svg{opacity:1;}
+
+    /* Templates sub-items — IMPROVED */
+    .sidebar-tpl-group{display:flex;flex-direction:column;}
+    .sidebar-tpl-item{display:flex;align-items:center;gap:.6rem;padding:.55rem 1rem .55rem 1.5rem;font-size:.6875rem;font-weight:600;color:rgba(255,255,255,.4);cursor:pointer;transition:all .15s;border-left:2px solid transparent;position:relative;}
+    .sidebar-tpl-item:hover{color:rgba(255,255,255,.75);background:rgba(255,255,255,.04);}
+    .sidebar-tpl-item.active{color:var(--white);background:rgba(59,130,246,.18);border-left-color:var(--blue-400);}
+    .sidebar-tpl-item.active .sidebar-tpl-dot{background:var(--blue-400);box-shadow:0 0 6px rgba(96,165,250,.7);}
+    .sidebar-tpl-dot{width:.45rem;height:.45rem;border-radius:50%;background:rgba(255,255,255,.2);flex-shrink:0;transition:all .15s;}
+    /* Active-on-site badge pill */
+    .tpl-live-pill{font-size:.45rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;background:var(--green-500);color:#fff;padding:.15rem .4rem;border-radius:2px;margin-left:auto;flex-shrink:0;}
+
+    .sidebar-footer{margin-top:auto;padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,.07);}
+    .sidebar-user{display:flex;align-items:center;gap:.75rem;}
+    .sidebar-avatar{width:2rem;height:2rem;border-radius:2px;background:var(--blue-600);display:flex;align-items:center;justify-content:center;font-size:.625rem;font-weight:900;color:var(--white);}
+    .sidebar-user-name{font-size:.75rem;font-weight:700;color:rgba(255,255,255,.8);}
+    .sidebar-user-role{font-size:.5625rem;color:rgba(255,255,255,.3);letter-spacing:.05em;}
+    .sidebar-logout{margin-left:auto;font-size:.625rem;color:rgba(255,255,255,.3);cursor:pointer;transition:color .2s;border:none;background:none;padding:.25rem;}
+    .sidebar-logout:hover{color:var(--red-400);}
+
+    /* ── TOPBAR ── */
+    .topbar{background:var(--white);border-bottom:1px solid var(--slate-200);padding:0 2rem;height:4rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+    .topbar-title{font-size:.875rem;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:var(--sisgra-blue);}
+    .topbar-actions{display:flex;align-items:center;gap:.75rem;}
+    .api-indicator{display:inline-flex;align-items:center;gap:.4rem;font-size:.5625rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-400);}
+    .api-dot{width:.45rem;height:.45rem;border-radius:50%;background:var(--slate-300);}
+    .api-dot.connected{background:var(--green-500);}
+
+    /* ── BUTTONS ── */
+    .btn-save{background:var(--blue-600);color:var(--white);border:none;padding:.5rem 1.25rem;font-size:.6875rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;transition:background .2s,transform .1s;}
+    .btn-save:hover{background:var(--blue-500);}
+    .btn-save:active{transform:scale(.97);}
+    .btn-save:disabled{opacity:.5;cursor:not-allowed;}
+    .btn-secondary{background:transparent;color:var(--slate-600);border:1px solid var(--slate-200);padding:.5rem 1rem;font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:border-color .2s,color .2s;}
+    .btn-secondary:hover{border-color:var(--slate-400);color:var(--slate-900);}
+    .btn-add{background:var(--sisgra-blue);color:var(--white);border:none;padding:.5rem 1.25rem;font-size:.5625rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;transition:background .2s;}
+    .btn-add:hover{background:var(--blue-900);}
+    .btn-icon{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.8);width:1.6rem;height:1.6rem;display:flex;align-items:center;justify-content:center;font-size:1rem;line-height:1;cursor:pointer;transition:background .15s,color .15s;flex-shrink:0;border-radius:2px;}
+    .btn-icon:hover{background:rgba(255,255,255,.22);color:var(--white);}
+
+    /* ── PANEL ── */
+    .panel{display:none;}
+    .panel.active{display:block;}
+    .page-header{margin-bottom:1.75rem;}
+    .page-title{font-size:1.5rem;font-weight:900;color:var(--sisgra-blue);letter-spacing:-.03em;font-style:italic;}
+    .page-desc{font-size:.8125rem;color:var(--slate-400);margin-top:.3rem;}
+
+    /* ── STAT CARDS ── */
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+    .stat-card{background:var(--white);border:1px solid var(--slate-100);padding:1.25rem 1.5rem;}
+    .stat-card-label{font-size:.5625rem;font-weight:900;letter-spacing:.25em;text-transform:uppercase;color:var(--slate-400);margin-bottom:.5rem;}
+    .stat-card-value{font-size:2rem;font-weight:900;color:var(--sisgra-blue);letter-spacing:-.05em;font-style:italic;}
+    .stat-card-sub{font-size:.625rem;color:var(--slate-400);margin-top:.25rem;font-weight:500;}
+    .stat-card-indicator{display:inline-block;width:.4rem;height:.4rem;border-radius:50%;margin-right:.4rem;}
+    .ind-green{background:var(--green-500);}
+    .ind-amber{background:var(--amber-400);}
+    .ind-blue{background:var(--blue-400);}
+
+    /* ── SECTION CARD ── */
+    .section-card{background:var(--white);border:1px solid var(--slate-100);margin-bottom:1.5rem;}
+    .section-card-header{padding:1rem 1.5rem;border-bottom:1px solid var(--slate-100);display:flex;align-items:center;justify-content:space-between;}
+    .section-card-title{font-size:.625rem;font-weight:900;letter-spacing:.25em;text-transform:uppercase;color:var(--slate-500);}
+    .section-card-body{padding:1.5rem;}
+
+    /* ── FORM ── */
+    .form-row{display:grid;gap:1rem;margin-bottom:1rem;}
+    .form-row.cols-2{grid-template-columns:1fr 1fr;}
+    .form-row.cols-3{grid-template-columns:1fr 1fr 1fr;}
+    .form-group{display:flex;flex-direction:column;gap:.4rem;}
+    .form-label{font-size:.5625rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--slate-500);}
+    .form-input{border:1px solid var(--slate-200);padding:.6rem .875rem;font-size:.875rem;color:var(--slate-800);outline:none;transition:border-color .2s;background:var(--white);}
+    .form-input:focus{border-color:var(--blue-400);}
+    .form-textarea{border:1px solid var(--slate-200);padding:.6rem .875rem;font-size:.875rem;color:var(--slate-800);outline:none;transition:border-color .2s;resize:vertical;min-height:80px;background:var(--white);}
+    .form-textarea:focus{border-color:var(--blue-400);}
+    .form-select{border:1px solid var(--slate-200);padding:.6rem .875rem;font-size:.875rem;color:var(--slate-800);outline:none;transition:border-color .2s;background:var(--white);-webkit-appearance:none;}
+    .form-select:focus{border-color:var(--blue-400);}
+    .form-hint{font-size:.625rem;color:var(--slate-400);margin-top:.2rem;}
+    .form-divider{height:1px;background:var(--slate-100);margin:1.5rem 0;}
+
+    /* ── TOGGLE ── */
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--slate-100);}
+    .toggle-row:last-child{border-bottom:none;}
+    .toggle-name{font-size:.8125rem;font-weight:700;color:var(--slate-800);}
+    .toggle-desc{font-size:.6875rem;color:var(--slate-400);margin-top:.1rem;}
+    .toggle{position:relative;width:2.5rem;height:1.375rem;flex-shrink:0;}
+    .toggle input{opacity:0;width:0;height:0;}
+    .toggle-slider{position:absolute;inset:0;background:var(--slate-200);cursor:pointer;transition:.2s;border-radius:9999px;}
+    .toggle-slider:before{content:'';position:absolute;width:1rem;height:1rem;left:.2rem;top:.19rem;background:white;transition:.2s;border-radius:50%;}
+    .toggle input:checked+.toggle-slider{background:var(--blue-500);}
+    .toggle input:checked+.toggle-slider:before{transform:translateX(1.1rem);}
+
+    /* ── TABLE ── */
+    .data-table{width:100%;border-collapse:collapse;}
+    .data-table th{font-size:.5rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:var(--slate-400);padding:.6rem 1rem;text-align:left;border-bottom:1px solid var(--slate-100);background:var(--slate-50);}
+    .data-table td{font-size:.8125rem;padding:.75rem 1rem;border-bottom:1px solid var(--slate-100);color:var(--slate-700);}
+    .data-table tr:last-child td{border-bottom:none;}
+    .data-table tr:hover td{background:var(--slate-50);}
+    .badge-active{display:inline-block;background:#dcfce7;color:#166534;font-size:.5rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;padding:.2rem .5rem;}
+    .badge-inactive{display:inline-block;background:#f1f5f9;color:var(--slate-500);font-size:.5rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;padding:.2rem .5rem;}
+    .table-action{border:none;background:none;font-size:.6875rem;font-weight:700;letter-spacing:.05em;cursor:pointer;padding:.2rem .5rem;transition:color .15s;}
+    .table-edit{color:var(--blue-500);}
+    .table-edit:hover{color:var(--blue-600);}
+    .table-delete{color:var(--slate-300);}
+    .table-delete:hover{color:var(--red-400);}
+
+    /* ── BLOG ── */
+    .blog-grid{display:grid;gap:1rem;}
+    .blog-item{background:var(--white);border:1px solid var(--slate-100);padding:1.25rem;display:flex;gap:1.25rem;align-items:flex-start;}
+    .blog-info{flex:1;}
+    .blog-title-text{font-size:.875rem;font-weight:700;color:var(--slate-800);margin-bottom:.3rem;}
+    .blog-meta{font-size:.6875rem;color:var(--slate-400);}
+    .blog-excerpt{font-size:.75rem;color:var(--slate-500);margin-top:.3rem;line-height:1.5;}
+    .blog-actions{display:flex;gap:.5rem;flex-shrink:0;align-items:center;}
+
+    /* ── MODAL ── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(10,29,55,.7);z-index:500;display:none;align-items:center;justify-content:center;}
+    .modal-overlay.open{display:flex;}
+    .modal{background:var(--white);width:100%;max-width:640px;max-height:85vh;overflow-y:auto;}
+    .modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--slate-100);display:flex;align-items:center;justify-content:space-between;}
+    .modal-title{font-size:.6875rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--slate-700);}
+    .modal-close{border:none;background:none;font-size:1.25rem;color:var(--slate-400);cursor:pointer;line-height:1;}
+    .modal-close:hover{color:var(--slate-700);}
+    .modal-body{padding:1.5rem;}
+    .modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--slate-100);display:flex;justify-content:flex-end;gap:.75rem;}
+
+    /* ── NOTIFICATION ── */
+    .save-notif{position:fixed;bottom:2rem;right:2rem;padding:.75rem 1.25rem;font-size:.6875rem;font-weight:700;letter-spacing:.1em;z-index:900;opacity:0;transform:translateY(1rem);transition:opacity .25s,transform .25s;pointer-events:none;}
+    .save-notif.show{opacity:1;transform:translateY(0);}
+    .save-notif.success{background:var(--sisgra-blue);color:var(--white);}
+    .save-notif.error{background:#ef4444;color:var(--white);}
+
+    /* ── TAB ROW ── */
+    .tab-row{display:flex;border-bottom:1px solid var(--slate-200);margin-bottom:1.5rem;}
+    .tab-item{font-size:.6875rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.6rem 1rem;color:var(--slate-400);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
+    .tab-item:hover{color:var(--slate-700);}
+    .tab-item.active{color:var(--sisgra-blue);border-bottom-color:var(--blue-500);}
+
+    /* ── Template list in main panel ── */
+    .tpl-list{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem;}
+    .tpl-list-item{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--white);border:1px solid var(--slate-100);transition:border-color .15s,box-shadow .15s;cursor:pointer;}
+    .tpl-list-item:hover{border-color:var(--blue-300);box-shadow:0 2px 8px rgba(0,0,0,.05);}
+    .tpl-list-item.active-tpl{border-color:var(--green-500);background:rgba(34,197,94,.03);}
+    .tpl-list-num{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:600;color:var(--slate-200);letter-spacing:-.05em;flex-shrink:0;width:2.5rem;}
+    .tpl-list-info{flex:1;}
+    .tpl-list-name{font-size:.875rem;font-weight:700;color:var(--slate-800);}
+    .tpl-list-desc{font-size:.6875rem;color:var(--slate-400);margin-top:.15rem;}
+    .tpl-list-status{font-size:.5rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:.2rem .6rem;}
+    .tpl-status-active{background:#dcfce7;color:#166534;}
+    .tpl-status-draft{background:#fef3c7;color:#92400e;}
+    .tpl-list-actions{display:flex;gap:.375rem;}
+    .btn-edit-small{border:1px solid var(--slate-200);background:transparent;color:var(--slate-600);padding:.375rem .75rem;font-size:.5625rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s;}
+    .btn-edit-small:hover{border-color:var(--blue-400);color:var(--blue-600);}
+
+    /* ── Rich editor toolbar ── */
+    .rich-editor-toolbar{display:flex;gap:.25rem;padding:.5rem;border:1px solid var(--slate-200);border-bottom:none;background:var(--slate-50);}
+    .rich-btn{border:none;background:transparent;padding:.25rem .5rem;font-size:.75rem;font-weight:700;cursor:pointer;color:var(--slate-600);transition:background .15s;}
+    .rich-btn:hover{background:var(--slate-200);}
+    .rich-editor-content{border:1px solid var(--slate-200);min-height:120px;padding:.75rem;font-size:.875rem;color:var(--slate-800);outline:none;}
+    .rich-editor-content:focus{border-color:var(--blue-400);}
+
+    /* ════════════════════════════════════════════════
+       VISUAL PAGE EDITOR — new
+    ════════════════════════════════════════════════ */
+    /* Template header bar */
+    .tpl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:1rem;flex-wrap:wrap;}
+    .tpl-title-block{display:flex;align-items:center;gap:.75rem;}
+    .tpl-badge{font-size:.5rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;background:var(--sisgra-blue);color:var(--white);padding:.2rem .6rem;}
+    .tpl-name{font-size:1.25rem;font-weight:900;color:var(--sisgra-blue);letter-spacing:-.03em;font-style:italic;}
+    .tpl-actions{display:flex;gap:.5rem;}
+
+    /* Viewport switch pills */
+    .viewport-switch{display:flex;gap:0;border:1px solid var(--slate-200);overflow:hidden;}
+    .vp-btn{padding:.35rem .7rem;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;border:none;background:var(--white);color:var(--slate-400);cursor:pointer;transition:background .15s,color .15s;}
+    .vp-btn.active{background:var(--sisgra-blue);color:var(--white);}
+
+    /* Main editor layout */
+    .editor-shell{display:flex;height:calc(100vh - 13rem);gap:0;background:var(--slate-100);border:1px solid var(--slate-200);}
+
+    /* LEFT: section tray */
+    .section-tray{width:220px;background:var(--white);border-right:1px solid var(--slate-200);display:flex;flex-direction:column;flex-shrink:0;}
+    .tray-header{padding:.625rem .875rem;border-bottom:1px solid var(--slate-100);font-size:.5rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:var(--slate-500);}
+    .tray-search{width:100%;border:none;border-bottom:1px solid var(--slate-100);padding:.45rem .875rem;font-size:.75rem;color:var(--slate-700);outline:none;background:var(--slate-50);}
+    .tray-search:focus{background:var(--white);}
+    .tray-group-label{font-size:.45rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:var(--slate-400);padding:.5rem .875rem .25rem;background:var(--slate-50);border-bottom:1px solid var(--slate-100);}
+    .tray-body{flex:1;overflow-y:auto;}
+    .tray-chip{display:flex;align-items:center;gap:.5rem;padding:.5rem .875rem;cursor:grab;border-bottom:1px solid var(--slate-50);transition:background .12s;user-select:none;}
+    .tray-chip:hover{background:rgba(59,130,246,.05);}
+    .tray-chip:active{cursor:grabbing;}
+    .tray-chip.dragging{opacity:.4;}
+    .tray-chip-thumb{width:2.5rem;height:1.5rem;background:var(--slate-100);border:1px solid var(--slate-200);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+    .tray-chip-thumb svg{width:1.2rem;height:.8rem;opacity:.4;}
+    .tray-chip-info{}
+    .tray-chip-name{font-size:.6875rem;font-weight:700;color:var(--slate-700);}
+    .tray-chip-desc{font-size:.5625rem;color:var(--slate-400);}
+
+    /* CENTER: page canvas */
+    .page-canvas-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#c8d0da;background-image:radial-gradient(circle,rgba(0,0,0,.06) 1px,transparent 1px);background-size:16px 16px;}
+    .canvas-ruler{height:2rem;background:var(--white);border-bottom:1px solid var(--slate-200);display:flex;align-items:center;justify-content:center;gap:.75rem;padding:0 .75rem;flex-shrink:0;}
+    .ruler-label{font-size:.5rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--slate-400);}
+    .ruler-px{font-family:'IBM Plex Mono',monospace;font-size:.5rem;color:var(--slate-400);}
+    .canvas-scroll{flex:1;overflow-y:auto;overflow-x:auto;padding:1.5rem;display:flex;justify-content:center;}
+    .page-frame{background:var(--white);box-shadow:0 8px 40px rgba(0,0,0,.2);transition:width .3s;position:relative;}
+    .page-frame.desktop{width:1200px;min-width:1200px;}
+    .page-frame.tablet{width:768px;min-width:768px;}
+    .page-frame.mobile{width:375px;min-width:375px;}
+
+    /* Drop zones inside page frame */
+    .page-sections{}
+    .section-slot{position:relative;cursor:default;}
+    .section-slot:hover .section-controls{opacity:1;}
+    .section-controls{position:absolute;top:.4rem;right:.4rem;display:flex;gap:.25rem;opacity:0;transition:opacity .15s;z-index:10;}
+    .sc-btn{background:var(--sisgra-blue);color:var(--white);border:none;width:1.5rem;height:1.5rem;display:flex;align-items:center;justify-content:center;font-size:.625rem;cursor:pointer;transition:background .15s;}
+    .sc-btn:hover{background:var(--blue-600);}
+    .sc-btn.del:hover{background:#ef4444;}
+    .sc-btn.drag-handle{cursor:grab;}
+    .sc-btn.drag-handle:active{cursor:grabbing;}
+    .section-slot.drag-target{outline:3px dashed var(--blue-400);outline-offset:2px;}
+    .section-slot.being-dragged{opacity:.35;}
+
+    /* Drop indicator */
+    .drop-indicator{height:4px;background:var(--blue-500);border-radius:2px;margin:0;transition:opacity .1s;display:none;}
+    .drop-indicator.visible{display:block;}
+
+    /* Canvas empty state */
+    .canvas-empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:1rem;color:var(--slate-300);pointer-events:none;}
+    .canvas-empty-state svg{width:3rem;height:3rem;opacity:.3;}
+    .canvas-empty-state p{font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;text-align:center;}
+
+    /* RIGHT: properties panel */
+    .props-panel{width:240px;background:var(--white);border-left:1px solid var(--slate-200);display:flex;flex-direction:column;flex-shrink:0;}
+    .props-header{padding:.625rem .875rem;border-bottom:1px solid var(--slate-100);font-size:.5rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:var(--slate-500);display:flex;align-items:center;justify-content:space-between;}
+    .props-body{flex:1;overflow-y:auto;padding:.75rem;}
+    .props-section{margin-bottom:1rem;}
+    .props-section-title{font-size:.45rem;font-weight:900;letter-spacing:.25em;text-transform:uppercase;color:var(--slate-400);margin-bottom:.5rem;}
+    .props-field{margin-bottom:.5rem;}
+    .props-label{font-size:.5625rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-500);margin-bottom:.25rem;display:block;}
+    .props-input{width:100%;border:1px solid var(--slate-200);padding:.4rem .625rem;font-size:.8125rem;color:var(--slate-800);outline:none;transition:border-color .15s;}
+    .props-input:focus{border-color:var(--blue-400);}
+    .props-textarea{width:100%;border:1px solid var(--slate-200);padding:.4rem .625rem;font-size:.8125rem;color:var(--slate-800);outline:none;transition:border-color .15s;resize:vertical;min-height:60px;}
+    .props-textarea:focus{border-color:var(--blue-400);}
+    .props-hint{font-size:.5625rem;color:var(--slate-400);margin-top:.2rem;}
+    .props-empty{font-size:.75rem;color:var(--slate-300);text-align:center;padding:2rem 1rem;line-height:1.6;}
+    .props-color-row{display:flex;gap:.5rem;align-items:center;}
+    .props-color{width:1.5rem;height:1.5rem;border:1px solid var(--slate-200);cursor:pointer;flex-shrink:0;padding:0;}
+
+    /* ══ ACTUAL SECTION RENDERERS ══ */
+    /* These render how the section looks inside the page frame */
+
+    /* NAV */
+    .sec-nav{background:#0A1D37;padding:.75rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+    .sec-nav .nav-logo{color:white;font-weight:900;font-size:1.1rem;letter-spacing:.1em;}
+    .sec-nav .nav-links{display:flex;gap:1.5rem;}
+    .sec-nav .nav-link{color:rgba(255,255,255,.7);font-size:.8125rem;font-weight:500;}
+    .sec-nav .nav-cta{background:#2563eb;color:white;padding:.4rem .875rem;font-size:.75rem;font-weight:700;}
+
+    /* HERO */
+    .sec-hero{background:linear-gradient(135deg,#0A1D37 0%,#1a3256 60%,#1e3a8a 100%);padding:5rem 4rem;display:flex;gap:3rem;align-items:center;}
+    .sec-hero .hero-left{flex:1;}
+    .sec-hero .hero-badge{display:inline-block;background:rgba(59,130,246,.2);border:1px solid rgba(59,130,246,.4);color:#93c5fd;font-size:.625rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:.35rem .875rem;margin-bottom:1.25rem;}
+    .sec-hero .hero-h1{font-size:3.25rem;font-weight:900;color:#fff;line-height:1;letter-spacing:-.04em;text-transform:uppercase;font-style:italic;margin-bottom:.5rem;}
+    .sec-hero .hero-h2{font-size:3.25rem;font-weight:900;color:#60a5fa;line-height:1;letter-spacing:-.04em;text-transform:uppercase;margin-bottom:1.5rem;}
+    .sec-hero .hero-desc{color:rgba(255,255,255,.65);font-size:.9375rem;line-height:1.7;margin-bottom:2rem;max-width:480px;}
+    .sec-hero .hero-btns{display:flex;gap:.875rem;flex-wrap:wrap;}
+    .sec-hero .hbtn-primary{background:#2563eb;color:#fff;padding:.75rem 1.75rem;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;}
+    .sec-hero .hbtn-secondary{background:transparent;color:#fff;padding:.75rem 1.75rem;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:1px solid rgba(255,255,255,.3);}
+    .sec-hero .hero-right{width:300px;flex-shrink:0;display:flex;flex-direction:column;gap:1rem;}
+    .sec-hero .stat-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:1.25rem 1.5rem;}
+    .sec-hero .stat-num{font-size:2.25rem;font-weight:900;color:#fff;font-style:italic;letter-spacing:-.04em;}
+    .sec-hero .stat-lbl{font-size:.5625rem;font-weight:700;letter-spacing:.25em;text-transform:uppercase;color:#93c5fd;margin-top:.25rem;}
+
+    /* HERO CENTERED */
+    .sec-hero-centered{background:linear-gradient(160deg,#0A1D37 0%,#1e3a8a 100%);padding:6rem 4rem;text-align:center;display:flex;flex-direction:column;align-items:center;}
+    .sec-hero-centered .hero-badge{display:inline-block;background:rgba(59,130,246,.2);border:1px solid rgba(59,130,246,.4);color:#93c5fd;font-size:.625rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;padding:.35rem .875rem;margin-bottom:1.5rem;}
+    .sec-hero-centered .hero-h1{font-size:3rem;font-weight:900;color:#fff;line-height:1.05;letter-spacing:-.04em;text-transform:uppercase;font-style:italic;margin-bottom:1.25rem;max-width:700px;}
+    .sec-hero-centered .hero-desc{color:rgba(255,255,255,.65);font-size:.9375rem;line-height:1.7;margin-bottom:2rem;max-width:560px;}
+    .sec-hero-centered .hero-btns{display:flex;gap:.875rem;flex-wrap:wrap;justify-content:center;margin-bottom:3rem;}
+    .sec-hero-centered .hbtn-primary{background:#2563eb;color:#fff;padding:.75rem 1.75rem;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;}
+    .sec-hero-centered .hbtn-secondary{background:transparent;color:#fff;padding:.75rem 1.75rem;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:1px solid rgba(255,255,255,.3);}
+    .sec-hero-centered .metric-row{display:flex;gap:0;border:1px solid rgba(255,255,255,.1);}
+    .sec-hero-centered .metric-box{flex:1;padding:1.25rem 1.5rem;border-right:1px solid rgba(255,255,255,.1);text-align:center;}
+    .sec-hero-centered .metric-box:last-child{border-right:none;}
+    .sec-hero-centered .metric-num{font-size:2rem;font-weight:900;color:#fff;font-style:italic;letter-spacing:-.04em;}
+    .sec-hero-centered .metric-lbl{font-size:.5rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:#93c5fd;margin-top:.25rem;}
+
+    /* SERVICES */
+    .sec-services{padding:4rem;background:#f8fafc;}
+    .sec-services .sec-eyebrow{font-size:.5625rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:#2563eb;margin-bottom:.75rem;}
+    .sec-services .sec-title{font-size:2.25rem;font-weight:900;color:#0A1D37;letter-spacing:-.04em;font-style:italic;margin-bottom:2.5rem;}
+    .sec-services .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+    .sec-services .svc-card{background:#fff;border:1px solid #e2e8f0;padding:1.75rem 1.5rem;}
+    .sec-services .svc-icon{width:2.5rem;height:2.5rem;background:#0A1D37;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;}
+    .sec-services .svc-icon svg{width:1.25rem;height:1.25rem;stroke:#60a5fa;fill:none;}
+    .sec-services .svc-name{font-size:.9375rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;}
+    .sec-services .svc-desc{font-size:.8125rem;color:#64748b;line-height:1.65;}
+
+    /* CAROUSEL / LOGOS */
+    .sec-logos{padding:2.5rem 4rem;background:#fff;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;}
+    .sec-logos .logos-title{font-size:.5rem;font-weight:900;letter-spacing:.35em;text-transform:uppercase;color:#94a3b8;text-align:center;margin-bottom:1.5rem;}
+    .sec-logos .logos-track{display:flex;gap:2.5rem;align-items:center;justify-content:center;flex-wrap:wrap;}
+    .sec-logos .logo-pill{background:#f1f5f9;border:1px solid #e2e8f0;padding:.625rem 1.5rem;font-size:.75rem;font-weight:700;color:#94a3b8;letter-spacing:.1em;}
+
+    /* NEWS */
+    .sec-news{padding:4rem;background:#fff;}
+    .sec-news .sec-eyebrow{font-size:.5625rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:#2563eb;margin-bottom:.75rem;}
+    .sec-news .sec-title{font-size:2.25rem;font-weight:900;color:#0A1D37;letter-spacing:-.04em;font-style:italic;margin-bottom:2.5rem;}
+    .sec-news .news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+    .sec-news .news-card{border:1px solid #e2e8f0;}
+    .sec-news .news-img{height:140px;background:linear-gradient(135deg,#0A1D37,#1e3a8a);display:flex;align-items:flex-end;padding:.75rem;}
+    .sec-news .news-cat{font-size:.45rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;background:#2563eb;color:#fff;padding:.2rem .5rem;display:inline-block;}
+    .sec-news .news-body{padding:1rem;}
+    .sec-news .news-title{font-size:.875rem;font-weight:700;color:#0f172a;margin-bottom:.5rem;line-height:1.4;}
+    .sec-news .news-meta{font-size:.625rem;color:#94a3b8;}
+
+    /* CTA BAND */
+    .sec-cta{background:#0A1D37;padding:4rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;}
+    .sec-cta .cta-left{}
+    .sec-cta .cta-title{font-size:2rem;font-weight:900;color:#fff;letter-spacing:-.04em;font-style:italic;margin-bottom:.5rem;}
+    .sec-cta .cta-desc{color:rgba(255,255,255,.6);font-size:.875rem;}
+    .sec-cta .cta-btn{background:#2563eb;color:#fff;padding:.875rem 2rem;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border:none;white-space:nowrap;flex-shrink:0;}
+
+    /* FOOTER */
+    .sec-footer{background:#060f1f;padding:3rem 4rem 1.5rem;}
+    .sec-footer .footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem;margin-bottom:2rem;}
+    .sec-footer .footer-brand{font-size:1.25rem;font-weight:900;color:#fff;letter-spacing:.1em;margin-bottom:.75rem;font-family:'IBM Plex Mono',monospace;}
+    .sec-footer .footer-tagline{font-size:.75rem;color:rgba(255,255,255,.4);line-height:1.6;}
+    .sec-footer .footer-col-title{font-size:.5rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:.75rem;}
+    .sec-footer .footer-link{font-size:.8125rem;color:rgba(255,255,255,.5);display:block;margin-bottom:.4rem;}
+    .sec-footer .footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding-top:1rem;display:flex;justify-content:space-between;}
+    .sec-footer .footer-copy{font-size:.625rem;color:rgba(255,255,255,.3);}
+
+    /* CONTACT SECTION */
+    .sec-contact{padding:4rem;background:#f8fafc;display:grid;grid-template-columns:1fr 1fr;gap:3rem;}
+    .sec-contact .contact-left{}
+    .sec-contact .sec-eyebrow{font-size:.5625rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:#2563eb;margin-bottom:.75rem;}
+    .sec-contact .sec-title{font-size:2rem;font-weight:900;color:#0A1D37;letter-spacing:-.04em;font-style:italic;margin-bottom:1rem;}
+    .sec-contact .contact-info{font-size:.875rem;color:#64748b;line-height:1.8;}
+    .sec-contact .contact-form{background:#fff;border:1px solid #e2e8f0;padding:1.5rem;display:flex;flex-direction:column;gap:.75rem;}
+    .sec-contact .cf-input{border:1px solid #e2e8f0;padding:.6rem .875rem;font-size:.875rem;color:#1e293b;outline:none;}
+    .sec-contact .cf-btn{background:#0A1D37;color:#fff;border:none;padding:.75rem;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;}
+
+    /* ABOUT */
+    .sec-about{padding:4rem;background:#fff;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
+    .sec-about .sec-eyebrow{font-size:.5625rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:#2563eb;margin-bottom:.75rem;}
+    .sec-about .sec-title{font-size:2.25rem;font-weight:900;color:#0A1D37;letter-spacing:-.04em;font-style:italic;margin-bottom:1.25rem;}
+    .sec-about .sec-desc{font-size:.9375rem;color:#64748b;line-height:1.75;}
+    .sec-about .about-img{background:linear-gradient(135deg,#0A1D37,#1e3a8a);height:300px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;}
+
+    /* SPACER */
+    .sec-spacer{background:#fff;}
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════ LOGIN ══════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">SISGRA</div>
+    <div class="login-sub">Panel Administrativo</div>
+    <label class="login-label" for="l-user">Usuario</label>
+    <input class="login-input" id="l-user" type="text" placeholder="admin" autocomplete="username"/>
+    <label class="login-label" for="l-pass">Contraseña</label>
+    <input class="login-input" id="l-pass" type="password" placeholder="•••••••••" autocomplete="current-password"/>
+    <button class="login-btn" id="login-btn">Ingresar al Sistema</button>
+    <div class="login-error" id="login-error">Usuario o contraseña incorrectos.</div>
+  </div>
+</div>
+
+<!-- ══════════════════ APP ══════════════════ -->
+<div id="app">
+  <div class="layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:1.25rem;font-weight:600;color:#fff;letter-spacing:.1em;">SISGRA</span>
+      </div>
+
+      <div class="sidebar-section-label">General</div>
+      <div class="sidebar-item active" data-panel="dashboard">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" stroke-width="2"/><rect x="14" y="3" width="7" height="7" stroke-width="2"/><rect x="3" y="14" width="7" height="7" stroke-width="2"/><rect x="14" y="14" width="7" height="7" stroke-width="2"/></svg>
+        Dashboard
+      </div>
+
+      <div class="sidebar-section-label">Contenido</div>
+      <div class="sidebar-item" data-panel="nosotros">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4" stroke-width="2"/></svg>
+        Nosotros
+      </div>
+      <div class="sidebar-item" data-panel="clientes">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1"/></svg>
+        Clientes / Logos
+      </div>
+      <div class="sidebar-item" data-panel="blog">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828z"/></svg>
+        Blog / Noticias
+      </div>
+
+      <!-- PLANTILLAS -->
+      <div class="sidebar-section-label" style="display:flex;align-items:center;justify-content:space-between;padding-right:.875rem;">
+        <span>Plantillas</span>
+        <button class="btn-icon" id="btn-nueva-plantilla" title="Nueva plantilla">+</button>
+      </div>
+      <div class="sidebar-tpl-group" id="sidebar-tpl-list"></div>
+
+      <div class="sidebar-section-label">Configuración</div>
+      <div class="sidebar-item" data-panel="contacto">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        Datos de Contacto
+      </div>
+      <div class="sidebar-item" data-panel="seo">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35"/></svg>
+        SEO &amp; Meta
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar">AD</div>
+          <div>
+            <div class="sidebar-user-name">Administrador</div>
+            <div class="sidebar-user-role">Conectado</div>
+          </div>
+          <button class="sidebar-logout" id="logout-btn" title="Cerrar sesión">✕</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <span class="topbar-title" id="topbar-title">Dashboard</span>
+          <span class="api-indicator">
+            <span class="api-dot connected"></span>
+            <span>API conectada</span>
+          </span>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn-secondary" onclick="window.open('../index.html','_blank')">Vista previa</button>
+          <button class="btn-save" id="btn-guardar">Guardar cambios</button>
+        </div>
+      </div>
+
+      <div class="content-area">
+
+        <!-- DASHBOARD -->
+        <div class="panel active" id="panel-dashboard">
+          <div class="page-header">
+            <div class="page-title">Dashboard</div>
+            <div class="page-desc">Resumen general del sitio y estado del contenido.</div>
+          </div>
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-card-label">Plantillas</div>
+              <div class="stat-card-value" id="dash-tpl-count">2</div>
+              <div class="stat-card-sub"><span class="stat-card-indicator ind-green"></span>1 activa</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Posts de blog</div>
+              <div class="stat-card-value" id="dash-blog-count">—</div>
+              <div class="stat-card-sub" id="dash-blog-sub"><span class="stat-card-indicator ind-amber"></span>Cargando...</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Clientes / Logos</div>
+              <div class="stat-card-value" id="dash-clientes-count">—</div>
+              <div class="stat-card-sub"><span class="stat-card-indicator ind-blue"></span>Carrusel</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Última edición</div>
+              <div class="stat-card-value" style="font-size:1.1rem;padding-top:.4rem;">Hoy</div>
+              <div class="stat-card-sub" id="dash-date"></div>
+            </div>
+          </div>
+          <div class="section-card">
+            <div class="section-card-header"><span class="section-card-title">Accesos rápidos</span></div>
+            <div class="section-card-body" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+              <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-nuevo-post">+ Nuevo post de blog</button>
+              <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-nuevo-cliente">+ Agregar cliente</button>
+              <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-editar-home">Gestionar Plantillas</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- NOSOTROS -->
+        <div class="panel" id="panel-nosotros">
+          <div class="page-header"><div class="page-title">Nosotros</div><div class="page-desc">Información corporativa.</div></div>
+          <div class="section-card">
+            <div class="section-card-header"><span class="section-card-title">Texto corporativo</span></div>
+            <div class="section-card-body">
+              <div class="form-row"><div class="form-group"><label class="form-label">Eyebrow</label><input class="form-input" id="nosotros-eyebrow"/></div></div>
+              <div class="form-row"><div class="form-group"><label class="form-label">Título</label><input class="form-input" id="nosotros-titulo"/></div></div>
+              <div class="form-row"><div class="form-group"><label class="form-label">Descripción</label><textarea class="form-textarea" id="nosotros-descripcion"></textarea></div></div>
+              <div class="form-row cols-3">
+                <div class="form-group"><label class="form-label">Año fundación</label><input class="form-input" id="nosotros-anio"/></div>
+                <div class="form-group"><label class="form-label">Empleados</label><input class="form-input" id="nosotros-empleados"/></div>
+                <div class="form-group"><label class="form-label">Ciudad</label><input class="form-input" id="nosotros-ciudad"/></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CLIENTES -->
+        <div class="panel" id="panel-clientes">
+          <div class="page-header"><div class="page-title">Clientes / Logos</div><div class="page-desc">Logos del carrusel.</div></div>
+          <div class="section-card">
+            <div class="section-card-header"><span class="section-card-title">Configuración</span></div>
+            <div class="section-card-body">
+              <div class="toggle-row"><div><div class="toggle-name">Carrusel activo</div></div><label class="toggle"><input type="checkbox" id="clientes-carrusel" checked/><span class="toggle-slider"></span></label></div>
+            </div>
+          </div>
+          <div class="section-card">
+            <div class="section-card-header"><span class="section-card-title">Logos actuales</span><button class="btn-add" id="abrir-modal-cliente">+ Agregar</button></div>
+            <div class="section-card-body" style="padding:0;">
+              <table class="data-table">
+                <thead><tr><th>Nombre</th><th>Imagen</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody id="clientes-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- BLOG -->
+        <div class="panel" id="panel-blog">
+          <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;">
+            <div><div class="page-title">Blog / Noticias</div><div class="page-desc">Artículos del blog corporativo.</div></div>
+            <button class="btn-add" id="abrir-modal-blog">+ Nuevo artículo</button>
+          </div>
+          <div class="blog-grid" id="blog-list"></div>
+        </div>
+
+        <!-- PLANTILLAS overview -->
+        <div class="panel" id="panel-plantillas">
+          <div class="page-header">
+            <div class="page-title">Plantillas</div>
+            <div class="page-desc">Seleccioná una plantilla para editarla visualmente.</div>
+          </div>
+          <div class="section-card">
+            <div class="section-card-header">
+              <span class="section-card-title">Plantillas del sitio</span>
+              <button class="btn-add" id="btn-nueva-plantilla-main">+ Nueva plantilla</button>
+            </div>
+            <div class="section-card-body">
+              <div class="tpl-list" id="tpl-overview-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EDITOR de PLANTILLA -->
+        <div class="panel" id="panel-tpl-editor" style="padding:0;">
+          <div id="tpl-editor-inner"></div>
+        </div>
+
+        <!-- CONTACTO -->
+        <div class="panel" id="panel-contacto">
+          <div class="page-header"><div class="page-title">Datos de Contacto</div></div>
+          <div class="section-card">
+            <div class="section-card-header"><span class="section-card-title">Información</span></div>
+            <div class="section-card-body">
+              <div class="form-row cols-2">
+                <div class="form-group"><label class="form-label">Dirección</label><input class="form-input" id="contacto-direccion"/></div>
+                <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="contacto-telefono"/></div>
+              </div>
+              <div class="form-row cols-2">
+                <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="contacto-email"/></div>
+                <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="contacto-whatsapp"/></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEO -->
+        <div class="panel" id="panel-seo">
+          <div class="page-header"><div class="page-title">SEO &amp; Metadatos</div></div>
+          <div class="tab-row" id="seo-tabs">
+            <div class="tab-item active" data-seo="home">Inicio</div>
+            <div class="tab-item" data-seo="cableado">Cableado</div>
+            <div class="tab-item" data-seo="fibra">Fibra Óptica</div>
+            <div class="tab-item" data-seo="seguridad">Seguridad</div>
+            <div class="tab-item" data-seo="soporte">Soporte IT</div>
+          </div>
+          <div id="seo-tabs-content"></div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- MODALES -->
+<div class="modal-overlay" id="modal-cliente">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">Agregar Cliente</span><button class="modal-close" data-close="modal-cliente">×</button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="c-name" placeholder="Nombre cliente"/></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Imagen</label><input class="form-input" id="c-img" placeholder="/img/logo.png"/></div></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" data-close="modal-cliente">Cancelar</button>
+      <button class="btn-save" id="guardar-cliente-btn">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-blog">
+  <div class="modal" style="max-width:740px;">
+    <div class="modal-header"><span class="modal-title">Nuevo artículo</span><button class="modal-close" data-close="modal-blog">×</button></div>
+    <div class="modal-body">
+      <div class="form-row cols-2">
+        <div class="form-group"><label class="form-label">Título</label><input class="form-input" id="b-title" placeholder="Título del artículo"/></div>
+        <div class="form-group"><label class="form-label">Categoría</label>
+          <select class="form-select" id="b-categoria">
+            <option>Infraestructura</option><option>Fibra Óptica</option><option>Seguridad</option><option>Soporte IT</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Extracto</label><textarea class="form-textarea" id="b-extracto" placeholder="Resumen breve..."></textarea></div></div>
+      <div class="form-group" style="margin-bottom:1rem;">
+        <label class="form-label">Contenido</label>
+        <div class="rich-editor-toolbar">
+          <button class="rich-btn" data-cmd="bold"><b>N</b></button>
+          <button class="rich-btn" data-cmd="italic"><i>K</i></button>
+          <button class="rich-btn" data-cmd="h2">H2</button>
+          <button class="rich-btn" data-cmd="p">¶</button>
+        </div>
+        <div class="rich-editor-content" contenteditable="true" id="b-content"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" data-close="modal-blog">Cancelar</button>
+      <button class="btn-save" id="guardar-blog">Guardar artículo</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-nueva-plantilla">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header"><span class="modal-title">Nueva Plantilla</span><button class="modal-close" data-close="modal-nueva-plantilla">×</button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="np-name" placeholder="Ej.: Landing Servicios"/></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Descripción breve</label><input class="form-input" id="np-desc" placeholder="Ej.: Hero con métricas"/></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Estado inicial</label>
+        <select class="form-select" id="np-status"><option value="draft">Borrador</option><option value="active">Activa</option></select>
+      </div></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" data-close="modal-nueva-plantilla">Cancelar</button>
+      <button class="btn-save" id="crear-plantilla-btn">Crear plantilla</button>
+    </div>
+  </div>
+</div>
+
+<div class="save-notif success" id="save-notif"></div>
+
+<script>
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+const state = {
+  templates: [
+    {
+      id: 'tpl-1',
+      name: 'Clásica con Estadísticas',
+      desc: 'Hero lateral con cards de estadísticas',
+      status: 'active',
+      sections: [
+        { id: 's1', type: 'nav',     data: { logo: 'SISGRA', links: 'Servicios, Nosotros, Blog, Contacto', cta: 'Contactar' } },
+        { id: 's2', type: 'hero',    data: { badge: 'Infraestructura Corporativa de Elite', h1: 'Soluciones que', h2: 'Impulsan el Crecimiento', desc: 'Implementamos redes de alta velocidad, fibra óptica certificada y sistemas de gestión avanzados para la industria moderna.', btn1: 'Ver Soluciones', btn2: 'Nuestra Empresa', stat1_num: '+25', stat1_lbl: 'Años de Trayectoria', stat2_num: '+500', stat2_lbl: 'Clientes Activos' } },
+        { id: 's3', type: 'logos',   data: { title: 'Empresas que confían en nosotros' } },
+        { id: 's4', type: 'services',data: { eyebrow: 'Lo que hacemos', title: 'Nuestros Servicios' } },
+        { id: 's5', type: 'cta',     data: { title: '¿Listo para optimizar tu infraestructura?', desc: 'Contactanos hoy y recibí una consulta sin costo.', btn: 'Solicitar presupuesto' } },
+        { id: 's6', type: 'footer',  data: { brand: 'SISGRA', tagline: 'Infraestructura tecnológica para empresas líderes de Argentina.' } },
+      ]
+    },
+    {
+      id: 'tpl-2',
+      name: 'Texto Centrado con Métricas',
+      desc: 'Hero centrado, métricas y sección de noticias',
+      status: 'draft',
+      sections: [
+        { id: 's1', type: 'nav',          data: { logo: 'SISGRA', links: 'Servicios, Nosotros, Blog, Contacto', cta: 'Contactar' } },
+        { id: 's2', type: 'hero-centered',data: { badge: '25 años de confianza', h1: 'Infraestructura que no falla.\nConectamos el futuro de tu empresa.', desc: 'Diseñamos, instalamos y mantenemos la infraestructura tecnológica que impulsa a las empresas líderes de Argentina.', btn1: 'Solicitar presupuesto', btn2: 'Ver proyectos', m1_num: '+500', m1_lbl: 'Clientes activos', m2_num: '99.9%', m2_lbl: 'Disponibilidad', m3_num: '25+', m3_lbl: 'Años experiencia' } },
+        { id: 's3', type: 'logos',        data: { title: 'Empresas que confían en nosotros' } },
+        { id: 's4', type: 'about',        data: { eyebrow: 'Quiénes somos', title: 'Más de 25 años conectando empresas', desc: 'Desde 1999, SISGRA se especializa en diseñar, instalar y mantener infraestructura tecnológica de alto rendimiento para empresas de todos los sectores en Argentina.' } },
+        { id: 's5', type: 'news',         data: { eyebrow: 'Últimas noticias', title: 'Blog Corporativo' } },
+        { id: 's6', type: 'contact',      data: { eyebrow: 'Contacto', title: 'Hablemos de tu proyecto' } },
+        { id: 's7', type: 'footer',       data: { brand: 'SISGRA', tagline: 'Infraestructura tecnológica para empresas líderes de Argentina.' } },
+      ]
+    }
+  ],
+  currentTplId: null,
+  selectedSectionId: null,
+  viewport: 'desktop',
+};
+
+/* ══════════════════════════════════════════════
+   SECTION TYPE REGISTRY
+══════════════════════════════════════════════ */
+const SECTION_TYPES = [
+  {
+    group: 'Navegación',
+    items: [
+      { type: 'nav', label: 'Barra de Navegación', desc: 'Logo + links + CTA', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="36" height="20" rx="1"/><line x1="7" y1="11" x2="15" y2="11"/><line x1="18" y1="11" x2="24" y2="11"/><rect x="27" y="8" width="8" height="6" rx="1" fill="currentColor" stroke="none" opacity=".3"/></svg>` },
+    ]
+  },
+  {
+    group: 'Heroes',
+    items: [
+      { type: 'hero',          label: 'Hero Lateral',        desc: 'Texto izq. + stats der.', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="26" height="20" fill="currentColor" opacity=".08"/><rect x="30" y="2" width="8" height="9" fill="currentColor" opacity=".15"/><rect x="30" y="13" width="8" height="9" fill="currentColor" opacity=".15"/><rect x="4" y="5" width="10" height="2" rx="1" fill="currentColor" opacity=".4"/><rect x="4" y="9" width="18" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="4" y="15" width="8" height="3" rx="1" fill="currentColor" opacity=".2"/></svg>` },
+      { type: 'hero-centered', label: 'Hero Centrado',       desc: 'Texto centrado + métricas', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="36" height="20" fill="currentColor" opacity=".08"/><rect x="12" y="5" width="16" height="2" rx="1" fill="currentColor" opacity=".4"/><rect x="8" y="9" width="24" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="2" y="17" width="11" height="5"/><rect x="15" y="17" width="11" height="5"/><rect x="28" y="17" width="11" height="5"/></svg>` },
+    ]
+  },
+  {
+    group: 'Secciones',
+    items: [
+      { type: 'services', label: 'Servicios / Cards',   desc: 'Grid de 3 tarjetas de servicios', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="8" width="11" height="14"/><rect x="15" y="8" width="11" height="14"/><rect x="28" y="8" width="10" height="14"/><rect x="4" y="3" width="7" height="3" rx="1" fill="currentColor" opacity=".3"/></svg>` },
+      { type: 'about',    label: 'Nosotros / About',    desc: 'Texto + imagen lateral', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="17" height="16"/><rect x="21" y="4" width="17" height="16" fill="currentColor" opacity=".15"/><rect x="4" y="7" width="6" height="1" rx=".5" fill="currentColor" opacity=".4"/><rect x="4" y="10" width="12" height="4" rx="1" fill="currentColor" opacity=".2"/></svg>` },
+      { type: 'news',     label: 'Blog / Noticias',     desc: 'Grid de 3 artículos', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="11" height="20"/><rect x="15" y="2" width="11" height="20"/><rect x="28" y="2" width="10" height="20"/><rect x="4" y="4" width="7" height="5" fill="currentColor" opacity=".15"/></svg>` },
+      { type: 'logos',    label: 'Carrusel de Logos',   desc: 'Logos de clientes', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="8" width="7" height="8"/><rect x="12" y="8" width="7" height="8"/><rect x="22" y="8" width="7" height="8"/><rect x="32" y="8" width="6" height="8"/></svg>` },
+      { type: 'contact',  label: 'Contacto',            desc: 'Info + formulario', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="17" height="16"/><rect x="21" y="4" width="17" height="16"/><rect x="23" y="7" width="13" height="2" rx="1" fill="currentColor" opacity=".2"/><rect x="23" y="11" width="13" height="2" rx="1" fill="currentColor" opacity=".2"/><rect x="23" y="15" width="7" height="3" rx="1" fill="currentColor" opacity=".3"/></svg>` },
+      { type: 'cta',      label: 'Banda CTA',           desc: 'Call to action horizontal', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="36" height="12" fill="currentColor" opacity=".1"/><rect x="5" y="10" width="16" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="27" y="9" width="10" height="6" rx="1" fill="currentColor" opacity=".4"/></svg>` },
+    ]
+  },
+  {
+    group: 'Cierre',
+    items: [
+      { type: 'footer',  label: 'Footer',    desc: 'Pie de página con links', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="36" height="20" fill="currentColor" opacity=".06"/><rect x="4" y="5" width="10" height="2" rx="1" fill="currentColor" opacity=".3"/><rect x="4" y="9" width="7" height="1" rx=".5" fill="currentColor" opacity=".2"/><rect x="4" y="11" width="7" height="1" rx=".5" fill="currentColor" opacity=".2"/><line x1="2" y1="20" x2="38" y2="20" stroke-opacity=".3"/></svg>` },
+      { type: 'spacer',  label: 'Espacio',   desc: 'Separador en blanco', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="10" y1="12" x2="30" y2="12" stroke-dasharray="3 2" stroke-opacity=".4"/></svg>` },
+    ]
+  },
+];
+
+/* ══════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════ */
+function uid(){ return 's' + Date.now().toString(36) + Math.random().toString(36).slice(2,5); }
+
+function showNotif(msg, type='success'){
+  const n = document.getElementById('save-notif');
+  n.className = `save-notif ${type}`;
+  n.textContent = msg;
+  n.classList.add('show');
+  clearTimeout(n._t);
+  n._t = setTimeout(()=>n.classList.remove('show'), 3000);
+}
+
+function openModal(id){ document.getElementById(id)?.classList.add('open'); }
+function closeModal(id){ document.getElementById(id)?.classList.remove('open'); }
+
+/* ══════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════ */
+function showPanel(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+  document.querySelectorAll('.sidebar-tpl-item').forEach(i=>i.classList.remove('active'));
+
+  const panel = document.getElementById('panel-' + id);
+  if(panel) panel.classList.add('active');
+
+  const sideEl = document.querySelector(`.sidebar-item[data-panel="${id}"]`);
+  if(sideEl) sideEl.classList.add('active');
+
+  const NAMES = {
+    dashboard:'Dashboard', nosotros:'Nosotros', clientes:'Clientes / Logos',
+    blog:'Blog / Noticias', contacto:'Datos de Contacto', seo:'SEO & Meta',
+    plantillas:'Plantillas', 'tpl-editor':'Editor de Plantilla',
+  };
+  document.getElementById('topbar-title').textContent = NAMES[id] || id;
+
+  // The editor panel has no padding so we override content-area
+  const ca = document.querySelector('.content-area');
+  if(id === 'tpl-editor'){
+    ca.style.padding = '0';
+    ca.style.overflow = 'hidden';
+  } else {
+    ca.style.padding = '2rem';
+    ca.style.overflow = 'auto';
+  }
+}
+
+/* ══════════════════════════════════════════════
+   SIDEBAR TEMPLATES
+══════════════════════════════════════════════ */
+function renderSidebarTemplates(){
+  const el = document.getElementById('sidebar-tpl-list');
+  el.innerHTML = state.templates.map(t => `
+    <div class="sidebar-tpl-item ${t.id === state.currentTplId ? 'active' : ''}" data-tpl-id="${t.id}">
+      <span class="sidebar-tpl-dot"></span>
+      <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.name}</span>
+      ${t.status==='active' ? '<span class="tpl-live-pill">LIVE</span>' : ''}
+    </div>
+  `).join('');
+
+  el.querySelectorAll('.sidebar-tpl-item').forEach(item => {
+    item.addEventListener('click', () => {
+      state.currentTplId = item.dataset.tplId;
+      renderSidebarTemplates();
+      openTemplateEditor(state.currentTplId);
+    });
+  });
+}
+
+/* ══════════════════════════════════════════════
+   TEMPLATE OVERVIEW
+══════════════════════════════════════════════ */
+function renderTemplateOverview(){
+  const list = document.getElementById('tpl-overview-list');
+  list.innerHTML = state.templates.map((t,i) => `
+    <div class="tpl-list-item ${t.status==='active'?'active-tpl':''}" data-tpl-id="${t.id}">
+      <div class="tpl-list-num">0${i+1}</div>
+      <div class="tpl-list-info">
+        <div class="tpl-list-name">${t.name}</div>
+        <div class="tpl-list-desc">${t.desc} — <em>${t.sections.length} secciones</em></div>
+      </div>
+      <span class="tpl-list-status ${t.status==='active'?'tpl-status-active':'tpl-status-draft'}">${t.status==='active'?'Activa':'Borrador'}</span>
+      <div class="tpl-list-actions">
+        ${t.status!=='active'?`<button class="btn-edit-small" onclick="setActiveTpl('${t.id}')">Activar</button>`:''}
+        <button class="btn-edit-small" onclick="openTemplateEditorFromList('${t.id}')">Editar</button>
+        ${state.templates.length>1?`<button class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="deleteTpl('${t.id}')">Eliminar</button>`:''}
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('dash-tpl-count').textContent = state.templates.length;
+}
+
+window.setActiveTpl = function(id){
+  state.templates.forEach(t => t.status = t.id===id ? 'active' : 'draft');
+  renderTemplateOverview();
+  renderSidebarTemplates();
+  showNotif('✓ Plantilla activada');
+};
+
+window.deleteTpl = function(id){
+  if(!confirm('¿Eliminar esta plantilla?')) return;
+  state.templates = state.templates.filter(t=>t.id!==id);
+  if(state.currentTplId===id) state.currentTplId = null;
+  renderTemplateOverview();
+  renderSidebarTemplates();
+  showNotif('✓ Plantilla eliminada');
+};
+
+window.openTemplateEditorFromList = function(id){
+  state.currentTplId = id;
+  renderSidebarTemplates();
+  openTemplateEditor(id);
+};
+
+/* ══════════════════════════════════════════════
+   SECTION HTML RENDERERS
+══════════════════════════════════════════════ */
+function renderSectionHTML(sec){
+  const d = sec.data || {};
+  switch(sec.type){
+    case 'nav': return `
+      <div class="sec-nav">
+        <div class="nav-logo" contenteditable="true" data-sec="${sec.id}" data-field="logo">${d.logo||'LOGO'}</div>
+        <div class="nav-links">
+          ${(d.links||'Link 1, Link 2, Link 3').split(',').map(l=>`<span class="nav-link">${l.trim()}</span>`).join('')}
+        </div>
+        <div class="nav-cta" contenteditable="true" data-sec="${sec.id}" data-field="cta">${d.cta||'Contactar'}</div>
+      </div>`;
+
+    case 'hero': return `
+      <div class="sec-hero">
+        <div class="hero-left">
+          <div class="hero-badge" contenteditable="true" data-sec="${sec.id}" data-field="badge">${d.badge||'Badge'}</div>
+          <div class="hero-h1" contenteditable="true" data-sec="${sec.id}" data-field="h1">${d.h1||'Título principal'}</div>
+          <div class="hero-h2" contenteditable="true" data-sec="${sec.id}" data-field="h2">${d.h2||'Subtítulo'}</div>
+          <div class="hero-desc" contenteditable="true" data-sec="${sec.id}" data-field="desc">${d.desc||'Descripción del hero...'}</div>
+          <div class="hero-btns">
+            <div class="hbtn-primary" contenteditable="true" data-sec="${sec.id}" data-field="btn1">${d.btn1||'Botón primario'}</div>
+            <div class="hbtn-secondary" contenteditable="true" data-sec="${sec.id}" data-field="btn2">${d.btn2||'Botón secundario'}</div>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="stat-box">
+            <div class="stat-num" contenteditable="true" data-sec="${sec.id}" data-field="stat1_num">${d.stat1_num||'+25'}</div>
+            <div class="stat-lbl" contenteditable="true" data-sec="${sec.id}" data-field="stat1_lbl">${d.stat1_lbl||'Label'}</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num" contenteditable="true" data-sec="${sec.id}" data-field="stat2_num">${d.stat2_num||'+500'}</div>
+            <div class="stat-lbl" contenteditable="true" data-sec="${sec.id}" data-field="stat2_lbl">${d.stat2_lbl||'Label'}</div>
+          </div>
+        </div>
+      </div>`;
+
+    case 'hero-centered': return `
+      <div class="sec-hero-centered">
+        <div class="hero-badge" contenteditable="true" data-sec="${sec.id}" data-field="badge">${d.badge||'Badge'}</div>
+        <div class="hero-h1" contenteditable="true" data-sec="${sec.id}" data-field="h1">${d.h1||'Título centrado.'}</div>
+        <div class="hero-desc" contenteditable="true" data-sec="${sec.id}" data-field="desc">${d.desc||'Descripción...'}</div>
+        <div class="hero-btns">
+          <div class="hbtn-primary" contenteditable="true" data-sec="${sec.id}" data-field="btn1">${d.btn1||'Botón primario'}</div>
+          <div class="hbtn-secondary" contenteditable="true" data-sec="${sec.id}" data-field="btn2">${d.btn2||'Botón secundario'}</div>
+        </div>
+        <div class="metric-row" style="width:100%;max-width:700px;">
+          <div class="metric-box">
+            <div class="metric-num" contenteditable="true" data-sec="${sec.id}" data-field="m1_num">${d.m1_num||'+500'}</div>
+            <div class="metric-lbl" contenteditable="true" data-sec="${sec.id}" data-field="m1_lbl">${d.m1_lbl||'Label'}</div>
+          </div>
+          <div class="metric-box">
+            <div class="metric-num" contenteditable="true" data-sec="${sec.id}" data-field="m2_num">${d.m2_num||'99.9%'}</div>
+            <div class="metric-lbl" contenteditable="true" data-sec="${sec.id}" data-field="m2_lbl">${d.m2_lbl||'Label'}</div>
+          </div>
+          <div class="metric-box" style="border-right:none;">
+            <div class="metric-num" contenteditable="true" data-sec="${sec.id}" data-field="m3_num">${d.m3_num||'25+'}</div>
+            <div class="metric-lbl" contenteditable="true" data-sec="${sec.id}" data-field="m3_lbl">${d.m3_lbl||'Label'}</div>
+          </div>
+        </div>
+      </div>`;
+
+    case 'services': return `
+      <div class="sec-services">
+        <div class="sec-eyebrow" contenteditable="true" data-sec="${sec.id}" data-field="eyebrow">${d.eyebrow||'Lo que hacemos'}</div>
+        <div class="sec-title" contenteditable="true" data-sec="${sec.id}" data-field="title">${d.title||'Nuestros Servicios'}</div>
+        <div class="cards-grid">
+          ${['Cableado Estructurado','Fibra Óptica','Ciberseguridad'].map(s=>`
+            <div class="svc-card">
+              <div class="svc-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+              <div class="svc-name">${s}</div>
+              <div class="svc-desc">Solución profesional de alta disponibilidad para empresas que exigen continuidad operativa.</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+
+    case 'logos': return `
+      <div class="sec-logos">
+        <div class="logos-title" contenteditable="true" data-sec="${sec.id}" data-field="title">${d.title||'Empresas que confían en nosotros'}</div>
+        <div class="logos-track">
+          ${['Cliente A','Cliente B','Cliente C','Cliente D','Cliente E'].map(c=>`<div class="logo-pill">${c}</div>`).join('')}
+        </div>
+      </div>`;
+
+    case 'news': return `
+      <div class="sec-news">
+        <div class="sec-eyebrow" contenteditable="true" data-sec="${sec.id}" data-field="eyebrow">${d.eyebrow||'Blog'}</div>
+        <div class="sec-title" contenteditable="true" data-sec="${sec.id}" data-field="title">${d.title||'Últimas Noticias'}</div>
+        <div class="news-grid">
+          ${['Infraestructura','Fibra Óptica','Seguridad'].map((c,i)=>`
+            <div class="news-card">
+              <div class="news-img"><span class="news-cat">${c}</span></div>
+              <div class="news-body">
+                <div class="news-title">Título del artículo ${i+1} de ejemplo en el blog</div>
+                <div class="news-meta">12 May 2026 · 4 min lectura</div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+
+    case 'about': return `
+      <div class="sec-about">
+        <div>
+          <div class="sec-eyebrow" contenteditable="true" data-sec="${sec.id}" data-field="eyebrow">${d.eyebrow||'Quiénes somos'}</div>
+          <div class="sec-title" contenteditable="true" data-sec="${sec.id}" data-field="title">${d.title||'Nuestra Historia'}</div>
+          <div class="sec-desc" contenteditable="true" data-sec="${sec.id}" data-field="desc">${d.desc||'Descripción de la empresa...'}</div>
+        </div>
+        <div class="about-img">Imagen corporativa</div>
+      </div>`;
+
+    case 'cta': return `
+      <div class="sec-cta">
+        <div class="cta-left">
+          <div class="cta-title" contenteditable="true" data-sec="${sec.id}" data-field="title">${d.title||'¿Listo para empezar?'}</div>
+          <div class="cta-desc" contenteditable="true" data-sec="${sec.id}" data-field="desc">${d.desc||'Contactanos sin compromiso.'}</div>
+        </div>
+        <div class="cta-btn" contenteditable="true" data-sec="${sec.id}" data-field="btn">${d.btn||'Contactar'}</div>
+      </div>`;
+
+    case 'contact': return `
+      <div class="sec-contact">
+        <div class="contact-left">
+          <div class="sec-eyebrow" contenteditable="true" data-sec="${sec.id}" data-field="eyebrow">${d.eyebrow||'Contacto'}</div>
+          <div class="sec-title" contenteditable="true" data-sec="${sec.id}" data-field="title">${d.title||'Hablemos'}</div>
+          <div class="contact-info">📍 Rosario, Santa Fe<br>📞 +54 341 000-0000<br>✉ info@sisgra.com</div>
+        </div>
+        <div class="contact-form">
+          <input class="cf-input" placeholder="Nombre completo" readonly/>
+          <input class="cf-input" placeholder="Email corporativo" readonly/>
+          <input class="cf-input" placeholder="Empresa" readonly/>
+          <textarea class="cf-input" style="min-height:80px;resize:none;" placeholder="¿En qué podemos ayudarte?" readonly></textarea>
+          <div class="cf-btn" contenteditable="true" data-sec="${sec.id}" data-field="cta_btn">${d.cta_btn||'Enviar mensaje'}</div>
+        </div>
+      </div>`;
+
+    case 'footer': return `
+      <div class="sec-footer">
+        <div class="footer-top">
+          <div>
+            <div class="footer-brand" contenteditable="true" data-sec="${sec.id}" data-field="brand">${d.brand||'LOGO'}</div>
+            <div class="footer-tagline" contenteditable="true" data-sec="${sec.id}" data-field="tagline">${d.tagline||'Tagline de la empresa.'}</div>
+          </div>
+          <div>
+            <div class="footer-col-title">Servicios</div>
+            <div class="footer-link">Cableado Estructurado</div>
+            <div class="footer-link">Fibra Óptica</div>
+            <div class="footer-link">Seguridad</div>
+          </div>
+          <div>
+            <div class="footer-col-title">Empresa</div>
+            <div class="footer-link">Nosotros</div>
+            <div class="footer-link">Blog</div>
+            <div class="footer-link">Contacto</div>
+          </div>
+          <div>
+            <div class="footer-col-title">Contacto</div>
+            <div class="footer-link">Rosario, SF</div>
+            <div class="footer-link">info@sisgra.com</div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <div class="footer-copy">© 2026 SISGRA. Todos los derechos reservados.</div>
+        </div>
+      </div>`;
+
+    case 'spacer': return `<div class="sec-spacer" style="height:${d.height||60}px;display:flex;align-items:center;justify-content:center;"><span style="font-size:.6rem;color:#cbd5e1;letter-spacing:.15em;text-transform:uppercase;font-weight:700;">Espacio — ${d.height||60}px</span></div>`;
+
+    default: return `<div style="padding:2rem;text-align:center;color:#94a3b8;">Sección: ${sec.type}</div>`;
+  }
+}
+
+/* ══════════════════════════════════════════════
+   PROPS PANEL
+══════════════════════════════════════════════ */
+function buildPropsPanel(secId, tpl){
+  const panel = document.getElementById('props-panel-body');
+  if(!panel) return;
+  if(!secId){ panel.innerHTML = `<div class="props-empty">Hacé clic en una sección para editar sus propiedades</div>`; return; }
+
+  const sec = tpl.sections.find(s=>s.id===secId);
+  if(!sec){ panel.innerHTML = `<div class="props-empty">Sección no encontrada</div>`; return; }
+
+  const d = sec.data || {};
+  const typeInfo = SECTION_TYPES.flatMap(g=>g.items).find(i=>i.type===sec.type);
+
+  let fields = '';
+
+  // Generic fields based on section type
+  const fieldMap = {
+    nav: [['logo','Logo/Marca',''],['links','Links (separados por coma)','textarea'],['cta','Texto botón CTA','']],
+    hero: [['badge','Badge superior',''],['h1','Título línea 1',''],['h2','Título línea 2 (acento)',''],['desc','Descripción','textarea'],['btn1','Botón primario',''],['btn2','Botón secundario',''],['stat1_num','Estadística 1 — número',''],['stat1_lbl','Estadística 1 — etiqueta',''],['stat2_num','Estadística 2 — número',''],['stat2_lbl','Estadística 2 — etiqueta','']],
+    'hero-centered': [['badge','Badge',''],['h1','Título','textarea'],['desc','Descripción','textarea'],['btn1','Botón primario',''],['btn2','Botón secundario',''],['m1_num','Métrica 1 — num',''],['m1_lbl','Métrica 1 — label',''],['m2_num','Métrica 2 — num',''],['m2_lbl','Métrica 2 — label',''],['m3_num','Métrica 3 — num',''],['m3_lbl','Métrica 3 — label','']],
+    services: [['eyebrow','Eyebrow',''],['title','Título sección','']],
+    logos: [['title','Título','']],
+    news: [['eyebrow','Eyebrow',''],['title','Título sección','']],
+    about: [['eyebrow','Eyebrow',''],['title','Título',''],['desc','Descripción','textarea']],
+    cta: [['title','Título',''],['desc','Descripción',''],['btn','Texto botón','']],
+    contact: [['eyebrow','Eyebrow',''],['title','Título',''],['cta_btn','Texto botón form','']],
+    footer: [['brand','Nombre/Logo',''],['tagline','Tagline','']],
+    spacer: [['height','Altura (px)','']],
+  };
+
+  const flds = fieldMap[sec.type] || [];
+
+  fields = flds.map(([key, label, inputType]) => {
+    const val = (d[key]||'').replace(/"/g,'&quot;');
+    if(inputType==='textarea'){
+      return `<div class="props-field"><label class="props-label">${label}</label><textarea class="props-textarea" data-sec="${secId}" data-field="${key}" oninput="propsUpdate(this)">${d[key]||''}</textarea></div>`;
+    }
+    return `<div class="props-field"><label class="props-label">${label}</label><input class="props-input" value="${val}" data-sec="${secId}" data-field="${key}" oninput="propsUpdate(this)"/></div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div class="props-section">
+      <div class="props-section-title">${typeInfo?.label||sec.type}</div>
+      ${fields||'<div style="font-size:.75rem;color:var(--slate-400);">Editá el contenido directamente en el canvas haciendo clic.</div>'}
+    </div>
+  `;
+}
+
+window.propsUpdate = function(el){
+  const secId = el.dataset.sec;
+  const field = el.dataset.field;
+  const tpl = state.templates.find(t=>t.id===state.currentTplId);
+  if(!tpl) return;
+  const sec = tpl.sections.find(s=>s.id===secId);
+  if(!sec) return;
+  sec.data[field] = el.value;
+  // Re-render just this section's inner HTML
+  const sectionEl = document.querySelector(`.section-slot[data-sec-id="${secId}"] .section-render`);
+  if(sectionEl){
+    const active = document.activeElement;
+    sectionEl.innerHTML = renderSectionHTML(sec);
+    attachInlineEdits(sec, sectionEl, tpl.id);
+  }
+};
+
+/* ══════════════════════════════════════════════
+   INLINE EDITING (contenteditable → state)
+══════════════════════════════════════════════ */
+function attachInlineEdits(sec, container, tplId){
+  container.querySelectorAll('[contenteditable="true"]').forEach(el=>{
+    el.addEventListener('focus', ()=>{
+      // Suppress section click while editing
+      el.dataset.editing = '1';
+    });
+    el.addEventListener('blur', ()=>{
+      delete el.dataset.editing;
+      const field = el.dataset.field;
+      const sid = el.dataset.sec;
+      const tpl = state.templates.find(t=>t.id===tplId);
+      if(!tpl) return;
+      const s = tpl.sections.find(s=>s.id===sid);
+      if(!s) return;
+      s.data[field] = el.innerText.trim();
+      // Sync props panel
+      const propEl = document.querySelector(`.props-input[data-sec="${sid}"][data-field="${field}"], .props-textarea[data-sec="${sid}"][data-field="${field}"]`);
+      if(propEl) propEl.value = s.data[field];
+    });
+    // Prevent Enter creating block elements
+    el.addEventListener('keydown', e=>{
+      if(e.key==='Enter'){ e.preventDefault(); el.blur(); }
+    });
+  });
+}
+
+/* ══════════════════════════════════════════════
+   OPEN TEMPLATE EDITOR
+══════════════════════════════════════════════ */
+function openTemplateEditor(tplId){
+  const tpl = state.templates.find(t=>t.id===tplId);
+  if(!tpl) return;
+  state.selectedSectionId = null;
+
+  showPanel('tpl-editor');
+
+  document.querySelectorAll('.sidebar-tpl-item').forEach(i=>{
+    i.classList.toggle('active', i.dataset.tplId===tplId);
+  });
+  document.getElementById('topbar-title').textContent = `Plantilla — ${tpl.name}`;
+
+  const inner = document.getElementById('tpl-editor-inner');
+  inner.innerHTML = `
+    <!-- TOP BAR -->
+    <div style="background:var(--white);border-bottom:1px solid var(--slate-200);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <span style="font-size:.5rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;background:var(--sisgra-blue);color:#fff;padding:.2rem .6rem;">Plantilla</span>
+        <span style="font-size:1rem;font-weight:900;color:var(--sisgra-blue);letter-spacing:-.03em;font-style:italic;">${tpl.name}</span>
+        <span style="font-size:.5rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:.2rem .6rem;${tpl.status==='active'?'background:#dcfce7;color:#166534;':'background:#fef3c7;color:#92400e;'}">${tpl.status==='active'?'Activa':'Borrador'}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <!-- Viewport toggle -->
+        <div class="viewport-switch">
+          <button class="vp-btn ${state.viewport==='desktop'?'active':''}" onclick="setViewport('desktop')">🖥 Escritorio</button>
+          <button class="vp-btn ${state.viewport==='tablet'?'active':''}" onclick="setViewport('tablet')">⬜ Tablet</button>
+          <button class="vp-btn ${state.viewport==='mobile'?'active':''}" onclick="setViewport('mobile')">📱 Móvil</button>
+        </div>
+        ${tpl.status!=='active'?`<button class="btn-secondary" style="font-size:.5625rem;" onclick="setActiveTpl('${tpl.id}')">Activar</button>`:''}
+        <button class="btn-save" onclick="saveTpl('${tpl.id}')">Guardar plantilla</button>
+      </div>
+    </div>
+
+    <!-- EDITOR SHELL -->
+    <div class="editor-shell" id="editor-shell">
+
+      <!-- LEFT: section tray -->
+      <div class="section-tray">
+        <div class="tray-header">Módulos</div>
+        <input class="tray-search" id="tray-search" placeholder="Buscar sección..."/>
+        <div class="tray-body" id="tray-body">
+          ${SECTION_TYPES.map(group=>`
+            <div class="tray-group-label">${group.group}</div>
+            ${group.items.map(item=>`
+              <div class="tray-chip" draggable="true" data-stype="${item.type}" id="chip-${item.type}">
+                <div class="tray-chip-thumb">${item.icon}</div>
+                <div class="tray-chip-info">
+                  <div class="tray-chip-name">${item.label}</div>
+                  <div class="tray-chip-desc">${item.desc}</div>
+                </div>
+              </div>
+            `).join('')}
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- CENTER: page canvas -->
+      <div class="page-canvas-wrap">
+        <div class="canvas-ruler">
+          <span class="ruler-label">Vista previa de página</span>
+          <span class="ruler-px" id="vp-label">1200px — Escritorio</span>
+          <span class="ruler-label">· Hacé clic en una sección para seleccionarla · Arrastrá para reordenar</span>
+        </div>
+        <div class="canvas-scroll">
+          <div class="page-frame ${state.viewport}" id="page-frame">
+            <div class="page-sections" id="page-sections">
+              <!-- Sections rendered here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: properties panel -->
+      <div class="props-panel">
+        <div class="props-header">
+          <span>Propiedades</span>
+          <span id="props-section-type" style="font-size:.45rem;color:var(--blue-400);letter-spacing:.15em;font-weight:700;"></span>
+        </div>
+        <div class="props-body" id="props-panel-body">
+          <div class="props-empty">Hacé clic en una sección del canvas para editar sus propiedades aquí</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  renderPageSections(tplId);
+  initTrayDragDrop(tplId);
+  initTraySearch();
+}
+
+/* ══════════════════════════════════════════════
+   RENDER PAGE SECTIONS
+══════════════════════════════════════════════ */
+function renderPageSections(tplId){
+  const tpl = state.templates.find(t=>t.id===tplId);
+  const container = document.getElementById('page-sections');
+  if(!container||!tpl) return;
+
+  if(tpl.sections.length===0){
+    container.innerHTML = `
+      <div class="canvas-empty-state">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/></svg>
+        <p>Arrastrá secciones desde el panel izquierdo<br>para construir tu página</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = tpl.sections.map((sec, idx) => `
+    <div class="section-slot ${state.selectedSectionId===sec.id?'selected-section':''}" data-sec-id="${sec.id}" data-index="${idx}">
+      <div class="section-controls">
+        <button class="sc-btn drag-handle" title="Mover sección" data-sec-id="${sec.id}">⠿</button>
+        <button class="sc-btn" title="Subir" onclick="moveSectionUp('${tplId}','${sec.id}')">↑</button>
+        <button class="sc-btn" title="Bajar" onclick="moveSectionDown('${tplId}','${sec.id}')">↓</button>
+        <button class="sc-btn" title="Duplicar" onclick="duplicateSection('${tplId}','${sec.id}')">⧉</button>
+        <button class="sc-btn del" title="Eliminar sección" onclick="removeSection('${tplId}','${sec.id}')">✕</button>
+      </div>
+      <div class="section-render">${renderSectionHTML(sec)}</div>
+    </div>
+  `).join('');
+
+  // Attach inline editing and section selection
+  tpl.sections.forEach(sec=>{
+    const slot = container.querySelector(`.section-slot[data-sec-id="${sec.id}"]`);
+    if(!slot) return;
+    const render = slot.querySelector('.section-render');
+    attachInlineEdits(sec, render, tplId);
+
+    // Click to select section
+    slot.addEventListener('click', e=>{
+      // Don't trigger if clicking controls or editing
+      if(e.target.closest('.section-controls')) return;
+      if(e.target.dataset.editing) return;
+
+      state.selectedSectionId = sec.id;
+      // Highlight
+      document.querySelectorAll('.section-slot').forEach(s=>s.classList.remove('selected-section'));
+      slot.classList.add('selected-section');
+      // Load props
+      const typeLabel = SECTION_TYPES.flatMap(g=>g.items).find(i=>i.type===sec.type)?.label||sec.type;
+      const ptEl = document.getElementById('props-section-type');
+      if(ptEl) ptEl.textContent = typeLabel;
+      buildPropsPanel(sec.id, tpl);
+    });
+  });
+
+  // Init drag-reorder on section handles
+  initSectionReorder(tplId);
+}
+
+/* ══════════════════════════════════════════════
+   SECTION REORDER (drag handle)
+══════════════════════════════════════════════ */
+let dragReorderSrcId = null;
+
+function initSectionReorder(tplId){
+  const container = document.getElementById('page-sections');
+  if(!container) return;
+  const tpl = state.templates.find(t=>t.id===tplId);
+
+  container.querySelectorAll('.sc-btn.drag-handle').forEach(handle=>{
+    const slot = handle.closest('.section-slot');
+    slot.setAttribute('draggable','true');
+
+    slot.addEventListener('dragstart', e=>{
+      if(!e.target.closest('.drag-handle')) { e.preventDefault(); return; }
+      dragReorderSrcId = slot.dataset.secId;
+      slot.classList.add('being-dragged');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', 'reorder');
+    });
+
+    slot.addEventListener('dragend', ()=>{
+      slot.classList.remove('being-dragged');
+      document.querySelectorAll('.section-slot').forEach(s=>{
+        s.classList.remove('drag-target');
+      });
+      dragReorderSrcId = null;
+    });
+
+    slot.addEventListener('dragover', e=>{
+      e.preventDefault();
+      if(!dragReorderSrcId || dragReorderSrcId===slot.dataset.secId) return;
+      e.dataTransfer.dropEffect = 'move';
+      document.querySelectorAll('.section-slot').forEach(s=>s.classList.remove('drag-target'));
+      slot.classList.add('drag-target');
+    });
+
+    slot.addEventListener('dragleave', ()=>{ slot.classList.remove('drag-target'); });
+
+    slot.addEventListener('drop', e=>{
+      e.preventDefault();
+      slot.classList.remove('drag-target');
+      const toId = slot.dataset.secId;
+      if(!dragReorderSrcId || dragReorderSrcId===toId) return;
+      const fromIdx = tpl.sections.findIndex(s=>s.id===dragReorderSrcId);
+      const toIdx   = tpl.sections.findIndex(s=>s.id===toId);
+      const [moved] = tpl.sections.splice(fromIdx,1);
+      tpl.sections.splice(toIdx,0,moved);
+      renderPageSections(tplId);
+      if(state.selectedSectionId) buildPropsPanel(state.selectedSectionId, tpl);
+    });
+  });
+}
+
+/* ══════════════════════════════════════════════
+   SECTION OPERATIONS
+══════════════════════════════════════════════ */
+window.moveSectionUp = function(tplId, secId){
+  const tpl = state.templates.find(t=>t.id===tplId);
+  const idx = tpl.sections.findIndex(s=>s.id===secId);
+  if(idx<=0) return;
+  [tpl.sections[idx-1], tpl.sections[idx]] = [tpl.sections[idx], tpl.sections[idx-1]];
+  renderPageSections(tplId);
+};
+
+window.moveSectionDown = function(tplId, secId){
+  const tpl = state.templates.find(t=>t.id===tplId);
+  const idx = tpl.sections.findIndex(s=>s.id===secId);
+  if(idx>=tpl.sections.length-1) return;
+  [tpl.sections[idx], tpl.sections[idx+1]] = [tpl.sections[idx+1], tpl.sections[idx]];
+  renderPageSections(tplId);
+};
+
+window.duplicateSection = function(tplId, secId){
+  const tpl = state.templates.find(t=>t.id===tplId);
+  const idx = tpl.sections.findIndex(s=>s.id===secId);
+  const original = tpl.sections[idx];
+  const copy = { ...original, id: uid(), data: { ...original.data } };
+  tpl.sections.splice(idx+1, 0, copy);
+  renderPageSections(tplId);
+  showNotif('✓ Sección duplicada');
+};
+
+window.removeSection = function(tplId, secId){
+  const tpl = state.templates.find(t=>t.id===tplId);
+  tpl.sections = tpl.sections.filter(s=>s.id!==secId);
+  if(state.selectedSectionId===secId) state.selectedSectionId=null;
+  renderPageSections(tplId);
+  buildPropsPanel(null, tpl);
+  showNotif('✓ Sección eliminada');
+};
+
+window.saveTpl = function(id){
+  showNotif('✓ Plantilla guardada correctamente');
+};
+
+/* ══════════════════════════════════════════════
+   VIEWPORT SWITCH
+══════════════════════════════════════════════ */
+window.setViewport = function(vp){
+  state.viewport = vp;
+  const frame = document.getElementById('page-frame');
+  if(!frame) return;
+  frame.className = `page-frame ${vp}`;
+  // Update buttons
+  document.querySelectorAll('.vp-btn').forEach(b=>{
+    b.classList.toggle('active', b.textContent.toLowerCase().includes(vp==='desktop'?'escr':vp==='tablet'?'tab':'móv'));
+  });
+  const labels = { desktop:'1200px — Escritorio', tablet:'768px — Tablet', mobile:'375px — Móvil' };
+  const lbl = document.getElementById('vp-label');
+  if(lbl) lbl.textContent = labels[vp]||'';
+};
+
+/* ══════════════════════════════════════════════
+   TRAY DRAG DROP (add new section to page)
+══════════════════════════════════════════════ */
+let dragNewType = null;
+
+function initTrayDragDrop(tplId){
+  const trayBody = document.getElementById('tray-body');
+  const pageFrame = document.getElementById('page-frame');
+  const tpl = state.templates.find(t=>t.id===tplId);
+
+  // Also allow double-click to append
+  trayBody.querySelectorAll('.tray-chip').forEach(chip=>{
+    chip.addEventListener('dragstart', e=>{
+      dragNewType = chip.dataset.stype;
+      chip.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'copy';
+      e.dataTransfer.setData('text/plain', 'new-section');
+    });
+    chip.addEventListener('dragend', ()=>{
+      chip.classList.remove('dragging');
+      dragNewType = null;
+    });
+    chip.addEventListener('dblclick', ()=>{
+      addSectionToTemplate(tplId, chip.dataset.stype, null);
+    });
+  });
+
+  // Page sections as drop target
+  const pageSecContainer = document.getElementById('page-sections');
+  if(!pageSecContainer) return;
+
+  pageSecContainer.addEventListener('dragover', e=>{
+    if(!dragNewType) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    pageSecContainer.style.outline = '3px dashed #60a5fa';
+  });
+  pageSecContainer.addEventListener('dragleave', e=>{
+    if(!pageSecContainer.contains(e.relatedTarget)) pageSecContainer.style.outline='';
+  });
+  pageSecContainer.addEventListener('drop', e=>{
+    e.preventDefault();
+    pageSecContainer.style.outline='';
+    if(!dragNewType) return;
+    // Determine insertion point
+    const target = e.target.closest('.section-slot');
+    const insertBeforeId = target ? target.dataset.secId : null;
+    addSectionToTemplate(tplId, dragNewType, insertBeforeId);
+    dragNewType = null;
+  });
+}
+
+function addSectionToTemplate(tplId, type, insertBeforeId){
+  const tpl = state.templates.find(t=>t.id===tplId);
+  const newSec = {
+    id: uid(),
+    type,
+    data: getDefaultData(type),
+  };
+  if(insertBeforeId){
+    const idx = tpl.sections.findIndex(s=>s.id===insertBeforeId);
+    tpl.sections.splice(idx,0,newSec);
+  } else {
+    tpl.sections.push(newSec);
+  }
+  renderPageSections(tplId);
+  // Auto-select new section
+  state.selectedSectionId = newSec.id;
+  const tplRef = state.templates.find(t=>t.id===tplId);
+  buildPropsPanel(newSec.id, tplRef);
+  showNotif('✓ Sección agregada');
+}
+
+function getDefaultData(type){
+  const defaults = {
+    nav: { logo:'SISGRA', links:'Servicios, Nosotros, Blog, Contacto', cta:'Contactar' },
+    hero: { badge:'Infraestructura de Elite', h1:'Título Principal', h2:'Subtítulo en Acento', desc:'Descripción del hero. Editá este texto haciendo clic directamente sobre él.', btn1:'Ver Soluciones', btn2:'Conocer más', stat1_num:'+25', stat1_lbl:'Años de experiencia', stat2_num:'+500', stat2_lbl:'Clientes activos' },
+    'hero-centered': { badge:'25 años de confianza', h1:'Título centrado del hero.', desc:'Descripción del hero centrado. Editá haciendo clic.', btn1:'Solicitar presupuesto', btn2:'Ver proyectos', m1_num:'+500', m1_lbl:'Clientes activos', m2_num:'99.9%', m2_lbl:'Disponibilidad', m3_num:'25+', m3_lbl:'Años experiencia' },
+    services: { eyebrow:'Lo que hacemos', title:'Nuestros Servicios' },
+    logos: { title:'Empresas que confían en nosotros' },
+    news: { eyebrow:'Blog corporativo', title:'Últimas Noticias' },
+    about: { eyebrow:'Quiénes somos', title:'Más de 25 años de trayectoria', desc:'Descripción de la empresa...' },
+    cta: { title:'¿Listo para optimizar tu infraestructura?', desc:'Contactanos hoy y recibí una consulta sin costo.', btn:'Solicitar presupuesto' },
+    contact: { eyebrow:'Contacto', title:'Hablemos de tu proyecto', cta_btn:'Enviar mensaje' },
+    footer: { brand:'SISGRA', tagline:'Infraestructura tecnológica para empresas líderes.' },
+    spacer: { height:60 },
+  };
+  return defaults[type] || {};
+}
+
+/* ══════════════════════════════════════════════
+   TRAY SEARCH
+══════════════════════════════════════════════ */
+function initTraySearch(){
+  const input = document.getElementById('tray-search');
+  if(!input) return;
+  input.addEventListener('input', ()=>{
+    const q = input.value.toLowerCase();
+    document.querySelectorAll('.tray-chip').forEach(chip=>{
+      const name = chip.querySelector('.tray-chip-name')?.textContent.toLowerCase()||'';
+      const desc = chip.querySelector('.tray-chip-desc')?.textContent.toLowerCase()||'';
+      chip.style.display = (name+desc).includes(q)?'':'none';
+    });
+    document.querySelectorAll('.tray-group-label').forEach(lbl=>{
+      // Hide label if all chips in group are hidden
+      let next = lbl.nextElementSibling;
+      let anyVisible = false;
+      while(next && !next.classList.contains('tray-group-label')){
+        if(next.style.display!=='none') anyVisible=true;
+        next = next.nextElementSibling;
+      }
+      lbl.style.display = anyVisible?'':'none';
+    });
+  });
+}
+
+/* ══════════════════════════════════════════════
+   SELECTED SECTION HIGHLIGHT STYLE
+══════════════════════════════════════════════ */
+const selectedStyle = document.createElement('style');
+selectedStyle.textContent = `
+  .section-slot { outline: 2px solid transparent; outline-offset: 0; transition: outline-color .15s; position: relative; }
+  .section-slot:hover { outline: 2px dashed #cbd5e1; }
+  .section-slot.selected-section { outline: 2px solid #3b82f6 !important; }
+`;
+document.head.appendChild(selectedStyle);
+
+/* ══════════════════════════════════════════════
+   CREATE TEMPLATE
+══════════════════════════════════════════════ */
+function handleCreateTemplate(){
+  const name   = document.getElementById('np-name').value.trim();
+  const desc   = document.getElementById('np-desc').value.trim();
+  const status = document.getElementById('np-status').value;
+  if(!name){ showNotif('El nombre es requerido','error'); return; }
+  if(status==='active') state.templates.forEach(t=>t.status='draft');
+  const newTpl = {
+    id: 'tpl-' + uid(),
+    name, desc: desc||'Plantilla personalizada', status,
+    sections: [
+      { id: uid(), type: 'nav', data: getDefaultData('nav') },
+    ]
+  };
+  state.templates.push(newTpl);
+  closeModal('modal-nueva-plantilla');
+  document.getElementById('np-name').value='';
+  document.getElementById('np-desc').value='';
+  renderSidebarTemplates();
+  renderTemplateOverview();
+  showNotif('✓ Plantilla creada');
+  state.currentTplId = newTpl.id;
+  renderSidebarTemplates();
+  openTemplateEditor(newTpl.id);
+}
+
+/* ══════════════════════════════════════════════
+   AUTH
+══════════════════════════════════════════════ */
+function doLogin(){
+  const u = document.getElementById('l-user').value.trim();
+  const p = document.getElementById('l-pass').value.trim();
+  const err = document.getElementById('login-error');
+  if(u==='admin' && p==='admin'){
+    err.style.display='none';
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    initApp();
+  } else {
+    err.style.display='block';
+  }
+}
+
+/* ══════════════════════════════════════════════
+   SEO
+══════════════════════════════════════════════ */
+const SEO_PAGES = ['home','cableado','fibra','seguridad','soporte'];
+const seoData = {};
+SEO_PAGES.forEach(p=>{ seoData[p]={title:'',description:''}; });
+
+function renderSEOTab(page){
+  const c = document.getElementById('seo-tabs-content');
+  const d = seoData[page]||{};
+  c.innerHTML = `
+    <div class="section-card">
+      <div class="section-card-header"><span class="section-card-title">${page.charAt(0).toUpperCase()+page.slice(1)} — SEO</span></div>
+      <div class="section-card-body">
+        <div class="form-row"><div class="form-group">
+          <label class="form-label">&lt;title&gt;</label>
+          <input class="form-input" id="seo-title-${page}" value="${d.title||''}" placeholder="Título de la página"/>
+          <div class="form-hint">Máx. 60 caracteres</div>
+        </div></div>
+        <div class="form-row"><div class="form-group">
+          <label class="form-label">Meta description</label>
+          <textarea class="form-textarea" id="seo-desc-${page}" style="min-height:60px;" placeholder="Descripción para buscadores...">${d.description||''}</textarea>
+          <div class="form-hint">Máx. 160 caracteres</div>
+        </div></div>
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+function initApp(){
+  document.getElementById('dash-date').textContent =
+    new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'}) + ' · ' +
+    new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+
+  renderSidebarTemplates();
+  renderTemplateOverview();
+
+  document.querySelectorAll('.sidebar-item[data-panel]').forEach(item=>{
+    item.addEventListener('click',()=>{
+      const p = item.dataset.panel;
+      if(p==='plantillas') renderTemplateOverview();
+      showPanel(p);
+    });
+  });
+
+  document.getElementById('btn-nueva-plantilla')?.addEventListener('click', ()=>openModal('modal-nueva-plantilla'));
+  document.getElementById('btn-nueva-plantilla-main')?.addEventListener('click', ()=>openModal('modal-nueva-plantilla'));
+  document.getElementById('crear-plantilla-btn')?.addEventListener('click', handleCreateTemplate);
+
+  document.getElementById('dash-nuevo-post')?.addEventListener('click',()=>{ showPanel('blog'); openModal('modal-blog'); });
+  document.getElementById('dash-nuevo-cliente')?.addEventListener('click',()=>{ showPanel('clientes'); openModal('modal-cliente'); });
+  document.getElementById('dash-editar-home')?.addEventListener('click',()=>{ showPanel('plantillas'); renderTemplateOverview(); });
+
+  document.querySelectorAll('.rich-btn[data-cmd]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const cmd = btn.dataset.cmd;
+      if(cmd==='h2') document.execCommand('formatBlock',false,'h2');
+      else if(cmd==='p') document.execCommand('formatBlock',false,'p');
+      else document.execCommand(cmd,false,null);
+    });
+  });
+
+  document.querySelectorAll('#seo-tabs .tab-item').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      document.querySelectorAll('#seo-tabs .tab-item').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      renderSEOTab(tab.dataset.seo);
+    });
+  });
+  renderSEOTab('home');
+
+  document.querySelectorAll('[data-close]').forEach(btn=>{
+    btn.addEventListener('click',()=>closeModal(btn.dataset.close));
+  });
+  document.querySelectorAll('.modal-overlay').forEach(overlay=>{
+    overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.classList.remove('open'); });
+  });
+
+  document.getElementById('logout-btn')?.addEventListener('click',()=>{
+    document.getElementById('app').style.display='none';
+    document.getElementById('login-screen').style.display='flex';
+  });
+
+  document.getElementById('btn-guardar')?.addEventListener('click',()=>showNotif('✓ Cambios guardados'));
+
+  document.getElementById('abrir-modal-cliente')?.addEventListener('click',()=>openModal('modal-cliente'));
+  document.getElementById('abrir-modal-blog')?.addEventListener('click',()=>openModal('modal-blog'));
+}
+
+document.getElementById('login-btn').addEventListener('click', doLogin);
+document.getElementById('l-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+</script>
+</body>
+</html>
