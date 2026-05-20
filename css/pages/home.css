@@ -539,7 +539,7 @@
 
 @media (min-width: 1024px) {
   .about-section {
-    padding-top: 12rem;
+    padding-top: 0rem;
     padding-bottom: 21rem;
   }
 }
