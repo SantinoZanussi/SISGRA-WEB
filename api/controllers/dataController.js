@@ -6,7 +6,7 @@ const DATA_DIR = path.join(__dirname, '..', '..', 'data');
 
 const ALLOWED_FILES = [
   'hero', 'nosotros', 'servicios', 'clientes', 'blog',
-  'contacto', 'seo', 'paginas', 'categorias'
+  'contacto', 'seo', 'paginas', 'categorias', 'extra_sections'
 ];
 
 function filePath(name) {

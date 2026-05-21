@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SiSGRA S.R.L. - Integrando el Futuro</title>
-
+    <title>SiSGRA S.R.L. - Soporte IT</title>
+    <meta name="description" content="">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <link rel="icon" href="../img/sdesigra.png">
 
@@ -655,5 +655,11 @@
 
     </script>
 
+<script>
+(async()=>{try{const r=await fetch(`http://${location.hostname}:3000/api/data/seo`);const s=await r.json();const p=s&&s['soporte'];if(p){if(p.title)document.title=p.title;const m=document.querySelector('meta[name="description"]');if(m&&p.description)m.setAttribute('content',p.description);}}catch{}})();
+</script>
+<script>
+(async()=>{try{const r=await fetch(`http://${location.hostname}:3000/api/data/contacto`);const c=await r.json();if(!c)return;if(c.telefono){const raw=c.telefono.replace(/\D/g,'');document.querySelectorAll('a[href^="tel:"]').forEach(a=>{a.href='tel:'+raw;a.textContent=c.telefono;});}if(c.email){document.querySelectorAll('a[href^="mailto:"]').forEach(a=>{a.href='mailto:'+c.email;a.textContent=c.email;});}if(c.whatsapp){const w=c.whatsapp.replace(/\D/g,'');document.querySelectorAll('a[href*="wa.me/"]').forEach(a=>{a.href='https://wa.me/'+w;});}if(c.direccion){document.querySelectorAll('.ci-type').forEach(t=>{if(t.textContent.trim()==='Oficina'){const v=t.nextElementSibling;if(v&&v.classList.contains('ci-value'))v.innerHTML=c.direccion;}});}}catch{}})();
+</script>
 </body>
 </html>

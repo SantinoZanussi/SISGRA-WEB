@@ -22,5 +22,9 @@
   "desarrollo": {
     "title": "Desarrollo de Software · SISGRA S.R.L.",
     "description": "Software logístico a medida, ERP, CRM e integración IoT. Desarrollo de sistemas para la industria moderna en Rosario."
+  },
+  "blog": {
+    "title": "SISGRA S.R.L. - Blog",
+    "description": ""
   }
 }

@@ -95,59 +95,17 @@
     <section class="blog-section">
       <div class="max-w-7xl">
         <div class="blog-header">
-          <h2 id="instalaciones" class="blog-title">Noticias Destacadas</h2>
+          <h2 id="blog-section-title" class="blog-title">Novedades &amp; Blog</h2>
         </div>
-            <div class="blog-grid">
-                
-                <!-- POST 1 -->
-                <article class="blog-card">
-                    <div class="blog-card-img">
-                        <img src="img/chatgptfoto.png" alt="Cableado">
-                    </div>
-                    <div class="blog-card-content">
-                        <span class="blog-tag">Infraestructura</span>
-                        <h3 class="blog-card-title">Tendencias en Cableado Categoría 8 para el 2024</h3>
-                        <p class="blog-card-desc">Por qué la certificación de nodos es crítica para evitar la latencia en grandes centros de datos industriales...</p>
-                        <a href="html/articulo.html" class="blog-card-link">Leer Artículo <span style="color: var(--blue-500);">→</span></a>
-                    </div>
-                </article>
-
-                <!-- POST 2 -->
-                <article class="blog-card">
-                    <div class="blog-card-img">
-                        <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1000" alt="Seguridad">
-                    </div>
-                    <div class="blog-card-content">
-                        <span class="blog-tag">Ciberseguridad</span>
-                        <h3 class="blog-card-title">Protegiendo el perímetro digital corporativo</h3>
-                        <p class="blog-card-desc">Estrategias de monitoreo activo y backups automatizados para garantizar la continuidad del negocio.</p>
-                        <a href="#" class="blog-card-link">Leer Artículo <span style="color: var(--blue-500);">→</span></a>
-                    </div>
-                </article>
-
-                <!-- POST 3 -->
-                <article class="blog-card">
-                    <div class="blog-card-img">
-                        <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=1000" alt="Software">
-                    </div>
-                    <div class="blog-card-content">
-                        <span class="blog-tag">Software</span>
-                        <h3 class="blog-card-title">Software a medida: La clave de la eficiencia logística</h3>
-                        <p class="blog-card-desc">Cómo la integración de sistemas ERP optimiza el control de inventarios en tiempo real.</p>
-                        <a href="#" class="blog-card-link">Leer Artículo <span style="color: var(--blue-500);">→</span></a>
-                    </div>
-                </article>
-
-            </div>
-
-        </div>
+        <div class="blog-grid" id="blog-grid"></div>
+      </div>
     </section>
 
     <!-- SERVICIOS -->
     <section id="servicios" class="services-section">
         <div class="max-w-7xl">
             <div class="services-header">
-                <h2 id="instalaciones" class="services-title">Portafolio de Soluciones</h2>
+                <h2 id="services-section-title" class="services-title">Portafolio de Soluciones</h2>
             </div>
             <div class="cards-grid" id="servicios-grid">
                 <!-- Renderizado por JS -->
@@ -172,6 +130,8 @@
             </div>
         </div>
     </section>
+
+    <div id="extra-sections-container"></div>
 
     <!-- FOOTER -->
     <footer>
@@ -357,6 +317,51 @@
       if (img && data.imagen) img.src  = data.imagen;
     }
 
+    function renderBlog(data) {
+      const grid  = document.getElementById('blog-grid');
+      const title = document.getElementById('blog-section-title');
+      if (!data) return;
+      if (title && data.titulo_seccion) title.textContent = data.titulo_seccion;
+      if (!grid) return;
+      const posts = (data.posts || []).filter(p => p.estado === 'publicado');
+      grid.innerHTML = posts.map(p => `
+        <article class="blog-card">
+          <div class="blog-card-img">
+            ${p.imagen
+              ? `<img src="${p.imagen}" alt="${p.titulo}">`
+              : `<div style="width:100%;height:100%;background:linear-gradient(135deg,#0A1D37,#1e3a8a);display:flex;align-items:center;justify-content:center;"><span style="color:#60a5fa;font-size:.625rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;">${p.categoria||'Blog'}</span></div>`}
+          </div>
+          <div class="blog-card-content">
+            <span class="blog-tag">${p.categoria||''}</span>
+            <h3 class="blog-card-title">${p.titulo||''}</h3>
+            <p class="blog-card-desc">${p.extracto||''}</p>
+            <a href="html/articulo.html" class="blog-card-link">Leer Artículo <span style="color: var(--blue-500);">→</span></a>
+          </div>
+        </article>`).join('');
+    }
+
+    function renderExtraSections(data) {
+      const container = document.getElementById('extra-sections-container');
+      if (!container || !data || !data.sections) return;
+      container.innerHTML = data.sections.map(sec => {
+        const d = sec.data || {};
+        if (sec.type === 'cta') {
+          return `
+            <section style="background:#0A1D37;padding:4rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;">
+              <div>
+                <h2 style="font-size:2rem;font-weight:900;color:#fff;letter-spacing:-.04em;font-style:italic;margin-bottom:.5rem;">${d.title||'¿Listo para empezar?'}</h2>
+                <p style="color:rgba(255,255,255,.6);font-size:.9375rem;">${d.desc||'Contactanos sin compromiso.'}</p>
+              </div>
+              <a href="https://wa.me/548101220065" style="background:#2563eb;color:#fff;padding:.875rem 2rem;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;white-space:nowrap;flex-shrink:0;">${d.btn||'Contactar'}</a>
+            </section>`;
+        }
+        if (sec.type === 'spacer') {
+          return `<div style="height:${d.height||60}px;background:#fff;"></div>`;
+        }
+        return '';
+      }).join('');
+    }
+
     function applySEO(seo) {
       if (!seo || !seo.home) return;
       const titleEl = document.getElementById('meta-title');
@@ -435,13 +440,15 @@
 
     // ── Bootstrap ──────────────────────────────────────────────────
     async function bootstrap() {
-      const [hero, clientes, servicios, nosotros, seo, contacto] = await Promise.all([
+      const [hero, clientes, servicios, nosotros, seo, contacto, blog, extraSections] = await Promise.all([
         loadData('hero'),
         loadData('clientes'),
         loadData('servicios'),
         loadData('nosotros'),
         loadData('seo'),
         loadData('contacto'),
+        loadData('blog'),
+        loadData('extra_sections'),
       ]);
 
       const container = document.getElementById('hero-container');
@@ -453,11 +460,18 @@
       renderClientes(clientes);
       renderServicios(servicios);
       renderNosotros(nosotros);
+      renderBlog(blog);
+      renderExtraSections(extraSections);
       applySEO(seo);
 
       if (contacto) {
         contactoData = contacto;
         applyContacto(contacto);
+      }
+
+      const servicesTitleEl = document.getElementById('services-section-title');
+      if (servicios && servicios.titulo_seccion && servicesTitleEl) {
+        servicesTitleEl.textContent = servicios.titulo_seccion;
       }
     }
 

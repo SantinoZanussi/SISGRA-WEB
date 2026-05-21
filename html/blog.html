@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SISGRA S.R.L. - Blog</title>
+    <meta name="description" content="">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="../img/sdesigra.png">
     <link rel="stylesheet" href="../css/base.css">
@@ -247,47 +248,8 @@
     <section class="blog-container">
         <div class="max-w-7xl" style="padding-top: 4rem;">
 
-            <div class="blog-rows-list">
-
-                <!-- NOTICIA 1 (FILA) -->
-                <article class="news-row">
-                    <div class="news-content">
-                        <div class="news-meta">
-                            <span class="news-tag">Infraestructura</span>
-                            <span class="news-date">14 Mayo, 2024</span>
-                        </div>
-                        <h3 class="news-title">Nuevos estándares de certificación Cat8 para plantas industriales</h3>
-                        <p class="news-excerpt">Implementamos protocolos de última generación para garantizar que la conectividad de su empresa soporte las demandas de datos de la próxima década.</p>
-                        <a href="/html/articulo.html" class="news-link">Leer artículo completo <span>→</span></a>
-                    </div>
-                </article>
-
-                <!-- NOTICIA 2 (FILA) -->
-                <article class="news-row">
-                    <div class="news-content">
-                        <div class="news-meta">
-                            <span class="news-tag">Ciberseguridad</span>
-                            <span class="news-date">10 Mayo, 2024</span>
-                        </div>
-                        <h3 class="news-title">Cómo prevenir ataques de Ransomware en redes locales</h3>
-                        <p class="news-excerpt">La importancia de los backups aislados y el monitoreo de tráfico en tiempo real para proteger la información crítica de su organización.</p>
-                        <a href="#" class="news-link">Leer artículo completo <span>→</span></a>
-                    </div>
-                </article>
-
-                <!-- NOTICIA 3 (FILA) -->
-                <article class="news-row">
-                    <div class="news-content">
-                        <div class="news-meta">
-                            <span class="news-tag">Desarrollo</span>
-                            <span class="news-date">05 Mayo, 2024</span>
-                        </div>
-                        <h3 class="news-title">Integración de sistemas ERP con terminales de logística</h3>
-                        <p class="news-excerpt">Optimizamos la cadena de suministro mediante software personalizado que conecta el inventario físico con la base de datos central.</p>
-                        <a href="#" class="news-link">Leer artículo completo <span>→</span></a>
-                    </div>
-                </article>
-
+            <div class="blog-rows-list" id="blog-rows-list">
+                <div style="text-align:center;padding:3rem 0;color:#94a3b8;font-size:.875rem;">Cargando artículos…</div>
             </div>
 
         </div>
@@ -382,5 +344,41 @@
             });
         });
     </script>
+<script>
+(async()=>{
+  try {
+    const r = await fetch(`http://${location.hostname}:3000/api/data/blog`);
+    const data = await r.json();
+    const list = document.getElementById('blog-rows-list');
+    if(!list || !data) return;
+    const posts = (data.posts||[]).filter(p=>p.estado==='publicado');
+    if(posts.length === 0){
+      list.innerHTML = '<div style="text-align:center;padding:3rem 0;color:#94a3b8;font-size:.875rem;">No hay artículos publicados aún.</div>';
+      return;
+    }
+    list.innerHTML = posts.map(p=>`
+      <article class="news-row">
+        <div class="news-content">
+          <div class="news-meta">
+            <span class="news-tag">${p.categoria||''}</span>
+            <span class="news-date">${p.fecha||''}</span>
+          </div>
+          <h3 class="news-title">${p.titulo||''}</h3>
+          <p class="news-excerpt">${p.extracto||''}</p>
+          <a href="/html/articulo.html" class="news-link">Leer artículo completo <span>→</span></a>
+        </div>
+      </article>`).join('');
+  } catch(e){
+    const list = document.getElementById('blog-rows-list');
+    if(list) list.innerHTML = '<div style="text-align:center;padding:3rem 0;color:#94a3b8;font-size:.875rem;">No se pudieron cargar los artículos.</div>';
+  }
+})();
+</script>
+<script>
+(async()=>{try{const r=await fetch(`http://${location.hostname}:3000/api/data/seo`);const s=await r.json();const p=s&&s['blog'];if(p){if(p.title)document.title=p.title;const m=document.querySelector('meta[name="description"]');if(m&&p.description)m.setAttribute('content',p.description);}}catch{}})();
+</script>
+<script>
+(async()=>{try{const r=await fetch(`http://${location.hostname}:3000/api/data/contacto`);const c=await r.json();if(!c)return;if(c.telefono){const raw=c.telefono.replace(/\D/g,'');document.querySelectorAll('a[href^="tel:"]').forEach(a=>{a.href='tel:'+raw;a.textContent=c.telefono;});}if(c.email){document.querySelectorAll('a[href^="mailto:"]').forEach(a=>{a.href='mailto:'+c.email;a.textContent=c.email;});}if(c.whatsapp){const w=c.whatsapp.replace(/\D/g,'');document.querySelectorAll('a[href*="wa.me/"]').forEach(a=>{a.href='https://wa.me/'+w;});}if(c.direccion){document.querySelectorAll('.ci-type').forEach(t=>{if(t.textContent.trim()==='Oficina'){const v=t.nextElementSibling;if(v&&v.classList.contains('ci-value'))v.innerHTML=c.direccion;}});}}catch{}})();
+</script>
 </body>
 </html>

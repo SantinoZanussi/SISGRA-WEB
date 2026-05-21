@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <link rel="icon" href="/img/sdesigra.png" type="image/png"/>
   <title>SISGRA — Panel Administrativo</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:ital,wght@0,400;0,500;0,700;0,900;1,700;1,900&display=swap" rel="stylesheet"/>
   <style>
@@ -493,7 +494,7 @@
     <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="sidebar-brand">
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:1.25rem;font-weight:600;color:#fff;letter-spacing:.1em;">SISGRA</span>
+        <img src="../img/logo sisgra.png" alt="Sisgra Logo" class="sidebar-logo"/>
       </div>
  
       <div class="sidebar-section-label">General</div>
@@ -552,7 +553,7 @@
           </span>
         </div>
         <div class="topbar-actions">
-          <button class="btn-secondary" onclick="window.open('index.html','_blank')">Vista previa</button>
+          <button type="button" class="btn-secondary" onclick="window.open('../index.html','_blank')">Vista previa</button>
           <button class="btn-save" id="btn-guardar">Guardar cambios</button>
         </div>
       </div>
@@ -600,12 +601,6 @@
         <!-- CLIENTES -->
         <div class="panel" id="panel-clientes">
           <div class="page-header"><div class="page-title">Clientes / Logos</div><div class="page-desc">Logos del carrusel.</div></div>
-          <div class="section-card">
-            <div class="section-card-header"><span class="section-card-title">Configuración</span></div>
-            <div class="section-card-body">
-              <div class="toggle-row"><div><div class="toggle-name">Carrusel activo</div></div><label class="toggle"><input type="checkbox" id="clientes-carrusel" checked/><span class="toggle-slider"></span></label></div>
-            </div>
-          </div>
           <div class="section-card">
             <div class="section-card-header"><span class="section-card-title">Logos actuales</span><button class="btn-add" id="abrir-modal-cliente">+ Agregar</button></div>
             <div class="section-card-body" style="padding:0;">
@@ -675,6 +670,7 @@
             <div class="tab-item" data-seo="fibra">Fibra Óptica</div>
             <div class="tab-item" data-seo="seguridad">Seguridad</div>
             <div class="tab-item" data-seo="soporte">Soporte IT</div>
+            <div class="tab-item" data-seo="blog">Blog</div>
           </div>
           <div id="seo-tabs-content"></div>
         </div>
@@ -711,6 +707,16 @@
           </select>
         </div>
       </div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" id="b-fecha" type="date"/></div>
+        <div class="form-group"><label class="form-label">Estado</label>
+          <select class="form-select" id="b-estado">
+            <option value="borrador">Borrador</option>
+            <option value="publicado">Publicado</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Imagen (URL)</label><input class="form-input" id="b-img" placeholder="/img/articulo.png"/></div></div>
       <div class="form-row"><div class="form-group"><label class="form-label">Extracto</label><textarea class="form-textarea" id="b-extracto" placeholder="Resumen breve..."></textarea></div></div>
       <div class="form-group" style="margin-bottom:1rem;">
         <label class="form-label">Contenido</label>
@@ -756,38 +762,29 @@
 const state = {
   templates: [
     {
-      id: 'tpl-1',
-      name: 'Clásica con Estadísticas',
-      desc: 'Hero lateral con cards de estadísticas',
+      id: 'tpl-index',
+      name: 'Inicio — index.html',
+      desc: 'Página de inicio principal',
       status: 'active',
       sections: [
-        { id: 's1', type: 'nav',     data: { logo: 'SISGRA', links: 'Servicios, Nosotros, Blog, Contacto', cta: 'Contactar' } },
-        { id: 's2', type: 'hero',    data: { badge: 'Infraestructura Corporativa de Elite', h1: 'Soluciones que', h2: 'Impulsan el Crecimiento', desc: 'Implementamos redes de alta velocidad, fibra óptica certificada y sistemas de gestión avanzados para la industria moderna.', btn1: 'Ver Soluciones', btn2: 'Nuestra Empresa', stat1_num: '+25', stat1_lbl: 'Años de Trayectoria', stat2_num: '+500', stat2_lbl: 'Clientes Activos' } },
-        { id: 's3', type: 'logos',   data: { title: 'Empresas que confían en nosotros' } },
-        { id: 's4', type: 'services',data: { eyebrow: 'Lo que hacemos', title: 'Nuestros Servicios' } },
-        { id: 's5', type: 'cta',     data: { title: '¿Listo para optimizar tu infraestructura?', desc: 'Contactanos hoy y recibí una consulta sin costo.', btn: 'Solicitar presupuesto' } },
-        { id: 's6', type: 'footer',  data: { brand: 'SISGRA', tagline: 'Infraestructura tecnológica para empresas líderes de Argentina.' } },
-      ]
-    },
-    {
-      id: 'tpl-2',
-      name: 'Texto Centrado con Métricas',
-      desc: 'Hero centrado, métricas y sección de noticias',
-      status: 'draft',
-      sections: [
-        { id: 's1', type: 'nav',          data: { logo: 'SISGRA', links: 'Servicios, Nosotros, Blog, Contacto', cta: 'Contactar' } },
-        { id: 's2', type: 'hero-centered',data: { badge: '25 años de confianza', h1: 'Infraestructura que no falla.\nConectamos el futuro de tu empresa.', desc: 'Diseñamos, instalamos y mantenemos la infraestructura tecnológica que impulsa a las empresas líderes de Argentina.', btn1: 'Solicitar presupuesto', btn2: 'Ver proyectos', m1_num: '+500', m1_lbl: 'Clientes activos', m2_num: '99.9%', m2_lbl: 'Disponibilidad', m3_num: '25+', m3_lbl: 'Años experiencia' } },
-        { id: 's3', type: 'logos',        data: { title: 'Empresas que confían en nosotros' } },
-        { id: 's4', type: 'about',        data: { eyebrow: 'Quiénes somos', title: 'Más de 25 años conectando empresas', desc: 'Desde 1999, SISGRA se especializa en diseñar, instalar y mantener infraestructura tecnológica de alto rendimiento para empresas de todos los sectores en Argentina.' } },
-        { id: 's5', type: 'news',         data: { eyebrow: 'Últimas noticias', title: 'Blog Corporativo' } },
-        { id: 's6', type: 'contact',      data: { eyebrow: 'Contacto', title: 'Hablemos de tu proyecto' } },
-        { id: 's7', type: 'footer',       data: { brand: 'SISGRA', tagline: 'Infraestructura tecnológica para empresas líderes de Argentina.' } },
+        { id: 's-hero',     type: 'hero-centered', data: {} },
+        { id: 's-logos',    type: 'logos',         data: {} },
+        { id: 's-blog',     type: 'news',          data: {} },
+        { id: 's-services', type: 'services',      data: {} },
+        { id: 's-about',    type: 'about',         data: {} },
+        { id: 's-footer',   type: 'footer',        locked: true, data: { brand: 'SISGRA', tagline: 'Infraestructura tecnológica para empresas líderes de Argentina.' } },
       ]
     }
   ],
   currentTplId: null,
   selectedSectionId: null,
   viewport: 'desktop',
+  clientes: {},
+  blog: {},
+  servicios: {},
+  contacto: {},
+  seo: {},
+  editingClienteId: null,
 };
  
 /* ══════════════════════════════════════════════
@@ -814,14 +811,12 @@ const SECTION_TYPES = [
       { type: 'about',    label: 'Nosotros / About',    desc: 'Texto + imagen lateral', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="17" height="16"/><rect x="21" y="4" width="17" height="16" fill="currentColor" opacity=".15"/><rect x="4" y="7" width="6" height="1" rx=".5" fill="currentColor" opacity=".4"/><rect x="4" y="10" width="12" height="4" rx="1" fill="currentColor" opacity=".2"/></svg>` },
       { type: 'news',     label: 'Blog / Noticias',     desc: 'Grid de 3 artículos', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="11" height="20"/><rect x="15" y="2" width="11" height="20"/><rect x="28" y="2" width="10" height="20"/><rect x="4" y="4" width="7" height="5" fill="currentColor" opacity=".15"/></svg>` },
       { type: 'logos',    label: 'Carrusel de Logos',   desc: 'Logos de clientes', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="8" width="7" height="8"/><rect x="12" y="8" width="7" height="8"/><rect x="22" y="8" width="7" height="8"/><rect x="32" y="8" width="6" height="8"/></svg>` },
-      { type: 'contact',  label: 'Contacto',            desc: 'Info + formulario', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="17" height="16"/><rect x="21" y="4" width="17" height="16"/><rect x="23" y="7" width="13" height="2" rx="1" fill="currentColor" opacity=".2"/><rect x="23" y="11" width="13" height="2" rx="1" fill="currentColor" opacity=".2"/><rect x="23" y="15" width="7" height="3" rx="1" fill="currentColor" opacity=".3"/></svg>` },
       { type: 'cta',      label: 'Banda CTA',           desc: 'Call to action horizontal', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="36" height="12" fill="currentColor" opacity=".1"/><rect x="5" y="10" width="16" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="27" y="9" width="10" height="6" rx="1" fill="currentColor" opacity=".4"/></svg>` },
     ]
   },
   {
     group: 'Cierre',
     items: [
-      { type: 'footer',  label: 'Footer',    desc: 'Pie de página con links', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="36" height="20" fill="currentColor" opacity=".06"/><rect x="4" y="5" width="10" height="2" rx="1" fill="currentColor" opacity=".3"/><rect x="4" y="9" width="7" height="1" rx=".5" fill="currentColor" opacity=".2"/><rect x="4" y="11" width="7" height="1" rx=".5" fill="currentColor" opacity=".2"/><line x1="2" y1="20" x2="38" y2="20" stroke-opacity=".3"/></svg>` },
       { type: 'spacer',  label: 'Espacio',   desc: 'Separador en blanco', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="10" y1="12" x2="30" y2="12" stroke-dasharray="3 2" stroke-opacity=".4"/></svg>` },
     ]
   },
@@ -838,18 +833,18 @@ const apiDelete = (...args) => window.__svc?.apiDelete(...args);
    HELPERS
 ══════════════════════════════════════════════ */
 function uid(){ return 's' + Date.now().toString(36) + Math.random().toString(36).slice(2,5); }
- 
-function showNotif(msg, type='success'){
-  const n = document.getElementById('save-notif');
-  n.className = `save-notif ${type}`;
-  n.textContent = msg;
-  n.classList.add('show');
-  clearTimeout(n._t);
-  n._t = setTimeout(()=>n.classList.remove('show'), 3000);
+
+let _autoSaveTimer = null;
+function scheduleAutoSave(){
+  const tpl = state.templates.find(t=>t.id===state.currentTplId);
+  if(!tpl || tpl.status!=='active') return;
+  clearTimeout(_autoSaveTimer);
+  _autoSaveTimer = setTimeout(()=>saveTpl(state.currentTplId), 1500);
 }
- 
-function openModal(id){ document.getElementById(id)?.classList.add('open'); }
-function closeModal(id){ document.getElementById(id)?.classList.remove('open'); }
+
+function showNotif(msg, type='success'){ window.__svc?.showNotif(msg, type); }
+function openModal(id){ window.__svc?.openModal(id); }
+function closeModal(id){ window.__svc?.closeModal(id); }
  
 /* ══════════════════════════════════════════════
    NAVIGATION
@@ -928,10 +923,22 @@ function renderTemplateOverview(){
   document.getElementById('dash-tpl-count').textContent = state.templates.length;
 }
  
-window.setActiveTpl = function(id){
+window.setActiveTpl = async function(id){
   state.templates.forEach(t => t.status = t.id===id ? 'active' : 'draft');
   renderTemplateOverview();
   renderSidebarTemplates();
+  const tpl = state.templates.find(t=>t.id===id);
+  if(tpl){
+    const heroSec = tpl.sections.find(s=>s.type==='hero'||s.type==='hero-centered');
+    if(heroSec){
+      try {
+        const cur = await apiGet('/data/hero').catch(()=>({}));
+        await apiPut('/data/hero', heroSectionToHeroJson(heroSec, cur||{}));
+        showNotif('✓ Plantilla activada — cambios publicados en index.html');
+      } catch(e){ showNotif('✓ Plantilla activada'); }
+      return;
+    }
+  }
   showNotif('✓ Plantilla activada');
 };
  
@@ -1019,20 +1026,22 @@ function renderSectionHTML(sec){
         <div class="sec-eyebrow" contenteditable="true" data-sec="${sec.id}" data-field="eyebrow">${d.eyebrow||'Lo que hacemos'}</div>
         <div class="sec-title" contenteditable="true" data-sec="${sec.id}" data-field="title">${d.title||'Nuestros Servicios'}</div>
         <div class="cards-grid">
-          ${['Cableado Estructurado','Fibra Óptica','Ciberseguridad'].map(s=>`
+          ${(state.servicios?.cards||[]).map(s=>`
             <div class="svc-card">
               <div class="svc-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
-              <div class="svc-name">${s}</div>
-              <div class="svc-desc">Solución profesional de alta disponibilidad para empresas que exigen continuidad operativa.</div>
-            </div>`).join('')}
+              <div class="svc-name">${s.titulo||''}</div>
+              <div class="svc-desc">${s.descripcion||''}</div>
+            </div>`).join('') || '<div style="padding:1rem;color:#94a3b8;text-align:center;font-size:.75rem;">Cargando servicios...</div>'}
         </div>
       </div>`;
  
     case 'logos': return `
       <div class="sec-logos">
-        <div class="logos-title" contenteditable="true" data-sec="${sec.id}" data-field="title">${d.title||'Empresas que confían en nosotros'}</div>
+        <div class="logos-title" contenteditable="true" data-sec="${sec.id}" data-field="title">${d.title||'Nuestros Clientes'}</div>
         <div class="logos-track">
-          ${['Cliente A','Cliente B','Cliente C','Cliente D','Cliente E'].map(c=>`<div class="logo-pill">${c}</div>`).join('')}
+          ${(state.clientes?.clientes||[]).filter(c=>c.activo!==false).map(c=>`
+            <div class="logo-pill">${c.imagen?`<img src="${c.imagen}" alt="${c.nombre}" style="max-height:28px;filter:grayscale(100%);opacity:.7;" onerror="this.style.display='none'">`:`<span>${c.nombre}</span>`}</div>
+          `).join('') || '<div class="logo-pill">Sin clientes aún</div>'}
         </div>
       </div>`;
  
@@ -1041,14 +1050,14 @@ function renderSectionHTML(sec){
         <div class="sec-eyebrow" contenteditable="true" data-sec="${sec.id}" data-field="eyebrow">${d.eyebrow||'Blog'}</div>
         <div class="sec-title" contenteditable="true" data-sec="${sec.id}" data-field="title">${d.title||'Últimas Noticias'}</div>
         <div class="news-grid">
-          ${['Infraestructura','Fibra Óptica','Seguridad'].map((c,i)=>`
+          ${(state.blog?.posts||[]).slice(0,3).map(p=>`
             <div class="news-card">
-              <div class="news-img"><span class="news-cat">${c}</span></div>
+              <div class="news-img"><span class="news-cat">${p.categoria||''}</span></div>
               <div class="news-body">
-                <div class="news-title">Título del artículo ${i+1} de ejemplo en el blog</div>
-                <div class="news-meta">12 May 2026 · 4 min lectura</div>
+                <div class="news-title">${p.titulo||''}</div>
+                <div class="news-meta">${p.fecha||''} · ${p.estado==='publicado'?'Publicado':'Borrador'}</div>
               </div>
-            </div>`).join('')}
+            </div>`).join('') || '<div style="padding:1rem;color:#94a3b8;text-align:center;font-size:.75rem;">Sin posts aún</div>'}
         </div>
       </div>`;
  
@@ -1076,7 +1085,7 @@ function renderSectionHTML(sec){
         <div class="contact-left">
           <div class="sec-eyebrow" contenteditable="true" data-sec="${sec.id}" data-field="eyebrow">${d.eyebrow||'Contacto'}</div>
           <div class="sec-title" contenteditable="true" data-sec="${sec.id}" data-field="title">${d.title||'Hablemos'}</div>
-          <div class="contact-info">📍 Rosario, Santa Fe<br>📞 +54 341 000-0000<br>✉ info@sisgra.com</div>
+          <div class="contact-info">📍 ${state.contacto?.direccion||'Rosario, Santa Fe'}<br>📞 ${state.contacto?.telefono||'+54 341 000-0000'}<br>✉ ${state.contacto?.email||'info@sisgra.com'}</div>
         </div>
         <div class="contact-form">
           <input class="cf-input" placeholder="Nombre completo" readonly/>
@@ -1087,35 +1096,35 @@ function renderSectionHTML(sec){
         </div>
       </div>`;
  
-    case 'footer': return `
-      <div class="sec-footer">
-        <div class="footer-top">
-          <div>
-            <div class="footer-brand" contenteditable="true" data-sec="${sec.id}" data-field="brand">${d.brand||'LOGO'}</div>
-            <div class="footer-tagline" contenteditable="true" data-sec="${sec.id}" data-field="tagline">${d.tagline||'Tagline de la empresa.'}</div>
+    case 'footer': {
+      const ct = state.contacto||{};
+      return `
+      <div class="sec-footer" style="pointer-events:none;user-select:none;">
+        <div style="display:flex;gap:2rem;align-items:flex-start;padding:1.5rem 2rem;background:linear-gradient(135deg,#0A1D37,#1e3a8a);">
+          <div style="flex:1;">
+            <div style="font-size:.45rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:#60a5fa;margin-bottom:.4rem;">Contacto</div>
+            <div style="font-size:.875rem;font-weight:900;color:#fff;margin-bottom:.4rem;">Solicite un presupuesto</div>
+            <div style="font-size:.6rem;color:rgba(255,255,255,.5);margin-bottom:.75rem;line-height:1.4;">${ct.formulario_descripcion||'Cuéntenos sobre su organización.'}</div>
+            <div style="background:#25d366;color:#fff;padding:.3rem .75rem;font-size:.5rem;font-weight:700;display:inline-block;letter-spacing:.1em;">💬 WhatsApp · ${ct.whatsapp||''}</div>
           </div>
-          <div>
-            <div class="footer-col-title">Servicios</div>
-            <div class="footer-link">Cableado Estructurado</div>
-            <div class="footer-link">Fibra Óptica</div>
-            <div class="footer-link">Seguridad</div>
-          </div>
-          <div>
-            <div class="footer-col-title">Empresa</div>
-            <div class="footer-link">Nosotros</div>
-            <div class="footer-link">Blog</div>
-            <div class="footer-link">Contacto</div>
-          </div>
-          <div>
-            <div class="footer-col-title">Contacto</div>
-            <div class="footer-link">Rosario, SF</div>
-            <div class="footer-link">info@sisgra.com</div>
+          <div style="flex:1;background:rgba(255,255,255,.06);padding:.75rem;border:1px solid rgba(255,255,255,.1);">
+            <div style="font-size:.6rem;color:#fff;font-weight:700;margin-bottom:.5rem;">Complete el formulario</div>
+            ${['Nombre','Empresa','Teléfono','Email'].map(f=>`<div style="border:1px solid rgba(255,255,255,.15);padding:.3rem .5rem;font-size:.5rem;color:rgba(255,255,255,.3);margin-bottom:.3rem;">${f}</div>`).join('')}
+            <div style="background:#2563eb;color:#fff;padding:.3rem;font-size:.5rem;font-weight:700;text-align:center;margin-top:.4rem;">Enviar consulta</div>
           </div>
         </div>
-        <div class="footer-bottom">
-          <div class="footer-copy">© 2026 SISGRA. Todos los derechos reservados.</div>
+        <div style="background:#060e1c;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;">
+          <div style="font-family:monospace;font-weight:900;letter-spacing:.1em;color:#fff;font-size:.75rem;">SISGRA</div>
+          <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+            ${['Cableado Estructurado','Fibra Óptica','Seguridad Electrónica','Soporte IT','Software','Blog'].map(l=>`<span style="font-size:.45rem;color:rgba(255,255,255,.4);">${l}</span>`).join('')}
+          </div>
+          <div style="font-size:.45rem;color:rgba(255,255,255,.2);white-space:nowrap;">FB</div>
         </div>
-      </div>`;
+        <div style="background:#060e1c;border-top:1px solid rgba(255,255,255,.06);padding:.4rem 2rem;text-align:center;">
+          <span style="font-size:.4rem;color:rgba(255,255,255,.2);letter-spacing:.15em;text-transform:uppercase;">© 2026 SISGRA S.R.L. — Footer gestionado desde panel de Contacto</span>
+        </div>
+      </div>`;}
+
  
     case 'spacer': return `<div class="sec-spacer" style="height:${d.height||60}px;display:flex;align-items:center;justify-content:center;"><span style="font-size:.6rem;color:#cbd5e1;letter-spacing:.15em;text-transform:uppercase;font-weight:700;">Espacio — ${d.height||60}px</span></div>`;
  
@@ -1192,7 +1201,8 @@ window.designUpdate = function(el, secId, tplId){
   if(!sec) return;
   if(!sec.design) sec.design = {};
   sec.design[field] = val;
- 
+  scheduleAutoSave();
+
   // Sync paired color text/native inputs
   const pair = document.querySelector(`[data-field="${field}"][data-sec-design="${secId}"]`);
   if(pair && pair !== el) pair.value = val;
@@ -1589,6 +1599,7 @@ window.propsUpdate = function(el){
   const sec = tpl.sections.find(s=>s.id===secId);
   if(!sec) return;
   sec.data[field] = el.value;
+  scheduleAutoSave();
   // Re-render just this section's inner HTML
   const sectionEl = document.querySelector(`.section-slot[data-sec-id="${secId}"] .section-render`);
   if(sectionEl){
@@ -1616,6 +1627,7 @@ function attachInlineEdits(sec, container, tplId){
       const s = tpl.sections.find(s=>s.id===sid);
       if(!s) return;
       s.data[field] = el.innerText.trim();
+      scheduleAutoSave();
       // Sync props panel
       const propEl = document.querySelector(`.props-input[data-sec="${sid}"][data-field="${field}"], .props-textarea[data-sec="${sid}"][data-field="${field}"]`);
       if(propEl) propEl.value = s.data[field];
@@ -1648,7 +1660,8 @@ function openTemplateEditor(tplId){
     <div style="background:var(--white);border-bottom:1px solid var(--slate-200);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:.75rem;">
         <span style="font-size:.5rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;background:var(--sisgra-blue);color:#fff;padding:.2rem .6rem;">Plantilla</span>
-        <span style="font-size:1rem;font-weight:900;color:var(--sisgra-blue);letter-spacing:-.03em;font-style:italic;">${tpl.name}</span>
+        <span id="tpl-editor-name" style="font-size:1rem;font-weight:900;color:var(--sisgra-blue);letter-spacing:-.03em;font-style:italic;">${tpl.name}</span>
+        <button type="button" title="Renombrar plantilla" onclick="renameTpl('${tpl.id}')" style="background:none;border:1px solid var(--slate-200);color:var(--slate-400);padding:.25rem .5rem;font-size:.6rem;cursor:pointer;line-height:1;" onmouseover="this.style.color='var(--slate-700)'" onmouseout="this.style.color='var(--slate-400)'">✎ Renombrar</button>
         <span style="font-size:.5rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:.2rem .6rem;${tpl.status==='active'?'background:#dcfce7;color:#166534;':'background:#fef3c7;color:#92400e;'}">${tpl.status==='active'?'Activa':'Borrador'}</span>
       </div>
       <div style="display:flex;align-items:center;gap:.75rem;">
@@ -1738,14 +1751,15 @@ function renderPageSections(tplId){
   }
  
   container.innerHTML = tpl.sections.map((sec, idx) => `
-    <div class="section-slot ${state.selectedSectionId===sec.id?'selected-section':''}" data-sec-id="${sec.id}" data-index="${idx}">
+    <div class="section-slot ${state.selectedSectionId===sec.id?'selected-section':''} ${sec.locked?'locked-section':''}" data-sec-id="${sec.id}" data-index="${idx}">
+      ${sec.locked ? `<div style="position:absolute;top:.3rem;left:.3rem;z-index:10;font-size:.45rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;background:rgba(100,116,139,.7);color:#fff;padding:.15rem .4rem;">FIJO — gestionado desde Contacto</div>` : `
       <div class="section-controls">
         <button class="sc-btn drag-handle" title="Mover sección" data-sec-id="${sec.id}">⠿</button>
         <button class="sc-btn" title="Subir" onclick="moveSectionUp('${tplId}','${sec.id}')">↑</button>
         <button class="sc-btn" title="Bajar" onclick="moveSectionDown('${tplId}','${sec.id}')">↓</button>
         <button class="sc-btn" title="Duplicar" onclick="duplicateSection('${tplId}','${sec.id}')">⧉</button>
         <button class="sc-btn del" title="Eliminar sección" onclick="removeSection('${tplId}','${sec.id}')">✕</button>
-      </div>
+      </div>`}
       <div class="section-render">${renderSectionHTML(sec)}</div>
     </div>
   `).join('');
@@ -1759,7 +1773,8 @@ function renderPageSections(tplId){
  
     // Click to select section
     slot.addEventListener('click', e=>{
-      // Don't trigger if clicking controls or editing
+      // Don't trigger if locked, clicking controls or editing
+      if(sec.locked) return;
       if(e.target.closest('.section-controls')) return;
       if(e.target.dataset.editing) return;
  
@@ -1872,8 +1887,66 @@ window.removeSection = function(tplId, secId){
   showNotif('✓ Sección eliminada');
 };
  
-window.saveTpl = function(id){
-  showNotif('✓ Plantilla guardada correctamente');
+// Returns val if defined and non-empty, otherwise falls back to fallback
+function _sv(val, fallback){ return (val !== undefined && val !== '') ? val : (fallback || ''); }
+
+window.saveTpl = async function(id){
+  const tpl = state.templates.find(t=>t.id===id);
+  if(!tpl){ showNotif('Plantilla no encontrada','error'); return; }
+  try {
+    const heroSec     = tpl.sections.find(s=>s.type==='hero'||s.type==='hero-centered');
+    const aboutSec    = tpl.sections.find(s=>s.type==='about');
+    const logosSec    = tpl.sections.find(s=>s.type==='logos');
+    const newsSec     = tpl.sections.find(s=>s.type==='news');
+    const servicesSec = tpl.sections.find(s=>s.type==='services');
+    const jobs = [];
+
+    if(heroSec){
+      const cur = await apiGet('/data/hero').catch(()=>({}));
+      jobs.push(apiPut('/data/hero', heroSectionToHeroJson(heroSec, cur||{})));
+    }
+    if(aboutSec){
+      const d = aboutSec.data||{};
+      const cur = await apiGet('/data/nosotros').catch(()=>({}));
+      const c = cur||{};
+      // Only override fields that have been explicitly set in the editor
+      jobs.push(apiPut('/data/nosotros', {
+        ...c,
+        eyebrow:     _sv(d.eyebrow,     c.eyebrow),
+        titulo:      _sv(d.title,        c.titulo),
+        descripcion: _sv(d.desc,         c.descripcion),
+      }));
+    }
+    if(logosSec){
+      const d = logosSec.data||{};
+      const base = state.clientes||{};
+      jobs.push(apiPut('/data/clientes', { ...base, titulo_seccion: _sv(d.title, base.titulo_seccion) }));
+    }
+    if(newsSec){
+      const d = newsSec.data||{};
+      const base = state.blog||{};
+      jobs.push(apiPut('/data/blog', { ...base, titulo_seccion: _sv(d.title, base.titulo_seccion) }));
+    }
+    if(servicesSec){
+      const d = servicesSec.data||{};
+      const base = state.servicios||{};
+      jobs.push(apiPut('/data/servicios', {
+        ...base,
+        titulo_seccion: _sv(d.title,   base.titulo_seccion),
+        eyebrow:        _sv(d.eyebrow, base.eyebrow),
+      }));
+    }
+
+    // Save extra sections (cta, spacer, etc.) not covered by dedicated JSON files
+    const CORE_TYPES = new Set(['hero','hero-centered','about','logos','news','services','contact','footer','nav']);
+    const extraSecs = tpl.sections.filter(s => !CORE_TYPES.has(s.type) && !s.locked);
+    jobs.push(apiPut('/data/extra_sections', { sections: extraSecs.map(s=>({type:s.type,data:s.data||{}})) }));
+
+    await Promise.all(jobs);
+    showNotif('✓ Guardado — cambios reflejados en index.html');
+  } catch(e){
+    showNotif('Error al guardar: '+(e.message||'error'),'error');
+  }
 };
  
 /* ══════════════════════════════════════════════
@@ -2051,28 +2124,57 @@ function handleCreateTemplate(){
  
 async function saveCurrentPanel(){
   const active = document.querySelector('.panel.active')?.id?.replace('panel-','');
-  if(active==='blog'){
-    const d = { ...(state.blog||{}) };
-    d.titulo_seccion = document.getElementById('blog-titulo-seccion')?.value || d.titulo_seccion || '';
-    d.visible = document.getElementById('blog-visible')?.checked ?? !!d.visible;
-    const r = await apiPut('/data/blog', d);
-    state.blog = r.data;
-    return showNotif('✓ Blog guardado');
-  }
   if(active==='clientes'){
     const d = { ...(state.clientes||{}) };
-    d.titulo_seccion = document.getElementById('clientes-titulo-seccion')?.value || d.titulo_seccion || '';
+    d.carrusel_activo = document.getElementById('clientes-carrusel')?.checked ?? !!d.carrusel_activo;
     const r = await apiPut('/data/clientes', d);
-    state.clientes = r.data;
+    if(r?.data) state.clientes = r.data;
     return showNotif('✓ Clientes guardado');
   }
-  showNotif('✓ Sin cambios para guardar en este panel');
+  if(active==='contacto'){
+    const d = { ...(state.contacto||{}) };
+    d.direccion = document.getElementById('contacto-direccion')?.value || d.direccion || '';
+    d.telefono  = document.getElementById('contacto-telefono')?.value  || d.telefono  || '';
+    d.email     = document.getElementById('contacto-email')?.value     || d.email     || '';
+    d.whatsapp  = document.getElementById('contacto-whatsapp')?.value  || d.whatsapp  || '';
+    const r = await apiPut('/data/contacto', d);
+    if(r?.data) state.contacto = r.data;
+    return showNotif('✓ Contacto guardado');
+  }
+  if(active==='seo'){
+    const d = { ...(state.seo||{}) };
+    SEO_PAGES.forEach(page=>{
+      const t = document.getElementById(`seo-title-${page}`);
+      const s = document.getElementById(`seo-desc-${page}`);
+      if(t) seoData[page] = {...(seoData[page]||{}), title:t.value};
+      if(s) seoData[page] = {...(seoData[page]||{}), description:s.value};
+      d[page] = { ...(d[page]||{}), ...(seoData[page]||{}) };
+    });
+    const r = await apiPut('/data/seo', d);
+    if(r?.data) state.seo = r.data;
+    return showNotif('✓ SEO guardado');
+  }
+  showNotif('Sin cambios para guardar en este panel');
 }
  
 function renderBlogList(){
   const list = document.getElementById('blog-list');
   const posts = state.blog?.posts || [];
-  list.innerHTML = posts.map(p=>`<div class="blog-item"><div class="blog-info"><div class="blog-title-text">${p.titulo||''}</div><div class="blog-meta">${p.fecha||''} · ${p.categoria||''}</div><div class="blog-excerpt">${p.extracto||''}</div></div><div class="blog-actions"><button class="btn-edit-small" onclick="editPost('${p.id}')">Editar</button><button class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="deletePost('${p.id}')">Eliminar</button></div></div>`).join('');
+  list.innerHTML = posts.map(p=>`
+    <div class="blog-item">
+      <div class="blog-info">
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem;">
+          <div class="blog-title-text">${p.titulo||''}</div>
+          <span style="font-size:.45rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;padding:.15rem .4rem;${p.estado==='publicado'?'background:#dcfce7;color:#166534;':'background:#fef3c7;color:#92400e;'}">${p.estado==='publicado'?'Publicado':'Borrador'}</span>
+        </div>
+        <div class="blog-meta">${p.fecha||''} · ${p.categoria||''}</div>
+        <div class="blog-excerpt">${p.extracto||''}</div>
+      </div>
+      <div class="blog-actions">
+        <button type="button" class="btn-edit-small" onclick="editPost('${p.id}')">Editar</button>
+        <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="deletePost('${p.id}')">Eliminar</button>
+      </div>
+    </div>`).join('');
 }
  
 function openNewPost(){
@@ -2139,9 +2241,26 @@ function doLogin(){
 }
  
 /* ══════════════════════════════════════════════
+   HERO ↔ HERO.JSON MAPPERS
+══════════════════════════════════════════════ */
+function heroSectionToHeroJson(sec, base){
+  const d=sec.data||{};
+  if(sec.type==='hero') return {...base,plantilla:'1',badge:d.badge||'',titulo1:d.h1||'',titulo2:d.h2||'',descripcion:d.desc||'',boton_primario:d.btn1||'',boton_secundario:d.btn2||'',stat1_numero:d.stat1_num||'',stat1_label:d.stat1_lbl||'',stat2_numero:d.stat2_num||'',stat2_label:d.stat2_lbl||''};
+  if(sec.type==='hero-centered') return {...base,plantilla:'2',p2_eyebrow:d.badge||'',p2_titulo:d.h1||'',p2_descripcion:d.desc||'',p2_boton_primario:d.btn1||'',p2_boton_secundario:d.btn2||'',p2_metric1_num:d.m1_num||'',p2_metric1_label:d.m1_lbl||'',p2_metric2_num:d.m2_num||'',p2_metric2_label:d.m2_lbl||'',p2_metric3_num:d.m3_num||'',p2_metric3_label:d.m3_lbl||''};
+  return base;
+}
+function heroJsonToSectionData(h){
+  return {
+    p1:{badge:h.badge||'',h1:h.titulo1||'',h2:h.titulo2||'',desc:h.descripcion||'',btn1:h.boton_primario||'',btn2:h.boton_secundario||'',stat1_num:h.stat1_numero||'',stat1_lbl:h.stat1_label||'',stat2_num:h.stat2_numero||'',stat2_lbl:h.stat2_label||''},
+    p2:{badge:h.p2_eyebrow||'',h1:h.p2_titulo||'',desc:h.p2_descripcion||'',btn1:h.p2_boton_primario||'',btn2:h.p2_boton_secundario||'',m1_num:h.p2_metric1_num||'',m1_lbl:h.p2_metric1_label||'',m2_num:h.p2_metric2_num||'',m2_lbl:h.p2_metric2_label||'',m3_num:h.p2_metric3_num||'',m3_lbl:h.p2_metric3_label||''},
+    plantilla:h.plantilla||'1',
+  };
+}
+
+/* ══════════════════════════════════════════════
    SEO
 ══════════════════════════════════════════════ */
-const SEO_PAGES = ['home','cableado','fibra','seguridad','soporte'];
+const SEO_PAGES = ['home','cableado','fibra','seguridad','soporte','blog'];
 const seoData = {};
 SEO_PAGES.forEach(p=>{ seoData[p]={title:'',description:''}; });
  
@@ -2167,6 +2286,101 @@ function renderSEOTab(page){
 }
  
 /* ══════════════════════════════════════════════
+   CANVAS REFRESH
+══════════════════════════════════════════════ */
+function refreshCanvas(){
+  if(document.getElementById('panel-tpl-editor')?.classList.contains('active') && state.currentTplId){
+    renderPageSections(state.currentTplId);
+  }
+}
+
+/* ══════════════════════════════════════════════
+   CLIENTS LIST + SAVE
+══════════════════════════════════════════════ */
+function renderClientesList(){
+  const tbody = document.getElementById('clientes-tbody');
+  if(!tbody) return;
+  const list = state.clientes?.clientes || [];
+  tbody.innerHTML = list.map(c=>`
+    <tr>
+      <td>${c.nombre||''}</td>
+      <td>${c.imagen ? `<img src="${c.imagen}" style="max-height:28px;" onerror="this.style.display='none'">` : '—'}</td>
+      <td><span style="font-size:.5rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:.15rem .4rem;${c.activo!==false?'background:#dcfce7;color:#166534;':'background:#fee2e2;color:#991b1b;'}">${c.activo!==false?'Activo':'Inactivo'}</span></td>
+      <td style="display:flex;gap:.375rem;">
+        <button type="button" class="btn-edit-small" onclick="editCliente('${c.id}')">Editar</button>
+        <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="deleteCliente('${c.id}')">Eliminar</button>
+      </td>
+    </tr>`).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--slate-400);padding:1rem;font-size:.75rem;">Sin clientes</td></tr>';
+}
+
+window.editCliente = function(id){
+  const c = (state.clientes?.clientes||[]).find(x=>x.id===id);
+  if(!c) return;
+  state.editingClienteId = id;
+  const mt = document.getElementById('modal-cliente')?.querySelector('.modal-title');
+  if(mt) mt.textContent = 'Editar Cliente';
+  document.getElementById('c-name').value = c.nombre||'';
+  document.getElementById('c-img').value  = c.imagen||'';
+  openModal('modal-cliente');
+};
+
+async function saveCliente(){
+  const name = document.getElementById('c-name')?.value.trim();
+  const img  = document.getElementById('c-img')?.value.trim();
+  if(!name) return showNotif('El nombre es requerido','error');
+  let updated;
+  if(state.editingClienteId){
+    const list = (state.clientes?.clientes||[]).map(c =>
+      c.id===state.editingClienteId ? {...c, nombre:name, imagen:img||c.imagen} : c
+    );
+    updated = { ...(state.clientes||{}), clientes:list };
+  } else {
+    const newCliente = { id:'c'+Date.now(), nombre:name, imagen:img||'', url:'', activo:true };
+    updated = { ...(state.clientes||{}), clientes:[...(state.clientes?.clientes||[]), newCliente] };
+  }
+  try {
+    const r = await apiPut('/data/clientes', updated);
+    state.clientes = r?.data || updated;
+    renderClientesList();
+    closeModal('modal-cliente');
+    document.getElementById('c-name').value='';
+    document.getElementById('c-img').value='';
+    showNotif(state.editingClienteId ? '✓ Cliente actualizado' : '✓ Cliente agregado');
+    state.editingClienteId = null;
+    const cc=document.getElementById('dash-clientes-count'); if(cc) cc.textContent=(state.clientes.clientes||[]).length;
+  } catch(e){ showNotif('Error al guardar: '+(e.message||'error'),'error'); }
+}
+
+window.deleteCliente = async function(id){
+  if(!confirm('¿Eliminar este cliente?')) return;
+  const updated = { ...(state.clientes||{}), clientes:(state.clientes?.clientes||[]).filter(c=>c.id!==id) };
+  try {
+    const r = await apiPut('/data/clientes', updated);
+    state.clientes = r?.data || updated;
+    renderClientesList();
+    const cc=document.getElementById('dash-clientes-count'); if(cc) cc.textContent=(state.clientes.clientes||[]).length;
+    showNotif('✓ Cliente eliminado');
+  } catch(e){ showNotif('Error al eliminar','error'); }
+};
+
+/* ══════════════════════════════════════════════
+   TEMPLATE RENAME
+══════════════════════════════════════════════ */
+window.renameTpl = function(id){
+  const tpl = state.templates.find(t=>t.id===id);
+  if(!tpl) return;
+  const newName = prompt('Nombre de la plantilla:', tpl.name);
+  if(newName && newName.trim()){
+    tpl.name = newName.trim();
+    renderSidebarTemplates();
+    renderTemplateOverview();
+    const nameEl = document.getElementById('tpl-editor-name');
+    if(nameEl) nameEl.textContent = tpl.name;
+    showNotif('✓ Nombre actualizado');
+  }
+};
+
+/* ══════════════════════════════════════════════
    INIT
 ══════════════════════════════════════════════ */
 function initApp(){
@@ -2176,12 +2390,80 @@ function initApp(){
  
   renderSidebarTemplates();
   renderTemplateOverview();
-  Promise.all([apiGet('/data/blog').catch(()=>null), apiGet('/data/clientes').catch(()=>null)]).then(([blog,clientes])=>{ if(blog) state.blog=blog; if(clientes) state.clientes=clientes; renderBlogList(); });
+  Promise.all([
+    apiGet('/data/blog').catch(()=>null),
+    apiGet('/data/clientes').catch(()=>null),
+    apiGet('/data/seo').catch(()=>null),
+    apiGet('/data/contacto').catch(()=>null),
+    apiGet('/data/servicios').catch(()=>null),
+  ]).then(([blog,clientes,seo,contacto,servicios])=>{
+    const tpl = state.templates.find(t=>t.id==='tpl-index');
+    if(blog){
+      state.blog=blog;
+      const posts=blog.posts||[];
+      const bc=document.getElementById('dash-blog-count'); if(bc) bc.textContent=posts.length;
+      const bs=document.getElementById('dash-blog-sub'); if(bs) bs.innerHTML=`<span class="stat-card-indicator ind-amber"></span>${posts.filter(p=>p.estado==='publicado').length} publicados`;
+      if(tpl){ const ns=tpl.sections.find(s=>s.id==='s-blog'); if(ns) ns.data={...ns.data,title:blog.titulo_seccion||''}; }
+    }
+    if(clientes){
+      state.clientes=clientes;
+      const cc=document.getElementById('dash-clientes-count'); if(cc) cc.textContent=(clientes.clientes||[]).length;
+      const tog=document.getElementById('clientes-carrusel'); if(tog) tog.checked=!!clientes.carrusel_activo;
+      if(tpl){ const ls=tpl.sections.find(s=>s.id==='s-logos'); if(ls) ls.data={...ls.data,title:clientes.titulo_seccion||''}; }
+    }
+    if(seo){
+      state.seo=seo;
+      SEO_PAGES.forEach(p=>{ if(seo[p]) seoData[p]={title:seo[p].title||'',description:seo[p].description||''}; });
+      renderSEOTab(document.querySelector('#seo-tabs .tab-item.active')?.dataset.seo||'home');
+    }
+    if(contacto){
+      state.contacto=contacto;
+      const flds={direccion:'contacto-direccion',telefono:'contacto-telefono',email:'contacto-email',whatsapp:'contacto-whatsapp'};
+      Object.entries(flds).forEach(([k,id])=>{ const el=document.getElementById(id); if(el) el.value=contacto[k]||''; });
+    }
+    if(servicios){
+      state.servicios=servicios;
+      if(tpl){ const ss=tpl.sections.find(s=>s.id==='s-services'); if(ss) ss.data={...ss.data,eyebrow:servicios.eyebrow||'',title:servicios.titulo_seccion||''}; }
+    }
+    renderBlogList();
+    renderClientesList();
+    refreshCanvas();
+  });
+
+  // Cargar hero.json y nosotros.json para poblar el editor de plantillas
+  apiGet('/data/hero').then(heroJson=>{
+    if(!heroJson) return;
+    const mapped=heroJsonToSectionData(heroJson);
+    const tpl=state.templates.find(t=>t.id==='tpl-index');
+    if(!tpl) return;
+    const heroSec=tpl.sections.find(s=>s.id==='s-hero');
+    if(heroSec){
+      heroSec.type = heroJson.plantilla==='1' ? 'hero' : 'hero-centered';
+      heroSec.data = heroJson.plantilla==='1' ? {...heroSec.data,...mapped.p1} : {...heroSec.data,...mapped.p2};
+    }
+    renderSidebarTemplates();
+    renderTemplateOverview();
+    refreshCanvas();
+  }).catch(()=>{});
+
+  apiGet('/data/nosotros').then(nos=>{
+    if(!nos) return;
+    const tpl=state.templates.find(t=>t.id==='tpl-index');
+    if(!tpl) return;
+    const as=tpl.sections.find(s=>s.id==='s-about');
+    if(as) as.data={...as.data,eyebrow:nos.eyebrow||'',title:nos.titulo||'',desc:nos.descripcion||''};
+    refreshCanvas();
+  }).catch(()=>{});
  
   document.querySelectorAll('.sidebar-item[data-panel]').forEach(item=>{
     item.addEventListener('click',()=>{
       const p = item.dataset.panel;
-      if(p==='plantillas') renderTemplateOverview();
+      if(p==='plantillas'){
+        if(!state.currentTplId) state.currentTplId = state.templates[0]?.id;
+        renderSidebarTemplates();
+        openTemplateEditor(state.currentTplId);
+        return;
+      }
       showPanel(p);
     });
   });
@@ -2191,7 +2473,11 @@ function initApp(){
   document.getElementById('crear-plantilla-btn')?.addEventListener('click', handleCreateTemplate);
  
   document.getElementById('dash-nuevo-cliente')?.addEventListener('click',()=>{ showPanel('clientes'); openModal('modal-cliente'); });
-  document.getElementById('dash-editar-home')?.addEventListener('click',()=>{ showPanel('plantillas'); renderTemplateOverview(); });
+  document.getElementById('dash-editar-home')?.addEventListener('click',()=>{
+    if(!state.currentTplId) state.currentTplId = state.templates[0]?.id;
+    renderSidebarTemplates();
+    openTemplateEditor(state.currentTplId);
+  });
  
   document.querySelectorAll('.rich-btn[data-cmd]').forEach(btn=>{
     btn.addEventListener('click',()=>{
@@ -2225,7 +2511,15 @@ function initApp(){
  
   document.getElementById('btn-guardar')?.addEventListener('click',saveCurrentPanel);
  
-  document.getElementById('abrir-modal-cliente')?.addEventListener('click',()=>openModal('modal-cliente'));
+  document.getElementById('abrir-modal-cliente')?.addEventListener('click',()=>{
+    state.editingClienteId = null;
+    const mt = document.getElementById('modal-cliente')?.querySelector('.modal-title');
+    if(mt) mt.textContent = 'Agregar Cliente';
+    document.getElementById('c-name').value='';
+    document.getElementById('c-img').value='';
+    openModal('modal-cliente');
+  });
+  document.getElementById('guardar-cliente-btn')?.addEventListener('click', saveCliente);
   document.getElementById('abrir-modal-blog')?.addEventListener('click',openNewPost);
   document.getElementById('dash-nuevo-post')?.addEventListener('click',()=>{ showPanel('blog'); openNewPost(); });
   document.getElementById('guardar-blog')?.addEventListener('click',saveBlogPost);
@@ -2235,11 +2529,22 @@ document.getElementById('login-btn').addEventListener('click', doLogin);
 document.getElementById('l-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 </script>
 <script type="module">
-  import { apiGet, apiPut, apiPost, apiPatch, apiDelete } from './services/api.js';
-  import { showNotif, openModal, closeModal } from './services/ui.js';
-  import { setAuthToken } from './services/store.js';
- 
-  window.__svc = { apiGet, apiPut, apiPost, apiPatch, apiDelete, showNotif, openModal, closeModal, setAuthToken };
+  import { apiGet, apiPut, apiPost, apiPatch, apiDelete } from '../services/api.js';
+  import { showNotif, openModal, closeModal } from '../services/ui.js';
+  import { setAuthToken } from '../services/store.js';
+  import { heroSectionToHeroJson, heroJsonToSectionData, saveTemplateToLive } from '../services/templates.js';
+
+  window.__svc = { apiGet, apiPut, apiPost, apiPatch, apiDelete, showNotif, openModal, closeModal, setAuthToken, heroSectionToHeroJson, heroJsonToSectionData, saveTemplateToLive };
+
+  // Auto-login: if a session token is stored (e.g. after a Live Server reload),
+  // restore the session without forcing the user to log in again.
+  const _storedToken = sessionStorage.getItem('sisgra_token');
+  if(_storedToken){
+    setAuthToken(_storedToken);
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    if(typeof initApp === 'function') initApp();
+  }
 </script>
 </body>
 </html>
