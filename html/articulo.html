@@ -3,186 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SiSGRA S.R.L. - Integrando el Futuro</title>
+    <title>SiSGRA S.R.L. - Artículo</title>
+    <meta name="description" content="">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-    <link rel="icon" href="../img/sdesigra.png">
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet" href="../css/layout.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <link rel="icon" href="/img/sdesigra.png">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/components.css">
     <link rel="stylesheet" href="/css/pages/articulo.css">
+
+    <style>
+        /* FOOTER RESPONSIVE */
+        @media (max-width: 1023px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .footer-col:last-child { grid-column: 1 / -1; }
+            .map-wrapper, .map-wrapper iframe { min-height: 220px; }
+        }
+        @media (max-width: 639px) {
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-col { padding: 1.5rem !important; border-right: none !important; border-bottom: 1px solid var(--rule); }
+            .footer-col:last-child { border-bottom: none; }
+            .wordmark-band { padding: 2rem 1.5rem 1.5rem; }
+            .wordmark-band h1 { font-size: clamp(52px, 18vw, 80px); }
+            .footer-bottom { padding: 1.25rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+        }
+    </style>
 </head>
 <body>
 
-    <!-- NAVBAR -->
-    <nav>
-        <div class="max-w-1400">
-            <div class="nav-inner">
-                <a href="../index.html" class="nav-logo">
-                    <div class="nav-logo-wrap">
-                        <div class="nav-logo-row">
-                            <img src="../img/logo sisgra.png" alt="SISGRA">
-                        </div>
-                    </div>
-                </a>
+<!-- SHELL — controlado por la plantilla activa "articulo" desde el admin -->
+<div id="plantilla-root">
+  <div style="padding:6rem 2rem;text-align:center;color:#94a3b8;font-family:'Inter',system-ui,sans-serif;letter-spacing:.15em;text-transform:uppercase;font-size:.75rem;">Cargando…</div>
+</div>
 
-                <div class="nav-menu">
-                    <div class="nav-menu-list">
-                        <div class="nav-dropdown">
-                            <a href="#instalaciones" class="nav-dropdown-trigger">
-                                Instalaciones
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                        d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </a>
-                            <div class="dropdown-content">
-                                <a href="./cableado_estructurado.html">Cableado Estructurado</a>
-                                <a href="./fibra_optica.html">Fibra Óptica</a>
-                                <a href="./seguridad.html">Seguridad Electrónica</a>
-                            </div>
-                        </div>
-                         <a href="/html/blog.html" class="nav-link">Blog</a>
-                        <a href="./soporte_it.html" class="nav-link">Soporte IT</a>
-                        <a href="./desarrollo.html" class="nav-link">Desarrollo de Software</a>
-                       
-                    </div>
-                </div>
+<script type="module">
+  import { bootstrapPage } from '/services/page-bootstrap.js';
+  bootstrapPage('articulo', 'plantilla-root');
+</script>
 
-                <div class="nav-contact-wrap">
-                    <a href="https://wa.me/0341 8610863" class="btn-contact">Contáctese</a>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-     <header class="article-header">
-        <div class="max-w-7xl">
-            <a href="./blog.html" class="back-link">← Volver al Blog</a>
-            <div class="article-meta">
-                <span class="badge-tech">Infraestructura</span>
-            </div>
-            <h1 class="article-main-title">Nuevos estándares de certificación Cat8 para plantas industriales</h1>
-            <p class="article-lead">Análisis detallado sobre cómo la infraestructura física determina el rendimiento de los sistemas de datos en entornos de alta demanda.</p>
-        </div>
-    </header>
-
-    <!-- CONTENIDO DEL INFORME -->
-    <main class="article-container">
-        <div class="max-w-7xl article-grid">
-            
-            <!-- Columna principal (Texto) -->
-            <div class="article-body">
-                <img src="/img/chatgptfoto.png" alt="Infraestructura IT" class="featured-image">
-                
-                <h2>La evolución hacia la Categoría 8</h2>
-                <p>En el panorama actual de la industria 4.0, la velocidad de transmisión de datos no es solo una ventaja competitiva, sino un requisito operativo. El cableado <strong>Categoría 8 (Cat8)</strong> representa el salto más significativo en infraestructura de cobre de la última década.</p>
-
-                <p>A diferencia de sus predecesores, Cat8 permite frecuencias de hasta 2000 MHz y velocidades de 25Gbps a 40Gbps, lo que lo hace ideal para el backbone de centros de datos y plantas automatizadas en Rosario y la región.</p>
-
-                <blockquote>
-                    "La certificación no es un trámite, es el seguro de vida de su red de datos."
-                </blockquote>
-
-                <h3>Beneficios clave de la certificación profesional:</h3>
-                <ul>
-                    <li><strong>Reducción de Latencia:</strong> Minimiza la retransmisión de paquetes perdidos por interferencias.</li>
-                    <li><strong>Escalabilidad:</strong> Prepara la planta para futuras actualizaciones de hardware sin cambiar el cableado.</li>
-                    <li><strong>Cumplimiento de Normas:</strong> Garantiza que la instalación respeta los estándares internacionales TIA/EIA.</li>
-                </ul>
-
-                <p>En <strong>SISGRA</strong>, utilizamos equipos de medición Fluke de última generación para entregar reportes detallados de cada nodo instalado, asegurando que cada centímetro de su red rinda al 100% de su capacidad nominal.</p>
-                
-                <div class="article-cta">
-                    <h3>¿Necesita auditar su infraestructura actual?</h3>
-                    <p>Nuestros asesores técnicos pueden realizar un relevamiento de su planta y proponer mejoras de conectividad.</p>
-                    <a href="https://wa.me/0341 8610863" class="btn-hero-primary" style="background: var(--sisgra-blue); color: white;">Solicitar Asesoría Técnica</a>
-                </div>
-            </div>
-
-            <!-- Columna Lateral (Sidebar) -->
-            <aside class="article-sidebar">
-                
-
-                <div class="sidebar-box dark">
-                    <h4>SISGRA SRL</h4>
-                    <p>Expertos en integración tecnológica desde 1999. Soluciones certificadas para empresas que no pueden detenerse.</p>
-                </div>
-            </aside>
-
-        </div>
-    </main>
-
-
-    <footer>
- 
-  <!-- WORDMARK BAND -->
-  <div class="wordmark-band">
-    <h1>SISGRA</h1>
-    
-  </div>
- 
-  <!-- MAIN GRID -->
-  <div class="footer-grid">
- 
-    <!-- COL 1: SERVICIOS -->
-    <div class="footer-col">
-      <div class="col-label">Servicios</div>
-      <ul class="services-list">
-        <li><a href="/html/cableado_estructurado.html">Cableado Estructurado</a></li>
-        <li><a href="/html/fibra_optica.html">Fibra Óptica</a></li>
-        <li><a href="/html/seguridad.html">Seguridad Electrónica</a></li>
-        <li><a href="/html/soporte_it.html">Soporte IT</a></li>
-        <li><a href="/html/desarrollo.html">Desarrollo de Software</a></li>
-        <li><a href="/html/articulo.html">articulo Técnicos</a></li>
-      </ul>
-    </div>
- 
-    <!-- COL 2: CONTACTO -->
-    <div class="footer-col">
-      <div class="col-label">Contacto</div>
-      <div class="contact-stack">
-        <div class="contact-item">
-          <div class="ci-type">Oficina</div>
-          <div class="ci-value">Lamadrid 468<br>(ZONA I) NAVE 2 - Oficina 05 - NODO ROSARIO</div>
-        </div>
-        <div class="contact-item">
-          <div class="ci-type">Teléfono</div>
-          <div class="ci-value"><a href="tel:08101220065">0810-122-0065</a></div>
-        </div>
-        <div class="contact-item">
-          <div class="ci-type">Email</div>
-          <div class="ci-value"><a href="mailto:info@sisgra.com.ar">info@sisgra.com.ar</a></div>
-        </div>
-        <div class="contact-item">
-          <div class="ci-type">Redes</div>
-          <div class="social-row">
-            <a class="social-btn" href="https://www.facebook.com/sisgra.srl" aria-label="Facebook">FB</a>
-            
-          </div>
-        </div>
-      </div>
-    </div>
- 
-    <!-- COL 3: MAPA -->
-    <div class="footer-col map-col" style="padding:0;">
-      <div class="map-wrapper">
-        <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3348.9!2d-60.6530!3d-32.9440!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b652f52c9a5e3b%3A0x0!2sLamadrid+468%2C+Rosario%2C+Argentina!5e0!3m2!1ses!2sar!4v1680000000000"
-          allowfullscreen=""
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade"
-          title="Ubicación SISGRA">
-        </iframe>
-        <div class="map-overlay-label">Rosario · ARG</div>
-      </div>
-    </div>
- 
-  </div>
- 
-  <!-- BOTTOM BAR -->
-  <div class="footer-bottom">
-    <p class="copy">© 2026 <span>SISGRA S.R.L.</span> — Todos los derechos reservados</p>
-    
-  </div>
- 
-</footer>
+</body>
+</html>

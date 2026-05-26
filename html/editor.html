@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SISGRA — Editor Visual</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+<link rel="icon" href="../img/sdesigra.png"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',system-ui,sans-serif;background:#f1f5f9;color:#0f172a;font-size:14px;height:100vh;overflow:hidden;}
+  button,input,select,textarea{font:inherit;color:inherit;}
+  button{cursor:pointer;}
+  a{color:inherit;}
+
+  /* ─── LOGIN ─── */
+  #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0A1D37,#1e3a8a);z-index:200;}
+  .login-card{background:#fff;padding:2.5rem;width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+  .login-card h1{font-size:1.5rem;font-weight:900;letter-spacing:-.03em;margin-bottom:.25rem;}
+  .login-card .sub{color:#64748b;font-size:.8125rem;margin-bottom:2rem;}
+  .login-card input{display:block;width:100%;padding:.75rem;border:1px solid #e2e8f0;margin-bottom:1rem;font-size:.875rem;}
+  .login-card button{width:100%;background:#2563eb;color:#fff;padding:.875rem;border:none;font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:.8125rem;}
+  .login-card .err{color:#dc2626;font-size:.75rem;margin-bottom:1rem;display:none;}
+  .login-card .hint{margin-top:1rem;text-align:center;font-size:.7rem;color:#94a3b8;}
+  .login-card .hint a{color:#2563eb;text-decoration:none;font-weight:700;}
+
+  /* ─── APP ─── */
+  #app{display:none;height:100vh;grid-template-rows:auto 1fr;}
+  .topbar{background:#0A1D37;color:#fff;padding:.75rem 1.5rem;display:flex;align-items:center;gap:1.5rem;border-bottom:1px solid #1e293b;}
+  .topbar .logo{font-weight:900;letter-spacing:.1em;font-size:.875rem;}
+  .topbar .crumb{color:#94a3b8;font-size:.8125rem;flex:1;}
+  .topbar a.back-old{color:#94a3b8;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;text-decoration:none;border:1px solid #334155;padding:.4rem .75rem;}
+  .topbar a.back-old:hover{color:#fff;border-color:#475569;}
+  .topbar .logout{background:transparent;border:1px solid #334155;color:#cbd5e1;padding:.4rem .75rem;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;}
+
+  .main{display:flex;overflow:hidden;}
+
+  /* ─── DASHBOARD ─── */
+  .dashboard{flex:1;overflow:auto;padding:2rem;}
+  .dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;}
+  .dash-header h2{font-size:1.5rem;font-weight:900;letter-spacing:-.02em;}
+  .btn-primary{background:#2563eb;color:#fff;padding:.65rem 1.25rem;border:none;font-weight:700;font-size:.8125rem;letter-spacing:.05em;text-transform:uppercase;}
+  .btn-secondary{background:#fff;color:#0A1D37;padding:.65rem 1.25rem;border:1px solid #cbd5e1;font-weight:700;font-size:.8125rem;letter-spacing:.05em;text-transform:uppercase;}
+  .btn-danger{background:#fff;color:#dc2626;padding:.4rem .75rem;border:1px solid #fca5a5;font-weight:700;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;}
+  .btn-small{padding:.35rem .65rem;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;font-weight:700;border:1px solid #cbd5e1;background:#fff;color:#0A1D37;}
+
+  .tipo-group{background:#fff;margin-bottom:1.5rem;border:1px solid #e2e8f0;}
+  .tipo-header{display:flex;align-items:center;gap:.75rem;padding:1rem 1.5rem;border-bottom:1px solid #e2e8f0;background:#f8fafc;}
+  .tipo-header h3{font-size:.875rem;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:#0A1D37;flex:1;}
+  .tipo-header .file{font-size:.75rem;color:#64748b;font-family:monospace;}
+  .tpl-row{display:flex;align-items:center;gap:1rem;padding:.875rem 1.5rem;border-bottom:1px solid #f1f5f9;}
+  .tpl-row:last-child{border-bottom:none;}
+  .tpl-row .info{flex:1;min-width:0;}
+  .tpl-row .name{font-weight:700;font-size:.875rem;}
+  .tpl-row .desc{color:#64748b;font-size:.75rem;}
+  .badge-activa{background:#dcfce7;color:#166534;padding:.15rem .5rem;font-size:.65rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;}
+  .badge-borrador{background:#fef3c7;color:#92400e;padding:.15rem .5rem;font-size:.65rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;}
+  .empty{padding:1.25rem 1.5rem;text-align:center;color:#94a3b8;font-size:.8125rem;}
+
+  /* ─── EDITOR ─── */
+  .editor{display:none;flex:1;grid-template-columns:260px 1fr 320px;overflow:hidden;}
+  .editor.open{display:grid;}
+  .editor-toolbar{grid-column:1 / -1;background:#fff;border-bottom:1px solid #e2e8f0;padding:.65rem 1rem;display:flex;align-items:center;gap:.75rem;}
+  .editor-toolbar .tpl-name{flex:1;font-weight:700;font-size:.875rem;}
+  .editor-toolbar .dirty{color:#dc2626;font-size:.7rem;font-weight:700;display:none;}
+  .editor-toolbar .dirty.show{display:inline;}
+  .editor-toolbar .back{background:none;border:none;color:#64748b;font-size:.875rem;display:flex;align-items:center;gap:.4rem;}
+  .editor-toolbar .back:hover{color:#0A1D37;}
+
+  .tray{background:#fff;border-right:1px solid #e2e8f0;overflow-y:auto;}
+  .tray h4{padding:1rem 1rem .5rem;font-size:.7rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;color:#64748b;}
+  .tray-chip{display:flex;align-items:center;gap:.65rem;padding:.65rem 1rem;cursor:grab;border-bottom:1px solid #f1f5f9;user-select:none;}
+  .tray-chip:hover{background:#f8fafc;}
+  .tray-chip:active{cursor:grabbing;}
+  .tray-chip .ic{width:32px;height:32px;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+  .tray-chip .nm{font-weight:700;font-size:.8125rem;}
+  .tray-chip .dx{color:#94a3b8;font-size:.6875rem;}
+
+  .canvas-wrap{background:#cbd5e1;overflow:auto;padding:1.5rem;}
+  .canvas{background:#fff;max-width:1200px;margin:0 auto;min-height:400px;box-shadow:0 4px 20px rgba(0,0,0,.08);}
+  .canvas-empty{padding:6rem 2rem;text-align:center;color:#94a3b8;border:2px dashed #cbd5e1;}
+  .canvas-empty small{display:block;margin-top:.5rem;font-size:.75rem;}
+
+  .sec-wrap{position:relative;outline:2px solid transparent;outline-offset:-2px;}
+  .sec-wrap:hover{outline-color:#cbd5e1;}
+  .sec-wrap.selected{outline-color:#2563eb;}
+  .sec-controls{position:absolute;top:6px;right:6px;display:flex;gap:.25rem;background:rgba(255,255,255,.95);padding:.25rem;z-index:10;opacity:0;pointer-events:none;transition:opacity .15s;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+  .sec-wrap:hover .sec-controls,.sec-wrap.selected .sec-controls{opacity:1;pointer-events:auto;}
+  .sec-controls button{background:#fff;border:1px solid #cbd5e1;padding:.25rem .45rem;font-size:.7rem;line-height:1;color:#0A1D37;}
+  .sec-controls button:hover{background:#f1f5f9;}
+  .sec-controls .danger{color:#dc2626;}
+
+  .drop-marker{height:6px;background:#2563eb;margin:.25rem 0;display:none;}
+  .drop-marker.active{display:block;}
+
+  .props{background:#fff;border-left:1px solid #e2e8f0;overflow-y:auto;display:flex;flex-direction:column;}
+  .props-header{padding:.75rem 1rem;border-bottom:1px solid #e2e8f0;display:flex;align-items:center;gap:.5rem;}
+  .props-header .type{font-weight:900;font-size:.8125rem;text-transform:uppercase;letter-spacing:.05em;flex:1;}
+  .props-tabs{display:flex;border-bottom:1px solid #e2e8f0;}
+  .props-tab{flex:1;padding:.65rem;background:none;border:none;font-weight:700;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:#94a3b8;border-bottom:2px solid transparent;}
+  .props-tab.active{color:#2563eb;border-bottom-color:#2563eb;}
+  .props-body{flex:1;overflow-y:auto;padding:1rem;}
+  .field{margin-bottom:1rem;}
+  .field label{display:block;font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#475569;margin-bottom:.35rem;}
+  .field input[type=text],.field textarea,.field select,.field input[type=number]{width:100%;padding:.5rem;border:1px solid #cbd5e1;font-size:.8125rem;background:#fff;font-family:inherit;}
+  .field textarea{min-height:80px;resize:vertical;}
+  .color-row{display:flex;gap:.4rem;align-items:center;}
+  .color-row input[type=color]{width:40px;height:36px;border:1px solid #cbd5e1;padding:0;background:#fff;}
+  .color-row input[type=text]{flex:1;}
+  .toggle{display:flex;align-items:center;gap:.5rem;cursor:pointer;}
+  .toggle input{width:auto;}
+  .props-empty{padding:2rem 1rem;text-align:center;color:#94a3b8;font-size:.8125rem;}
+
+  .cards-editor .card-item{border:1px solid #e2e8f0;padding:.65rem;margin-bottom:.5rem;background:#f8fafc;}
+  .cards-editor .card-item .row{display:flex;gap:.5rem;align-items:center;margin-bottom:.35rem;}
+  .cards-editor .card-item .row:last-child{margin-bottom:0;}
+  .cards-editor .card-item input{flex:1;padding:.35rem;font-size:.75rem;border:1px solid #cbd5e1;}
+  .cards-editor .card-item .remove{background:#fee;color:#dc2626;border:1px solid #fca5a5;padding:.25rem .5rem;font-size:.7rem;}
+  .cards-editor .add-item{width:100%;padding:.5rem;background:#fff;border:1px dashed #cbd5e1;color:#64748b;font-weight:700;font-size:.75rem;margin-top:.4rem;}
+
+  /* ─── MODAL ─── */
+  .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.6);display:none;align-items:center;justify-content:center;z-index:60;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:#fff;width:440px;max-width:90vw;}
+  .modal-header{padding:1rem 1.5rem;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;}
+  .modal-header h3{font-size:1rem;font-weight:900;}
+  .modal-close{background:none;border:none;font-size:1.5rem;color:#94a3b8;line-height:1;}
+  .modal-body{padding:1.5rem;}
+  .modal-footer{padding:1rem 1.5rem;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:.5rem;}
+
+  /* ─── NOTIF ─── */
+  .notif{position:fixed;bottom:1.5rem;right:1.5rem;background:#0A1D37;color:#fff;padding:.875rem 1.25rem;font-size:.8125rem;font-weight:600;transform:translateY(120%);transition:transform .25s;z-index:300;max-width:380px;}
+  .notif.show{transform:translateY(0);}
+  .notif.error{background:#dc2626;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-card">
+    <h1>Editor Visual</h1>
+    <p class="sub">SISGRA · Sistema de plantillas modulares</p>
+    <input id="li-user" type="text" placeholder="Usuario" autocomplete="username"/>
+    <input id="li-pass" type="password" placeholder="Contraseña" autocomplete="current-password"/>
+    <div class="err" id="li-err">Usuario o contraseña incorrectos.</div>
+    <button id="li-btn">Ingresar</button>
+    <p class="hint">¿Querés el panel viejo? <a href="admin_panel.html">Ir a admin_panel</a></p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <span class="logo">SISGRA · EDITOR</span>
+    <span class="crumb" id="crumb">Dashboard</span>
+    <a class="back-old" href="admin_panel.html" title="Panel viejo (formularios)">Panel viejo</a>
+    <button class="logout" id="logout-btn">Cerrar sesión</button>
+  </div>
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dashboard">
+      <div class="dash-header">
+        <h2>Plantillas por página</h2>
+        <button class="btn-primary" id="btn-nueva">+ Nueva plantilla</button>
+      </div>
+      <div id="tipo-groups"></div>
+    </div>
+
+    <!-- EDITOR -->
+    <div class="editor" id="editor">
+      <div class="editor-toolbar">
+        <button class="back" id="back-btn">← Volver</button>
+        <span class="tpl-name" id="ed-name">—</span>
+        <span class="dirty" id="dirty-flag">● cambios sin guardar</span>
+        <button class="btn-small" id="btn-activar">Activar</button>
+        <button class="btn-primary" id="btn-guardar">Guardar</button>
+      </div>
+      <div class="tray" id="tray">
+        <h4>Módulos disponibles</h4>
+        <div id="tray-list"></div>
+      </div>
+      <div class="canvas-wrap">
+        <div class="canvas" id="canvas">
+          <div class="canvas-empty">Arrastrá un módulo desde la izquierda<small>O hacé doble click sobre un módulo</small></div>
+        </div>
+      </div>
+      <div class="props" id="props">
+        <div class="props-empty" id="props-empty">Click sobre una sección para editarla</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL nueva plantilla -->
+<div class="modal-overlay" id="modal-nueva">
+  <div class="modal">
+    <div class="modal-header"><h3>Nueva plantilla</h3><button class="modal-close" data-close>×</button></div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Nombre *</label>
+        <input type="text" id="np-name" placeholder="Ej.: Inicio campaña verano"/>
+      </div>
+      <div class="field">
+        <label>HTML destino *</label>
+        <select id="np-tipo"><option value="">— Seleccionar —</option></select>
+      </div>
+      <div class="field">
+        <label>Descripción (opcional)</label>
+        <input type="text" id="np-desc"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" data-close>Cancelar</button>
+      <button class="btn-primary" id="np-crear">Crear plantilla</button>
+    </div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script type="module">
+import { SECTIONS, TIPOS_HTML, renderSection, createSection } from '../services/sections.js';
+
+const API = `http://${window.location.hostname}:3000/api`;
+const $ = (s,r=document)=>r.querySelector(s);
+const $$= (s,r=document)=>[...r.querySelectorAll(s)];
+
+const state = {
+  token: sessionStorage.getItem('sisgra_token') || null,
+  plantillas: [],
+  activeTpl: null,
+  dirty: false,
+  selectedSecId: null,
+  propsTab: 'data',
+};
+
+const authHeaders = ()=>({ 'Content-Type':'application/json', 'Authorization':`Bearer ${state.token}` });
+async function api(method, path, body){
+  const opts = { method, headers: state.token ? authHeaders() : {'Content-Type':'application/json'} };
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  const r = await fetch(`${API}${path}`, opts);
+  const data = await r.json().catch(()=>({}));
+  if (!r.ok) throw new Error(data.error || `${method} ${path} → ${r.status}`);
+  return data;
+}
+
+function notif(msg, type='ok'){
+  const n = $('#notif');
+  n.textContent = msg;
+  n.className = `notif show ${type==='error'?'error':''}`;
+  clearTimeout(n._t);
+  n._t = setTimeout(()=>n.classList.remove('show'), 3500);
+}
+
+function escAttr(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+function markDirty(){ state.dirty = true; $('#dirty-flag').classList.add('show'); }
+function clearDirty(){ state.dirty = false; $('#dirty-flag').classList.remove('show'); }
+
+// ─── LOGIN ─────────────────────────────────────────────────────────
+async function doLogin(){
+  const usuario = $('#li-user').value.trim();
+  const password = $('#li-pass').value.trim();
+  $('#li-err').style.display = 'none';
+  try {
+    const r = await fetch(`${API}/auth/login`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ usuario, password })
+    });
+    const data = await r.json().catch(()=>({}));
+    if (!r.ok || !data.token) throw new Error(data.error || 'Login falló');
+    state.token = data.token;
+    sessionStorage.setItem('sisgra_token', data.token);
+    enterApp();
+  } catch(e){
+    $('#li-err').textContent = e.message || 'Usuario o contraseña incorrectos.';
+    $('#li-err').style.display = 'block';
+  }
+}
+
+function enterApp(){
+  $('#login').style.display = 'none';
+  $('#app').style.display = 'grid';
+  populateTipoSelect();
+  loadPlantillas();
+}
+
+function logout(){
+  sessionStorage.removeItem('sisgra_token');
+  state.token = null;
+  location.reload();
+}
+
+// ─── DASHBOARD ─────────────────────────────────────────────────────
+async function loadPlantillas(){
+  try {
+    const { plantillas } = await api('GET', '/plantillas');
+    state.plantillas = plantillas || [];
+    renderDashboard();
+  } catch(e){ notif(e.message, 'error'); }
+}
+
+function renderDashboard(){
+  const c = $('#tipo-groups');
+  c.innerHTML = TIPOS_HTML.map(t=>{
+    const pls = state.plantillas.filter(p=>p.tipo===t.value);
+    return `
+      <div class="tipo-group">
+        <div class="tipo-header">
+          <h3>${t.label}</h3>
+          <span class="file">${t.file}</span>
+          <button class="btn-small" data-newtipo="${t.value}">+ Plantilla</button>
+        </div>
+        ${pls.length===0
+          ? `<div class="empty">No hay plantillas para ${t.label} todavía.</div>`
+          : pls.map(p=>`
+            <div class="tpl-row">
+              <div class="info">
+                <div class="name">${escAttr(p.nombre)}</div>
+                ${p.descripcion?`<div class="desc">${escAttr(p.descripcion)}</div>`:''}
+              </div>
+              <span class="${p.activa?'badge-activa':'badge-borrador'}">${p.activa?'Activa':'Borrador'}</span>
+              <button class="btn-small" data-edit="${p.id_plantilla}">Editar</button>
+              ${!p.activa?`<button class="btn-small" data-activar="${p.id_plantilla}">Activar</button>`:''}
+              ${!p.activa?`<button class="btn-danger" data-eliminar="${p.id_plantilla}">Eliminar</button>`:''}
+            </div>`).join('')}
+      </div>`;
+  }).join('');
+
+  $$('[data-newtipo]',c).forEach(b=>b.addEventListener('click',()=>openNueva(b.dataset.newtipo)));
+  $$('[data-edit]',c).forEach(b=>b.addEventListener('click',()=>openEditor(b.dataset.edit)));
+  $$('[data-activar]',c).forEach(b=>b.addEventListener('click',()=>activarTpl(b.dataset.activar)));
+  $$('[data-eliminar]',c).forEach(b=>b.addEventListener('click',()=>eliminarTpl(b.dataset.eliminar)));
+}
+
+function populateTipoSelect(){
+  $('#np-tipo').innerHTML = '<option value="">— Seleccionar —</option>'
+    + TIPOS_HTML.map(t=>`<option value="${t.value}">${t.label} — ${t.file}</option>`).join('');
+}
+
+// ─── CREATE / ACTIVATE / DELETE ────────────────────────────────────
+function openNueva(preselectTipo=''){
+  $('#np-name').value = '';
+  $('#np-desc').value = '';
+  $('#np-tipo').value = preselectTipo;
+  $('#modal-nueva').classList.add('open');
+  setTimeout(()=>$('#np-name').focus(), 50);
+}
+
+async function crearTpl(){
+  const nombre = $('#np-name').value.trim();
+  const tipo = $('#np-tipo').value;
+  const descripcion = $('#np-desc').value.trim();
+  if (!nombre) return notif('El nombre es requerido', 'error');
+  if (!tipo) return notif('Seleccioná el HTML destino', 'error');
+  try {
+    const { plantilla } = await api('POST', '/plantillas', { nombre, tipo, descripcion, secciones: [] });
+    state.plantillas.push(plantilla);
+    $('#modal-nueva').classList.remove('open');
+    renderDashboard();
+    notif('✓ Plantilla creada — abriendo editor');
+    openEditor(plantilla.id_plantilla);
+  } catch(e){ notif(e.message, 'error'); }
+}
+
+async function activarTpl(id){
+  try {
+    const { plantilla } = await api('POST', `/plantillas/${id}/activar`);
+    state.plantillas.forEach(p=>{ if (p.tipo===plantilla.tipo) p.activa = (p.id_plantilla===id); });
+    renderDashboard();
+    notif('✓ Plantilla activada');
+  } catch(e){ notif(e.message, 'error'); }
+}
+
+async function eliminarTpl(id){
+  if (!confirm('¿Eliminar esta plantilla?')) return;
+  try {
+    await api('DELETE', `/plantillas/${id}`);
+    state.plantillas = state.plantillas.filter(p=>p.id_plantilla!==id);
+    renderDashboard();
+    notif('✓ Eliminada');
+  } catch(e){ notif(e.message, 'error'); }
+}
+
+// ─── EDITOR ────────────────────────────────────────────────────────
+async function openEditor(id){
+  try {
+    const { plantilla } = await api('GET', `/plantillas/${id}`);
+    state.activeTpl = plantilla;
+    state.selectedSecId = null;
+    clearDirty();
+    $('#dashboard').style.display = 'none';
+    $('#editor').classList.add('open');
+    $('#ed-name').textContent = `${plantilla.nombre} — ${plantilla.tipo}`;
+    $('#crumb').textContent = `Editor → ${plantilla.nombre}`;
+    $('#btn-activar').textContent = plantilla.activa ? 'Activa ✓' : 'Activar';
+    $('#btn-activar').disabled = !!plantilla.activa;
+    renderTray();
+    renderCanvas();
+    bindCanvasDnd();   // attach DnD listeners ONCE (guarded inside the function)
+    renderProps();
+  } catch(e){ notif(e.message, 'error'); }
+}
+
+function backToDashboard(){
+  if (state.dirty && !confirm('Hay cambios sin guardar. ¿Salir igual?')) return;
+  state.activeTpl = null;
+  state.selectedSecId = null;
+  $('#editor').classList.remove('open');
+  $('#dashboard').style.display = 'block';
+  $('#crumb').textContent = 'Dashboard';
+}
+
+function renderTray(){
+  $('#tray-list').innerHTML = Object.entries(SECTIONS).map(([type, def])=>`
+    <div class="tray-chip" draggable="true" data-type="${type}">
+      <div class="ic">${def.icon||'◻'}</div>
+      <div>
+        <div class="nm">${def.label}</div>
+        <div class="dx">${def.description||''}</div>
+      </div>
+    </div>`).join('');
+  $$('.tray-chip').forEach(chip=>{
+    chip.addEventListener('dragstart', e=>{
+      e.dataTransfer.setData('text/sec-type', chip.dataset.type);
+      e.dataTransfer.effectAllowed = 'copy';
+    });
+    chip.addEventListener('dblclick', ()=>addSection(chip.dataset.type));
+  });
+}
+
+function renderCanvas(){
+  const canvas = $('#canvas');
+  const secs = state.activeTpl?.secciones || [];
+  if (secs.length===0){
+    canvas.innerHTML = `<div class="canvas-empty">Arrastrá un módulo desde la izquierda<small>O hacé doble click sobre un módulo</small></div>`;
+  } else {
+    canvas.innerHTML = secs.map((sec,i)=>`
+      <div class="drop-marker" data-dropidx="${i}"></div>
+      <div class="sec-wrap ${state.selectedSecId===sec.id?'selected':''}" data-sec="${sec.id}">
+        <div class="sec-controls">
+          <button data-act="up"   title="Subir">▲</button>
+          <button data-act="down" title="Bajar">▼</button>
+          <button data-act="del"  title="Eliminar" class="danger">✕</button>
+        </div>
+        ${renderSection(sec)}
+      </div>
+    `).join('') + `<div class="drop-marker" data-dropidx="${secs.length}"></div>`;
+  }
+
+  $$('.sec-wrap', canvas).forEach(w=>{
+    w.addEventListener('click', e=>{
+      if (e.target.closest('.sec-controls')) return;
+      state.selectedSecId = w.dataset.sec;
+      renderCanvas();
+      renderProps();
+    });
+    $$('button[data-act]', w).forEach(b=>{
+      b.addEventListener('click', e=>{
+        e.stopPropagation();
+        const act = b.dataset.act, id = w.dataset.sec;
+        if (act==='up')   moveSection(id, -1);
+        if (act==='down') moveSection(id, 1);
+        if (act==='del')  deleteSection(id);
+      });
+    });
+  });
+}
+
+// Canvas-level drag/drop listeners. Atached ONCE on init (not on every render),
+// otherwise dropping fires N times and creates duplicate sections.
+let _canvasDndBound = false;
+function bindCanvasDnd(){
+  if (_canvasDndBound) return;
+  _canvasDndBound = true;
+  const canvas = $('#canvas');
+  canvas.addEventListener('dragover', e=>{
+    if (!e.dataTransfer.types.includes('text/sec-type')) return;
+    e.preventDefault();
+    const m = findClosestMarker(canvas, e.clientY);
+    $$('.drop-marker', canvas).forEach(x=>x.classList.toggle('active', x===m));
+  });
+  canvas.addEventListener('dragleave', e=>{
+    if (e.target===canvas) $$('.drop-marker', canvas).forEach(x=>x.classList.remove('active'));
+  });
+  canvas.addEventListener('drop', e=>{
+    const type = e.dataTransfer.getData('text/sec-type');
+    if (!type) return;
+    e.preventDefault();
+    const m = findClosestMarker(canvas, e.clientY);
+    const idx = m ? parseInt(m.dataset.dropidx,10) : (state.activeTpl?.secciones||[]).length;
+    $$('.drop-marker', canvas).forEach(x=>x.classList.remove('active'));
+    addSection(type, idx);
+  });
+}
+
+function findClosestMarker(canvas, y){
+  let closest=null, best=Infinity;
+  for (const m of $$('.drop-marker', canvas)){
+    const r = m.getBoundingClientRect();
+    const d = Math.abs((r.top+r.bottom)/2 - y);
+    if (d<best){ best=d; closest=m; }
+  }
+  return closest;
+}
+
+function addSection(type, atIdx){
+  const sec = createSection(type);
+  if (!sec) return;
+  const secs = state.activeTpl.secciones = state.activeTpl.secciones || [];
+  if (typeof atIdx === 'number') secs.splice(atIdx, 0, sec);
+  else secs.push(sec);
+  state.selectedSecId = sec.id;
+  markDirty();
+  renderCanvas();
+  renderProps();
+}
+
+function moveSection(id, delta){
+  const secs = state.activeTpl.secciones;
+  const i = secs.findIndex(s=>s.id===id);
+  if (i<0) return;
+  const j = i+delta;
+  if (j<0 || j>=secs.length) return;
+  [secs[i], secs[j]] = [secs[j], secs[i]];
+  markDirty();
+  renderCanvas();
+}
+
+function deleteSection(id){
+  if (!confirm('¿Eliminar esta sección?')) return;
+  state.activeTpl.secciones = state.activeTpl.secciones.filter(s=>s.id!==id);
+  if (state.selectedSecId===id) state.selectedSecId = null;
+  markDirty();
+  renderCanvas();
+  renderProps();
+}
+
+// ─── PROPS PANEL ───────────────────────────────────────────────────
+function renderProps(){
+  const props = $('#props');
+  const sec = (state.activeTpl?.secciones||[]).find(s=>s.id===state.selectedSecId);
+  if (!sec){ props.innerHTML = `<div class="props-empty">Click sobre una sección para editarla</div>`; return; }
+  const def = SECTIONS[sec.type];
+  if (!def){ props.innerHTML = `<div class="props-empty">Tipo desconocido: ${sec.type}</div>`; return; }
+  props.innerHTML = `
+    <div class="props-header">
+      <span class="type">${def.label}</span>
+    </div>
+    <div class="props-tabs">
+      <button class="props-tab ${state.propsTab==='data'?'active':''}" data-tab="data">Contenido</button>
+      <button class="props-tab ${state.propsTab==='design'?'active':''}" data-tab="design">Diseño</button>
+    </div>
+    <div class="props-body" id="props-body">
+      ${state.propsTab==='data'
+        ? renderFields(sec, def.dataFields, 'data')
+        : renderFields(sec, def.designFields, 'design')}
+    </div>`;
+  $$('.props-tab', props).forEach(t=>t.addEventListener('click',()=>{ state.propsTab = t.dataset.tab; renderProps(); }));
+  bindFieldEvents(sec);
+}
+
+function renderFields(sec, fields, group){
+  const vals = sec[group] || {};
+  return (fields||[]).map(f=>fieldHTML(f, vals[f.name], group)).join('');
+}
+
+function fieldHTML(f, val, group){
+  const safe = escAttr(val);
+  switch(f.type){
+    case 'text':     return `<div class="field"><label>${f.label}</label><input type="text" data-f="${f.name}" data-g="${group}" value="${safe}"/></div>`;
+    case 'textarea': return `<div class="field"><label>${f.label}</label><textarea data-f="${f.name}" data-g="${group}">${escAttr(val).replace(/&quot;/g,'"')}</textarea></div>`;
+    case 'number':   return `<div class="field"><label>${f.label}</label><input type="number" data-f="${f.name}" data-g="${group}" min="${f.min??0}" max="${f.max??9999}" value="${val??''}"/></div>`;
+    case 'color': {
+      const v = val || '#000000';
+      const isHex = /^#[0-9a-f]{3,8}$/i.test(v);
+      return `<div class="field"><label>${f.label}</label>
+        <div class="color-row">
+          <input type="color" data-f="${f.name}" data-g="${group}" data-colorpicker value="${isHex?v:'#000000'}"/>
+          <input type="text" data-f="${f.name}" data-g="${group}" value="${safe}" placeholder="#fff o rgba(...)"/>
+        </div></div>`;
+    }
+    case 'select':   return `<div class="field"><label>${f.label}</label>
+      <select data-f="${f.name}" data-g="${group}">
+        ${(f.options||[]).map(o=>`<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}
+      </select></div>`;
+    case 'toggle':   return `<div class="field"><label class="toggle"><input type="checkbox" data-f="${f.name}" data-g="${group}" data-toggle ${val?'checked':''}/> ${f.label}</label></div>`;
+    case 'cards':    return cardsEditorHTML(val||[]);
+    case 'logos':    return logosEditorHTML(val||[]);
+    default:         return `<div class="field"><label>${f.label}</label><input type="text" data-f="${f.name}" data-g="${group}" value="${safe}"/></div>`;
+  }
+}
+
+function cardsEditorHTML(cards){
+  return `<div class="field"><label>Cards</label>
+    <div class="cards-editor">
+      ${cards.map((c,i)=>`
+        <div class="card-item" data-cardidx="${i}">
+          <div class="row"><input data-cardfield="titulo"      value="${escAttr(c.titulo)}"      placeholder="Título"/></div>
+          <div class="row"><input data-cardfield="descripcion" value="${escAttr(c.descripcion)}" placeholder="Descripción"/></div>
+          <div class="row"><input data-cardfield="link"        value="${escAttr(c.link||'')}"    placeholder="Link"/>
+            <button class="remove" data-removecard="${i}">✕</button></div>
+        </div>`).join('')}
+      <button class="add-item" data-addcard>+ Agregar card</button>
+    </div></div>`;
+}
+
+function logosEditorHTML(logos){
+  return `<div class="field"><label>Logos</label>
+    <div class="cards-editor">
+      ${logos.map((l,i)=>`
+        <div class="card-item" data-logoidx="${i}">
+          <div class="row"><input data-logofield="nombre" value="${escAttr(l.nombre)}" placeholder="Nombre"/></div>
+          <div class="row"><input data-logofield="imagen" value="${escAttr(l.imagen||'')}" placeholder="URL imagen (opc)"/>
+            <button class="remove" data-removelogo="${i}">✕</button></div>
+        </div>`).join('')}
+      <button class="add-item" data-addlogo>+ Agregar logo</button>
+    </div></div>`;
+}
+
+function bindFieldEvents(sec){
+  const body = $('#props-body');
+
+  $$('[data-f]', body).forEach(inp=>{
+    if (inp.dataset.colorpicker !== undefined) return;
+    inp.addEventListener('input', ()=>{
+      const f = inp.dataset.f, g = inp.dataset.g;
+      sec[g] = sec[g] || {};
+      let v = inp.value;
+      if (inp.type === 'number') v = v==='' ? '' : Number(v);
+      if (inp.dataset.toggle !== undefined) v = inp.checked;
+      sec[g][f] = v;
+      markDirty();
+      renderCanvas();
+    });
+  });
+
+  $$('[data-colorpicker]', body).forEach(picker=>{
+    picker.addEventListener('input', ()=>{
+      const f = picker.dataset.f, g = picker.dataset.g;
+      sec[g] = sec[g] || {};
+      sec[g][f] = picker.value;
+      const text = body.querySelector(`input[type=text][data-f="${f}"][data-g="${g}"]`);
+      if (text) text.value = picker.value;
+      markDirty();
+      renderCanvas();
+    });
+  });
+
+  $$('[data-cardidx]', body).forEach(card=>{
+    const idx = parseInt(card.dataset.cardidx,10);
+    $$('[data-cardfield]', card).forEach(inp=>{
+      inp.addEventListener('input', ()=>{
+        sec.data.cards = sec.data.cards || [];
+        sec.data.cards[idx] = sec.data.cards[idx] || {};
+        sec.data.cards[idx][inp.dataset.cardfield] = inp.value;
+        markDirty();
+        renderCanvas();
+      });
+    });
+    card.querySelector('[data-removecard]')?.addEventListener('click', ()=>{
+      sec.data.cards.splice(idx,1);
+      markDirty();
+      renderCanvas(); renderProps();
+    });
+  });
+  body.querySelector('[data-addcard]')?.addEventListener('click', ()=>{
+    sec.data.cards = sec.data.cards || [];
+    sec.data.cards.push({ titulo:'Nueva card', descripcion:'', link:'' });
+    markDirty();
+    renderCanvas(); renderProps();
+  });
+
+  $$('[data-logoidx]', body).forEach(logo=>{
+    const idx = parseInt(logo.dataset.logoidx,10);
+    $$('[data-logofield]', logo).forEach(inp=>{
+      inp.addEventListener('input', ()=>{
+        sec.data.logos = sec.data.logos || [];
+        sec.data.logos[idx] = sec.data.logos[idx] || {};
+        sec.data.logos[idx][inp.dataset.logofield] = inp.value;
+        markDirty();
+        renderCanvas();
+      });
+    });
+    logo.querySelector('[data-removelogo]')?.addEventListener('click', ()=>{
+      sec.data.logos.splice(idx,1);
+      markDirty();
+      renderCanvas(); renderProps();
+    });
+  });
+  body.querySelector('[data-addlogo]')?.addEventListener('click', ()=>{
+    sec.data.logos = sec.data.logos || [];
+    sec.data.logos.push({ nombre:'Nuevo logo', imagen:'' });
+    markDirty();
+    renderCanvas(); renderProps();
+  });
+}
+
+// ─── SAVE / ACTIVATE ──────────────────────────────────────────────
+async function guardarTpl(){
+  if (!state.activeTpl) return;
+  try {
+    const { plantilla } = await api('PATCH', `/plantillas/${state.activeTpl.id_plantilla}`, {
+      nombre: state.activeTpl.nombre,
+      descripcion: state.activeTpl.descripcion,
+      secciones: state.activeTpl.secciones,
+    });
+    state.activeTpl = plantilla;
+    clearDirty();
+    const idx = state.plantillas.findIndex(p=>p.id_plantilla===plantilla.id_plantilla);
+    if (idx>=0) state.plantillas[idx] = plantilla;
+    notif('✓ Plantilla guardada');
+  } catch(e){ notif(e.message, 'error'); }
+}
+
+async function activarEdit(){
+  if (!state.activeTpl) return;
+  if (state.dirty && !confirm('Hay cambios sin guardar. ¿Activar la versión guardada (descarta cambios sin guardar)?')) return;
+  await activarTpl(state.activeTpl.id_plantilla);
+  state.activeTpl.activa = true;
+  $('#btn-activar').textContent = 'Activa ✓';
+  $('#btn-activar').disabled = true;
+}
+
+// ─── WIRE ──────────────────────────────────────────────────────────
+$('#li-btn').addEventListener('click', doLogin);
+$('#li-pass').addEventListener('keydown', e=>{ if (e.key==='Enter') doLogin(); });
+$('#logout-btn').addEventListener('click', logout);
+$('#btn-nueva').addEventListener('click', ()=>openNueva());
+$('#np-crear').addEventListener('click', crearTpl);
+$$('[data-close]').forEach(b=>b.addEventListener('click', ()=>$('#modal-nueva').classList.remove('open')));
+$('#back-btn').addEventListener('click', backToDashboard);
+$('#btn-guardar').addEventListener('click', guardarTpl);
+$('#btn-activar').addEventListener('click', activarEdit);
+
+if (state.token) enterApp();
+</script>
+</body>
+</html>

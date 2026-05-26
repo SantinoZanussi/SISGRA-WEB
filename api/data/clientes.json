@@ -1,0 +1,28 @@
+{
+  "titulo_seccion": "Empresas que confían en nosotros",
+  "carrusel_activo": true,
+  "auto_scroll": true,
+  "clientes": [
+    {
+      "id": "c1",
+      "nombre": "San Cristóbal",
+      "imagen": "/img/sancristobal.png",
+      "url": "",
+      "activo": true
+    },
+    {
+      "id": "c2",
+      "nombre": "Syngenta",
+      "imagen": "/img/syngenta.png",
+      "url": "",
+      "activo": true
+    },
+    {
+      "id": "c1779387542739",
+      "nombre": "dwadad",
+      "imagen": "https://polotecnologico.net/wp-content/uploads/2023/08/sisgra-300x300.jpg",
+      "url": "",
+      "activo": true
+    }
+  ]
+}

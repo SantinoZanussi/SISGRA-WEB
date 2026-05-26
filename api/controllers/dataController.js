@@ -1,12 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 
-// Resuelve la carpeta /data relativa a la raíz del proyecto (un nivel arriba de /api)
-const DATA_DIR = path.join(__dirname, '..', '..', 'data');
+const DATA_DIR = path.join(__dirname, '..', 'data');
 
 const ALLOWED_FILES = [
   'hero', 'nosotros', 'servicios', 'clientes', 'blog',
-  'contacto', 'seo', 'paginas', 'categorias', 'extra_sections'
+  'contacto', 'seo', 'paginas', 'categorias', 'extra_sections', 'tpl_designs'
 ];
 
 function filePath(name) {

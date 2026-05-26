@@ -9,12 +9,32 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
 
+// Force no-cache en todas las respuestas API. Sin esto, el browser cachea
+// /api/plantillas/activa/:tipo y los cambios del editor no se reflejan
+// en las páginas reales hasta hacer hard refresh.
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
+  res.set('Surrogate-Control', 'no-store');
+  next();
+});
+
 //* API ROUTES
 const userRoutes = require("./routes/userRoutes");
 app.use("/api/auth", userRoutes);
 
 const dataRoutes = require("./routes/dataRoutes");
 app.use("/api/data", dataRoutes);
+
+const plantillaRoutes = require("./routes/plantillaRoutes");
+app.use("/api/plantillas", plantillaRoutes);
+
+const navRoutes = require("./routes/navRoutes");
+app.use("/api/nav", navRoutes);
+
+const webhookRoutes = require("./routes/webhookRoutes");
+app.use("/api/webhook", webhookRoutes);
 
 function getLocalIPv4() {
   const nets = os.networkInterfaces();

@@ -1,0 +1,92 @@
+{
+  "cableado": {
+    "badge": "Infraestructura Crítica",
+    "titulo1": "Cableado",
+    "titulo2": "Estructurado.",
+    "descripcion": "Implementamos sistemas de conectividad de alto rendimiento diseñados para soportar las demandas de datos del futuro. No solo conectamos cables; construimos el sistema nervioso de su empresa.",
+    "features": [
+      {
+        "badge": "Cat 8",
+        "titulo": "Certificación Categoría 8",
+        "descripcion": "Garantizamos velocidades de hasta 40Gbps con certificaciones Fluke de última generación."
+      },
+      {
+        "badge": "TIA",
+        "titulo": "Normativa TIA/EIA 568",
+        "descripcion": "Planificación siguiendo estándares internacionales para garantizar escalabilidad definitiva."
+      }
+    ]
+  },
+  "fibra": {
+    "badge": "Transmisión Fotónica",
+    "titulo1": "Fibra",
+    "titulo2": "Óptica Pro.",
+    "descripcion": "Llevamos la velocidad de la luz a su centro de datos. Nuestros enlaces de fibra óptica garantizan una inmunidad total a interferencias y un ancho de banda ilimitado.",
+    "features": [
+      {
+        "badge": "SM",
+        "titulo": "Monomodo & Multimodo",
+        "descripcion": "Backbones industriales de alta densidad OM4/OM5."
+      },
+      {
+        "badge": "FUS",
+        "titulo": "Fusión por Núcleo",
+        "descripcion": "Empalmes de alta precisión certificados."
+      }
+    ]
+  },
+  "seguridad": {
+    "badge": "Protección Perimetral",
+    "titulo1": "Seguridad",
+    "titulo2": "Electrónica.",
+    "descripcion": "Blindamos su infraestructura con tecnología de monitoreo en tiempo real e inteligencia artificial aplicada a la vigilancia.",
+    "features": [
+      {
+        "badge": "CCTV",
+        "titulo": "Video Vigilancia IP",
+        "descripcion": "Sistemas 4K con análisis de video inteligente."
+      },
+      {
+        "badge": "ACC",
+        "titulo": "Control de Acceso",
+        "descripcion": "Sistemas biométricos y de tarjetas de proximidad."
+      }
+    ]
+  },
+  "soporte": {
+    "badge": "Continuidad Operativa",
+    "titulo1": "Soporte",
+    "titulo2": "IT Integral.",
+    "descripcion": "Minimizamos el tiempo de inactividad de su empresa. Actuamos como su departamento de sistemas externo, brindando soluciones rápidas y escalables.",
+    "features": [
+      {
+        "badge": "PRV",
+        "titulo": "Mantenimiento Preventivo",
+        "descripcion": "Monitoreo constante de servidores y terminales."
+      },
+      {
+        "badge": "SEC",
+        "titulo": "Seguridad Proactiva",
+        "descripcion": "Protección de datos y backups automatizados."
+      }
+    ]
+  },
+  "desarrollo": {
+    "badge": "Intelligence Labs",
+    "titulo1": "Desarrollo de",
+    "titulo2": "Software.",
+    "descripcion": "Transformamos la complejidad operativa en interfaces simplificadas. Desarrollamos código robusto, escalable y diseñado específicamente para los desafíos logísticos de la industria moderna.",
+    "features": [
+      {
+        "badge": "LOG",
+        "titulo": "Software Logístico",
+        "descripcion": "Optimización de flujos de inventario y trazabilidad en tiempo real."
+      },
+      {
+        "badge": "ERP",
+        "titulo": "Sistemas de Gestión",
+        "descripcion": "Ecosistemas digitales centralizados para el control total de operaciones."
+      }
+    ]
+  }
+}

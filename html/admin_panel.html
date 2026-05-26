@@ -518,6 +518,10 @@
         <span>Plantillas</span>
         <button class="btn-icon" id="btn-nueva-plantilla" title="Nueva plantilla">+</button>
       </div>
+      <div class="sidebar-item" data-panel="plantillas" id="sidebar-go-plantillas" style="font-size:.65rem;font-weight:600;color:rgba(255,255,255,.6);">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" stroke-width="2"/><rect x="14" y="3" width="7" height="7" stroke-width="2"/><rect x="3" y="14" width="7" height="7" stroke-width="2"/><rect x="14" y="14" width="7" height="7" stroke-width="2"/></svg>
+        Ver todas las plantillas
+      </div>
       <div class="sidebar-tpl-group" id="sidebar-tpl-list"></div>
  
       <div class="sidebar-section-label">Configuración</div>
@@ -741,6 +745,9 @@
     <div class="modal-header"><span class="modal-title">Nueva Plantilla</span><button class="modal-close" data-close="modal-nueva-plantilla">×</button></div>
     <div class="modal-body">
       <div class="form-row"><div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="np-name" placeholder="Ej.: Landing Servicios"/></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">HTML destino *</label>
+        <select class="form-select" id="np-tipo"><option value="">— Seleccionar —</option></select>
+      </div></div>
       <div class="form-row"><div class="form-group"><label class="form-label">Descripción breve</label><input class="form-input" id="np-desc" placeholder="Ej.: Hero con métricas"/></div></div>
       <div class="form-row"><div class="form-group"><label class="form-label">Estado inicial</label>
         <select class="form-select" id="np-status"><option value="draft">Borrador</option><option value="active">Activa</option></select>
@@ -2545,6 +2552,781 @@ document.getElementById('l-pass').addEventListener('keydown', e=>{ if(e.key==='E
     document.getElementById('app').style.display = 'block';
     if(typeof initApp === 'function') initApp();
   }
+</script>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     EDITOR V3 — Editor visual con soporte para todos los módulos
+     per-página de sections.js. Reactivado después del trabajo de shells.
+     ════════════════════════════════════════════════════════════════════ -->
+<script type="module">
+import { SECTIONS, TIPOS_HTML, renderSection, createSection } from '../services/sections.js';
+
+const API = `http://${window.location.hostname}:3000/api`;
+const token = () => sessionStorage.getItem('sisgra_token');
+
+// CSS files que carga el iframe de canvas según el tipo
+const TIPO_CSS = {
+  index:      ['/css/base.css', '/css/layout_home.css', '/css/components.css', '/css/pages/home.css', '/css/pages/blog_inicio.css'],
+  blog:       ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/blog.css'],
+  articulo:   ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/articulo.css'],
+  cableado:   ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/cableado.css'],
+  fibra:      ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/fibra_optica.css'],
+  seguridad:  ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/seguridad.css'],
+  soporte:    ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/soporte_it.css'],
+  desarrollo: ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/desarrollo.css'],
+};
+
+const ICON_CATALOG = ['location', 'lightning', 'shield', 'check', 'camera', 'gear', 'lock', 'chart', 'database'];
+
+const e3 = {
+  plantillas: [],
+  activeTpl: null,
+  selectedSecId: null,
+  dirty: false,
+  propsTab: 'data',
+  currentTipo: null,
+};
+
+const escAttr = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const notif = (msg, type='success') => window.__svc?.showNotif?.(msg, type) ?? console.log('[e3]', msg);
+
+// ─── API helper ─────────────────────────────────────────────────────
+async function api(method, path, body) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  const t = token();
+  if (t) opts.headers['Authorization'] = `Bearer ${t}`;
+  if (body !== undefined) opts.body = JSON.stringify(body);
+  const r = await fetch(`${API}${path}`, opts);
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error || `${method} ${path} → ${r.status}`);
+  return data;
+}
+
+function stripListeners(el) {
+  if (!el) return null;
+  const c = el.cloneNode(true);
+  el.parentNode.replaceChild(c, el);
+  return c;
+}
+
+// ─── Module filter by tipo ──────────────────────────────────────────
+function modulesForTipo(tipo) {
+  return Object.entries(SECTIONS).filter(([_, def]) => {
+    const valid = def.validTipos || [];
+    return valid.includes('*') || valid.includes(tipo);
+  });
+}
+
+// ─── Tipo select populate ───────────────────────────────────────────
+function populateTipoSelect() {
+  const sel = document.getElementById('np-tipo');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— Seleccionar página destino —</option>'
+    + TIPOS_HTML.map(t => `<option value="${t.value}">${t.label} — ${t.file}</option>`).join('');
+}
+
+// ─── Load + render dashboard ────────────────────────────────────────
+async function loadPlantillas() {
+  try {
+    const { plantillas } = await api('GET', '/plantillas');
+    e3.plantillas = plantillas || [];
+    renderOverview();
+    renderSidebarList();
+  } catch (e) { notif('Error cargando plantillas: ' + e.message, 'error'); }
+}
+
+function renderOverview() {
+  const list = document.getElementById('tpl-overview-list');
+  if (!list) return;
+  list.innerHTML = TIPOS_HTML.map(t => {
+    const pls = e3.plantillas.filter(p => p.tipo === t.value);
+    return `
+      <div style="margin-bottom:1.25rem;">
+        <div style="display:flex;align-items:center;gap:.75rem;padding:.4rem 0 .5rem;border-bottom:1px solid var(--slate-100);margin-bottom:.5rem;">
+          <span style="font-size:.625rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--sisgra-blue);">${t.label}</span>
+          <span style="font-size:.6rem;color:var(--slate-400);font-family:monospace;">${t.file}</span>
+          <span style="flex:1;"></span>
+          <button class="btn-edit-small" data-e3-newtipo="${t.value}">+ Plantilla</button>
+        </div>
+        ${pls.length === 0
+          ? `<div style="padding:.85rem;color:var(--slate-400);font-size:.7rem;text-align:center;background:var(--slate-50);">Sin plantillas todavía.</div>`
+          : pls.map(p => `
+              <div class="tpl-list-item ${p.activa ? 'active-tpl' : ''}" style="margin-bottom:.4rem;cursor:default;">
+                <div style="flex:1;">
+                  <div style="font-weight:700;color:var(--slate-800);font-size:.8125rem;">${escAttr(p.nombre)}</div>
+                  ${p.descripcion ? `<div style="font-size:.6875rem;color:var(--slate-500);">${escAttr(p.descripcion)}</div>` : ''}
+                </div>
+                <span style="font-size:.5rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:.2rem .55rem;${p.activa ? 'background:#dcfce7;color:#166534;' : 'background:#fef3c7;color:#92400e;'}">${p.activa ? 'Activa' : 'Borrador'}</span>
+                <button class="btn-edit-small" data-e3-edit="${p.id_plantilla}">Editar</button>
+                ${!p.activa ? `<button class="btn-edit-small" data-e3-activar="${p.id_plantilla}">Activar</button>` : ''}
+                <button class="btn-edit-small" style="color:#dc2626;border-color:#fca5a5;" data-e3-eliminar="${p.id_plantilla}">Eliminar</button>
+              </div>`).join('')}
+      </div>`;
+  }).join('');
+
+  list.querySelectorAll('[data-e3-newtipo]').forEach(b => b.addEventListener('click', () => openNuevaModal(b.dataset.e3Newtipo)));
+  list.querySelectorAll('[data-e3-edit]').forEach(b => b.addEventListener('click', () => openEditor(b.dataset.e3Edit)));
+  list.querySelectorAll('[data-e3-activar]').forEach(b => b.addEventListener('click', () => activarPlantilla(b.dataset.e3Activar)));
+  list.querySelectorAll('[data-e3-eliminar]').forEach(b => b.addEventListener('click', () => eliminarPlantilla(b.dataset.e3Eliminar)));
+}
+
+function renderSidebarList() {
+  const el = document.getElementById('sidebar-tpl-list');
+  if (!el) return;
+  el.innerHTML = e3.plantillas.map(p => `
+    <div class="sidebar-tpl-item ${e3.activeTpl?.id_plantilla === p.id_plantilla ? 'active' : ''}" data-e3-tpl="${p.id_plantilla}" title="${escAttr(p.nombre)} (${p.tipo})">
+      <span class="sidebar-tpl-dot"></span>
+      <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escAttr(p.nombre)}</span>
+      ${p.activa ? '<span style="font-size:.5rem;font-weight:900;letter-spacing:.1em;color:#86efac;margin-right:.4rem;">LIVE</span>' : ''}
+      <button data-e3-sb-del="${p.id_plantilla}" title="Eliminar" style="background:transparent;border:1px solid rgba(220,38,38,.4);color:rgba(252,165,165,.85);width:1.1rem;height:1.1rem;display:flex;align-items:center;justify-content:center;font-size:.7rem;line-height:1;padding:0;flex-shrink:0;">×</button>
+    </div>`).join('') || '<div style="padding:.5rem 1.5rem;font-size:.65rem;color:rgba(255,255,255,.3);">Sin plantillas</div>';
+  el.querySelectorAll('[data-e3-tpl]').forEach(item => {
+    item.addEventListener('click', e => {
+      if (e.target.closest('[data-e3-sb-del]')) return;
+      openEditor(item.dataset.e3Tpl);
+    });
+  });
+  el.querySelectorAll('[data-e3-sb-del]').forEach(btn => {
+    btn.addEventListener('click', e => { e.stopPropagation(); eliminarPlantilla(btn.dataset.e3SbDel); });
+  });
+}
+
+// ─── Modal ─────────────────────────────────────────────────────────
+function openNuevaModal(preTipo = '') {
+  document.getElementById('np-name').value = '';
+  document.getElementById('np-desc').value = '';
+  const tipoSel = document.getElementById('np-tipo');
+  if (tipoSel) tipoSel.value = preTipo;
+  document.getElementById('modal-nueva-plantilla').classList.add('open');
+  setTimeout(() => document.getElementById('np-name').focus(), 50);
+}
+
+async function crearPlantilla() {
+  const nombre = document.getElementById('np-name').value.trim();
+  const tipo = document.getElementById('np-tipo')?.value || '';
+  const descripcion = document.getElementById('np-desc').value.trim();
+  if (!nombre) return notif('El nombre es requerido', 'error');
+  if (!tipo) return notif('Seleccioná el HTML destino', 'error');
+  try {
+    const { plantilla } = await api('POST', '/plantillas', { nombre, tipo, descripcion, secciones: [] });
+    e3.plantillas.push(plantilla);
+    document.getElementById('modal-nueva-plantilla').classList.remove('open');
+    renderOverview(); renderSidebarList();
+    notif('✓ Plantilla creada');
+    openEditor(plantilla.id_plantilla);
+  } catch (e) { notif('Error: ' + e.message, 'error'); }
+}
+
+async function activarPlantilla(id) {
+  try {
+    const { plantilla } = await api('POST', `/plantillas/${id}/activar`);
+    e3.plantillas.forEach(p => { if (p.tipo === plantilla.tipo) p.activa = (p.id_plantilla === id); });
+    if (e3.activeTpl?.id_plantilla === id) e3.activeTpl.activa = true;
+    renderOverview(); renderSidebarList();
+    notif('✓ Plantilla activada');
+  } catch (e) { notif('Error: ' + e.message, 'error'); }
+}
+
+async function eliminarPlantilla(id) {
+  const p = e3.plantillas.find(x => x.id_plantilla === id);
+  if (!p) return;
+  const otras = e3.plantillas.filter(x => x.tipo === p.tipo && x.id_plantilla !== id);
+  if (p.activa && otras.length === 0) {
+    notif(`No se puede eliminar: "${p.nombre}" es la única plantilla para ${p.tipo}. Creá otra primero.`, 'error');
+    return;
+  }
+  const msg = p.activa
+    ? `¿Eliminar "${p.nombre}"?\n\nEs la plantilla ACTIVA. Al borrarla, se activará automáticamente otra plantilla de "${p.tipo}".`
+    : `¿Eliminar "${p.nombre}"? Esta acción no se puede deshacer.`;
+  if (!confirm(msg)) return;
+  try {
+    const r = await api('DELETE', `/plantillas/${id}`);
+    e3.plantillas = e3.plantillas.filter(x => x.id_plantilla !== id);
+    if (r.promoted) {
+      e3.plantillas.forEach(x => { if (x.tipo === r.tipoAffected) x.activa = (x.id_plantilla === r.promoted.id_plantilla); });
+    }
+    if (e3.activeTpl?.id_plantilla === id) {
+      e3.activeTpl = null; e3.selectedSecId = null; e3.dirty = false;
+      document.querySelectorAll('.panel').forEach(pn => pn.classList.remove('active'));
+      document.getElementById('panel-plantillas').classList.add('active');
+      document.getElementById('topbar-title').textContent = 'Plantillas';
+    }
+    renderOverview(); renderSidebarList();
+    notif(r.promoted ? `✓ Eliminada. Se activó "${r.promoted.nombre}" automáticamente.` : '✓ Plantilla eliminada');
+  } catch (e) { notif('Error: ' + e.message, 'error'); }
+}
+
+// ─── EDITOR ────────────────────────────────────────────────────────
+async function openEditor(id) {
+  try {
+    const { plantilla } = await api('GET', `/plantillas/${id}`);
+    e3.activeTpl = plantilla;
+    e3.currentTipo = plantilla.tipo;
+    e3.selectedSecId = null;
+    e3.dirty = false;
+    _e3DndBound = false;   // reset DnD binding for the new iframe
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-tpl-editor').classList.add('active');
+    document.getElementById('topbar-title').textContent = `Editor — ${plantilla.nombre}`;
+    renderSidebarList();
+    renderEditorShell();
+  } catch (e) { notif('Error: ' + e.message, 'error'); }
+}
+
+function backToOverview() {
+  if (e3.dirty && !confirm('Hay cambios sin guardar. ¿Salir igual?')) return;
+  e3.activeTpl = null; e3.selectedSecId = null;
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-plantillas').classList.add('active');
+  document.getElementById('topbar-title').textContent = 'Plantillas';
+  renderSidebarList();
+}
+
+function renderEditorShell() {
+  const tpl = e3.activeTpl;
+  const inner = document.getElementById('tpl-editor-inner');
+  inner.innerHTML = `
+    <div style="background:var(--white);border-bottom:1px solid var(--slate-200);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
+        <button class="btn-edit-small" id="e3-back">← Volver</button>
+        <span style="font-size:.5rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;background:var(--sisgra-blue);color:#fff;padding:.2rem .6rem;">Plantilla</span>
+        <span style="font-size:1rem;font-weight:900;color:var(--sisgra-blue);letter-spacing:-.03em;font-style:italic;">${escAttr(tpl.nombre)}</span>
+        <span style="font-size:.55rem;font-weight:700;color:var(--slate-400);letter-spacing:.2em;text-transform:uppercase;">— ${escAttr(tpl.tipo)}</span>
+        <span style="font-size:.5rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:.2rem .6rem;${tpl.activa ? 'background:#dcfce7;color:#166534;' : 'background:#fef3c7;color:#92400e;'}">${tpl.activa ? 'Activa' : 'Borrador'}</span>
+        <span id="e3-dirty" style="display:none;color:#dc2626;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">● Sin guardar</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:.5rem;">
+        ${!tpl.activa ? '<button class="btn-edit-small" id="e3-activar">Activar</button>' : '<span style="color:#166534;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">✓ En vivo</span>'}
+        <button class="btn-save" id="e3-guardar">Guardar plantilla</button>
+      </div>
+    </div>
+    <div class="editor-shell">
+      <div class="section-tray">
+        <div class="tray-header">Módulos · ${escAttr(tpl.tipo)}</div>
+        <input class="tray-search" id="e3-search" placeholder="Buscar módulo..."/>
+        <div class="tray-body" id="e3-tray-body"></div>
+      </div>
+      <div class="page-canvas-wrap">
+        <div class="canvas-ruler"><span style="font-size:.5rem;font-weight:700;color:var(--slate-400);letter-spacing:.2em;text-transform:uppercase;">Vista previa — ${escAttr(tpl.tipo)}.html</span></div>
+        <div style="flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem;">
+          <iframe class="page-frame desktop" id="e3-canvas" style="border:none;background:#fff;min-height:600px;height:80vh;"></iframe>
+        </div>
+      </div>
+      <div class="props-panel">
+        <div class="props-header"><span id="e3-props-type">Propiedades</span></div>
+        <div class="props-tabs">
+          <button class="props-tab ${e3.propsTab==='data'?'active':''}" data-e3-tab="data">Contenido</button>
+          <button class="props-tab ${e3.propsTab==='design'?'active':''}" data-e3-tab="design">Diseño</button>
+        </div>
+        <div class="props-body" id="e3-props-body"><div class="props-empty">Click sobre una sección del canvas para editarla.</div></div>
+      </div>
+    </div>`;
+
+  document.getElementById('e3-back').addEventListener('click', backToOverview);
+  document.getElementById('e3-guardar').addEventListener('click', guardarPlantilla);
+  document.getElementById('e3-activar')?.addEventListener('click', async () => {
+    await activarPlantilla(tpl.id_plantilla);
+    renderEditorShell();
+  });
+  document.getElementById('e3-search').addEventListener('input', ev => {
+    const q = ev.target.value.toLowerCase();
+    document.querySelectorAll('#e3-tray-body .tray-chip').forEach(c => {
+      const n = c.querySelector('.tray-chip-name')?.textContent.toLowerCase() || '';
+      const d = c.querySelector('.tray-chip-desc')?.textContent.toLowerCase() || '';
+      c.style.display = (n + d).includes(q) ? '' : 'none';
+    });
+  });
+  document.querySelectorAll('[data-e3-tab]').forEach(t => t.addEventListener('click', () => {
+    e3.propsTab = t.dataset.e3Tab;
+    document.querySelectorAll('[data-e3-tab]').forEach(x => x.classList.toggle('active', x === t));
+    renderProps();
+  }));
+
+  renderTray();
+  initIframe(() => { renderCanvas(); bindCanvasDnd(); });
+  renderProps();
+}
+
+function renderTray() {
+  const body = document.getElementById('e3-tray-body');
+  const mods = modulesForTipo(e3.currentTipo);
+  if (mods.length === 0) {
+    body.innerHTML = '<div style="padding:1rem;color:var(--slate-400);font-size:.7rem;text-align:center;">No hay módulos para este tipo.</div>';
+    return;
+  }
+  body.innerHTML = mods.map(([type, def]) => `
+    <div class="tray-chip" draggable="true" data-e3-type="${type}">
+      <div class="tray-chip-thumb">${def.icon || '◻'}</div>
+      <div class="tray-chip-info">
+        <div class="tray-chip-name">${def.label}</div>
+        <div class="tray-chip-desc">${def.description || ''}</div>
+      </div>
+    </div>`).join('');
+  body.querySelectorAll('.tray-chip').forEach(chip => {
+    chip.addEventListener('dragstart', ev => {
+      const type = chip.dataset.e3Type;
+      ev.dataTransfer.setData('text/e3-sec-type', type);
+      ev.dataTransfer.setData('text/plain', type);
+      ev.dataTransfer.effectAllowed = 'copy';
+      chip.classList.add('dragging');
+    });
+    chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
+    chip.addEventListener('dblclick', () => addSection(chip.dataset.e3Type));
+  });
+}
+
+// ─── Iframe con CSS específico por tipo ─────────────────────────────
+function initIframe(cb) {
+  const iframe = document.getElementById('e3-canvas');
+  if (!iframe) return;
+  const cssFiles = TIPO_CSS[e3.currentTipo] || TIPO_CSS.index;
+  iframe.srcdoc = `<!DOCTYPE html><html lang="es"><head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
+<style>
+  body{margin:0;background:#fff;min-height:300px;}
+  .e3-sec-wrap{position:relative;outline:2px solid transparent;outline-offset:-2px;transition:outline-color .15s;}
+  .e3-sec-wrap:hover{outline-color:#cbd5e1;}
+  .e3-sec-wrap.e3-selected{outline-color:#2563eb;}
+  .e3-sec-ctrls{position:absolute;top:8px;right:8px;display:flex;gap:.25rem;z-index:9999;background:rgba(255,255,255,.96);padding:.25rem;box-shadow:0 4px 12px rgba(0,0,0,.18);opacity:0;transition:opacity .15s;}
+  .e3-sec-wrap:hover .e3-sec-ctrls,.e3-sec-wrap.e3-selected .e3-sec-ctrls{opacity:1;}
+  .e3-sec-ctrls button{background:#fff;border:1px solid #cbd5e1;padding:.3rem .5rem;font-size:.75rem;line-height:1;color:#0A1D37;cursor:pointer;font-family:inherit;}
+  .e3-sec-ctrls .e3-danger{color:#dc2626;}
+  .e3-drop{height:6px;background:#2563eb;margin:0;display:none;}
+  .e3-drop.e3-active{display:block;}
+  .e3-empty{padding:6rem 2rem;text-align:center;color:#94a3b8;border:2px dashed #cbd5e1;margin:1rem;font-family:Inter,system-ui,sans-serif;}
+</style>
+</head><body></body></html>`;
+  iframe._queue = iframe._queue || [];
+  iframe._queue.push(cb);
+  iframe.addEventListener('load', () => {
+    const q = iframe._queue || []; iframe._queue = [];
+    q.forEach(fn => { try { fn(iframe); } catch (e) { console.error(e); } });
+  }, { once: true });
+}
+
+function renderCanvas() {
+  const iframe = document.getElementById('e3-canvas');
+  if (!iframe || !iframe.contentDocument) return;
+  const doc = iframe.contentDocument;
+  const secs = e3.activeTpl?.secciones || [];
+  if (secs.length === 0) {
+    doc.body.innerHTML = `<div class="e3-empty" data-e3-emptydrop>Arrastrá un módulo desde la izquierda<br><small style="font-size:.65rem;display:block;margin-top:.4rem;">o doble-click sobre un módulo</small></div>`;
+  } else {
+    doc.body.innerHTML = secs.map((sec, i) => `
+<div class="e3-drop" data-dropidx="${i}"></div>
+<div class="e3-sec-wrap ${e3.selectedSecId === sec.id ? 'e3-selected' : ''}" data-e3-sec="${sec.id}">
+  <div class="e3-sec-ctrls">
+    <button data-e3-act="up">▲</button>
+    <button data-e3-act="down">▼</button>
+    <button data-e3-act="del" class="e3-danger">✕</button>
+  </div>
+  ${renderSection(sec)}
+</div>`).join('') + `<div class="e3-drop" data-dropidx="${secs.length}"></div>`;
+  }
+  doc.querySelectorAll('.e3-sec-wrap').forEach(w => {
+    w.addEventListener('click', ev => {
+      if (ev.target.closest('.e3-sec-ctrls')) return;
+      e3.selectedSecId = w.dataset.e3Sec;
+      renderCanvas(); renderProps();
+    });
+    w.querySelectorAll('button[data-e3-act]').forEach(b => {
+      b.addEventListener('click', ev => {
+        ev.stopPropagation();
+        const id = w.dataset.e3Sec, act = b.dataset.e3Act;
+        if (act === 'up')   moveSection(id, -1);
+        if (act === 'down') moveSection(id, 1);
+        if (act === 'del')  deleteSection(id);
+      });
+    });
+  });
+  doc.querySelectorAll('a').forEach(a => a.addEventListener('click', ev => ev.preventDefault()));
+  doc.querySelectorAll('form').forEach(f => f.addEventListener('submit', ev => ev.preventDefault()));
+}
+
+let _e3DndBound = false;
+function bindCanvasDnd() {
+  if (_e3DndBound) return;
+  const iframe = document.getElementById('e3-canvas');
+  if (!iframe?.contentDocument) return;
+  _e3DndBound = true;
+  const doc = iframe.contentDocument;
+  doc.addEventListener('dragover', ev => {
+    const types = Array.from(ev.dataTransfer?.types || []);
+    if (!types.includes('text/e3-sec-type') && !types.includes('text/plain')) return;
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = 'copy';
+    const markers = [...doc.querySelectorAll('.e3-drop')];
+    if (markers.length) {
+      let closest = null, best = Infinity;
+      for (const m of markers) {
+        const r = m.getBoundingClientRect();
+        const d = Math.abs((r.top + r.bottom) / 2 - ev.clientY);
+        if (d < best) { best = d; closest = m; }
+      }
+      markers.forEach(m => m.classList.toggle('e3-active', m === closest));
+    }
+  });
+  doc.addEventListener('drop', ev => {
+    const type = ev.dataTransfer.getData('text/e3-sec-type') || ev.dataTransfer.getData('text/plain');
+    if (!type) return;
+    ev.preventDefault(); ev.stopPropagation();
+    const active = doc.querySelector('.e3-drop.e3-active');
+    const idx = active ? parseInt(active.dataset.dropidx, 10) : (e3.activeTpl?.secciones || []).length;
+    doc.querySelectorAll('.e3-drop').forEach(m => m.classList.remove('e3-active'));
+    addSection(type, idx);
+  });
+}
+
+function addSection(type, atIdx) {
+  // Reject if not valid for current tipo
+  const def = SECTIONS[type];
+  if (!def) return;
+  const valid = def.validTipos || [];
+  if (!valid.includes('*') && !valid.includes(e3.currentTipo)) {
+    notif(`El módulo "${def.label}" no se puede usar en ${e3.currentTipo}`, 'error');
+    return;
+  }
+  const sec = createSection(type);
+  if (!sec) return;
+  const secs = e3.activeTpl.secciones = e3.activeTpl.secciones || [];
+  if (typeof atIdx === 'number') secs.splice(atIdx, 0, sec);
+  else secs.push(sec);
+  e3.selectedSecId = sec.id;
+  markDirty();
+  renderCanvas(); renderProps();
+}
+
+function moveSection(id, delta) {
+  const secs = e3.activeTpl.secciones;
+  const i = secs.findIndex(s => s.id === id);
+  if (i < 0) return;
+  const j = i + delta;
+  if (j < 0 || j >= secs.length) return;
+  [secs[i], secs[j]] = [secs[j], secs[i]];
+  markDirty(); renderCanvas();
+}
+
+function deleteSection(id) {
+  if (!confirm('¿Eliminar esta sección?')) return;
+  e3.activeTpl.secciones = e3.activeTpl.secciones.filter(s => s.id !== id);
+  if (e3.selectedSecId === id) e3.selectedSecId = null;
+  markDirty(); renderCanvas(); renderProps();
+}
+
+function markDirty() { e3.dirty = true; document.getElementById('e3-dirty').style.display = 'inline'; }
+function clearDirty() { e3.dirty = false; document.getElementById('e3-dirty').style.display = 'none'; }
+
+// ─── PROPS PANEL ────────────────────────────────────────────────────
+function renderProps() {
+  const body = document.getElementById('e3-props-body');
+  if (!body) return;
+  const typeEl = document.getElementById('e3-props-type');
+  const sec = (e3.activeTpl?.secciones || []).find(s => s.id === e3.selectedSecId);
+  if (!sec) { body.innerHTML = '<div class="props-empty">Click sobre una sección del canvas para editarla.</div>'; if (typeEl) typeEl.textContent = 'Propiedades'; return; }
+  const def = SECTIONS[sec.type];
+  if (!def) { body.innerHTML = `<div class="props-empty">Tipo desconocido: ${sec.type}</div>`; return; }
+  if (typeEl) typeEl.textContent = def.label;
+  const fields = e3.propsTab === 'data' ? def.dataFields : def.designFields;
+  body.innerHTML = (fields || []).map(f => fieldHTML(f, sec[e3.propsTab]?.[f.name], e3.propsTab)).join('');
+  bindFieldEvents(sec);
+}
+
+function fieldHTML(f, val, group) {
+  const safe = escAttr(val);
+  switch (f.type) {
+    case 'text':
+      return `<div class="props-field"><label class="props-label">${f.label}</label><input class="props-input" type="text" data-ef="${f.name}" data-eg="${group}" value="${safe}"/></div>`;
+    case 'textarea':
+      return `<div class="props-field"><label class="props-label">${f.label}</label><textarea class="props-textarea" data-ef="${f.name}" data-eg="${group}" style="min-height:80px;">${escAttr(val).replace(/&quot;/g,'"')}</textarea></div>`;
+    case 'number':
+      return `<div class="props-field"><label class="props-label">${f.label}</label><input class="props-input" type="number" data-ef="${f.name}" data-eg="${group}" min="${f.min ?? 0}" max="${f.max ?? 9999}" value="${val ?? ''}"/></div>`;
+    case 'color': {
+      const v = val || '#000000';
+      const isHex = /^#[0-9a-f]{3,8}$/i.test(v);
+      return `<div class="props-field"><label class="props-label">${f.label}</label>
+        <div class="props-color-row">
+          <input class="props-color" type="color" data-ef="${f.name}" data-eg="${group}" data-epicker value="${isHex ? v : '#000000'}"/>
+          <input class="props-input" type="text" data-ef="${f.name}" data-eg="${group}" value="${safe}" placeholder="#fff o rgba(...)" style="flex:1;"/>
+        </div></div>`;
+    }
+    case 'select':
+      return `<div class="props-field"><label class="props-label">${f.label}</label>
+        <select class="props-input" data-ef="${f.name}" data-eg="${group}">
+          ${(f.options||[]).map(o=>`<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}
+        </select></div>`;
+    case 'toggle':
+      return `<div class="props-field"><label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-500);"><input type="checkbox" data-ef="${f.name}" data-eg="${group}" data-etoggle ${val ? 'checked' : ''}/> ${f.label}</label></div>`;
+    case 'cards':      return arrayEditorHTML('cards',     val || [], ['titulo','descripcion','link'], { titulo: 'Título', descripcion: 'Descripción', link: 'Link' });
+    case 'spec-cards': return arrayEditorHTML('cards',     val || [], ['badge','titulo','desc'],       { badge: 'Badge', titulo: 'Título', desc: 'Descripción' });
+    case 'logos':      return arrayEditorHTML('logos',     val || [], ['nombre','imagen'],            { nombre: 'Nombre', imagen: 'URL imagen' });
+    case 'clientes':   return arrayEditorHTML('clientes',  val || [], ['nombre','imagen'],            { nombre: 'Nombre', imagen: 'URL imagen' }, { activo: true });
+    case 'posts':      return arrayEditorHTML('posts',     val || [], ['titulo','categoria','extracto','imagen'], { titulo: 'Título', categoria: 'Categoría', extracto: 'Extracto', imagen: 'URL imagen' });
+    case 'features-icon':  return iconFeaturesEditorHTML(val || []);
+    case 'features-emoji': return arrayEditorHTML('emoji-features', val || [], ['emoji','titulo','desc'], { emoji: 'Emoji (paste)', titulo: 'Título', desc: 'Descripción' });
+    case 'text-list':  return textListEditorHTML(val || []);
+    case 'link-list':  return arrayEditorHTML('links',     val || [], ['label','href'],                { label: 'Label', href: 'URL' });
+    case 'contact-item':return contactItemEditorHTML(f.name, val || {});
+    default:
+      return `<div class="props-field"><label class="props-label">${f.label}</label><input class="props-input" type="text" data-ef="${f.name}" data-eg="${group}" value="${safe}"/></div>`;
+  }
+}
+
+function arrayEditorHTML(kind, items, fieldKeys, labels, extraToggle) {
+  return `<div class="props-field"><label class="props-label">${kind}</label><div data-e3-arr="${kind}">
+    ${items.map((it, i) => `
+      <div data-e3-aitem="${i}" style="border:1px solid var(--slate-200);padding:.55rem;margin-bottom:.4rem;background:var(--slate-50);">
+        ${fieldKeys.map(k => labels[k]?.toLowerCase().includes('extracto') || labels[k]?.toLowerCase().includes('descripción')
+            ? `<textarea class="props-textarea" data-e3-akey="${k}" placeholder="${labels[k]}" style="margin-bottom:.3rem;min-height:50px;">${escAttr(it[k]||'').replace(/&quot;/g,'"')}</textarea>`
+            : `<input class="props-input" data-e3-akey="${k}" value="${escAttr(it[k]||'')}" placeholder="${labels[k]}" style="margin-bottom:.3rem;"/>`
+        ).join('')}
+        ${extraToggle ? `<label style="display:flex;align-items:center;gap:.4rem;font-size:.65rem;color:var(--slate-500);cursor:pointer;"><input type="checkbox" data-e3-akey="activo" ${it.activo !== false ? 'checked' : ''}/> Activo</label>` : ''}
+        <button class="btn-edit-small" data-e3-aremove="${i}" style="color:#dc2626;border-color:#fca5a5;width:100%;margin-top:.3rem;">✕ Quitar</button>
+      </div>`).join('')}
+    <button class="btn-edit-small" data-e3-aadd style="width:100%;">+ Agregar</button>
+  </div></div>`;
+}
+
+function iconFeaturesEditorHTML(items) {
+  return `<div class="props-field"><label class="props-label">Features (con iconos)</label><div data-e3-arr="icon-features">
+    ${items.map((it, i) => `
+      <div data-e3-aitem="${i}" style="border:1px solid var(--slate-200);padding:.55rem;margin-bottom:.4rem;background:var(--slate-50);">
+        <label class="props-label" style="font-size:.55rem;">Icono</label>
+        <select class="props-input" data-e3-akey="iconType" style="margin-bottom:.3rem;">
+          ${ICON_CATALOG.map(ic => `<option value="${ic}" ${it.iconType === ic ? 'selected' : ''}>${ic}</option>`).join('')}
+        </select>
+        <input class="props-input" data-e3-akey="titulo" value="${escAttr(it.titulo||'')}" placeholder="Título" style="margin-bottom:.3rem;"/>
+        <textarea class="props-textarea" data-e3-akey="desc" placeholder="Descripción" style="margin-bottom:.3rem;min-height:50px;">${escAttr(it.desc||'').replace(/&quot;/g,'"')}</textarea>
+        <button class="btn-edit-small" data-e3-aremove="${i}" style="color:#dc2626;border-color:#fca5a5;width:100%;">✕ Quitar</button>
+      </div>`).join('')}
+    <button class="btn-edit-small" data-e3-aadd style="width:100%;">+ Agregar feature</button>
+  </div></div>`;
+}
+
+function textListEditorHTML(items) {
+  return `<div class="props-field"><label class="props-label">Líneas (orden importa)</label><div data-e3-arr="text-list">
+    ${items.map((s, i) => `
+      <div data-e3-aitem="${i}" style="display:flex;gap:.3rem;margin-bottom:.3rem;">
+        <input class="props-input" data-e3-akey="_text" value="${escAttr(s)}" style="flex:1;font-family:monospace;"/>
+        <button class="btn-edit-small" data-e3-aremove="${i}" style="color:#dc2626;border-color:#fca5a5;">✕</button>
+      </div>`).join('')}
+    <button class="btn-edit-small" data-e3-aadd style="width:100%;">+ Agregar línea</button>
+  </div></div>`;
+}
+
+function contactItemEditorHTML(fieldName, item) {
+  return `<div class="props-field"><label class="props-label">${fieldName}</label>
+    <div data-e3-contact="${fieldName}" style="border:1px solid var(--slate-200);padding:.55rem;background:var(--slate-50);">
+      <input class="props-input" data-e3-ckey="tipo" value="${escAttr(item.tipo||'')}" placeholder="Tipo (ej: Oficina)" style="margin-bottom:.3rem;"/>
+      <textarea class="props-textarea" data-e3-ckey="valor" placeholder="Valor (HTML permitido)" style="margin-bottom:.3rem;min-height:50px;">${escAttr(item.valor||'').replace(/&quot;/g,'"')}</textarea>
+      <input class="props-input" data-e3-ckey="href" value="${escAttr(item.href||'')}" placeholder="URL (opcional)"/>
+    </div></div>`;
+}
+
+function bindFieldEvents(sec) {
+  const body = document.getElementById('e3-props-body');
+
+  // Simple fields
+  body.querySelectorAll('[data-ef]').forEach(inp => {
+    if (inp.dataset.epicker !== undefined) return;
+    inp.addEventListener('input', () => {
+      const f = inp.dataset.ef, g = inp.dataset.eg;
+      sec[g] = sec[g] || {};
+      let v = inp.value;
+      if (inp.type === 'number') v = v === '' ? '' : Number(v);
+      if (inp.dataset.etoggle !== undefined) v = inp.checked;
+      sec[g][f] = v;
+      markDirty(); renderCanvas();
+    });
+  });
+
+  // Color pickers
+  body.querySelectorAll('[data-epicker]').forEach(picker => {
+    picker.addEventListener('input', () => {
+      const f = picker.dataset.ef, g = picker.dataset.eg;
+      sec[g] = sec[g] || {};
+      sec[g][f] = picker.value;
+      const text = body.querySelector(`input[type=text][data-ef="${f}"][data-eg="${g}"]`);
+      if (text) text.value = picker.value;
+      markDirty(); renderCanvas();
+    });
+  });
+
+  // Array editors (cards / spec-cards / logos / clientes / posts / icon-features / emoji-features / links / text-list)
+  body.querySelectorAll('[data-e3-arr]').forEach(arrWrap => {
+    const kind = arrWrap.dataset.e3Arr;
+    // Map kind → sec.data field name + new-item template
+    const arrMap = {
+      'cards':           { key: 'cards',    newItem: () => ({ titulo: 'Nuevo', descripcion: '', link: '' }) },
+      'logos':           { key: 'logos',    newItem: () => ({ nombre: 'Nuevo logo', imagen: '' }) },
+      'clientes':        { key: 'clientes', newItem: () => ({ nombre: 'Nuevo cliente', imagen: '', activo: true }) },
+      'posts':           { key: 'posts',    newItem: () => ({ titulo: 'Nuevo post', categoria: '', extracto: '', imagen: '' }) },
+      'icon-features':   { key: 'features', newItem: () => ({ iconType: 'gear', titulo: 'Nuevo feature', desc: '' }) },
+      'emoji-features':  { key: 'features', newItem: () => ({ emoji: '⭐', titulo: 'Nuevo', desc: '' }) },
+      'links':           { key: 'servicios',newItem: () => ({ label: 'Nuevo link', href: '#' }) },
+      'text-list':       { key: 'codeRows', newItem: () => '' },
+    };
+    const cfg = arrMap[kind];
+    if (!cfg) return;
+    // Detect actual key: spec-cards goes in data.cards; cards-in-services also data.cards
+    // For spec-cards/cards we use 'cards' key. For features (icon|emoji) use 'features'.
+    // For links: in footer-full it's "servicios". This is a known limitation — for now we use the field type.
+    // Better: pass the field name. For now, find a key in sec.data whose value matches val.
+    // Simpler approach: look up by which dataField uses this type.
+    const def = SECTIONS[sec.type];
+    const ownerField = def?.dataFields?.find(df => {
+      if (kind === 'cards')          return df.type === 'cards' || df.type === 'spec-cards';
+      if (kind === 'logos')          return df.type === 'logos';
+      if (kind === 'clientes')      return df.type === 'clientes';
+      if (kind === 'posts')         return df.type === 'posts';
+      if (kind === 'icon-features') return df.type === 'features-icon';
+      if (kind === 'emoji-features')return df.type === 'features-emoji';
+      if (kind === 'links')         return df.type === 'link-list';
+      if (kind === 'text-list')     return df.type === 'text-list';
+      return false;
+    });
+    const arrField = ownerField?.name || cfg.key;
+
+    arrWrap.querySelectorAll('[data-e3-aitem]').forEach(item => {
+      const idx = parseInt(item.dataset.e3Aitem, 10);
+      item.querySelectorAll('[data-e3-akey]').forEach(inp => {
+        const evt = inp.type === 'checkbox' ? 'change' : 'input';
+        inp.addEventListener(evt, () => {
+          sec.data[arrField] = sec.data[arrField] || [];
+          if (kind === 'text-list') {
+            sec.data[arrField][idx] = inp.value;
+          } else {
+            sec.data[arrField][idx] = sec.data[arrField][idx] || {};
+            sec.data[arrField][idx][inp.dataset.e3Akey] = inp.type === 'checkbox' ? inp.checked : inp.value;
+          }
+          markDirty(); renderCanvas();
+        });
+      });
+      item.querySelector('[data-e3-aremove]')?.addEventListener('click', () => {
+        sec.data[arrField].splice(idx, 1);
+        markDirty(); renderCanvas(); renderProps();
+      });
+    });
+    arrWrap.querySelector('[data-e3-aadd]')?.addEventListener('click', () => {
+      sec.data[arrField] = sec.data[arrField] || [];
+      sec.data[arrField].push(cfg.newItem());
+      markDirty(); renderCanvas(); renderProps();
+    });
+  });
+
+  // Contact-item single object editor
+  body.querySelectorAll('[data-e3-contact]').forEach(wrap => {
+    const fname = wrap.dataset.e3Contact;
+    wrap.querySelectorAll('[data-e3-ckey]').forEach(inp => {
+      inp.addEventListener('input', () => {
+        sec.data[fname] = sec.data[fname] || {};
+        sec.data[fname][inp.dataset.e3Ckey] = inp.value;
+        markDirty(); renderCanvas();
+      });
+    });
+  });
+}
+
+// ─── SAVE ──────────────────────────────────────────────────────────
+async function guardarPlantilla() {
+  if (!e3.activeTpl) return;
+  try {
+    const { plantilla } = await api('PATCH', `/plantillas/${e3.activeTpl.id_plantilla}`, {
+      nombre: e3.activeTpl.nombre,
+      descripcion: e3.activeTpl.descripcion,
+      secciones: e3.activeTpl.secciones,
+    });
+    e3.activeTpl = plantilla; clearDirty();
+    const idx = e3.plantillas.findIndex(p => p.id_plantilla === plantilla.id_plantilla);
+    if (idx >= 0) e3.plantillas[idx] = plantilla;
+    renderSidebarList();
+    notif('✓ Guardado — cambios reflejados en /' + plantilla.tipo + '.html');
+  } catch (e) { notif('Error: ' + e.message, 'error'); }
+}
+
+// ─── Quick access (dashboard card + sidebar link) ───────────────────
+function goToPlantillas() {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-plantillas').classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  document.getElementById('sidebar-go-plantillas')?.classList.add('active');
+  document.getElementById('topbar-title').textContent = 'Plantillas';
+  loadPlantillas();
+}
+
+function injectSidebarLink() {
+  if (document.getElementById('sidebar-go-plantillas')) return;
+  const label = document.querySelector('.sidebar-section-label span');
+  if (!label || label.textContent.trim() !== 'Plantillas') return;
+  const sb = document.createElement('div');
+  sb.className = 'sidebar-item';
+  sb.id = 'sidebar-go-plantillas';
+  sb.style.cssText = 'font-size:.65rem;font-weight:600;color:rgba(255,255,255,.6);';
+  sb.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" stroke-width="2"/><rect x="14" y="3" width="7" height="7" stroke-width="2"/><rect x="3" y="14" width="7" height="7" stroke-width="2"/><rect x="14" y="14" width="7" height="7" stroke-width="2"/></svg>Ver todas las plantillas`;
+  sb.addEventListener('click', goToPlantillas);
+  label.parentElement.insertAdjacentElement('afterend', sb);
+}
+
+function injectDashboardCard() {
+  const dash = document.getElementById('panel-dashboard');
+  if (!dash || document.getElementById('dash-go-plantillas')) return;
+  const card = document.createElement('div');
+  card.id = 'dash-go-plantillas';
+  card.style.cssText = 'background:linear-gradient(135deg,#0A1D37,#1e3a8a);color:#fff;padding:1.5rem 2rem;margin-bottom:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;box-shadow:0 4px 16px rgba(10,29,55,.15);transition:transform .15s,box-shadow .15s;';
+  card.innerHTML = `
+    <div>
+      <div style="font-size:.55rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:#60a5fa;margin-bottom:.4rem;">EDITOR VISUAL</div>
+      <div style="font-size:1.25rem;font-weight:900;letter-spacing:-.02em;margin-bottom:.25rem;">Plantillas del sitio</div>
+      <div style="font-size:.8125rem;color:rgba(255,255,255,.7);">Editá visualmente cada HTML del sitio. Cada plantilla controla en vivo su página correspondiente.</div>
+    </div>
+    <div style="background:#2563eb;color:#fff;padding:.75rem 1.5rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:.7rem;white-space:nowrap;">Ir a Plantillas →</div>`;
+  card.addEventListener('mouseenter', () => card.style.transform = 'translateY(-2px)');
+  card.addEventListener('mouseleave', () => card.style.transform = 'translateY(0)');
+  card.addEventListener('click', goToPlantillas);
+  const pageHeader = dash.querySelector('.page-header');
+  if (pageHeader) pageHeader.insertAdjacentElement('afterend', card);
+  else dash.insertAdjacentElement('afterbegin', card);
+}
+
+// ─── Init: override old plantilla buttons + inject UI ───────────────
+function initE3() {
+  populateTipoSelect();
+  injectSidebarLink();
+  injectDashboardCard();
+
+  const a = stripListeners(document.getElementById('btn-nueva-plantilla-main'));
+  if (a) a.addEventListener('click', () => openNuevaModal());
+
+  const b = stripListeners(document.getElementById('btn-nueva-plantilla'));
+  if (b) b.addEventListener('click', () => openNuevaModal());
+
+  const c = stripListeners(document.getElementById('crear-plantilla-btn'));
+  if (c) c.addEventListener('click', crearPlantilla);
+
+  // Override old globals so any leftover async old code doesn't overwrite our renders
+  window.renderSidebarTemplates = renderSidebarList;
+  window.renderTemplateOverview = renderOverview;
+  window.openTemplateEditor = (id) => openEditor(id);
+  window.openTemplateEditorFromList = (id) => openEditor(id);
+  window.setActiveTpl = (id) => activarPlantilla(id);
+  window.deleteTpl = (id) => eliminarPlantilla(id);
+  window.saveTpl = () => guardarPlantilla();
+
+  loadPlantillas();
+}
+
+const appEl = document.getElementById('app');
+function tryInit() {
+  if (!appEl) return false;
+  const visible = appEl.style.display === 'block' || getComputedStyle(appEl).display !== 'none';
+  if (visible) { initE3(); return true; }
+  return false;
+}
+if (!tryInit()) {
+  const obs = new MutationObserver(() => { if (tryInit()) obs.disconnect(); });
+  obs.observe(appEl, { attributes: true, attributeFilter: ['style'] });
+}
 </script>
 </body>
 </html>

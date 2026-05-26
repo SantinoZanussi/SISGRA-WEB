@@ -80,6 +80,10 @@
     justify-content: center;
     color: var(--blue-600);
 }
+.solution-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+}
 
 .solution-title {
     font-weight: 900;

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -6,483 +6,73 @@
     <title>SiSGRA S.R.L. - Fibra Óptica</title>
     <meta name="description" content="">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="icon" href="../img/sdesigra.png">
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet" href="../css/layout.css">
-    <link rel="stylesheet" href="../css/components.css">
-    <link rel="stylesheet" href="../css/pages/fibra_optica.css">
+    <link rel="icon" href="/img/sdesigra.png">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages/fibra_optica.css">
 
     <style>
-        /* ── RESPONSIVE OVERRIDES ─────────────────────────────── */
-
-        /* Navbar hamburger */
-        .nav-mobile-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 2.5rem;
-            height: 2.5rem;
-            background: transparent;
-            border: transparent;
-            cursor: pointer;
-            flex-direction: column;
-            gap: 5px;
-            padding: 0;
-        }
-        .nav-mobile-btn span {
-            display: block;
-            width: 1.25rem;
-            height: 2px;
-            background: white;
-            transition: all 0.3s;
-        }
-        .nav-mobile-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-        .nav-mobile-btn.open span:nth-child(2) { opacity: 0; }
-        .nav-mobile-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-        @media (min-width: 1024px) {
-            .nav-mobile-btn { display: none; }
-        }
-
-        /* Mobile menu overlay */
-        .mobile-nav-menu {
-            display: none;
-            position: fixed;
-            top: 6rem;
-            left: 0;
-            right: 0;
-            background: var(--sisgra-blue);
-            border-top: 1px solid rgba(255,255,255,0.1);
-            z-index: 49;
-            padding: 1.5rem 1.5rem 2rem;
-            flex-direction: column;
-            gap: 0;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-        .mobile-nav-menu.open { display: flex; }
-
-        .mobile-nav-link {
-            display: block;
-            color: rgba(255,255,255,0.8);
-            font-size: 0.875rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            padding: 0.85rem 0;
-            border-bottom: 1px solid rgba(255,255,255,0.07);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .mobile-nav-link:last-child { border-bottom: none; }
-        .mobile-nav-link:hover { color: var(--blue-300); }
-
-        .mobile-nav-section {
-            font-size: 0.5625rem;
-            font-weight: 900;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: var(--blue-400);
-            padding: 1.25rem 0 0.5rem;
-        }
-
-        .mobile-nav-sub {
-            display: block;
-            color: rgba(255,255,255,0.55);
-            font-size: 0.8125rem;
-            font-weight: 600;
-            padding: 0.65rem 0 0.65rem 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .mobile-nav-sub:hover { color: var(--white); }
-
-        .mobile-nav-cta {
-            margin-top: 1.5rem;
-            display: block;
-            text-align: center;
-            background: var(--blue-600);
-            color: white;
-            padding: 0.875rem;
-            font-size: 0.6875rem;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            text-decoration: none;
-            transition: background 0.2s;
-            border-radius: 8px;
-        }
-        .mobile-nav-cta:hover { background: var(--blue-500); }
-
-        /* ── SECCIÓN FIBRA ────────────────────────────────────── */
-
-        /* Padding de la sección en mobile */
-        @media (max-width: 1023px) {
-            .section-fibra {
-                padding: 7rem 0 5rem;
-            }
-        }
-        @media (max-width: 639px) {
-            .section-fibra {
-                padding: 6rem 0 4rem;
-            }
-        }
-
-        /* Gap del layout en mobile */
-        @media (max-width: 1023px) {
-            .fibra-layout {
-                gap: 3rem;
-            }
-        }
-
-        /* Imagen: altura fija → más corta en mobile */
-        @media (max-width: 1023px) {
-            .fibra-image-frame img {
-                height: 380px;
-            }
-        }
-        @media (max-width: 639px) {
-            .fibra-image-frame img {
-                height: 260px;
-            }
-            /* Borde del frame más fino en mobile */
-            .fibra-image-frame {
-                border-width: 10px;
-            }
-        }
-
-        /* El badge flotante (LIGHT / Speed Connectivity) se sale
-           del contenedor en mobile → lo reposicionamos */
-        @media (max-width: 1023px) {
-            .fibra-badge {
-                display: block;      /* sobreescribe el display:none de <768px */
-                position: relative;
-                bottom: auto;
-                right: auto;
-                margin-top: 1.25rem;
-                padding: 1.25rem 1.5rem;
-                display: inline-flex;
-                flex-direction: column;
-            }
-        }
-        @media (max-width: 639px) {
-            .fibra-badge {
-                padding: 1rem 1.25rem;
-                margin-top: 1rem;
-            }
-            .fibra-badge-title {
-                font-size: 2rem;
-            }
-        }
-
-        /* Margen inferior de fibra-visual en mobile */
-        @media (max-width: 1023px) {
-            .fibra-visual {
-                margin-bottom: 0;
-            }
-        }
-
-        /* Padding interno del container en mobile */
-        @media (max-width: 639px) {
-            .section-fibra-inner {
-                padding: 0 1rem;
-            }
-        }
-
-        /* Título responsive */
-        @media (max-width: 639px) {
-            .section-title {
-                font-size: 2.5rem;
-                margin-bottom: 1.5rem;
-            }
-            .section-description {
-                font-size: 1rem;
-            }
-        }
-
-        /* ── FOOTER RESPONSIVE ────────────────────────────────── */
+        /* ── RESPONSIVE OVERRIDES (preservadas del HTML original) ─── */
+        @media (max-width: 1023px) { .section-fibra { padding: 7rem 1.5rem 5rem; } }
+        @media (max-width: 639px)  { .section-fibra { padding: 6rem 1rem 4rem; } }
 
         @media (max-width: 1023px) {
-            .footer-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .footer-col:last-child {
-                grid-column: 1 / -1;
-            }
-            .map-wrapper,
-            .map-wrapper iframe {
-                min-height: 220px;
-            }
+            .fibra-layout { grid-template-columns: 1fr; gap: 3rem; }
+            .fibra-visual { order: -1; }
+        }
+        @media (max-width: 639px) {
+            .fibra-layout { gap: 2rem; }
+            .section-title { font-size: 2.5rem; }
+            .section-description { font-size: 0.95rem; }
         }
 
+        /* FOOTER RESPONSIVE */
+        @media (max-width: 1023px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .footer-col:last-child { grid-column: 1 / -1; }
+            .map-wrapper, .map-wrapper iframe { min-height: 220px; }
+        }
         @media (max-width: 639px) {
-            .footer-grid {
-                grid-template-columns: 1fr;
-            }
-            .footer-col:last-child {
-                grid-column: 1;
-            }
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-col:last-child { grid-column: 1; }
             .footer-col {
                 padding: 1.5rem !important;
                 border-right: none !important;
                 border-bottom: 1px solid var(--rule);
             }
-            .footer-col:last-child {
-                border-bottom: none;
-            }
-        }
-
-        @media (max-width: 639px) {
+            .footer-col:last-child { border-bottom: none; }
             .wordmark-band {
                 padding: 2rem 1.5rem 1.5rem;
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.75rem;
             }
-            .wordmark-band h1 {
-                font-size: clamp(52px, 18vw, 80px);
-            }
-            .wordmark-band .tagline {
-                text-align: left;
-                max-width: 100%;
-            }
-        }
-
-        @media (max-width: 639px) {
+            .wordmark-band h1 { font-size: clamp(52px, 18vw, 80px); }
             .footer-bottom {
                 padding: 1.25rem 1.5rem;
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.5rem;
             }
-            .footer-bottom .copy {
-                font-size: 0.5625rem;
-            }
+            .footer-bottom .copy { font-size: 0.5625rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- NAVBAR -->
-    <nav>
-        <div class="max-w-1400">
-            <div class="nav-inner">
-                <a href="../index.html" class="nav-logo">
-                    <div class="nav-logo-wrap">
-                        <div class="nav-logo-row">
-                            <img src="../img/logo sisgra.png" alt="SISGRA">
-                        </div>
-                    </div>
-                </a>
+<!--
+  SHELL — controlado por la plantilla activa "fibra" desde el admin.
+  Visualmente idéntico al HTML original.
+-->
+<div id="plantilla-root">
+  <div style="padding:6rem 2rem;text-align:center;color:#94a3b8;font-family:'Inter',system-ui,sans-serif;letter-spacing:.15em;text-transform:uppercase;font-size:.75rem;">Cargando…</div>
+</div>
 
-                <div class="nav-menu">
-                    <div class="nav-menu-list">
-                        <div class="nav-dropdown">
-                            <a href="#instalaciones" class="nav-dropdown-trigger">
-                                Instalaciones
-                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                        d="M19 9l-7 7-7-7"></path>
-                                </svg>
-                            </a>
-                            <div class="dropdown-content">
-                                <a href="./cableado_estructurado.html">Cableado Estructurado</a>
-                                <a href="./fibra_optica.html">Fibra Óptica</a>
-                                <a href="./seguridad.html">Seguridad Electrónica</a>
-                            </div>
-                        </div>
-                        <a href="/html/blog.html" class="nav-link">Blog</a>
-                        <a href="./soporte_it.html" class="nav-link">Soporte IT</a>
-                        <a href="./desarrollo.html" class="nav-link">Desarrollo de Software</a>
-                    </div>
-                </div>
-
-                <div class="nav-contact-wrap">
-                    <a href="https://wa.me/03418610863" class="btn-contact">Contáctese</a>
-                </div>
-
-                <!-- Botón hamburguesa mobile -->
-                <button class="nav-mobile-btn" id="mobileMenuBtn" aria-label="Abrir menú">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- MENÚ MOBILE -->
-    <div class="mobile-nav-menu" id="mobileMenu">
-        <span class="mobile-nav-section">Instalaciones</span>
-        <a href="./cableado_estructurado.html" class="mobile-nav-sub">Cableado Estructurado</a>
-        <a href="./fibra_optica.html" class="mobile-nav-sub">Fibra Óptica</a>
-        <a href="./seguridad.html" class="mobile-nav-sub">Seguridad Electrónica</a>
-        <a href="/html/blog.html" class="mobile-nav-link">Blog</a>
-        <a href="./soporte_it.html" class="mobile-nav-link">Soporte IT</a>
-        <a href="./desarrollo.html" class="mobile-nav-link">Desarrollo de Software</a>
-        <a href="https://wa.me/03418610863" class="mobile-nav-cta">Contáctese</a>
-    </div>
-
-    <!-- FIBRA ÓPTICA SECTION -->
-    <section id="fibra-optica" class="section-fibra">
-        <div class="section-fibra-inner">
-            <div class="fibra-layout">
-
-                <!-- Visual Side -->
-                <div class="fibra-visual">
-                    <div class="fibra-image-frame">
-                        <img
-                            src="https://images.unsplash.com/photo-1551703599-6b3e8379aa8c?q=80&w=2072&auto=format&fit=crop"
-                            alt="Fibra Óptica"
-                        />
-                        <div class="fibra-image-overlay"></div>
-                    </div>
-
-                    <div class="fibra-badge">
-                        <div class="fibra-badge-title">LIGHT</div>
-                        <div class="fibra-badge-sub">Speed Connectivity</div>
-                    </div>
-                </div>
-
-                <!-- Text Side -->
-                <div class="fibra-text">
-                    <span class="section-badge">Transmisión Fotónica</span>
-
-                    <h2 class="section-title">
-                        Fibra <br />
-                        <span class="accent">Óptica Pro.</span>
-                    </h2>
-
-                    <p class="section-description">
-                        Llevamos la velocidad de la luz a su centro de datos. Nuestros enlaces de fibra óptica garantizan una inmunidad total a interferencias y un ancho de banda ilimitado.
-                    </p>
-
-                    <ul class="feature-list">
-                        <li class="feature-item">
-                            <div class="feature-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
-                                    <circle cx="12" cy="10" r="3"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="feature-title">Enlaces Monomodo y Multimodo</h4>
-                                <p class="feature-desc">Backbones industriales de alta densidad OM4/OM5.</p>
-                            </div>
-                        </li>
-                        <li class="feature-item">
-                            <div class="feature-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h4 class="feature-title">Fusión por Núcleo</h4>
-                                <p class="feature-desc">Empalmes de alta precisión certificados.</p>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer>
-
-        <!-- WORDMARK BAND -->
-        <div class="wordmark-band">
-            <h1>SISGRA</h1>
-        </div>
-
-        <!-- MAIN GRID -->
-        <div class="footer-grid">
-
-            <!-- COL 1: SERVICIOS -->
-            <div class="footer-col">
-                <div class="col-label">Servicios</div>
-                <ul class="services-list">
-                    <li><a href="/html/cableado_estructurado.html">Cableado Estructurado</a></li>
-                    <li><a href="/html/fibra_optica.html">Fibra Óptica</a></li>
-                    <li><a href="/html/seguridad.html">Seguridad Electrónica</a></li>
-                    <li><a href="/html/soporte_it.html">Soporte IT</a></li>
-                    <li><a href="/html/desarrollo.html">Desarrollo de Software</a></li>
-                    <li><a href="/html/blog.html">Blog</a></li>
-                </ul>
-            </div>
-
-            <!-- COL 2: CONTACTO -->
-            <div class="footer-col">
-                <div class="col-label">Contacto</div>
-                <div class="contact-stack">
-                    <div class="contact-item">
-                        <div class="ci-type">Oficina</div>
-                        <div class="ci-value">Lamadrid 468<br>(ZONA I) NAVE 2 - Oficina 05 - NODO ROSARIO</div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="ci-type">Teléfono</div>
-                        <div class="ci-value"><a href="tel:+5403413220052">+54 341 322-0052</a></div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="ci-type">Email</div>
-                        <div class="ci-value"><a href="mailto:info@sisgra.com.ar">info@sisgra.com.ar</a></div>
-                    </div>
-                    <div class="contact-item">
-                        <div class="ci-type">Redes</div>
-                        <div class="social-row">
-                            <a class="social-btn" href="https://www.facebook.com/sisgra.srl" aria-label="Facebook">FB</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COL 3: MAPA -->
-            <div class="footer-col map-col" style="padding:0;">
-                <div class="map-wrapper">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3348.9!2d-60.6530!3d-32.9440!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b652f52c9a5e3b%3A0x0!2sLamadrid+468%2C+Rosario%2C+Argentina!5e0!3m2!1ses!2sar!4v1680000000000"
-                        allowfullscreen=""
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"
-                        title="Ubicación SISGRA">
-                    </iframe>
-                    <div class="map-overlay-label">Rosario · ARG</div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- BOTTOM BAR -->
-        <div class="footer-bottom">
-            <p class="copy">© 2026 <span>SISGRA S.R.L.</span> — Todos los derechos reservados</p>
-        </div>
-
-    </footer>
-
-    <script>
-        const btn  = document.getElementById('mobileMenuBtn');
-        const menu = document.getElementById('mobileMenu');
-
-        btn.addEventListener('click', () => {
-            const isOpen = menu.classList.toggle('open');
-            btn.classList.toggle('open', isOpen);
-            btn.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
-        });
-
-        menu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                menu.classList.remove('open');
-                btn.classList.remove('open');
-            });
-        });
-    </script>
-
-<script>
-(async()=>{try{const r=await fetch(`http://${location.hostname}:3000/api/data/seo`);const s=await r.json();const p=s&&s['fibra'];if(p){if(p.title)document.title=p.title;const m=document.querySelector('meta[name="description"]');if(m&&p.description)m.setAttribute('content',p.description);}}catch{}})();
+<script type="module">
+  import { bootstrapPage } from '/services/page-bootstrap.js';
+  bootstrapPage('fibra', 'plantilla-root');
 </script>
-<script>
-(async()=>{try{const r=await fetch(`http://${location.hostname}:3000/api/data/contacto`);const c=await r.json();if(!c)return;if(c.telefono){const raw=c.telefono.replace(/\D/g,'');document.querySelectorAll('a[href^="tel:"]').forEach(a=>{a.href='tel:'+raw;a.textContent=c.telefono;});}if(c.email){document.querySelectorAll('a[href^="mailto:"]').forEach(a=>{a.href='mailto:'+c.email;a.textContent=c.email;});}if(c.whatsapp){const w=c.whatsapp.replace(/\D/g,'');document.querySelectorAll('a[href*="wa.me/"]').forEach(a=>{a.href='https://wa.me/'+w;});}if(c.direccion){document.querySelectorAll('.ci-type').forEach(t=>{if(t.textContent.trim()==='Oficina'){const v=t.nextElementSibling;if(v&&v.classList.contains('ci-value'))v.innerHTML=c.direccion;}});}}catch{}})();
-</script>
+
 </body>
 </html>
