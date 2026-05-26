@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
       <link rel="icon" href="/img/sdesigra.png" type="image/png"/>
-  <title>SISGRA — Panel Administrativo</title>
+  <title>Panel administrativo · SISGRA S.R.L.</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:ital,wght@0,400;0,500;0,700;0,900;1,700;1,900&display=swap" rel="stylesheet"/>
   <style>
     :root{
@@ -2843,7 +2843,10 @@ function renderEditorShell() {
   }));
 
   renderTray();
-  initIframe(() => { renderCanvas(); bindCanvasDnd(); });
+  initIframe(() => {
+    try { renderCanvas(); } catch (e) { console.error('[e3] renderCanvas error:', e); }
+    bindCanvasDnd();
+  });
   renderProps();
 }
 
@@ -2880,12 +2883,15 @@ function initIframe(cb) {
   const iframe = document.getElementById('e3-canvas');
   if (!iframe) return;
   const cssFiles = TIPO_CSS[e3.currentTipo] || TIPO_CSS.index;
+  // OJO: usamos `<bo${''}dy>` en vez de `<body>` para evitar que Live Server inyecte
+  // su <script> de auto-reload acá adentro (rompería el template literal del padre).
+  const B = 'bo'+'dy';
   iframe.srcdoc = `<!DOCTYPE html><html lang="es"><head>
 <meta charset="UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
 <style>
-  body{margin:0;background:#fff;min-height:300px;}
+  body{margin:0;background:#fff;min-height:100vh;}
   .e3-sec-wrap{position:relative;outline:2px solid transparent;outline-offset:-2px;transition:outline-color .15s;}
   .e3-sec-wrap:hover{outline-color:#cbd5e1;}
   .e3-sec-wrap.e3-selected{outline-color:#2563eb;}
@@ -2897,7 +2903,7 @@ ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
   .e3-drop.e3-active{display:block;}
   .e3-empty{padding:6rem 2rem;text-align:center;color:#94a3b8;border:2px dashed #cbd5e1;margin:1rem;font-family:Inter,system-ui,sans-serif;}
 </style>
-</head><body></body></html>`;
+</head><${B}></${B}></html>`;
   iframe._queue = iframe._queue || [];
   iframe._queue.push(cb);
   iframe.addEventListener('load', () => {
@@ -2912,7 +2918,11 @@ function renderCanvas() {
   const doc = iframe.contentDocument;
   const secs = e3.activeTpl?.secciones || [];
   if (secs.length === 0) {
-    doc.body.innerHTML = `<div class="e3-empty" data-e3-emptydrop>Arrastrá un módulo desde la izquierda<br><small style="font-size:.65rem;display:block;margin-top:.4rem;">o doble-click sobre un módulo</small></div>`;
+    doc.body.innerHTML = `<div class="e3-empty" data-e3-emptydrop style="min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:border-color .15s,background .15s;">
+      <div style="font-size:2.5rem;margin-bottom:.75rem;opacity:.25;line-height:1;">⊕</div>
+      Arrastrá un módulo desde la izquierda<br>
+      <small style="font-size:.65rem;display:block;margin-top:.4rem;opacity:.7;">o doble-click sobre un módulo para agregarlo</small>
+    </div>`;
   } else {
     doc.body.innerHTML = secs.map((sec, i) => `
 <div class="e3-drop" data-dropidx="${i}"></div>
@@ -2952,9 +2962,27 @@ function bindCanvasDnd() {
   if (!iframe?.contentDocument) return;
   _e3DndBound = true;
   const doc = iframe.contentDocument;
-  doc.addEventListener('dragover', ev => {
+
+  function acceptDrag(ev) {
     const types = Array.from(ev.dataTransfer?.types || []);
-    if (!types.includes('text/e3-sec-type') && !types.includes('text/plain')) return;
+    return types.includes('text/e3-sec-type') || types.includes('text/plain');
+  }
+
+  doc.addEventListener('dragenter', ev => {
+    if (!acceptDrag(ev)) return;
+    ev.preventDefault();
+    ev.dataTransfer.dropEffect = 'copy';
+    const empty = doc.querySelector('.e3-empty');
+    if (empty) empty.style.borderColor = '#2563eb';
+  });
+  doc.addEventListener('dragleave', ev => {
+    if (!ev.relatedTarget || !doc.contains(ev.relatedTarget)) {
+      const empty = doc.querySelector('.e3-empty');
+      if (empty) empty.style.borderColor = '';
+    }
+  });
+  doc.addEventListener('dragover', ev => {
+    if (!acceptDrag(ev)) return;
     ev.preventDefault();
     ev.dataTransfer.dropEffect = 'copy';
     const markers = [...doc.querySelectorAll('.e3-drop')];
@@ -2972,6 +3000,8 @@ function bindCanvasDnd() {
     const type = ev.dataTransfer.getData('text/e3-sec-type') || ev.dataTransfer.getData('text/plain');
     if (!type) return;
     ev.preventDefault(); ev.stopPropagation();
+    const empty = doc.querySelector('.e3-empty');
+    if (empty) empty.style.borderColor = '';
     const active = doc.querySelector('.e3-drop.e3-active');
     const idx = active ? parseInt(active.dataset.dropidx, 10) : (e3.activeTpl?.secciones || []).length;
     doc.querySelectorAll('.e3-drop').forEach(m => m.classList.remove('e3-active'));
@@ -3241,7 +3271,9 @@ async function guardarPlantilla() {
     const idx = e3.plantillas.findIndex(p => p.id_plantilla === plantilla.id_plantilla);
     if (idx >= 0) e3.plantillas[idx] = plantilla;
     renderSidebarList();
-    notif('✓ Guardado — cambios reflejados en /' + plantilla.tipo + '.html');
+    notif(plantilla.activa
+      ? '✓ Guardado — cambios en vivo en /' + plantilla.tipo + '.html'
+      : '✓ Borrador guardado — activalo para verlo en /' + plantilla.tipo + '.html');
   } catch (e) { notif('Error: ' + e.message, 'error'); }
 }
 
@@ -3326,6 +3358,70 @@ function tryInit() {
 if (!tryInit()) {
   const obs = new MutationObserver(() => { if (tryInit()) obs.disconnect(); });
   obs.observe(appEl, { attributes: true, attributeFilter: ['style'] });
+}
+</script>
+
+<!-- Toggle sidebar button -->
+<button id="sidebar-toggle-btn" onclick="toggleSidebar()" title="Mostrar/Ocultar menú" style="
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: var(--sisgra-blue);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  cursor: pointer;
+  z-index: 999;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.2s;
+" onmouseover="this.style.background='var(--slate-400)'" onmouseout="this.style.background='var(--sisgra-blue)'">
+  ☰
+</button>
+
+
+<style>
+  .sidebar {
+    transition: transform 0.3s ease, opacity 0.3s ease, width 0.3s ease, min-width 0.3s ease;
+    overflow: hidden;
+  }
+  .sidebar.hidden {
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+    width: 0 !important;
+    min-width: 0 !important;
+  }
+
+   #sidebar-toggle-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+  }
+</style>
+
+<script>
+function toggleSidebar() {
+  const sidebar = document.querySelector('.sidebar');
+  const app = document.getElementById('app');
+  const btn = document.getElementById('sidebar-toggle-btn');
+  const isHidden = sidebar.classList.contains('hidden');
+  sidebar.classList.toggle('hidden');
+  btn.textContent = isHidden ? '☰' : '☰';
+  btn.style.transform = isHidden ? 'scale(1)' : 'scale(1)';
 }
 </script>
 </body>

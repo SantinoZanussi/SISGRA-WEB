@@ -1,6 +1,6 @@
 {
   "home": {
-    "title": "SISGRA S.R.L. - Integrando el Futuro",
+    "title": "Integrando el futuro · SISGRA S.R.L.",
     "description": "Implementamos redes de alta velocidad, fibra óptica certificada y sistemas de gestión avanzados para la industria moderna en Rosario, Argentina."
   },
   "cableado": {
@@ -24,7 +24,7 @@
     "description": "Software logístico a medida, ERP, CRM e integración IoT. Desarrollo de sistemas para la industria moderna en Rosario."
   },
   "blog": {
-    "title": "SISGRA S.R.L. - Blog",
-    "description": ""
+    "title": "Blog · SISGRA S.R.L.",
+    "description": "Novedades, soluciones tecnológicas, infraestructura, conectividad, redes y consejos para empresas y hogares."
   }
 }

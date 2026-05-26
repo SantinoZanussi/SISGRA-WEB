@@ -12,8 +12,8 @@
           "type": "hero",
           "data": {
             "badge": "INFRAESTRUCTURA DE ELITE",
-            "titulo1": "GOHLASDLAWDWA",
-            "titulo2": "AAAAAAAAAAA",
+            "titulo1": "HOLA",
+            "titulo2": "MARCE",
             "descripcion": "Descripción del hero. Editá este texto haciendo clic directamente sobre él.",
             "boton_primario": "Ver Soluciones",
             "boton_secundario": "Conocer más",
@@ -79,6 +79,7 @@
           "type": "nav",
           "data": {
             "logoSrc": "/img/logo sisgra.png",
+            "logoSrcHref": "../index.html",
             "instalacionesLabel": "Instalaciones",
             "cableadoLabel": "Cableado Estructurado",
             "cableadoHref": "/html/cableado_estructurado.html",
@@ -154,7 +155,7 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-26T00:21:18.591Z"
+      "editado_en": "2026-05-26T19:18:01.307Z"
     },
     {
       "id_plantilla": "plt-seed-blog",

@@ -21,10 +21,6 @@ const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 
 // ═══════════════════════════════════════════════════════════════════
 export const SECTIONS = {
-
-  // ─────────────────────────────────────────────────────────────────
-  //  NAV — copia exacta del <nav> del index.html actual
-  // ─────────────────────────────────────────────────────────────────
   nav: {
     label: 'Navbar',
     description: 'Barra superior con logo y enlaces',
@@ -32,6 +28,7 @@ export const SECTIONS = {
     validTipos: ['*'],
     defaultData: {
       logoSrc: '/img/logo sisgra.png',
+      logoSrcHref: '../index.html',
       instalacionesLabel: 'Instalaciones',
       cableadoLabel: 'Cableado Estructurado', cableadoHref: '/html/cableado_estructurado.html',
       fibraLabel: 'Fibra Óptica',              fibraHref:    '/html/fibra_optica.html',
@@ -44,6 +41,7 @@ export const SECTIONS = {
     defaultDesign: {},
     dataFields: [
       { name: 'logoSrc',            label: 'Logo (URL)',         type: 'text' },
+      { name: 'logoSrcHref',        label: 'Link Inicio',        type: 'text' },
       { name: 'instalacionesLabel', label: 'Menú: Instalaciones',type: 'text' },
       { name: 'cableadoLabel',      label: 'Cableado',           type: 'text' },
       { name: 'cableadoHref',       label: 'Link Cableado',      type: 'text' },
@@ -67,7 +65,7 @@ export const SECTIONS = {
 <nav>
   <div class="max-w-1400">
     <div class="nav-inner">
-      <a href="index.html" class="nav-logo">
+      <a href="${esc(d.logoSrcHref)}" class="nav-logo">
         <div class="nav-logo-wrap"><div class="nav-logo-row">
           <img src="${esc(d.logoSrc)}" alt="SISGRA">
         </div></div>

@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "Bash(powershell -Command \"Get-Content html/admin_panel.html | Select-Object -Skip 2560 -First 380 | Select-String -Pattern '<!--|-->|<script'\")",
+      "Bash(powershell -Command '\\(Get-Content html/admin_panel.html -Raw -Encoding UTF8\\) | Select-String -Pattern '\\\\''</script'\\\\'' -AllMatches | ForEach-Object { $_.Matches } | ForEach-Object { $start = [Math]::Max\\(0, $_.Index - 30\\); $end = [Math]::Min\\(\\(Get-Content html/admin_panel.html -Raw -Encoding UTF8\\).Length, $_.Index + 40\\); \\(Get-Content html/admin_panel.html -Raw -Encoding UTF8\\).Substring\\($start, $end - $start\\) }')",
+      "Bash(powershell -Command '$c = Get-Content html/admin_panel.html -Raw -Encoding UTF8; $open = \\([regex]::Matches\\($c, '\\\\''<!--'\\\\''\\)\\).Count; $close = \\([regex]::Matches\\($c, '\\\\''-->'\\\\''\\)\\).Count; Write-Host \"<!-- count: $open\"; Write-Host \"--> count: $close\"')",
+      "PowerShell($lines = Get-Content \"C:\\\\Users\\\\demo\\\\Desktop\\\\SISGRA-WEB\\\\html\\\\admin_panel.html\"; $v3Start = 2561; $v3End = 3359; $count = 0; for \\($i = $v3Start; $i -lt $v3End; $i++\\) { $bt = \\([regex]::Matches\\($lines[$i-1], '`'\\)\\).Count; $count += $bt }; Write-Host \"Backticks in V3 script \\(lines $v3Start to $v3End\\): $count\")",
+      "PowerShell($content = Get-Content \"C:\\\\Users\\\\demo\\\\Desktop\\\\SISGRA-WEB\\\\html\\\\admin_panel.html\" -Raw -Encoding UTF8; $bytes = [System.Text.Encoding]::UTF8.GetBytes\\($content\\); Write-Host \"File size: $\\($bytes.Length\\) bytes\"; if \\($bytes[0] -eq 239 -and $bytes[1] -eq 187 -and $bytes[2] -eq 191\\) { Write-Host \"Has UTF-8 BOM\" } else { Write-Host \"No BOM, first 3 bytes: $\\($bytes[0]\\) $\\($bytes[1]\\) $\\($bytes[2]\\)\" }; $nonAscii = \\($bytes | Where-Object { $_ -gt 127 }\\).Count; Write-Host \"Non-ASCII bytes: $nonAscii\")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(node server.js)",
+      "Bash(netstat -ano)",
+      "Bash(findstr LISTEN)",
+      "Bash(findstr \":550\")",
+      "PowerShell(Get-CimInstance Win32_Process -Filter \"ProcessId=1524\")",
+      "Bash(cat \"C:/Users/demo/Desktop/SISGRA-WEB/.vscode/settings.json\" 2>/dev/null; echo \"---\"; ls \"C:/Users/demo/Desktop/SISGRA-WEB/.vscode/\" 2>/dev/null; echo \"---\"; cat \"C:/Users/demo/AppData/Roaming/Code/User/settings.json\" 2>/dev/null | head -50)",
+      "Bash(curl -s -o /tmp/served.html \"http://10.0.11.129:5500/html/admin_panel.html\")",
+      "Read(//tmp/**)",
+      "Bash(curl -s -o /tmp/sections_served.js -w \"HTTP %{http_code}, size %{size_download} bytes\\\\n\" \"http://10.0.11.129:5500/services/sections.js\")",
+      "Bash(curl -s -o /dev/null -w \"Sections.js HTTP %{http_code}\\\\n\" \"http://localhost:5500/services/sections.js\")",
+      "Bash(curl -s -o /dev/null -w \"localhost:3000 → %{http_code}\\\\n\" \"http://localhost:3000/api/plantillas\")",
+      "Bash(curl -s -o /dev/null -w \"10.0.11.129:3000 → %{http_code}\\\\n\" \"http://10.0.11.129:3000/api/plantillas\")",
+      "Bash(curl -s \"http://10.0.11.129:3000/api/plantillas\")"
+    ]
+  }
+}

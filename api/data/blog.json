@@ -5,7 +5,7 @@
     {
       "id": "post-2",
       "titulo": "SISGRA cumple 25 años en la industria",
-      "categoria": "Empresa",
+      "categoria": "Infraestructura",
       "estado": "publicado",
       "fecha": "2026-05-01",
       "extracto": "Un cuarto de siglo conectando empresas, integrando tecnología y formando parte del crecimiento de Rosario y el país.",
@@ -19,8 +19,8 @@
       "estado": "publicado",
       "fecha": "2026-05-12",
       "extracto": "Una guía completa sobre los estándares Cat8 y por qué son la elección correcta para infraestructura crítica moderna.",
-      "contenido": "<p>Una guía completa sobre los estándares Cat8.</p>",
-      "imagen": ""
+      "contenido": "<p><b>Una guía completa sobre los estándares Cat8.</b></p>",
+      "imagen": "/img/img1.png"
     },
     {
       "titulo": "adwadaw",
