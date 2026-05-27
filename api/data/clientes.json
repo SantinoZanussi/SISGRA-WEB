@@ -11,16 +11,21 @@
       "activo": true,
       "estado_perfil": "publicado",
       "titulo_proyecto": "San Cristóbal",
-      "subtitulo": "hudhdahwudadiadjawdiaiidaiwdhai",
+      "subtitulo": "ESTO ES UNA PRUEBA",
       "imagen_destacada": "",
-      "contenido": "doafoaofwodwdlwdlslwllsswsw"
+      "contenido": "<b>esto tambien</b><div><br></div>"
     },
     {
       "id": "c2",
       "nombre": "Syngenta",
       "imagen": "/img/syngenta.png",
       "url": "",
-      "activo": true
+      "activo": true,
+      "estado_perfil": "publicado",
+      "titulo_proyecto": "",
+      "subtitulo": "Esto es una prueba",
+      "imagen_destacada": "",
+      "contenido": "Esto es una prueba"
     },
     {
       "id": "c1779387542739",

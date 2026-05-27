@@ -348,8 +348,11 @@
             "bg": "#0f172a",
             "eyebrowColor": "#60a5fa",
             "titleColor": "#f1f5f9",
-            "textColor": "#94a3b8"
-          }
+            "textColor": "#94a3b8",
+            "paddingY": "",
+            "titleSize": ""
+          },
+          "editada_en": "2026-05-27T16:51:34.009Z"
         }
       ]
     },
@@ -533,8 +536,11 @@
           "design": {
             "bg": "#0f172a",
             "titleColor": "#f1f5f9",
-            "accentColor": "#60a5fa"
-          }
+            "accentColor": "#60a5fa",
+            "paddingY": "",
+            "titleSize": ""
+          },
+          "editada_en": "2026-05-27T16:51:01.371Z"
         }
       ]
     },

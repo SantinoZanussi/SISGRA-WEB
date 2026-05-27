@@ -52,7 +52,23 @@
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(p['id_plantilla'], p['tipo']\\) for p in d['plantillas']]\")",
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(json.dumps\\(p, indent=2, ensure_ascii=False\\)\\) for p in d.get\\('posts',d\\)[:2]]\")",
       "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('keys:', list\\(d.keys\\(\\)\\)\\); print\\('count:', len\\(d.get\\('posts', d\\)\\)\\)\")",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(findstr :3000)",
+      "Bash(curl -s -o nul -w \"Status: %{http_code}\\\\nContent-Type: %{content_type}\\\\n\" http://localhost:3000/ruta-que-no-existe)",
+      "Bash(curl -s http://localhost:3000/ruta-que-no-existe)",
+      "Bash(node --check \"C:\\\\Users\\\\demo\\\\Desktop\\\\SISGRA-WEB\\\\api\\\\server.js\")",
+      "Bash(curl -s -o nul -w \"404 page status: %{http_code}, type: %{content_type}\\\\n\" http://localhost:3001/ruta-inexistente)",
+      "Bash(curl -s -o nul -w \"API 404 status: %{http_code}, type: %{content_type}\\\\n\" http://localhost:3001/api/no-existe)",
+      "Bash(curl -s -o nul -w \"Index status: %{http_code}, type: %{content_type}\\\\n\" http://localhost:3001/)",
+      "Bash(curl -s -o nul -w \"Real page status: %{http_code}, type: %{content_type}\\\\n\" http://localhost:3001/html/blog.html)",
+      "Bash(curl -s http://localhost:3001/ruta-inexistente)",
+      "Bash(curl -s http://localhost:3001/api/no-existe)",
+      "Bash(curl -s -o nul -w \"Index: %{http_code}\\\\n\" http://localhost:3000/)",
+      "Bash(curl -s -o nul -w \"404 route: %{http_code}\\\\n\" http://localhost:3000/html/dwadawda)",
+      "Bash(curl -s http://localhost:3000/html/dwadawda)",
+      "Bash(findstr LISTENING)",
+      "Bash(grep -nE \"^\\\\s*[A-Z][A-Z\\\\s]+$\" \"C:\\\\Users\\\\demo\\\\Desktop\\\\SISGRA-WEB\\\\html\\\\admin_panel.html\")",
+      "Bash(curl -s -X POST -H \"Content-Type: application/json\" -d '{\"id_boton\":\"btn-blog\"}' http://localhost:3000/api/nav/page)"
     ]
   }
 }

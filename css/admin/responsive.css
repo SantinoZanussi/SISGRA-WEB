@@ -1,0 +1,103 @@
+/* ─── ADMIN RESPONSIVE ─── hamburguesa, overlay, media queries, mobile block ─── */
+
+/* Hamburguesa del admin */
+.admin-hamburger{display:none;flex-direction:column;justify-content:center;gap:4px;background:none;border:none;cursor:pointer;padding:.375rem;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+.admin-hamburger span{display:block;width:20px;height:2px;background:var(--sisgra-blue);border-radius:2px;transition:transform .25s,opacity .25s;}
+.admin-hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.admin-hamburger.open span:nth-child(2){opacity:0;}
+.admin-hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+
+/* Overlay oscuro al abrir sidebar en móvil */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:150;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);}
+.sidebar-overlay.active{display:block;}
+
+@media (max-width:1023px){
+  .admin-hamburger{display:flex;}
+
+  /* En responsive ya tenemos la hamburguesa: ocultamos el botón de colapsar */
+  .sidebar-collapse-btn{display:none!important;}
+
+  /* Sidebar: oculto fuera de pantalla, desliza al abrirse */
+  .sidebar{position:fixed;top:0;left:calc(-1 * var(--sidebar-w) - 2px);height:100%;z-index:200;transition:left .28s cubic-bezier(.4,0,.2,1);overflow-y:auto;}
+  .sidebar.sidebar-open{left:0;box-shadow:4px 0 32px rgba(0,0,0,.35);}
+  /* Anula el margin-left del colapso desktop por si alguien dejó la clase */
+  body.sidebar-collapsed .sidebar{margin-left:0;}
+
+  /* Topbar y contenido más compactos */
+  .topbar{padding:0 1rem;}
+  .content-area{padding:1rem;}
+
+  /* Stats: 2 columnas en tablet */
+  .stats-row{grid-template-columns:1fr 1fr;}
+
+  /* Formularios: una columna */
+  .form-row.cols-2,.form-row.cols-3{grid-template-columns:1fr;}
+
+  /* Modales: ancho completo con margen */
+  .modal-overlay{padding:.75rem;}
+  .modal{max-width:100%!important;}
+
+  /* Tablas con scroll horizontal en móvil/tablet — wrapper */
+  .data-table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  /* Fallback: si no hay wrapper, la tabla misma scroll */
+  .section-card-body>.data-table{display:block;overflow-x:auto;}
+
+  /* SEO tabs con scroll horizontal */
+  .tab-row{overflow-x:auto;white-space:nowrap;flex-wrap:nowrap;}
+
+  /* Template list items: acciones pueden wrappear */
+  .tpl-list-actions{flex-wrap:wrap;}
+
+  /* Accesos rápidos dashboard: 2 columnas en tablet */
+  #dash-accesos-grid{grid-template-columns:1fr 1fr!important;}
+}
+
+/* ── Bloqueo editor de plantillas en móvil ── */
+.e3-mobile-block{display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,29,55,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:1.5rem;}
+.e3-mobile-block.active{display:flex;}
+.e3-mobile-block-card{background:var(--white);border-radius:1rem;padding:2.5rem 2rem;max-width:360px;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1rem;box-shadow:0 40px 80px rgba(0,0,0,.4);}
+.e3-mobile-block-icon{font-size:2.5rem;line-height:1;}
+.e3-mobile-block-title{font-size:1rem;font-weight:900;letter-spacing:-.02em;color:var(--sisgra-blue);line-height:1.25;}
+.e3-mobile-block-desc{font-size:.8125rem;color:var(--slate-500);line-height:1.6;margin:0;}
+.e3-mobile-block .btn-save{margin-top:.5rem;width:100%;}
+
+@media (max-width:599px){
+  /* Stats: una columna en móvil */
+  .stats-row{grid-template-columns:1fr;}
+
+  /* Topbar comprimido */
+  .topbar{padding:0 .75rem;}
+  .topbar-title{font-size:.6875rem;}
+  .api-indicator{display:none;}
+  /* Ocultar "Vista previa" y reducir "Guardar cambios" en pantallas muy chicas */
+  .topbar-actions .btn-hide-mobile{display:none;}
+  #btn-guardar{padding:.5rem .75rem;letter-spacing:.08em;font-size:.625rem;}
+
+  /* Modales: casi pantalla completa */
+  .modal-overlay{padding:.5rem;}
+  .modal-body{padding:1rem;}
+  .modal-header{padding:1rem 1rem .75rem;}
+  .modal-footer{padding:.75rem 1rem;}
+
+  /* E3 editor: props panel debajo del canvas */
+  .e3-layout{flex-direction:column;}
+  .e3-tray{width:100%;height:auto;max-height:200px;overflow-x:auto;flex-direction:row;border-right:none;border-bottom:1px solid var(--slate-200);}
+  .e3-tray-body{display:flex;flex-direction:row;overflow-x:auto;gap:.5rem;padding:.5rem;}
+  .tray-chip{flex:0 0 auto;width:140px;}
+  .props-panel{width:100%!important;border-left:none;border-top:1px solid var(--slate-200);}
+  .e3-canvas-wrap{min-height:300px;}
+  .page-frame.desktop{width:100%!important;min-width:0!important;}
+
+  /* Accesos rápidos dashboard: 1 columna en móvil */
+  #dash-accesos-grid{grid-template-columns:1fr!important;}
+
+  /* Template list items: apilar en móvil */
+  .tpl-list-item{flex-wrap:wrap;}
+  .tpl-list-num{display:none;}
+  .tpl-list-info{width:100%;min-width:0;}
+  .tpl-list-actions{width:100%;flex-wrap:wrap;}
+
+  /* Módulos editor header: apilar en móvil */
+  .modulos-editor-header{flex-wrap:wrap;gap:.5rem;}
+  .modulos-editor-header>*{flex-shrink:0;}
+}

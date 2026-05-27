@@ -1,17 +1,17 @@
 const express = require("express");
 const cors = require('cors');
 const os = require('os');
+const path = require('path');
 const { JWT_SECRET } = require("./middleware/auth.js");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const PROJECT_ROOT = path.join(__dirname, '..');
 
 app.use(express.json());
 app.use(cors());
 
 // Force no-cache en todas las respuestas API. Sin esto, el browser cachea
-// /api/plantillas/activa/:tipo y los cambios del editor no se reflejan
-// en las páginas reales hasta hacer hard refresh.
 app.use((req, res, next) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.set('Pragma', 'no-cache');
@@ -38,6 +38,18 @@ app.use("/api/webhook", webhookRoutes);
 
 const modulosRoutes = require("./routes/modulosRoutes");
 app.use("/api/modulos", modulosRoutes);
+
+app.use(express.static(PROJECT_ROOT, {
+  index: 'index.html',
+  extensions: ['html'],
+}));
+
+app.use((req, res) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'Endpoint no encontrado', path: req.path });
+  }
+  res.status(404).sendFile(path.join(PROJECT_ROOT, '404.html'));
+});
 
 function getLocalIPv4() {
   const nets = os.networkInterfaces();

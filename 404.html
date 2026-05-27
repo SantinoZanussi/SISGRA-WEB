@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Página no encontrada · SISGRA S.R.L.</title>
+  <meta name="description" content="La página que buscás no existe o fue movida. Volvé al inicio para seguir navegando el sitio de SISGRA.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="icon" href="/img/sdesigra.png">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/pages/404.css">
+</head>
+<body>
+
+  <header class="err-header">
+    <a href="/index.html" class="logo" aria-label="SISGRA — Inicio">
+      <img src="/img/logo sisgra.png" alt="SISGRA" onerror="this.style.display='none'">
+    </a>
+    <span class="err-tag">Error</span>
+  </header>
+
+  <main class="err-main">
+    <div class="err-card">
+      <div class="err-eyebrow">Página no encontrada</div>
+      <div class="err-number" aria-hidden="true">404</div>
+      <h1 class="err-title">Esta ruta <em>no existe</em>.</h1>
+      <p class="err-desc">
+        La página que estás buscando fue movida, ya no está disponible o nunca existió.
+        Volvé al inicio para seguir explorando nuestras soluciones de infraestructura tecnológica.
+      </p>
+      <div class="err-actions">
+        <a href="/index.html" class="btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12L12 3l9 9"/>
+            <path d="M5 10v10h14V10"/>
+          </svg>
+          Volver al inicio
+        </a>
+        <a href="javascript:history.length>1?history.back():location.assign('/index.html')" class="btn-secondary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"/>
+            <path d="M12 19l-7-7 7-7"/>
+          </svg>
+          Página anterior
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="err-footer">
+    SISGRA S.R.L. · <span>Integrando el futuro</span>
+  </footer>
+
+</body>
+</html>

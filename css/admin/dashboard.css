@@ -1,0 +1,18 @@
+/* ─── ADMIN DASHBOARD ─── stat cards + banner de plantillas vencidas ─── */
+
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.stat-card{background:var(--white);border:1px solid var(--slate-100);padding:1.25rem 1.5rem;}
+.stat-card-label{font-size:.5625rem;font-weight:900;letter-spacing:.25em;text-transform:uppercase;color:var(--slate-400);margin-bottom:.5rem;}
+.stat-card-value{font-size:2rem;font-weight:900;color:var(--sisgra-blue);letter-spacing:-.05em;font-style:italic;}
+.stat-card-sub{font-size:.625rem;color:var(--slate-400);margin-top:.25rem;font-weight:500;}
+.stat-card-indicator{display:inline-block;width:.4rem;height:.4rem;border-radius:50%;margin-right:.4rem;}
+.ind-green{background:var(--green-500);}
+.ind-amber{background:var(--amber-400);}
+.ind-blue{background:var(--blue-400);}
+
+/* Dashboard banner (plantillas vencidas / próximas a vencer) */
+.dash-vencidas-banner{background:#7f1d1d;border-left:3px solid #ef4444;padding:.875rem 1.25rem;display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;}
+.dash-vencidas-banner svg{width:1.1rem;height:1.1rem;color:#fca5a5;flex-shrink:0;}
+.dash-vencidas-banner-text{font-size:.75rem;color:#fecaca;flex:1;}
+.dash-vencidas-banner-text strong{color:#fff;}
