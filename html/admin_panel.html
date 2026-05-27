@@ -86,9 +86,10 @@
     .sidebar-logout:hover{color:var(--red-400);}
  
     /* ── TOPBAR ── */
-    .topbar{background:var(--white);border-bottom:1px solid var(--slate-200);padding:0 2rem;height:4rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-    .topbar-title{font-size:.875rem;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:var(--sisgra-blue);}
-    .topbar-actions{display:flex;align-items:center;gap:.75rem;}
+    .topbar{background:var(--white);border-bottom:1px solid var(--slate-200);padding:0 2rem;height:4rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-shrink:0;overflow:hidden;}
+    .topbar-left{display:flex;align-items:center;gap:.75rem;flex:1;min-width:0;overflow:hidden;}
+    .topbar-title{font-size:.875rem;font-weight:900;letter-spacing:.05em;text-transform:uppercase;color:var(--sisgra-blue);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .topbar-actions{display:flex;align-items:center;gap:.5rem;flex-shrink:0;}
     .api-indicator{display:inline-flex;align-items:center;gap:.4rem;font-size:.5625rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--slate-400);}
     .api-dot{width:.45rem;height:.45rem;border-radius:50%;background:var(--slate-300);}
     .api-dot.connected{background:var(--green-500);}
@@ -172,7 +173,7 @@
  
     /* ── BLOG ── */
     .blog-grid{display:grid;gap:1rem;}
-    .blog-item{background:var(--white);border:1px solid var(--slate-100);padding:1.25rem;display:flex;gap:1.25rem;align-items:flex-start;}
+    .blog-item{background:var(--white);border:1px solid var(--slate-100);padding:1.25rem;display:flex;gap:1.25rem;align-items:flex-start;flex-wrap:wrap;}
     .blog-info{flex:1;}
     .blog-title-text{font-size:.875rem;font-weight:700;color:var(--slate-800);margin-bottom:.3rem;}
     .blog-meta{font-size:.6875rem;color:var(--slate-400);}
@@ -207,6 +208,7 @@
     .tpl-list-item{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--white);border:1px solid var(--slate-100);transition:border-color .15s,box-shadow .15s;cursor:pointer;}
     .tpl-list-item:hover{border-color:var(--blue-300);box-shadow:0 2px 8px rgba(0,0,0,.05);}
     .tpl-list-item.active-tpl{border-color:var(--green-500);background:rgba(34,197,94,.03);}
+    .tpl-list-item.vencida-tpl{border-color:#f87171;background:rgba(248,113,113,.04);}
     .tpl-list-num{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:600;color:var(--slate-200);letter-spacing:-.05em;flex-shrink:0;width:2.5rem;}
     .tpl-list-info{flex:1;}
     .tpl-list-name{font-size:.875rem;font-weight:700;color:var(--slate-800);}
@@ -214,6 +216,24 @@
     .tpl-list-status{font-size:.5rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:.2rem .6rem;}
     .tpl-status-active{background:#dcfce7;color:#166534;}
     .tpl-status-draft{background:#fef3c7;color:#92400e;}
+    .tpl-status-vencida{background:#fee2e2;color:#991b1b;}
+    .tpl-badge-vencida{font-size:.48rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;background:#fee2e2;color:#991b1b;padding:.15rem .4rem;margin-left:.4rem;vertical-align:middle;flex-shrink:0;}
+    .tpl-name-input{font-weight:700;color:var(--slate-800);font-size:.8125rem;border:none;border-bottom:2px solid var(--blue-400);outline:none;background:transparent;padding:.05rem .2rem;width:100%;max-width:320px;font-family:'Inter',sans-serif;}
+    .tpl-rename-btn{background:transparent;border:none;cursor:pointer;color:var(--slate-400);font-size:.85rem;padding:.1rem .25rem;line-height:1;transition:color .15s;}
+    .tpl-rename-btn:hover{color:var(--blue-500);}
+    .tpl-expiry-date{font-size:.6rem;color:var(--slate-400);font-family:'IBM Plex Mono',monospace;}
+    .tpl-expiry-date.soon{color:#d97706;}
+    .tpl-expiry-date.expired{color:#dc2626;font-weight:700;}
+    /* Sidebar */
+    .sidebar-tpl-expiry{font-size:.52rem;font-family:'IBM Plex Mono',monospace;color:rgba(255,255,255,.28);flex-shrink:0;}
+    .sidebar-tpl-expiry.soon{color:#fbbf24;}
+    .sidebar-tpl-expiry.expired{color:#f87171;font-weight:700;}
+    .sidebar-vencida-badge{font-size:.42rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:rgba(248,113,113,.2);color:#fca5a5;padding:.1rem .3rem;flex-shrink:0;}
+    /* Dashboard banner */
+    .dash-vencidas-banner{background:#7f1d1d;border-left:3px solid #ef4444;padding:.875rem 1.25rem;display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;}
+    .dash-vencidas-banner svg{width:1.1rem;height:1.1rem;color:#fca5a5;flex-shrink:0;}
+    .dash-vencidas-banner-text{font-size:.75rem;color:#fecaca;flex:1;}
+    .dash-vencidas-banner-text strong{color:#fff;}
     .tpl-list-actions{display:flex;gap:.375rem;}
     .btn-edit-small{border:1px solid var(--slate-200);background:transparent;color:var(--slate-600);padding:.375rem .75rem;font-size:.5625rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s;}
     .btn-edit-small:hover{border-color:var(--blue-400);color:var(--blue-600);}
@@ -469,6 +489,107 @@
  
     /* SPACER */
     .sec-spacer{background:#fff;}
+
+    /* ══════════════════════════════════════════════
+       ADMIN RESPONSIVE
+    ══════════════════════════════════════════════ */
+
+    /* Hamburguesa del admin */
+    .admin-hamburger{display:none;flex-direction:column;justify-content:center;gap:4px;background:none;border:none;cursor:pointer;padding:.375rem;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
+    .admin-hamburger span{display:block;width:20px;height:2px;background:var(--sisgra-blue);border-radius:2px;transition:transform .25s,opacity .25s;}
+    .admin-hamburger.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+    .admin-hamburger.open span:nth-child(2){opacity:0;}
+    .admin-hamburger.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+
+    /* Overlay oscuro al abrir sidebar en móvil */
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:150;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);}
+    .sidebar-overlay.active{display:block;}
+
+    @media (max-width:1023px){
+      .admin-hamburger{display:flex;}
+
+      /* Sidebar: oculto fuera de pantalla, desliza al abrirse */
+      .sidebar{position:fixed;top:0;left:calc(-1 * var(--sidebar-w) - 2px);height:100%;z-index:200;transition:left .28s cubic-bezier(.4,0,.2,1);overflow-y:auto;}
+      .sidebar.sidebar-open{left:0;box-shadow:4px 0 32px rgba(0,0,0,.35);}
+
+      /* Topbar y contenido más compactos */
+      .topbar{padding:0 1rem;}
+      .content-area{padding:1rem;}
+
+      /* Stats: 2 columnas en tablet */
+      .stats-row{grid-template-columns:1fr 1fr;}
+
+      /* Formularios: una columna */
+      .form-row.cols-2,.form-row.cols-3{grid-template-columns:1fr;}
+
+      /* Modales: ancho completo con margen */
+      .modal-overlay{padding:.75rem;}
+      .modal{max-width:100%!important;}
+
+      /* Tablas con scroll horizontal en móvil/tablet — wrapper */
+      .data-table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+      /* Fallback: si no hay wrapper, la tabla misma scroll */
+      .section-card-body>.data-table{display:block;overflow-x:auto;}
+
+      /* SEO tabs con scroll horizontal */
+      .tab-row{overflow-x:auto;white-space:nowrap;flex-wrap:nowrap;}
+
+      /* Template list items: acciones pueden wrappear */
+      .tpl-list-actions{flex-wrap:wrap;}
+
+      /* Accesos rápidos dashboard: 2 columnas en tablet */
+      #dash-accesos-grid{grid-template-columns:1fr 1fr!important;}
+    }
+
+    /* ── Bloqueo editor de plantillas en móvil ── */
+    .e3-mobile-block{display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,29,55,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:1.5rem;}
+    .e3-mobile-block.active{display:flex;}
+    .e3-mobile-block-card{background:var(--white);border-radius:1rem;padding:2.5rem 2rem;max-width:360px;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1rem;box-shadow:0 40px 80px rgba(0,0,0,.4);}
+    .e3-mobile-block-icon{font-size:2.5rem;line-height:1;}
+    .e3-mobile-block-title{font-size:1rem;font-weight:900;letter-spacing:-.02em;color:var(--sisgra-blue);line-height:1.25;}
+    .e3-mobile-block-desc{font-size:.8125rem;color:var(--slate-500);line-height:1.6;margin:0;}
+    .e3-mobile-block .btn-save{margin-top:.5rem;width:100%;}
+
+    @media (max-width:599px){
+      /* Stats: una columna en móvil */
+      .stats-row{grid-template-columns:1fr;}
+
+      /* Topbar comprimido */
+      .topbar{padding:0 .75rem;}
+      .topbar-title{font-size:.6875rem;}
+      .api-indicator{display:none;}
+      /* Ocultar "Vista previa" y reducir "Guardar cambios" en pantallas muy chicas */
+      .topbar-actions .btn-hide-mobile{display:none;}
+      #btn-guardar{padding:.5rem .75rem;letter-spacing:.08em;font-size:.625rem;}
+
+      /* Modales: casi pantalla completa */
+      .modal-overlay{padding:.5rem;}
+      .modal-body{padding:1rem;}
+      .modal-header{padding:1rem 1rem .75rem;}
+      .modal-footer{padding:.75rem 1rem;}
+
+      /* E3 editor: props panel debajo del canvas */
+      .e3-layout{flex-direction:column;}
+      .e3-tray{width:100%;height:auto;max-height:200px;overflow-x:auto;flex-direction:row;border-right:none;border-bottom:1px solid var(--slate-200);}
+      .e3-tray-body{display:flex;flex-direction:row;overflow-x:auto;gap:.5rem;padding:.5rem;}
+      .tray-chip{flex:0 0 auto;width:140px;}
+      .props-panel{width:100%!important;border-left:none;border-top:1px solid var(--slate-200);}
+      .e3-canvas-wrap{min-height:300px;}
+      .page-frame.desktop{width:100%!important;min-width:0!important;}
+
+      /* Accesos rápidos dashboard: 1 columna en móvil */
+      #dash-accesos-grid{grid-template-columns:1fr!important;}
+
+      /* Template list items: apilar en móvil */
+      .tpl-list-item{flex-wrap:wrap;}
+      .tpl-list-num{display:none;}
+      .tpl-list-info{width:100%;min-width:0;}
+      .tpl-list-actions{width:100%;flex-wrap:wrap;}
+
+      /* Módulos editor header: apilar en móvil */
+      .modulos-editor-header{flex-wrap:wrap;gap:.5rem;}
+      .modulos-editor-header>*{flex-shrink:0;}
+    }
   </style>
 </head>
 <body>
@@ -490,9 +611,10 @@
 <!-- ══════════════════ APP ══════════════════ -->
 <div id="app">
   <div class="layout">
- 
+    <div class="sidebar-overlay" id="admin-sidebar-overlay"></div>
+
     <!-- SIDEBAR -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="admin-sidebar">
       <div class="sidebar-brand">
         <img src="../img/logo sisgra.png" alt="Sisgra Logo" class="sidebar-logo"/>
       </div>
@@ -504,6 +626,10 @@
       </div>
  
       <div class="sidebar-section-label">Contenido</div>
+      <div class="sidebar-item" data-panel="navbar">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        Ítems del Navbar
+      </div>
       <div class="sidebar-item" data-panel="clientes">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1"/></svg>
         Clientes / Logos
@@ -513,6 +639,12 @@
         Blog / Noticias
       </div>
  
+      <div class="sidebar-section-label">Módulos</div>
+      <div class="sidebar-item" data-panel="modulos">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>
+        Catálogo de Módulos
+      </div>
+
       <!-- PLANTILLAS -->
       <div class="sidebar-section-label" style="display:flex;align-items:center;justify-content:space-between;padding-right:.875rem;">
         <span>Plantillas</span>
@@ -549,7 +681,10 @@
     <!-- MAIN -->
     <main class="main">
       <div class="topbar">
-        <div style="display:flex;align-items:center;gap:1rem;">
+        <div class="topbar-left">
+          <button class="admin-hamburger" id="admin-sidebar-toggle" aria-label="Menú">
+            <span></span><span></span><span></span>
+          </button>
           <span class="topbar-title" id="topbar-title">Dashboard</span>
           <span class="api-indicator">
             <span class="api-dot connected"></span>
@@ -557,7 +692,7 @@
           </span>
         </div>
         <div class="topbar-actions">
-          <button type="button" class="btn-secondary" onclick="window.open('../index.html','_blank')">Vista previa</button>
+          <button type="button" class="btn-secondary btn-hide-mobile" onclick="window.open('../index.html','_blank')">Vista previa</button>
           <button class="btn-save" id="btn-guardar">Guardar cambios</button>
         </div>
       </div>
@@ -569,6 +704,11 @@
           <div class="page-header">
             <div class="page-title">Dashboard</div>
             <div class="page-desc">Resumen general del sitio y estado del contenido.</div>
+          </div>
+          <!-- Banner de plantillas vencidas (oculto por defecto, se muestra con JS) -->
+          <div class="dash-vencidas-banner" id="dash-vencidas-banner" style="display:none;">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+            <div class="dash-vencidas-banner-text" id="dash-vencidas-text"></div>
           </div>
           <div class="stats-row">
             <div class="stat-card">
@@ -594,7 +734,7 @@
           </div>
           <div class="section-card">
             <div class="section-card-header"><span class="section-card-title">Accesos rápidos</span></div>
-            <div class="section-card-body" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
+            <div id="dash-accesos-grid" class="section-card-body" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
               <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-nuevo-post">+ Nuevo post de blog</button>
               <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-nuevo-cliente">+ Agregar cliente</button>
               <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-editar-home">Gestionar Plantillas</button>
@@ -602,14 +742,113 @@
           </div>
         </div>
  
+        <!-- MÓDULOS -->
+        <div class="panel" id="panel-modulos">
+
+          <!-- Vista 1: catálogo de tipos -->
+          <div id="modulos-catalog-view">
+            <div class="page-header">
+              <div class="page-title">Catálogo de Módulos</div>
+              <div class="page-desc">Seleccioná un módulo para ver y gestionar sus variantes de diseño.</div>
+            </div>
+            <div id="modulos-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;"></div>
+          </div>
+
+          <!-- Vista 2: variantes de un tipo -->
+          <div id="modulos-variants-view" style="display:none;">
+            <div class="page-header" style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
+              <button class="btn-secondary" id="modulos-variants-back-btn" style="padding:.5rem 1rem;font-size:.75rem;flex-shrink:0;">← Volver</button>
+              <div style="flex:1;">
+                <div class="page-title" id="modulos-variants-title"></div>
+                <div class="page-desc" id="modulos-variants-desc"></div>
+              </div>
+              <button class="btn-add" id="modulos-add-variant-btn" style="font-size:.65rem;padding:.5rem 1rem;">+ Nueva variante</button>
+            </div>
+            <div class="section-card">
+              <div class="section-card-body data-table-scroll" style="padding:0;">
+                <table class="data-table">
+                  <thead><tr><th>Nombre</th><th style="width:180px;text-align:right;padding-right:1rem;">Acciones</th></tr></thead>
+                  <tbody id="modulos-variants-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vista 3: editor de variante -->
+          <div id="modulos-editor-view" style="display:none;">
+            <div class="page-header modulos-editor-header" style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+              <button class="btn-secondary" id="modulos-back-btn" style="padding:.5rem 1rem;font-size:.75rem;flex-shrink:0;">← Volver</button>
+              <div style="flex:1;min-width:120px;">
+                <div class="page-title" id="modulos-editor-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+                <div class="page-desc" id="modulos-editor-variant-name"></div>
+              </div>
+              <div style="display:flex;gap:.5rem;flex-shrink:0;">
+                <button class="btn-secondary" id="modulos-preview-btn" style="padding:.5rem 1rem;font-size:.75rem;">👁 Preview</button>
+                <button class="btn-save" id="modulos-save-btn">Guardar</button>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;max-width:640px;gap:1rem;">
+              <!-- Nombre de la variante -->
+              <div class="section-card">
+                <div class="section-card-body" style="padding:1rem;">
+                  <label class="form-label">Nombre de la variante</label>
+                  <input type="text" class="form-input" id="modulos-variant-name-input" placeholder="Ej: Hero — Fondo Oscuro">
+                </div>
+              </div>
+              <!-- Campos de contenido -->
+              <div class="section-card" id="modulos-editor-data-card">
+                <div class="section-card-header"><span class="section-card-title">Contenido</span></div>
+                <div class="section-card-body" id="modulos-editor-data-fields" style="padding:1rem;display:flex;flex-direction:column;gap:.875rem;max-height:50vh;overflow-y:auto;"></div>
+              </div>
+              <!-- Campos de diseño (visible solo si el tipo tiene designFields) -->
+              <div class="section-card" id="modulos-editor-design-card" style="display:none;">
+                <div class="section-card-header"><span class="section-card-title">Diseño</span></div>
+                <div class="section-card-body" id="modulos-editor-design-fields" style="padding:1rem;display:flex;flex-direction:column;gap:.875rem;"></div>
+              </div>
+              <!-- Preview (visible después de guardar o al hacer click en Preview) -->
+              <div class="section-card" id="modulos-preview-card" style="display:none;">
+                <div class="section-card-header" style="display:flex;align-items:center;justify-content:space-between;">
+                  <span class="section-card-title">Preview</span>
+                  <button class="btn-secondary" id="modulos-preview-close-btn" style="padding:.25rem .625rem;font-size:.7rem;">✕ Cerrar</button>
+                </div>
+                <div class="section-card-body" style="padding:0;overflow:hidden;border-radius:0 0 .5rem .5rem;">
+                  <iframe id="modulos-preview-iframe"
+                    style="width:100%;min-height:400px;border:none;display:block;"
+                    sandbox="allow-scripts allow-same-origin"></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- NAVBAR ITEMS -->
+        <div class="panel" id="panel-navbar">
+          <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;">
+            <div>
+              <div class="page-title">Ítems del Navbar</div>
+              <div class="page-desc">Gestioná las pestañas del menú de navegación.</div>
+            </div>
+            <button class="btn-add" id="abrir-modal-navbar">+ Agregar ítem</button>
+          </div>
+          <div class="section-card">
+            <div class="section-card-body data-table-scroll" style="padding:0;">
+              <table class="data-table">
+                <thead><tr><th>Título</th><th>Orden</th><th>Destino</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody id="navbar-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
         <!-- CLIENTES -->
         <div class="panel" id="panel-clientes">
           <div class="page-header"><div class="page-title">Clientes / Logos</div><div class="page-desc">Logos del carrusel.</div></div>
           <div class="section-card">
             <div class="section-card-header"><span class="section-card-title">Logos actuales</span><button class="btn-add" id="abrir-modal-cliente">+ Agregar</button></div>
-            <div class="section-card-body" style="padding:0;">
+            <div class="section-card-body data-table-scroll" style="padding:0;">
               <table class="data-table">
-                <thead><tr><th>Nombre</th><th>Imagen</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <thead><tr><th>Nombre</th><th>Logo</th><th>Carrusel</th><th>Perfil</th><th>Acciones</th></tr></thead>
                 <tbody id="clientes-tbody"></tbody>
               </table>
             </div>
@@ -686,11 +925,52 @@
  
 <!-- MODALES -->
 <div class="modal-overlay" id="modal-cliente">
-  <div class="modal">
+  <div class="modal" style="max-width:760px;">
     <div class="modal-header"><span class="modal-title">Agregar Cliente</span><button class="modal-close" data-close="modal-cliente">×</button></div>
     <div class="modal-body">
-      <div class="form-row"><div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="c-name" placeholder="Nombre cliente"/></div></div>
-      <div class="form-row"><div class="form-group"><label class="form-label">Imagen</label><input class="form-input" id="c-img" placeholder="/img/logo.png"/></div></div>
+      <!-- Datos del carrusel -->
+      <div class="form-row cols-2">
+        <div class="form-group"><label class="form-label">Nombre empresa *</label><input class="form-input" id="c-name" placeholder="Ej: San Cristóbal"/></div>
+        <div class="form-group"><label class="form-label">Logo (carrusel)</label><input class="form-input" id="c-img" placeholder="/img/logo.png"/></div>
+      </div>
+      <div class="form-row cols-2">
+        <div class="form-group"><label class="form-label">Estado del perfil</label>
+          <select class="form-select" id="c-estado-perfil">
+            <option value="borrador">Borrador (no visible)</option>
+            <option value="publicado">Publicado</option>
+          </select>
+        </div>
+      </div>
+      <!-- Separador perfil -->
+      <div style="border-top:1px solid var(--slate-100);margin:1rem 0 1.25rem;padding-top:1.25rem;">
+        <div style="font-size:.55rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--slate-400);margin-bottom:1rem;">Perfil del cliente (al hacer clic en el logo)</div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Título del proyecto</label><input class="form-input" id="c-titulo-proyecto" placeholder="Ej: Implementación de red Cat8 corporativa"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Subtítulo / lead</label><textarea class="form-textarea" id="c-subtitulo" rows="2" placeholder="Descripción breve del proyecto…"></textarea></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Imagen destacada (URL)</label><input class="form-input" id="c-imagen-dest" placeholder="/img/proyecto-empresa.jpg"/></div>
+        </div>
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label class="form-label">Contenido del caso</label>
+          <div class="rich-editor-toolbar">
+            <button class="rich-btn" data-cmd="bold" title="Negrita"><b>N</b></button>
+            <button class="rich-btn" data-cmd="italic" title="Cursiva"><i>K</i></button>
+            <button class="rich-btn" data-cmd="underline" title="Subrayado"><u>S</u></button>
+            <span style="width:1px;background:var(--slate-200);margin:0 .25rem;align-self:stretch;"></span>
+            <button class="rich-btn" data-cmd="h2" title="Título H2">H2</button>
+            <button class="rich-btn" data-cmd="h3" title="Título H3">H3</button>
+            <button class="rich-btn" data-cmd="p" title="Párrafo">¶</button>
+            <button class="rich-btn" data-cmd="blockquote" title="Cita">❝</button>
+            <span style="width:1px;background:var(--slate-200);margin:0 .25rem;align-self:stretch;"></span>
+            <button class="rich-btn" data-cmd="insertUnorderedList" title="Lista">• —</button>
+            <button class="rich-btn" data-cmd="createLink" title="Enlace">🔗</button>
+          </div>
+          <div class="rich-editor-content" contenteditable="true" id="c-content-cliente" style="min-height:200px;"></div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-secondary" data-close="modal-cliente">Cancelar</button>
@@ -725,12 +1005,19 @@
       <div class="form-group" style="margin-bottom:1rem;">
         <label class="form-label">Contenido</label>
         <div class="rich-editor-toolbar">
-          <button class="rich-btn" data-cmd="bold"><b>N</b></button>
-          <button class="rich-btn" data-cmd="italic"><i>K</i></button>
-          <button class="rich-btn" data-cmd="h2">H2</button>
-          <button class="rich-btn" data-cmd="p">¶</button>
+          <button class="rich-btn" data-cmd="bold" title="Negrita"><b>N</b></button>
+          <button class="rich-btn" data-cmd="italic" title="Cursiva"><i>K</i></button>
+          <button class="rich-btn" data-cmd="underline" title="Subrayado"><u>S</u></button>
+          <span style="width:1px;background:var(--slate-200);margin:0 .25rem;align-self:stretch;"></span>
+          <button class="rich-btn" data-cmd="h2" title="Título H2">H2</button>
+          <button class="rich-btn" data-cmd="h3" title="Título H3">H3</button>
+          <button class="rich-btn" data-cmd="p" title="Párrafo">¶</button>
+          <button class="rich-btn" data-cmd="blockquote" title="Cita">❝</button>
+          <span style="width:1px;background:var(--slate-200);margin:0 .25rem;align-self:stretch;"></span>
+          <button class="rich-btn" data-cmd="insertUnorderedList" title="Lista">• —</button>
+          <button class="rich-btn" data-cmd="createLink" title="Enlace">🔗</button>
         </div>
-        <div class="rich-editor-content" contenteditable="true" id="b-content"></div>
+        <div class="rich-editor-content" contenteditable="true" id="b-content" style="min-height:200px;"></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -760,6 +1047,97 @@
   </div>
 </div>
  
+<!-- MODAL: Nuevo ítem del navbar -->
+<div class="modal-overlay" id="modal-navbar">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-navbar-title">Agregar ítem al Navbar</div>
+      <button class="modal-close" data-close="modal-navbar">✕</button>
+    </div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem;">
+      <div>
+        <label class="form-label">Título <span style="color:#f87171">*</span></label>
+        <input class="form-input" id="nav-titulo" placeholder="ej. Nuestros Servicios">
+      </div>
+      <div>
+        <label class="form-label">Tipo de redirección</label>
+        <div style="display:flex;gap:1.5rem;margin-top:.375rem;">
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;">
+            <input type="radio" name="nav-tipo-red" value="url" id="nav-red-url" checked> URL externa / interna
+          </label>
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;">
+            <input type="radio" name="nav-tipo-red" value="custom" id="nav-red-custom"> HTML propio (página nueva)
+          </label>
+        </div>
+      </div>
+      <div id="nav-href-field">
+        <label class="form-label">URL de destino <span style="color:#f87171">*</span></label>
+        <input class="form-input" id="nav-href" placeholder="ej. /html/servicios.html o https://…">
+      </div>
+      <div id="nav-custom-info" style="display:none;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:.5rem;padding:.875rem;font-size:.78rem;color:#a5b4fc;line-height:1.6;">
+        Se creará automáticamente una nueva página HTML con nav y footer. Podrás editarla desde el panel de Plantillas.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" data-close="modal-navbar">Cancelar</button>
+      <button class="btn-save" id="guardar-nav-item-btn">Agregar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Editar ítem del navbar -->
+<div class="modal-overlay" id="modal-editar-navbar">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header">
+      <div class="modal-title">Editar ítem del Navbar</div>
+      <button class="modal-close" data-close="modal-editar-navbar">✕</button>
+    </div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem;">
+      <input type="hidden" id="nav-edit-id">
+      <div>
+        <label class="form-label">Título <span style="color:#f87171">*</span></label>
+        <input class="form-input" id="nav-edit-titulo">
+      </div>
+      <div id="nav-edit-href-field">
+        <label class="form-label">URL de destino</label>
+        <input class="form-input" id="nav-edit-href" placeholder="ej. /html/servicios.html o https://…">
+      </div>
+      <div>
+        <label class="form-label">Orden</label>
+        <input class="form-input" id="nav-edit-orden" type="number" min="1">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" data-close="modal-editar-navbar">Cancelar</button>
+      <button class="btn-save" id="guardar-nav-edit-btn">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Confirmar eliminación con plantilla vinculada -->
+<div class="modal-overlay" id="modal-confirm-nav-delete">
+  <div class="modal" style="max-width:460px;">
+    <div class="modal-header" style="border-bottom-color:#fca5a5;">
+      <div class="modal-title" style="color:#dc2626;">⚠ Acción irreversible</div>
+      <button class="modal-close" data-close="modal-confirm-nav-delete">✕</button>
+    </div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem;">
+      <p style="font-size:.85rem;color:#334155;margin:0;">
+        Estás por eliminar el ítem <strong id="nav-delete-warning-name"></strong> del navbar.
+      </p>
+      <div style="background:#fff5f5;border:1px solid #fca5a5;border-radius:.5rem;padding:.875rem;font-size:.8rem;color:#dc2626;line-height:1.7;">
+        <strong>Este ítem tiene una página HTML asociada.</strong><br>
+        Al eliminarlo se borrarán permanentemente la plantilla y el archivo HTML vinculados a él.<br>
+        <span style="opacity:.8;">Esta acción no se puede deshacer.</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" data-close="modal-confirm-nav-delete">Cancelar</button>
+      <button class="btn-save" id="nav-delete-confirm-btn" style="background:#dc2626;border-color:#dc2626;">Eliminar todo</button>
+    </div>
+  </div>
+</div>
+
 <div class="save-notif success" id="save-notif"></div>
  
 <script>
@@ -868,11 +1246,14 @@ function showPanel(id){
   if(sideEl) sideEl.classList.add('active');
  
   const NAMES = {
-    dashboard:'Dashboard', clientes:'Clientes / Logos',
+    dashboard:'Dashboard', modulos:'Catálogo de Módulos', navbar:'Ítems del Navbar', clientes:'Clientes / Logos',
     blog:'Blog / Noticias', contacto:'Datos de Contacto', seo:'SEO & Meta',
     plantillas:'Plantillas', 'tpl-editor':'Editor de Plantilla',
   };
   document.getElementById('topbar-title').textContent = NAMES[id] || id;
+
+  if (id === 'navbar'  && typeof loadNavbarItems  === 'function') loadNavbarItems();
+  if (id === 'modulos' && typeof window.loadModulos === 'function') window.loadModulos();
  
   // The editor panel has no padding so we override content-area
   const ca = document.querySelector('.content-area');
@@ -2308,16 +2689,29 @@ function renderClientesList(){
   const tbody = document.getElementById('clientes-tbody');
   if(!tbody) return;
   const list = state.clientes?.clientes || [];
-  tbody.innerHTML = list.map(c=>`
-    <tr>
+  tbody.innerHTML = list.map(c=>{
+    const carruselBadge = c.activo!==false
+      ? 'background:#dcfce7;color:#166534;'
+      : 'background:#fee2e2;color:#991b1b;';
+    const perfilBadge = c.estado_perfil==='publicado'
+      ? 'background:#dbeafe;color:#1e40af;'
+      : 'background:#fef3c7;color:#92400e;';
+    const perfilLabel = c.estado_perfil==='publicado' ? 'Publicado' : 'Borrador';
+    const verLink = c.estado_perfil==='publicado'
+      ? `<a href="/html/cliente.html?id=${c.id}" target="_blank" class="btn-edit-small" style="text-decoration:none;">Ver ↗</a>`
+      : '';
+    return `<tr>
       <td>${c.nombre||''}</td>
       <td>${c.imagen ? `<img src="${c.imagen}" style="max-height:28px;" onerror="this.style.display='none'">` : '—'}</td>
-      <td><span style="font-size:.5rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:.15rem .4rem;${c.activo!==false?'background:#dcfce7;color:#166534;':'background:#fee2e2;color:#991b1b;'}">${c.activo!==false?'Activo':'Inactivo'}</span></td>
-      <td style="display:flex;gap:.375rem;">
+      <td><span style="font-size:.5rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:.15rem .4rem;${carruselBadge}">${c.activo!==false?'Activo':'Inactivo'}</span></td>
+      <td><span style="font-size:.5rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:.15rem .4rem;${perfilBadge}">${perfilLabel}</span></td>
+      <td style="display:flex;gap:.375rem;flex-wrap:wrap;">
         <button type="button" class="btn-edit-small" onclick="editCliente('${c.id}')">Editar</button>
+        ${verLink}
         <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="deleteCliente('${c.id}')">Eliminar</button>
       </td>
-    </tr>`).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--slate-400);padding:1rem;font-size:.75rem;">Sin clientes</td></tr>';
+    </tr>`;
+  }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--slate-400);padding:1rem;font-size:.75rem;">Sin clientes</td></tr>';
 }
 
 window.editCliente = function(id){
@@ -2326,23 +2720,41 @@ window.editCliente = function(id){
   state.editingClienteId = id;
   const mt = document.getElementById('modal-cliente')?.querySelector('.modal-title');
   if(mt) mt.textContent = 'Editar Cliente';
-  document.getElementById('c-name').value = c.nombre||'';
-  document.getElementById('c-img').value  = c.imagen||'';
+  document.getElementById('c-name').value            = c.nombre||'';
+  document.getElementById('c-img').value             = c.imagen||'';
+  document.getElementById('c-estado-perfil').value   = c.estado_perfil||'borrador';
+  document.getElementById('c-titulo-proyecto').value = c.titulo_proyecto||'';
+  document.getElementById('c-subtitulo').value       = c.subtitulo||'';
+  document.getElementById('c-imagen-dest').value     = c.imagen_destacada||'';
+  document.getElementById('c-content-cliente').innerHTML = c.contenido||'';
   openModal('modal-cliente');
 };
 
 async function saveCliente(){
-  const name = document.getElementById('c-name')?.value.trim();
-  const img  = document.getElementById('c-img')?.value.trim();
+  const name         = document.getElementById('c-name')?.value.trim();
+  const img          = document.getElementById('c-img')?.value.trim();
+  const estadoPerfil = document.getElementById('c-estado-perfil')?.value || 'borrador';
+  const tituloProy   = document.getElementById('c-titulo-proyecto')?.value.trim() || '';
+  const subtitulo    = document.getElementById('c-subtitulo')?.value.trim() || '';
+  const imagenDest   = document.getElementById('c-imagen-dest')?.value.trim() || '';
+  const contenido    = document.getElementById('c-content-cliente')?.innerHTML || '';
   if(!name) return showNotif('El nombre es requerido','error');
   let updated;
   if(state.editingClienteId){
     const list = (state.clientes?.clientes||[]).map(c =>
-      c.id===state.editingClienteId ? {...c, nombre:name, imagen:img||c.imagen} : c
+      c.id===state.editingClienteId ? {
+        ...c, nombre:name, imagen:img||c.imagen,
+        estado_perfil:estadoPerfil, titulo_proyecto:tituloProy,
+        subtitulo, imagen_destacada:imagenDest, contenido,
+      } : c
     );
     updated = { ...(state.clientes||{}), clientes:list };
   } else {
-    const newCliente = { id:'c'+Date.now(), nombre:name, imagen:img||'', url:'', activo:true };
+    const newCliente = {
+      id:'c'+Date.now(), nombre:name, imagen:img||'', url:'', activo:true,
+      estado_perfil:estadoPerfil, titulo_proyecto:tituloProy,
+      subtitulo, imagen_destacada:imagenDest, contenido,
+    };
     updated = { ...(state.clientes||{}), clientes:[...(state.clientes?.clientes||[]), newCliente] };
   }
   try {
@@ -2385,6 +2797,98 @@ window.renameTpl = function(id){
     if(nameEl) nameEl.textContent = tpl.name;
     showNotif('✓ Nombre actualizado');
   }
+};
+
+/* ══════════════════════════════════════════════
+   NAVBAR ITEMS
+══════════════════════════════════════════════ */
+let navbarItems = [];
+
+async function loadNavbarItems() {
+  try {
+    const res = await window.__svc.apiGet('/nav/botones');
+    navbarItems = res.botones || [];
+    renderNavbarTable();
+  } catch(e) {
+    window.__svc.showNotif('Error cargando navbar: ' + e.message, 'error');
+  }
+}
+
+const NAV_SISTEMA = ['btn-index','btn-blog','btn-cableado','btn-fibra','btn-seguridad','btn-soporte','btn-desarrollo'];
+
+function renderNavbarTable() {
+  const tbody = document.getElementById('navbar-tbody');
+  if (!tbody) return;
+  if (!navbarItems.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:#64748b;">No hay ítems</td></tr>';
+    return;
+  }
+  tbody.innerHTML = navbarItems
+    .sort((a, b) => a.orden - b.orden)
+    .map(b => {
+      const destino = b.id_plantilla
+        ? `<span style="color:#818cf8;font-size:.75rem;">HTML propio</span>`
+        : `<span style="font-size:.75rem;color:#94a3b8;">${b.href || '—'}</span>`;
+      const estado = b.activo !== false
+        ? '<span class="badge-active">Activo</span>'
+        : '<span class="badge-inactive">Inactivo</span>';
+      let acciones;
+      if (b.id_boton === 'btn-index') {
+        acciones = `<span style="font-size:.7rem;color:#475569;font-style:italic;">🔒 bloqueado</span>`;
+      } else {
+        const editBtn = `<button class="btn-edit-small" onclick="editarNavItem('${b.id_boton}')">Editar</button>`;
+        const delBtn = `<button class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="eliminarNavItem('${b.id_boton}')">Eliminar</button>`;
+        acciones = editBtn + ' ' + delBtn;
+      }
+      return `<tr>
+        <td>${b.titulo}</td>
+        <td>${b.orden}</td>
+        <td>${destino}</td>
+        <td>${estado}</td>
+        <td style="display:flex;gap:.4rem;flex-wrap:wrap;">${acciones}</td>
+      </tr>`;
+    }).join('');
+}
+
+window.eliminarNavItem = function(id_boton) {
+  const b = navbarItems.find(x => x.id_boton === id_boton);
+  if (!b) return;
+  if (b.id_plantilla) {
+    document.getElementById('nav-delete-warning-name').textContent = `"${b.titulo}"`;
+    document.getElementById('nav-delete-confirm-btn').onclick = () => doEliminarNavItem(id_boton);
+    window.__svc.openModal('modal-confirm-nav-delete');
+  } else {
+    if (!confirm(`¿Eliminar "${b.titulo}" del navbar?`)) return;
+    doEliminarNavItem(id_boton);
+  }
+};
+
+async function doEliminarNavItem(id_boton) {
+  window.__svc.closeModal('modal-confirm-nav-delete');
+  try {
+    await window.__svc.apiDelete(`/nav/botones/${id_boton}`);
+    window.__svc.showNotif('Ítem eliminado', 'success');
+    loadNavbarItems();
+  } catch(e) {
+    window.__svc.showNotif(e.message, 'error');
+  }
+}
+
+window.editarNavItem = function(id_boton) {
+  const b = navbarItems.find(x => x.id_boton === id_boton);
+  if (!b) return;
+  document.getElementById('nav-edit-id').value = id_boton;
+  document.getElementById('nav-edit-titulo').value = b.titulo || '';
+  document.getElementById('nav-edit-href').value = b.href || '';
+  document.getElementById('nav-edit-orden').value = b.orden || '';
+  // If custom HTML page, show href as read-only info
+  const hrefField = document.getElementById('nav-edit-href-field');
+  if (b.id_plantilla) {
+    hrefField.innerHTML = `<label class="form-label">URL de destino</label><div style="font-size:.78rem;color:#94a3b8;padding:.5rem 0;">Página HTML propia — la URL se gestiona desde Plantillas.</div>`;
+  } else {
+    hrefField.innerHTML = `<label class="form-label">URL de destino</label><input class="form-input" id="nav-edit-href" placeholder="ej. /html/servicios.html o https://…" value="${(b.href||'').replace(/"/g,'&quot;')}">`;
+  }
+  window.__svc.openModal('modal-editar-navbar');
 };
 
 /* ══════════════════════════════════════════════
@@ -2487,10 +2991,18 @@ function initApp(){
   });
  
   document.querySelectorAll('.rich-btn[data-cmd]').forEach(btn=>{
+    btn.addEventListener('mousedown', ev => ev.preventDefault()); // evita perder foco del editor
     btn.addEventListener('click',()=>{
       const cmd = btn.dataset.cmd;
-      if(cmd==='h2') document.execCommand('formatBlock',false,'h2');
-      else if(cmd==='p') document.execCommand('formatBlock',false,'p');
+      if      (cmd==='h2')                   document.execCommand('formatBlock',false,'h2');
+      else if (cmd==='h3')                   document.execCommand('formatBlock',false,'h3');
+      else if (cmd==='p')                    document.execCommand('formatBlock',false,'p');
+      else if (cmd==='blockquote')           document.execCommand('formatBlock',false,'blockquote');
+      else if (cmd==='insertUnorderedList')  document.execCommand('insertUnorderedList',false,null);
+      else if (cmd==='createLink') {
+        const url = prompt('URL del enlace (ej: https://sisgra.com.ar):');
+        if (url) document.execCommand('createLink',false,url);
+      }
       else document.execCommand(cmd,false,null);
     });
   });
@@ -2518,12 +3030,71 @@ function initApp(){
  
   document.getElementById('btn-guardar')?.addEventListener('click',saveCurrentPanel);
  
+  document.getElementById('abrir-modal-navbar')?.addEventListener('click', () => {
+    document.getElementById('nav-titulo').value = '';
+    document.getElementById('nav-href').value = '';
+    document.getElementById('nav-red-url').checked = true;
+    document.getElementById('nav-href-field').style.display = '';
+    document.getElementById('nav-custom-info').style.display = 'none';
+    window.__svc.openModal('modal-navbar');
+  });
+
+  document.querySelectorAll('input[name="nav-tipo-red"]').forEach(r => {
+    r.addEventListener('change', () => {
+      const isCustom = document.getElementById('nav-red-custom').checked;
+      document.getElementById('nav-href-field').style.display = isCustom ? 'none' : '';
+      document.getElementById('nav-custom-info').style.display = isCustom ? '' : 'none';
+    });
+  });
+
+  document.getElementById('guardar-nav-item-btn')?.addEventListener('click', async () => {
+    const titulo = document.getElementById('nav-titulo').value.trim();
+    if (!titulo) { window.__svc.showNotif('El título es obligatorio', 'error'); return; }
+    const isCustom = document.getElementById('nav-red-custom').checked;
+    const href = document.getElementById('nav-href').value.trim();
+    if (!isCustom && !href) { window.__svc.showNotif('La URL de destino es obligatoria', 'error'); return; }
+    const body = { titulo, tipoRedireccion: isCustom ? 'custom' : 'url' };
+    if (!isCustom) body.href = href;
+    try {
+      await window.__svc.apiPost('/nav/botones', body);
+      window.__svc.closeModal('modal-navbar');
+      window.__svc.showNotif('Ítem agregado al navbar', 'success');
+      loadNavbarItems();
+    } catch(e) {
+      window.__svc.showNotif(e.message, 'error');
+    }
+  });
+
+  document.getElementById('guardar-nav-edit-btn')?.addEventListener('click', async () => {
+    const id_boton = document.getElementById('nav-edit-id').value;
+    const titulo = document.getElementById('nav-edit-titulo').value.trim();
+    if (!titulo) { window.__svc.showNotif('El título es obligatorio', 'error'); return; }
+    const hrefEl = document.getElementById('nav-edit-href');
+    const orden = parseInt(document.getElementById('nav-edit-orden').value) || undefined;
+    const body = { titulo };
+    if (hrefEl) body.href = hrefEl.value.trim();
+    if (orden) body.orden = orden;
+    try {
+      await window.__svc.apiPatch(`/nav/botones/${id_boton}`, body);
+      window.__svc.closeModal('modal-editar-navbar');
+      window.__svc.showNotif('Ítem actualizado', 'success');
+      loadNavbarItems();
+    } catch(e) {
+      window.__svc.showNotif(e.message, 'error');
+    }
+  });
+
   document.getElementById('abrir-modal-cliente')?.addEventListener('click',()=>{
     state.editingClienteId = null;
     const mt = document.getElementById('modal-cliente')?.querySelector('.modal-title');
     if(mt) mt.textContent = 'Agregar Cliente';
     document.getElementById('c-name').value='';
     document.getElementById('c-img').value='';
+    document.getElementById('c-estado-perfil').value='borrador';
+    document.getElementById('c-titulo-proyecto').value='';
+    document.getElementById('c-subtitulo').value='';
+    document.getElementById('c-imagen-dest').value='';
+    document.getElementById('c-content-cliente').innerHTML='';
     openModal('modal-cliente');
   });
   document.getElementById('guardar-cliente-btn')?.addEventListener('click', saveCliente);
@@ -2534,6 +3105,35 @@ function initApp(){
  
 document.getElementById('login-btn').addEventListener('click', doLogin);
 document.getElementById('l-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+
+/* ── Sidebar responsive del admin ── */
+(function(){
+  const toggle  = document.getElementById('admin-sidebar-toggle');
+  const sidebar = document.getElementById('admin-sidebar');
+  const overlay = document.getElementById('admin-sidebar-overlay');
+  if(!toggle || !sidebar || !overlay) return;
+
+  function closeSidebar(){
+    sidebar.classList.remove('sidebar-open');
+    overlay.classList.remove('active');
+    toggle.classList.remove('open');
+  }
+
+  toggle.addEventListener('click', ()=>{
+    const isOpen = sidebar.classList.toggle('sidebar-open');
+    overlay.classList.toggle('active', isOpen);
+    toggle.classList.toggle('open', isOpen);
+  });
+
+  overlay.addEventListener('click', closeSidebar);
+
+  // Cerrar el sidebar al hacer clic en cualquier ítem (en móvil)
+  sidebar.addEventListener('click', e=>{
+    if(window.innerWidth < 1024 && e.target.closest('.sidebar-item, .sidebar-tpl-item')){
+      closeSidebar();
+    }
+  });
+})();
 </script>
 <script type="module">
   import { apiGet, apiPut, apiPost, apiPatch, apiDelete } from '../services/api.js';
@@ -2635,6 +3235,50 @@ async function loadPlantillas() {
   } catch (e) { notif('Error cargando plantillas: ' + e.message, 'error'); }
 }
 
+// ─── Helpers de vencimiento ────────────────────────────────────────
+function isVencida(p) {
+  if (!p.activa || !p.fecha_fin) return false;
+  return Date.now() > new Date(p.fecha_fin).getTime();
+}
+function diasRestantes(p) {
+  if (!p.fecha_fin) return null;
+  return Math.ceil((new Date(p.fecha_fin).getTime() - Date.now()) / 86400000);
+}
+function fmtFecha(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+}
+function expiryClass(p) {
+  if (!p.activa || !p.fecha_fin) return '';
+  if (isVencida(p)) return 'expired';
+  const dias = diasRestantes(p);
+  return (dias !== null && dias <= 2) ? 'soon' : '';
+}
+
+// Actualiza el banner de vencidas en el dashboard
+function refreshDashVencidas() {
+  const banner = document.getElementById('dash-vencidas-banner');
+  const text   = document.getElementById('dash-vencidas-text');
+  if (!banner || !text) return;
+  const vencidas = e3.plantillas.filter(p => isVencida(p));
+  const proximas = e3.plantillas.filter(p => p.activa && !isVencida(p) && diasRestantes(p) !== null && diasRestantes(p) <= 2);
+  if (vencidas.length > 0) {
+    const nombres = vencidas.map(p => `"${p.nombre}"`).join(', ');
+    text.innerHTML = `<strong>${vencidas.length} plantilla${vencidas.length>1?'s':''} vencida${vencidas.length>1?'s':''}:</strong> ${nombres}. Activá una nueva versión para renovar su vigencia.`;
+    banner.style.display = '';
+  } else if (proximas.length > 0) {
+    const n = proximas[0];
+    text.innerHTML = `<strong>Atención:</strong> "${n.nombre}" vence en ${diasRestantes(n)} día${diasRestantes(n)===1?'':'s'} (${fmtFecha(n.fecha_fin)}). Considerá renovarla.`;
+    banner.style.background = '#78350f';
+    banner.style.borderLeftColor = '#f59e0b';
+    banner.querySelector('.dash-vencidas-banner-text').style.color = '#fef3c7';
+    banner.style.display = '';
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
 function renderOverview() {
   const list = document.getElementById('tpl-overview-list');
   if (!list) return;
@@ -2645,41 +3289,140 @@ function renderOverview() {
         <div style="display:flex;align-items:center;gap:.75rem;padding:.4rem 0 .5rem;border-bottom:1px solid var(--slate-100);margin-bottom:.5rem;">
           <span style="font-size:.625rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--sisgra-blue);">${t.label}</span>
           <span style="font-size:.6rem;color:var(--slate-400);font-family:monospace;">${t.file}</span>
-          <span style="flex:1;"></span>
-          <button class="btn-edit-small" data-e3-newtipo="${t.value}">+ Plantilla</button>
         </div>
         ${pls.length === 0
           ? `<div style="padding:.85rem;color:var(--slate-400);font-size:.7rem;text-align:center;background:var(--slate-50);">Sin plantillas todavía.</div>`
-          : pls.map(p => `
-              <div class="tpl-list-item ${p.activa ? 'active-tpl' : ''}" style="margin-bottom:.4rem;cursor:default;">
-                <div style="flex:1;">
-                  <div style="font-weight:700;color:var(--slate-800);font-size:.8125rem;">${escAttr(p.nombre)}</div>
+          : pls.map(p => {
+              const vencida = isVencida(p);
+              const dias    = diasRestantes(p);
+              const cls     = expiryClass(p);
+              let expiryHtml = '';
+              if (p.activa && p.fecha_fin) {
+                const label = vencida
+                  ? `Venció el ${fmtFecha(p.fecha_fin)}`
+                  : `Vence ${dias === 0 ? 'hoy' : dias === 1 ? 'mañana' : `en ${dias} días`} · ${fmtFecha(p.fecha_fin)}`;
+                expiryHtml = `<span class="tpl-expiry-date ${cls}" style="font-size:.62rem;font-family:'IBM Plex Mono',monospace;">${label}</span>`;
+              }
+              const statusLabel = vencida ? 'Vencida' : p.activa ? 'Activa' : 'Borrador';
+              const statusCls   = vencida ? 'tpl-status-vencida' : p.activa ? 'tpl-status-active' : 'tpl-status-draft';
+              return `
+              <div class="tpl-list-item ${p.activa ? 'active-tpl' : ''} ${vencida ? 'vencida-tpl' : ''}" style="margin-bottom:.4rem;cursor:default;flex-wrap:wrap;gap:.5rem;">
+                <div style="flex:1;min-width:0;">
+                  <div style="display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;">
+                    <span class="tpl-list-name-text" style="font-weight:700;color:var(--slate-800);font-size:.8125rem;">${escAttr(p.nombre)}</span>
+                    ${vencida ? '<span class="tpl-badge-vencida">[ VENCIDA ]</span>' : ''}
+                    <button class="tpl-rename-btn" data-e3-rename="${p.id_plantilla}" title="Renombrar plantilla">✏</button>
+                  </div>
                   ${p.descripcion ? `<div style="font-size:.6875rem;color:var(--slate-500);">${escAttr(p.descripcion)}</div>` : ''}
+                  <div style="font-size:.6rem;color:var(--slate-400);font-family:'IBM Plex Mono',monospace;margin-top:.1rem;">ID: ${escAttr(p.id_plantilla)}</div>
+                  ${expiryHtml}
                 </div>
-                <span style="font-size:.5rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:.2rem .55rem;${p.activa ? 'background:#dcfce7;color:#166534;' : 'background:#fef3c7;color:#92400e;'}">${p.activa ? 'Activa' : 'Borrador'}</span>
+                <span class="tpl-list-status ${statusCls}">${statusLabel}</span>
                 <button class="btn-edit-small" data-e3-edit="${p.id_plantilla}">Editar</button>
-                ${!p.activa ? `<button class="btn-edit-small" data-e3-activar="${p.id_plantilla}">Activar</button>` : ''}
+                ${p.activa ? `<button class="btn-edit-small" data-e3-extender="${p.id_plantilla}" style="color:#2563eb;border-color:#93c5fd;" title="Extiende el vencimiento 7 días más">+ Extender</button>` : `<button class="btn-edit-small" data-e3-activar="${p.id_plantilla}">Activar</button>`}
+                ${p.activa && (vencida || !p.fecha_fin) ? `<button class="btn-edit-small" data-e3-activar="${p.id_plantilla}" style="${vencida ? 'background:#fee2e2;color:#991b1b;border-color:#fca5a5;' : ''}">↺ Renovar</button>` : ''}
                 <button class="btn-edit-small" style="color:#dc2626;border-color:#fca5a5;" data-e3-eliminar="${p.id_plantilla}">Eliminar</button>
-              </div>`).join('')}
+              </div>`;
+            }).join('')}
       </div>`;
   }).join('');
 
   list.querySelectorAll('[data-e3-newtipo]').forEach(b => b.addEventListener('click', () => openNuevaModal(b.dataset.e3Newtipo)));
   list.querySelectorAll('[data-e3-edit]').forEach(b => b.addEventListener('click', () => openEditor(b.dataset.e3Edit)));
   list.querySelectorAll('[data-e3-activar]').forEach(b => b.addEventListener('click', () => activarPlantilla(b.dataset.e3Activar)));
+  list.querySelectorAll('[data-e3-extender]').forEach(b => b.addEventListener('click', () => extenderVencimiento(b.dataset.e3Extender)));
   list.querySelectorAll('[data-e3-eliminar]').forEach(b => b.addEventListener('click', () => eliminarPlantilla(b.dataset.e3Eliminar)));
+  list.querySelectorAll('[data-e3-rename]').forEach(b => b.addEventListener('click', () => renombrarPlantilla(b.dataset.e3Rename, b)));
+  refreshDashVencidas();
+}
+
+async function renombrarPlantilla(id, btn) {
+  // Encontrar el span del nombre en la misma fila
+  const nameSpan = btn.closest('div').querySelector('.tpl-list-name-text');
+  if (!nameSpan) return;
+  const nombreActual = e3.plantillas.find(p => p.id_plantilla === id)?.nombre || nameSpan.textContent;
+
+  // Convertir el span en un input inline
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'tpl-name-input';
+  input.value = nombreActual;
+  nameSpan.replaceWith(input);
+  btn.style.display = 'none';
+  input.focus();
+  input.select();
+
+  async function commit() {
+    const nuevoNombre = input.value.trim();
+    // Restaurar siempre el span, luego actualizar si cambió
+    const span = document.createElement('span');
+    span.className = 'tpl-list-name-text';
+    span.style.cssText = 'font-weight:700;color:var(--slate-800);font-size:.8125rem;';
+    input.replaceWith(span);
+    btn.style.display = '';
+
+    if (!nuevoNombre || nuevoNombre === nombreActual) {
+      span.textContent = nombreActual;
+      return;
+    }
+    span.textContent = nuevoNombre;
+    try {
+      await api('PATCH', `/plantillas/${id}`, { nombre: nuevoNombre });
+      const p = e3.plantillas.find(x => x.id_plantilla === id);
+      if (p) p.nombre = nuevoNombre;
+      // Actualizar también la sidebar
+      renderSidebarList();
+      notif('✓ Plantilla renombrada');
+    } catch (e) {
+      span.textContent = nombreActual; // revertir si falla
+      notif('Error al renombrar: ' + e.message, 'error');
+    }
+  }
+
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { input.value = nombreActual; input.blur(); }
+  });
+}
+
+async function extenderVencimiento(id) {
+  try {
+    const { plantilla } = await api('POST', `/plantillas/${id}/extender`);
+    const p = e3.plantillas.find(x => x.id_plantilla === id);
+    if (p) p.fecha_fin = plantilla.fecha_fin;
+    renderOverview(); renderSidebarList();
+    notif(`✓ Vencimiento extendido hasta el ${fmtFecha(plantilla.fecha_fin)} (+7 días)`);
+  } catch (e) { notif('Error: ' + e.message, 'error'); }
 }
 
 function renderSidebarList() {
   const el = document.getElementById('sidebar-tpl-list');
   if (!el) return;
-  el.innerHTML = e3.plantillas.map(p => `
-    <div class="sidebar-tpl-item ${e3.activeTpl?.id_plantilla === p.id_plantilla ? 'active' : ''}" data-e3-tpl="${p.id_plantilla}" title="${escAttr(p.nombre)} (${p.tipo})">
-      <span class="sidebar-tpl-dot"></span>
-      <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escAttr(p.nombre)}</span>
-      ${p.activa ? '<span style="font-size:.5rem;font-weight:900;letter-spacing:.1em;color:#86efac;margin-right:.4rem;">LIVE</span>' : ''}
-      <button data-e3-sb-del="${p.id_plantilla}" title="Eliminar" style="background:transparent;border:1px solid rgba(220,38,38,.4);color:rgba(252,165,165,.85);width:1.1rem;height:1.1rem;display:flex;align-items:center;justify-content:center;font-size:.7rem;line-height:1;padding:0;flex-shrink:0;">×</button>
-    </div>`).join('') || '<div style="padding:.5rem 1.5rem;font-size:.65rem;color:rgba(255,255,255,.3);">Sin plantillas</div>';
+  el.innerHTML = e3.plantillas.map(p => {
+    const vencida = isVencida(p);
+    const dias    = diasRestantes(p);
+    const cls     = expiryClass(p);
+    let expiryLine = '';
+    if (p.activa && p.fecha_fin) {
+      const label = vencida
+        ? `Venció ${fmtFecha(p.fecha_fin)}`
+        : dias === 0 ? 'Vence hoy'
+        : dias === 1 ? 'Vence mañana'
+        : `Vence ${fmtFecha(p.fecha_fin)}`;
+      expiryLine = `<div class="sidebar-tpl-expiry ${cls}" style="padding-left:2rem;">${label}</div>`;
+    }
+    return `
+    <div>
+      <div class="sidebar-tpl-item ${e3.activeTpl?.id_plantilla === p.id_plantilla ? 'active' : ''} ${vencida ? 'sidebar-item-vencida' : ''}" data-e3-tpl="${p.id_plantilla}" title="${escAttr(p.nombre)} (${p.tipo})" style="${vencida ? 'border-left-color:#f87171;' : ''}">
+        <span class="sidebar-tpl-dot" style="${vencida ? 'background:#f87171;' : ''}"></span>
+        <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escAttr(p.nombre)}</span>
+        ${vencida ? '<span class="sidebar-vencida-badge">VENC.</span>' : p.activa ? '<span style="font-size:.5rem;font-weight:900;letter-spacing:.1em;color:#86efac;">LIVE</span>' : ''}
+        <button data-e3-sb-del="${p.id_plantilla}" title="Eliminar" style="background:transparent;border:1px solid rgba(220,38,38,.4);color:rgba(252,165,165,.85);width:1.1rem;height:1.1rem;display:flex;align-items:center;justify-content:center;font-size:.7rem;line-height:1;padding:0;flex-shrink:0;margin-left:.3rem;">×</button>
+      </div>
+      ${expiryLine}
+    </div>`;
+  }).join('') || '<div style="padding:.5rem 1.5rem;font-size:.65rem;color:rgba(255,255,255,.3);">Sin plantillas</div>';
   el.querySelectorAll('[data-e3-tpl]').forEach(item => {
     item.addEventListener('click', e => {
       if (e.target.closest('[data-e3-sb-del]')) return;
@@ -2720,10 +3463,24 @@ async function crearPlantilla() {
 async function activarPlantilla(id) {
   try {
     const { plantilla } = await api('POST', `/plantillas/${id}/activar`);
-    e3.plantillas.forEach(p => { if (p.tipo === plantilla.tipo) p.activa = (p.id_plantilla === id); });
-    if (e3.activeTpl?.id_plantilla === id) e3.activeTpl.activa = true;
+    e3.plantillas.forEach(p => {
+      if (p.tipo === plantilla.tipo) {
+        p.activa = (p.id_plantilla === id);
+        // Sincronizar fechas desde el servidor
+        if (p.id_plantilla === id) {
+          p.fecha_inicio = plantilla.fecha_inicio;
+          p.fecha_fin    = plantilla.fecha_fin;
+        }
+      }
+    });
+    if (e3.activeTpl?.id_plantilla === id) {
+      e3.activeTpl.activa      = true;
+      e3.activeTpl.fecha_inicio = plantilla.fecha_inicio;
+      e3.activeTpl.fecha_fin    = plantilla.fecha_fin;
+    }
     renderOverview(); renderSidebarList();
-    notif('✓ Plantilla activada');
+    const dias = diasRestantes(plantilla);
+    notif(`✓ Plantilla activada · Vence el ${fmtFecha(plantilla.fecha_fin)} (${dias} días)`);
   } catch (e) { notif('Error: ' + e.message, 'error'); }
 }
 
@@ -2758,6 +3515,11 @@ async function eliminarPlantilla(id) {
 
 // ─── EDITOR ────────────────────────────────────────────────────────
 async function openEditor(id) {
+  // Bloquear en pantallas móviles (< 1024px)
+  if (window.innerWidth < 1024) {
+    document.getElementById('e3-mobile-block').classList.add('active');
+    return;
+  }
   try {
     const { plantilla } = await api('GET', `/plantillas/${id}`);
     e3.activeTpl = plantilla;
@@ -2814,10 +3576,6 @@ function renderEditorShell() {
       </div>
       <div class="props-panel">
         <div class="props-header"><span id="e3-props-type">Propiedades</span></div>
-        <div class="props-tabs">
-          <button class="props-tab ${e3.propsTab==='data'?'active':''}" data-e3-tab="data">Contenido</button>
-          <button class="props-tab ${e3.propsTab==='design'?'active':''}" data-e3-tab="design">Diseño</button>
-        </div>
         <div class="props-body" id="e3-props-body"><div class="props-empty">Click sobre una sección del canvas para editarla.</div></div>
       </div>
     </div>`;
@@ -3305,7 +4063,7 @@ function injectDashboardCard() {
   if (!dash || document.getElementById('dash-go-plantillas')) return;
   const card = document.createElement('div');
   card.id = 'dash-go-plantillas';
-  card.style.cssText = 'background:linear-gradient(135deg,#0A1D37,#1e3a8a);color:#fff;padding:1.5rem 2rem;margin-bottom:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;box-shadow:0 4px 16px rgba(10,29,55,.15);transition:transform .15s,box-shadow .15s;';
+  card.style.cssText = 'background:linear-gradient(135deg,#0A1D37,#1e3a8a);color:#fff;padding:1.5rem 2rem;margin-bottom:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;box-shadow:0 4px 16px rgba(10,29,55,.15);transition:transform .15s,box-shadow .15s;';
   card.innerHTML = `
     <div>
       <div style="font-size:.55rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:#60a5fa;margin-bottom:.4rem;">EDITOR VISUAL</div>
@@ -3326,6 +4084,11 @@ function initE3() {
   populateTipoSelect();
   injectSidebarLink();
   injectDashboardCard();
+
+  // Fix: el botón "Ver todas las plantillas" tiene un handler viejo que
+  // llama openTemplateEditor con un ID del estado legacy. Lo reemplazamos.
+  const goBtn = stripListeners(document.getElementById('sidebar-go-plantillas'));
+  if (goBtn) goBtn.addEventListener('click', goToPlantillas);
 
   const a = stripListeners(document.getElementById('btn-nueva-plantilla-main'));
   if (a) a.addEventListener('click', () => openNuevaModal());
@@ -3359,70 +4122,401 @@ if (!tryInit()) {
   const obs = new MutationObserver(() => { if (tryInit()) obs.disconnect(); });
   obs.observe(appEl, { attributes: true, attributeFilter: ['style'] });
 }
-</script>
 
-<!-- Toggle sidebar button -->
-<button id="sidebar-toggle-btn" onclick="toggleSidebar()" title="Mostrar/Ocultar menú" style="
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  width: 3.5rem;
-  height: 3.5rem;
-  background: var(--sisgra-blue);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  font-size: 1.25rem;
-  cursor: pointer;
-  z-index: 999;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s, transform 0.2s;
-" onmouseover="this.style.background='var(--slate-400)'" onmouseout="this.style.background='var(--sisgra-blue)'">
-  ☰
-</button>
+/* ═══════════════════════════════════════════════════════
+   MÓDULOS — catálogo 3-views: tipos → variantes → editor
+   ═══════════════════════════════════════════════════════ */
+// Maps each section type to the page type (for TIPO_CSS CSS selection)
+const TYPE_TO_PAGE = {
+  nav: 'index', hero: 'index', 'hero-centered': 'index',
+  clientes: 'index', blog: 'index', services: 'index',
+  about: 'index', cta: 'index', spacer: 'index', footer: 'index',
+  'cableado-hero': 'cableado',
+  'fibra-hero': 'fibra',
+  'seguridad-hero': 'seguridad',
+  'soporte-hero': 'soporte',
+  'desarrollo-hero': 'desarrollo',
+  'blog-list': 'blog',
+  'articulo-header': 'articulo', 'articulo-body': 'articulo',
+  'footer-full': 'cableado',
+};
 
+const MOD_GROUPS = [
+  { label: 'Globales',         types: ['nav','footer','footer-full','cta','spacer'] },
+  { label: 'Inicio',           types: ['hero','hero-centered','clientes','blog','services','about'] },
+  { label: 'Cableado',         types: ['cableado-hero'] },
+  { label: 'Fibra Óptica',     types: ['fibra-hero'] },
+  { label: 'Seguridad',        types: ['seguridad-hero'] },
+  { label: 'Soporte IT',       types: ['soporte-hero'] },
+  { label: 'Desarrollo',       types: ['desarrollo-hero'] },
+  { label: 'Blog / Artículos', types: ['blog-list','articulo-header','articulo-body'] },
+];
+const SIMPLE_FIELD_TYPES = ['text','textarea','number','color','toggle'];
 
-<style>
-  .sidebar {
-    transition: transform 0.3s ease, opacity 0.3s ease, width 0.3s ease, min-width 0.3s ease;
-    overflow: hidden;
+let _modData       = {};   // { [type]: { variantes: [...] } }
+let _curModType    = null;
+let _curVariantId  = null;
+let _curModData    = { nombre: '', data: {}, design: {} };
+
+function _showView(id) {
+  ['modulos-catalog-view','modulos-variants-view','modulos-editor-view'].forEach(v => {
+    const el = document.getElementById(v);
+    if (el) el.style.display = v === id ? '' : 'none';
+  });
+  // Hide preview when leaving editor
+  if (id !== 'modulos-editor-view') {
+    const card = document.getElementById('modulos-preview-card');
+    if (card) card.style.display = 'none';
   }
-  .sidebar.hidden {
-    transform: translateX(-100%);
-    opacity: 0;
-    pointer-events: none;
-    width: 0 !important;
-    min-width: 0 !important;
-  }
-
-   #sidebar-toggle-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    line-height: 1;
-    padding: 0;
-  }
-</style>
-
-<script>
-function toggleSidebar() {
-  const sidebar = document.querySelector('.sidebar');
-  const app = document.getElementById('app');
-  const btn = document.getElementById('sidebar-toggle-btn');
-  const isHidden = sidebar.classList.contains('hidden');
-  sidebar.classList.toggle('hidden');
-  btn.textContent = isHidden ? '☰' : '☰';
-  btn.style.transform = isHidden ? 'scale(1)' : 'scale(1)';
 }
+
+window.loadModulos = async function() {
+  try {
+    const res = await window.__svc.apiGet('/modulos');
+    _modData = res.modulos || {};
+    renderModCatalog();
+  } catch(e) {
+    window.__svc.showNotif('Error cargando módulos: ' + e.message, 'error');
+  }
+};
+
+/* ── Vista 1: Catálogo ── */
+function renderModCatalog() {
+  _showView('modulos-catalog-view');
+  const grid = document.getElementById('modulos-grid');
+  if (!grid) return;
+  grid.innerHTML = MOD_GROUPS.flatMap(group => {
+    const cards = group.types.filter(t => SECTIONS[t]).map(t => {
+      const sec = SECTIONS[t];
+      const count = (_modData[t]?.variantes || []).length;
+      const hasDesign = (sec.designFields || []).length > 0;
+      return `<div class="section-card" style="margin:0;">
+        <div class="section-card-body" style="padding:1rem;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.75rem;">
+            <div>
+              <span style="font-size:1.4rem;line-height:1;display:block;margin-bottom:.35rem;">${sec.icon || '◻'}</span>
+              <div style="font-size:.78rem;font-weight:700;color:#1e293b;margin-bottom:.2rem;">${sec.label}</div>
+              <div style="font-size:.68rem;color:#64748b;line-height:1.4;">${sec.description || ''}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem;flex-shrink:0;">
+              ${count > 0 ? `<span style="font-size:.5rem;background:#dbeafe;color:#1d4ed8;padding:.15rem .4rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;border-radius:2px;">${count} variante${count !== 1 ? 's' : ''}</span>` : ''}
+              ${hasDesign ? `<span style="font-size:.5rem;background:#f0fdf4;color:#166534;padding:.15rem .4rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;border-radius:2px;">DISEÑO</span>` : ''}
+            </div>
+          </div>
+          <button class="btn-edit-small" style="width:100%;" onclick="openModVariants('${t}')">Ver variantes</button>
+        </div>
+      </div>`;
+    });
+    if (!cards.length) return [];
+    return [
+      `<div style="grid-column:1/-1;padding-top:.25rem;"><span style="font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#94a3b8;">${group.label}</span></div>`,
+      ...cards,
+    ];
+  }).join('');
+}
+
+/* ── Vista 2: Lista de variantes ── */
+window.openModVariants = function(type) {
+  const sec = SECTIONS[type];
+  if (!sec) return;
+  _curModType = type;
+  _showView('modulos-variants-view');
+  const titleEl = document.getElementById('modulos-variants-title');
+  const descEl  = document.getElementById('modulos-variants-desc');
+  if (titleEl) titleEl.textContent = `${sec.icon || ''} ${sec.label}`;
+  if (descEl)  descEl.textContent  = sec.description || '';
+  renderVariantsList();
+};
+
+function renderVariantsList() {
+  const tbody = document.getElementById('modulos-variants-tbody');
+  if (!tbody) return;
+  const variantes = _modData[_curModType]?.variantes || [];
+  if (!variantes.length) {
+    tbody.innerHTML = `<tr><td colspan="2" style="text-align:center;padding:2rem;color:var(--slate-400);font-size:.75rem;">Sin variantes. Creá una nueva.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = variantes.map((v, idx) => {
+    const isFirst = idx === 0;
+    const canDelete = variantes.length > 1;
+    return `<tr>
+      <td style="font-size:.78rem;font-weight:600;color:var(--slate-800);">
+        ${v.nombre || v.id}
+        ${isFirst ? `<span style="font-size:.5rem;background:#f1f5f9;color:#64748b;padding:.1rem .35rem;margin-left:.4rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-radius:2px;">DEFAULT</span>` : ''}
+      </td>
+      <td style="text-align:right;padding-right:1rem;">
+        <div style="display:flex;gap:.4rem;justify-content:flex-end;">
+          <button class="btn-edit-small" onclick="openModEditor('${_curModType}','${v.id}')">Editar</button>
+          <button class="btn-edit-small" style="background:#f1f5f9;color:#334155;" onclick="duplicarVariante('${_curModType}','${v.id}')">Duplicar</button>
+          ${canDelete ? `<button class="btn-edit-small" style="background:#fee2e2;color:#991b1b;" onclick="eliminarVariante('${_curModType}','${v.id}')">Eliminar</button>` : ''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── Vista 3: Editor de variante ── */
+window.openModEditor = function(type, variantId) {
+  const sec = SECTIONS[type];
+  if (!sec) return;
+  _curModType   = type;
+  _curVariantId = variantId;
+
+  const variantes = _modData[type]?.variantes || [];
+  const variant   = variantes.find(v => v.id === variantId) || variantes[0];
+  if (!variant) return;
+
+  _curModData = {
+    nombre: variant.nombre || '',
+    data:   { ...sec.defaultData,   ...(variant.data   || {}) },
+    design: { ...sec.defaultDesign, ...(variant.design || {}) },
+  };
+
+  const titleEl = document.getElementById('modulos-editor-title');
+  const nameEl  = document.getElementById('modulos-editor-variant-name');
+  if (titleEl) titleEl.textContent = `${sec.icon || ''} ${sec.label}`;
+  if (nameEl)  nameEl.textContent  = variant.nombre || '';
+
+  const nameInput = document.getElementById('modulos-variant-name-input');
+  if (nameInput) {
+    nameInput.value = variant.nombre || '';
+    nameInput.oninput = () => { _curModData.nombre = nameInput.value; };
+  }
+
+  renderModFieldGroup('data',   sec.dataFields   || [], 'modulos-editor-data-fields');
+  renderModFieldGroup('design', sec.designFields || [], 'modulos-editor-design-fields');
+
+  const designCard = document.getElementById('modulos-editor-design-card');
+  if (designCard) designCard.style.display = (sec.designFields || []).length ? '' : 'none';
+
+  _showView('modulos-editor-view');
+};
+
+function renderModFieldGroup(group, fields, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const editableFields = fields.filter(f => SIMPLE_FIELD_TYPES.includes(f.type));
+  const complexFields  = fields.filter(f => !SIMPLE_FIELD_TYPES.includes(f.type));
+
+  const fieldHtml = editableFields.map(f => {
+    const val = _curModData[group]?.[f.name] ?? '';
+    const attrs = `data-mf="${f.name}" data-mg="${group}"`;
+    if (f.type === 'textarea') return `<div>
+      <label class="form-label">${f.label}</label>
+      <textarea class="form-input" rows="3" style="resize:vertical;" ${attrs}>${String(val).replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
+    </div>`;
+    if (f.type === 'toggle') return `<div style="display:flex;align-items:center;gap:.75rem;">
+      <input type="checkbox" id="mf-${group}-${f.name}" ${attrs} ${val ? 'checked' : ''} style="width:1.1rem;height:1.1rem;flex-shrink:0;">
+      <label for="mf-${group}-${f.name}" class="form-label" style="margin:0;">${f.label}</label>
+    </div>`;
+    if (f.type === 'color') return `<div>
+      <label class="form-label">${f.label}</label>
+      <div style="display:flex;gap:.5rem;align-items:center;">
+        <input type="color" ${attrs} value="${String(val||'#000000')}" style="width:2.5rem;height:2rem;border:none;padding:0;cursor:pointer;flex-shrink:0;">
+        <input type="text" class="form-input" data-mf="${f.name}-txt" data-mg="${group}" value="${String(val||'').replace(/"/g,'&quot;')}" style="flex:1;" placeholder="#rrggbb">
+      </div>
+    </div>`;
+    if (f.type === 'number') return `<div>
+      <label class="form-label">${f.label}</label>
+      <input type="number" class="form-input" ${attrs} value="${val}" ${f.min!=null?`min="${f.min}"`:''}  ${f.max!=null?`max="${f.max}"`:''}>
+    </div>`;
+    return `<div>
+      <label class="form-label">${f.label}</label>
+      <input type="text" class="form-input" ${attrs} value="${String(val).replace(/"/g,'&quot;')}"${f.placeholder ? ` placeholder="${String(f.placeholder).replace(/"/g,'&quot;')}"` : ''}>
+    </div>`;
+  }).join('');
+
+  const complexNote = complexFields.length
+    ? `<div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:.375rem;padding:.75rem;font-size:.7rem;color:#64748b;line-height:1.6;">
+        <strong style="color:#475569;">Campos avanzados (editables en el editor de plantilla):</strong><br>
+        ${complexFields.map(f => f.label).join(' · ')}
+      </div>`
+    : '';
+
+  container.innerHTML = (editableFields.length || complexFields.length)
+    ? fieldHtml + complexNote
+    : `<p style="font-size:.75rem;color:#94a3b8;padding:.5rem 0;">Sin campos editables en esta sección.</p>`;
+
+  // Live sync
+  container.querySelectorAll('[data-mf]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const field = inp.dataset.mf;
+      const grp   = inp.dataset.mg;
+      if (!field || !grp || field.endsWith('-txt')) return;
+      let val;
+      if (inp.type === 'checkbox') val = inp.checked;
+      else if (inp.type === 'number') val = Number(inp.value);
+      else val = inp.value;
+      _curModData[grp] = _curModData[grp] || {};
+      _curModData[grp][field] = val;
+      if (inp.type === 'color') {
+        const txt = container.querySelector(`[data-mf="${field}-txt"]`);
+        if (txt) txt.value = val;
+      }
+    });
+    if (inp.dataset.mf.endsWith('-txt')) {
+      inp.addEventListener('input', () => {
+        const realField = inp.dataset.mf.replace(/-txt$/, '');
+        const picker = container.querySelector(`input[type=color][data-mf="${realField}"]`);
+        if (picker && /^#[0-9a-fA-F]{6}$/.test(inp.value)) {
+          picker.value = inp.value;
+          _curModData[inp.dataset.mg] = _curModData[inp.dataset.mg] || {};
+          _curModData[inp.dataset.mg][realField] = inp.value;
+        }
+      });
+    }
+  });
+}
+
+/* ── Preview de variante ── */
+function previewCurrentVariant() {
+  if (!_curModType) return;
+  const sec = SECTIONS[_curModType];
+  if (!sec) return;
+
+  // Render section HTML with current data/design
+  const html = sec.render(_curModData.data || {}, _curModData.design || {});
+
+  // Pick CSS files for this section type
+  const pageType = TYPE_TO_PAGE[_curModType] || 'index';
+  const cssFiles = TIPO_CSS[pageType] || TIPO_CSS.index;
+  const origin   = window.location.origin;
+  const links    = cssFiles.map(f => `<link rel="stylesheet" href="${origin}${f}">`).join('\n');
+
+  // Partir los tags para que Live Server no inyecte su script de hot-reload
+  // dentro del template literal (busca </'+'body> literalmente).
+  const _B = 'bo'+'dy', _H = 'hea'+'d';
+  const srcdoc = `<!doctype html><html lang="es"><${_H}><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:ital,wght@0,400;0,500;0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">${links}<style>html,body{margin:0;padding:0;}body{overflow-x:hidden;}</style></${_H}><${_B}>${html}</${_B}></html>`;
+
+  const card   = document.getElementById('modulos-preview-card');
+  const iframe = document.getElementById('modulos-preview-iframe');
+  if (!card || !iframe) return;
+
+  iframe.srcdoc = srcdoc;
+  card.style.display = '';
+
+  // Auto-resize iframe to content height after load
+  iframe.onload = () => {
+    try {
+      const h = iframe.contentDocument?.documentElement?.scrollHeight;
+      if (h && h > 100) iframe.style.minHeight = h + 'px';
+    } catch(e) { /* cross-origin sandbox */ }
+  };
+
+  // Scroll preview into view
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ── Duplicar variante ── */
+window.duplicarVariante = async function(type, variantId) {
+  const variantes = _modData[type]?.variantes || [];
+  const origin = variantes.find(v => v.id === variantId);
+  if (!origin) return;
+  const nombre = `${origin.nombre} (copia)`;
+  try {
+    const res = await window.__svc.apiPost(`/modulos/${type}/variantes`, {
+      nombre,
+      data:   JSON.parse(JSON.stringify(origin.data || {})),
+      design: JSON.parse(JSON.stringify(origin.design || {})),
+    });
+    if (!_modData[type]) _modData[type] = { variantes: [] };
+    _modData[type].variantes.push(res.variante);
+    renderVariantsList();
+    window.__svc.showNotif('Variante duplicada', 'success');
+  } catch(e) {
+    window.__svc.showNotif('Error: ' + e.message, 'error');
+  }
+};
+
+/* ── Eliminar variante ── */
+window.eliminarVariante = async function(type, variantId) {
+  const variantes = _modData[type]?.variantes || [];
+  const v = variantes.find(x => x.id === variantId);
+  if (!v) return;
+  if (!confirm(`¿Eliminar la variante "${v.nombre}"?`)) return;
+  try {
+    await window.__svc.apiDelete(`/modulos/${type}/variantes/${variantId}`);
+    _modData[type].variantes = _modData[type].variantes.filter(x => x.id !== variantId);
+    renderVariantsList();
+    window.__svc.showNotif('Variante eliminada', 'success');
+  } catch(e) {
+    window.__svc.showNotif('Error: ' + e.message, 'error');
+  }
+};
+
+/* ── Botón: Preview ── */
+document.getElementById('modulos-preview-btn')?.addEventListener('click', previewCurrentVariant);
+
+/* ── Botón: cerrar Preview ── */
+document.getElementById('modulos-preview-close-btn')?.addEventListener('click', () => {
+  const card = document.getElementById('modulos-preview-card');
+  if (card) card.style.display = 'none';
+});
+
+/* ── Botón: volver al catálogo ── */
+document.getElementById('modulos-variants-back-btn')?.addEventListener('click', renderModCatalog);
+
+/* ── Botón: volver a variantes ── */
+document.getElementById('modulos-back-btn')?.addEventListener('click', () => openModVariants(_curModType));
+
+/* ── Botón: nueva variante ── */
+document.getElementById('modulos-add-variant-btn')?.addEventListener('click', async () => {
+  if (!_curModType) return;
+  const sec = SECTIONS[_curModType];
+  const nombre = prompt('Nombre para la nueva variante:');
+  if (!nombre?.trim()) return;
+  try {
+    const res = await window.__svc.apiPost(`/modulos/${_curModType}/variantes`, {
+      nombre: nombre.trim(),
+      data:   JSON.parse(JSON.stringify(sec?.defaultData   || {})),
+      design: JSON.parse(JSON.stringify(sec?.defaultDesign || {})),
+    });
+    if (!_modData[_curModType]) _modData[_curModType] = { variantes: [] };
+    _modData[_curModType].variantes.push(res.variante);
+    renderVariantsList();
+    window.__svc.showNotif('Variante creada', 'success');
+    // Open editor for the new variant directly
+    openModEditor(_curModType, res.variante.id);
+  } catch(e) {
+    window.__svc.showNotif('Error: ' + e.message, 'error');
+  }
+});
+
+/* ── Botón: guardar variante ── */
+document.getElementById('modulos-save-btn')?.addEventListener('click', async () => {
+  if (!_curModType || !_curVariantId) return;
+  const nombre = document.getElementById('modulos-variant-name-input')?.value?.trim() || _curModData.nombre;
+  try {
+    const res = await window.__svc.apiPut(`/modulos/${_curModType}/variantes/${_curVariantId}`, {
+      nombre,
+      data:   _curModData.data,
+      design: _curModData.design,
+    });
+    // Update local cache
+    const variantes = _modData[_curModType]?.variantes || [];
+    const idx = variantes.findIndex(v => v.id === _curVariantId);
+    if (idx !== -1) _modData[_curModType].variantes[idx] = res.variante;
+    const nameEl = document.getElementById('modulos-editor-variant-name');
+    if (nameEl) nameEl.textContent = nombre;
+    window.__svc.showNotif('Variante guardada', 'success');
+    // Auto-show preview after save
+    previewCurrentVariant();
+  } catch(e) {
+    window.__svc.showNotif('Error: ' + e.message, 'error');
+  }
+});
 </script>
+
+<!-- ══ Bloqueo editor de plantillas en celular ══ -->
+<div class="e3-mobile-block" id="e3-mobile-block">
+  <div class="e3-mobile-block-card">
+    <div class="e3-mobile-block-icon">🖥️</div>
+    <h2 class="e3-mobile-block-title">El editor de plantillas no está disponible en celular</h2>
+    <p class="e3-mobile-block-desc">Para editar plantillas necesitás una pantalla más grande. Accedé desde una computadora o tablet en horizontal.</p>
+    <button class="btn-save" onclick="document.getElementById('e3-mobile-block').classList.remove('active');">← Volver al panel</button>
+  </div>
+</div>
+
 </body>
 </html>

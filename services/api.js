@@ -7,9 +7,14 @@ function authHeaders() {
   };
 }
 
+async function parseError(r, label) {
+  const data = await r.json().catch(() => ({}));
+  throw new Error(data.error || `${label} → ${r.status}`);
+}
+
 export async function apiGet(path) {
   const r = await fetch(`${API_BASE}${path}`);
-  if (!r.ok) throw new Error(`GET ${path} → ${r.status}`);
+  if (!r.ok) await parseError(r, `GET ${path}`);
   return r.json();
 }
 
@@ -19,7 +24,7 @@ export async function apiPut(path, body) {
     headers: authHeaders(),
     body: JSON.stringify(body),
   });
-  if (!r.ok) throw new Error(`PUT ${path} → ${r.status}`);
+  if (!r.ok) await parseError(r, `PUT ${path}`);
   return r.json();
 }
 
@@ -29,7 +34,7 @@ export async function apiPost(path, body) {
     headers: authHeaders(),
     body: JSON.stringify(body),
   });
-  if (!r.ok) throw new Error(`POST ${path} → ${r.status}`);
+  if (!r.ok) await parseError(r, `POST ${path}`);
   return r.json();
 }
 
@@ -39,7 +44,7 @@ export async function apiPatch(path, body) {
     headers: authHeaders(),
     body: JSON.stringify(body),
   });
-  if (!r.ok) throw new Error(`PATCH ${path} → ${r.status}`);
+  if (!r.ok) await parseError(r, `PATCH ${path}`);
   return r.json();
 }
 
@@ -48,6 +53,6 @@ export async function apiDelete(path) {
     method: 'DELETE',
     headers: { 'Authorization': `Bearer ${authToken}` },
   });
-  if (!r.ok) throw new Error(`DELETE ${path} → ${r.status}`);
+  if (!r.ok) await parseError(r, `DELETE ${path}`);
   return r.json();
 }

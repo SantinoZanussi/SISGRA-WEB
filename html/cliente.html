@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SiSGRA S.R.L. - Cliente</title>
+    <meta name="description" content="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" href="/img/sdesigra.png">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/layout.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages/articulo.css">
+
+    <style>
+        /* FOOTER RESPONSIVE */
+        @media (max-width: 1023px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .footer-col:last-child { grid-column: 1 / -1; }
+            .map-wrapper, .map-wrapper iframe { min-height: 220px; }
+        }
+        @media (max-width: 639px) {
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-col { padding: 1.5rem !important; border-right: none !important; border-bottom: 1px solid var(--rule); }
+            .footer-col:last-child { border-bottom: none; }
+            .wordmark-band { padding: 2rem 1.5rem 1.5rem; }
+            .wordmark-band h1 { font-size: clamp(52px, 18vw, 80px); }
+            .footer-bottom { padding: 1.25rem 1.5rem; flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Perfil de cliente — usa la plantilla activa "articulo" para nav/footer -->
+<div id="plantilla-root">
+  <div style="padding:6rem 2rem;text-align:center;color:#94a3b8;font-family:'Inter',system-ui,sans-serif;letter-spacing:.15em;text-transform:uppercase;font-size:.75rem;">Cargando…</div>
+</div>
+
+<script type="module">
+  import { bootstrapPage } from '/services/page-bootstrap.js';
+  const clienteId = new URLSearchParams(window.location.search).get('id');
+  bootstrapPage('articulo', 'plantilla-root', { clienteId });
+</script>
+
+</body>
+</html>

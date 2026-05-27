@@ -1,7 +1,7 @@
 {
   "plantillas": [
     {
-      "id_plantilla": "plt-seed-index",
+      "id_plantilla": "1",
       "tipo": "index",
       "nombre": "Inicio principal",
       "descripcion": "Plantilla por defecto del home — copia exacta del index.html actual",
@@ -21,6 +21,28 @@
             "stat1_label": "AÑOS DE EXPERIENCIA",
             "stat2_numero": "+500",
             "stat2_label": "Clientes activos"
+          },
+          "design": {}
+        },
+        {
+          "id": "sec-clientes-default",
+          "type": "clientes",
+          "data": {
+            "titulo_seccion": "NUESTROS CLIENTES",
+            "carrusel_activo": true,
+            "auto_scroll": true,
+            "clientes": [
+              {
+                "nombre": "San Cristóbal",
+                "imagen": "/img/sancristobal.png",
+                "activo": true
+              },
+              {
+                "nombre": "Syngenta",
+                "imagen": "/img/syngenta.png",
+                "activo": true
+              }
+            ]
           },
           "design": {}
         },
@@ -53,28 +75,6 @@
           "design": {}
         },
         {
-          "id": "sec-clientes-default",
-          "type": "clientes",
-          "data": {
-            "titulo_seccion": "NUESTROS CLIENTES",
-            "carrusel_activo": true,
-            "auto_scroll": true,
-            "clientes": [
-              {
-                "nombre": "San Cristóbal",
-                "imagen": "/img/sancristobal.png",
-                "activo": true
-              },
-              {
-                "nombre": "Syngenta",
-                "imagen": "/img/syngenta.png",
-                "activo": true
-              }
-            ]
-          },
-          "design": {}
-        },
-        {
           "id": "sec-nav-default",
           "type": "nav",
           "data": {
@@ -94,7 +94,45 @@
             "desarrolloLabel": "Desarrollo de Software",
             "desarrolloHref": "/html/desarrollo.html",
             "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/548101220065"
+            "ctaHref": "https://wa.me/548101220065",
+            "items": [
+              {
+                "tipo": "dropdown",
+                "titulo": "Instalaciones",
+                "children": [
+                  {
+                    "titulo": "Cableado Estructurado",
+                    "href": "/html/cableado_estructurado.html"
+                  },
+                  {
+                    "titulo": "Fibra Óptica",
+                    "href": "/html/fibra_optica.html"
+                  },
+                  {
+                    "titulo": "Seguridad Electrónica",
+                    "href": "/html/seguridad.html"
+                  }
+                ]
+              },
+              {
+                "tipo": "link",
+                "titulo": "Blog",
+                "href": "/html/blog.html",
+                "id_boton": "btn-blog"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Soporte IT",
+                "href": "/html/soporte_it.html",
+                "id_boton": "btn-soporte"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Desarrollo de Software",
+                "href": "/html/desarrollo.html",
+                "id_boton": "btn-desarrollo"
+              }
+            ]
           },
           "design": {}
         },
@@ -155,10 +193,12 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-26T19:18:01.307Z"
+      "editado_en": "2026-05-27T11:43:45.001Z",
+      "fecha_inicio": "2026-05-27T11:38:57.111Z",
+      "fecha_fin": "2026-06-10T11:38:57.111Z"
     },
     {
-      "id_plantilla": "plt-seed-blog",
+      "id_plantilla": "2",
       "tipo": "blog",
       "nombre": "Blog principal",
       "descripcion": "Plantilla por defecto — copia exacta del blog.html actual",
@@ -183,7 +223,45 @@
             "desarrolloLabel": "Desarrollo de Software",
             "desarrolloHref": "/html/desarrollo.html",
             "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/548101220065"
+            "ctaHref": "https://wa.me/548101220065",
+            "items": [
+              {
+                "tipo": "dropdown",
+                "titulo": "Instalaciones",
+                "children": [
+                  {
+                    "titulo": "Cableado Estructurado",
+                    "href": "/html/cableado_estructurado.html"
+                  },
+                  {
+                    "titulo": "Fibra Óptica",
+                    "href": "/html/fibra_optica.html"
+                  },
+                  {
+                    "titulo": "Seguridad Electrónica",
+                    "href": "/html/seguridad.html"
+                  }
+                ]
+              },
+              {
+                "tipo": "link",
+                "titulo": "Blog",
+                "href": "/html/blog.html",
+                "id_boton": "btn-blog"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Soporte IT",
+                "href": "/html/soporte_it.html",
+                "id_boton": "btn-soporte"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Desarrollo de Software",
+                "href": "/html/desarrollo.html",
+                "id_boton": "btn-desarrollo"
+              }
+            ]
           },
           "design": {}
         },
@@ -205,10 +283,12 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-25T17:30:00.000Z"
+      "editado_en": "2026-05-25T17:30:00.000Z",
+      "fecha_inicio": "2026-05-27T11:38:57.111Z",
+      "fecha_fin": "2026-06-03T11:38:57.111Z"
     },
     {
-      "id_plantilla": "plt-seed-articulo",
+      "id_plantilla": "3",
       "tipo": "articulo",
       "nombre": "Artículo principal",
       "descripcion": "Plantilla por defecto — copia exacta del articulo.html actual",
@@ -233,7 +313,45 @@
             "desarrolloLabel": "Desarrollo de Software",
             "desarrolloHref": "/html/desarrollo.html",
             "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/03418610863"
+            "ctaHref": "https://wa.me/03418610863",
+            "items": [
+              {
+                "tipo": "dropdown",
+                "titulo": "Instalaciones",
+                "children": [
+                  {
+                    "titulo": "Cableado Estructurado",
+                    "href": "/html/cableado_estructurado.html"
+                  },
+                  {
+                    "titulo": "Fibra Óptica",
+                    "href": "/html/fibra_optica.html"
+                  },
+                  {
+                    "titulo": "Seguridad Electrónica",
+                    "href": "/html/seguridad.html"
+                  }
+                ]
+              },
+              {
+                "tipo": "link",
+                "titulo": "Blog",
+                "href": "/html/blog.html",
+                "id_boton": "btn-blog"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Soporte IT",
+                "href": "/html/soporte_it.html",
+                "id_boton": "btn-soporte"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Desarrollo de Software",
+                "href": "/html/desarrollo.html",
+                "id_boton": "btn-desarrollo"
+              }
+            ]
           },
           "design": {}
         },
@@ -273,10 +391,12 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-25T18:00:00.000Z"
+      "editado_en": "2026-05-25T18:00:00.000Z",
+      "fecha_inicio": "2026-05-27T11:38:57.111Z",
+      "fecha_fin": "2026-06-03T11:38:57.111Z"
     },
     {
-      "id_plantilla": "plt-seed-cableado",
+      "id_plantilla": "4",
       "tipo": "cableado",
       "nombre": "Cableado principal",
       "descripcion": "Plantilla por defecto — copia exacta del cableado_estructurado.html actual",
@@ -301,7 +421,45 @@
             "desarrolloLabel": "Desarrollo de Software",
             "desarrolloHref": "/html/desarrollo.html",
             "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/03418610863"
+            "ctaHref": "https://wa.me/03418610863",
+            "items": [
+              {
+                "tipo": "dropdown",
+                "titulo": "Instalaciones",
+                "children": [
+                  {
+                    "titulo": "Cableado Estructurado",
+                    "href": "/html/cableado_estructurado.html"
+                  },
+                  {
+                    "titulo": "Fibra Óptica",
+                    "href": "/html/fibra_optica.html"
+                  },
+                  {
+                    "titulo": "Seguridad Electrónica",
+                    "href": "/html/seguridad.html"
+                  }
+                ]
+              },
+              {
+                "tipo": "link",
+                "titulo": "Blog",
+                "href": "/html/blog.html",
+                "id_boton": "btn-blog"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Soporte IT",
+                "href": "/html/soporte_it.html",
+                "id_boton": "btn-soporte"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Desarrollo de Software",
+                "href": "/html/desarrollo.html",
+                "id_boton": "btn-desarrollo"
+              }
+            ]
           },
           "design": {}
         },
@@ -344,10 +502,12 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-25T15:00:00.000Z"
+      "editado_en": "2026-05-25T15:00:00.000Z",
+      "fecha_inicio": "2026-05-27T11:38:57.111Z",
+      "fecha_fin": "2026-06-03T11:38:57.111Z"
     },
     {
-      "id_plantilla": "plt-seed-fibra",
+      "id_plantilla": "5",
       "tipo": "fibra",
       "nombre": "Fibra Óptica principal",
       "descripcion": "Plantilla por defecto — copia exacta del fibra_optica.html actual",
@@ -372,7 +532,45 @@
             "desarrolloLabel": "Desarrollo de Software",
             "desarrolloHref": "/html/desarrollo.html",
             "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/03418610863"
+            "ctaHref": "https://wa.me/03418610863",
+            "items": [
+              {
+                "tipo": "dropdown",
+                "titulo": "Instalaciones",
+                "children": [
+                  {
+                    "titulo": "Cableado Estructurado",
+                    "href": "/html/cableado_estructurado.html"
+                  },
+                  {
+                    "titulo": "Fibra Óptica",
+                    "href": "/html/fibra_optica.html"
+                  },
+                  {
+                    "titulo": "Seguridad Electrónica",
+                    "href": "/html/seguridad.html"
+                  }
+                ]
+              },
+              {
+                "tipo": "link",
+                "titulo": "Blog",
+                "href": "/html/blog.html",
+                "id_boton": "btn-blog"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Soporte IT",
+                "href": "/html/soporte_it.html",
+                "id_boton": "btn-soporte"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Desarrollo de Software",
+                "href": "/html/desarrollo.html",
+                "id_boton": "btn-desarrollo"
+              }
+            ]
           },
           "design": {}
         },
@@ -410,10 +608,12 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-25T23:42:41.222Z"
+      "editado_en": "2026-05-25T23:42:41.222Z",
+      "fecha_inicio": "2026-05-27T11:38:57.111Z",
+      "fecha_fin": "2026-06-03T11:38:57.111Z"
     },
     {
-      "id_plantilla": "plt-seed-seguridad",
+      "id_plantilla": "6",
       "tipo": "seguridad",
       "nombre": "Seguridad principal",
       "descripcion": "Plantilla por defecto — copia exacta del seguridad.html actual",
@@ -438,7 +638,45 @@
             "desarrolloLabel": "Desarrollo de Software",
             "desarrolloHref": "/html/desarrollo.html",
             "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/548101220065"
+            "ctaHref": "https://wa.me/548101220065",
+            "items": [
+              {
+                "tipo": "dropdown",
+                "titulo": "Instalaciones",
+                "children": [
+                  {
+                    "titulo": "Cableado Estructurado",
+                    "href": "/html/cableado_estructurado.html"
+                  },
+                  {
+                    "titulo": "Fibra Óptica",
+                    "href": "/html/fibra_optica.html"
+                  },
+                  {
+                    "titulo": "Seguridad Electrónica",
+                    "href": "/html/seguridad.html"
+                  }
+                ]
+              },
+              {
+                "tipo": "link",
+                "titulo": "Blog",
+                "href": "/html/blog.html",
+                "id_boton": "btn-blog"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Soporte IT",
+                "href": "/html/soporte_it.html",
+                "id_boton": "btn-soporte"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Desarrollo de Software",
+                "href": "/html/desarrollo.html",
+                "id_boton": "btn-desarrollo"
+              }
+            ]
           },
           "design": {}
         },
@@ -471,10 +709,12 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-25T16:00:00.000Z"
+      "editado_en": "2026-05-25T16:00:00.000Z",
+      "fecha_inicio": "2026-05-27T11:38:57.111Z",
+      "fecha_fin": "2026-06-03T11:38:57.111Z"
     },
     {
-      "id_plantilla": "plt-seed-soporte",
+      "id_plantilla": "7",
       "tipo": "soporte",
       "nombre": "Soporte IT principal",
       "descripcion": "Plantilla por defecto — copia exacta del soporte_it.html actual",
@@ -499,7 +739,45 @@
             "desarrolloLabel": "Desarrollo de Software",
             "desarrolloHref": "/html/desarrollo.html",
             "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/03418610863"
+            "ctaHref": "https://wa.me/03418610863",
+            "items": [
+              {
+                "tipo": "dropdown",
+                "titulo": "Instalaciones",
+                "children": [
+                  {
+                    "titulo": "Cableado Estructurado",
+                    "href": "/html/cableado_estructurado.html"
+                  },
+                  {
+                    "titulo": "Fibra Óptica",
+                    "href": "/html/fibra_optica.html"
+                  },
+                  {
+                    "titulo": "Seguridad Electrónica",
+                    "href": "/html/seguridad.html"
+                  }
+                ]
+              },
+              {
+                "tipo": "link",
+                "titulo": "Blog",
+                "href": "/html/blog.html",
+                "id_boton": "btn-blog"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Soporte IT",
+                "href": "/html/soporte_it.html",
+                "id_boton": "btn-soporte"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Desarrollo de Software",
+                "href": "/html/desarrollo.html",
+                "id_boton": "btn-desarrollo"
+              }
+            ]
           },
           "design": {}
         },
@@ -542,10 +820,12 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-25T16:30:00.000Z"
+      "editado_en": "2026-05-25T16:30:00.000Z",
+      "fecha_inicio": "2026-05-27T11:38:57.111Z",
+      "fecha_fin": "2026-06-03T11:38:57.111Z"
     },
     {
-      "id_plantilla": "plt-seed-desarrollo",
+      "id_plantilla": "8",
       "tipo": "desarrollo",
       "nombre": "Desarrollo principal",
       "descripcion": "Plantilla por defecto — copia exacta del desarrollo.html actual",
@@ -570,7 +850,45 @@
             "desarrolloLabel": "Desarrollo de Software",
             "desarrolloHref": "/html/desarrollo.html",
             "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/548101220065"
+            "ctaHref": "https://wa.me/548101220065",
+            "items": [
+              {
+                "tipo": "dropdown",
+                "titulo": "Instalaciones",
+                "children": [
+                  {
+                    "titulo": "Cableado Estructurado",
+                    "href": "/html/cableado_estructurado.html"
+                  },
+                  {
+                    "titulo": "Fibra Óptica",
+                    "href": "/html/fibra_optica.html"
+                  },
+                  {
+                    "titulo": "Seguridad Electrónica",
+                    "href": "/html/seguridad.html"
+                  }
+                ]
+              },
+              {
+                "tipo": "link",
+                "titulo": "Blog",
+                "href": "/html/blog.html",
+                "id_boton": "btn-blog"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Soporte IT",
+                "href": "/html/soporte_it.html",
+                "id_boton": "btn-soporte"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Desarrollo de Software",
+                "href": "/html/desarrollo.html",
+                "id_boton": "btn-desarrollo"
+              }
+            ]
           },
           "design": {}
         },
@@ -619,7 +937,9 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-25T17:00:00.000Z"
+      "editado_en": "2026-05-25T17:00:00.000Z",
+      "fecha_inicio": "2026-05-27T11:38:57.111Z",
+      "fecha_fin": "2026-06-03T11:38:57.111Z"
     }
   ]
 }

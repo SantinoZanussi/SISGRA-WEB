@@ -12,7 +12,7 @@ import { renderPlantilla } from './sections.js';
 
 const API_BASE = `http://${window.location.hostname}:3000/api`;
 
-export async function bootstrapPage(tipo, rootId = 'plantilla-root') {
+export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) {
   const root = document.getElementById(rootId);
   if (!root) {
     console.error(`[bootstrap] No se encontró #${rootId}`);
@@ -30,12 +30,101 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root') {
       return;
     }
     const { plantilla } = await r.json();
+
+    // ── Para cliente.html: si se pasa clienteId, inyectar datos del cliente ──
+    if (opts.clienteId) {
+      try {
+        const cr = await fetch(`${API_BASE}/data/clientes?t=${Date.now()}`, { cache: 'no-store' });
+        if (cr.ok) {
+          const clientesData = await cr.json();
+          const cliente = (clientesData.clientes || []).find(c => c.id === opts.clienteId);
+          if (!cliente || cliente.estado_perfil !== 'publicado') {
+            window.location.replace('/index.html');
+            return;
+          }
+          if (cliente.nombre) document.title = `${cliente.nombre} — SISGRA`;
+          plantilla.secciones = plantilla.secciones.map(sec => {
+            if (sec.type === 'articulo-header') {
+              return { ...sec, data: {
+                ...sec.data,
+                backLabel: '← Volver al Inicio',
+                backHref:  '/index.html',
+                badge:  cliente.nombre          || sec.data.badge,
+                titulo: cliente.titulo_proyecto || cliente.nombre || sec.data.titulo,
+                lead:   cliente.subtitulo       || sec.data.lead,
+                fecha:  '',
+              }};
+            }
+            if (sec.type === 'articulo-body') {
+              return { ...sec, data: {
+                ...sec.data,
+                // Si no hay imagen destacada → string vacío (no se renderiza)
+                featuredImageUrl: cliente.imagen_destacada || '',
+                featuredImageAlt: cliente.nombre || '',
+                contentHtml:      cliente.contenido || sec.data.contentHtml,
+              }};
+            }
+            return sec;
+          });
+        }
+      } catch (e) {
+        console.warn('[bootstrap] No se pudo cargar el cliente:', e.message);
+      }
+    }
+
+    // ── Para articulo.html: si hay ?id= en la URL, inyectar el post real ──
+    if (tipo === 'articulo' && !opts.clienteId) {
+      const postId = new URLSearchParams(window.location.search).get('id');
+      if (postId) {
+        // Detectar de dónde viene el usuario para el botón "Volver"
+        const fromBlog = document.referrer.includes('blog.html');
+        const backLabel = fromBlog ? '← Volver al Blog'   : '← Volver al Inicio';
+        const backHref  = fromBlog ? '/html/blog.html'     : '/index.html';
+        try {
+          const br = await fetch(`${API_BASE}/data/blog?t=${Date.now()}`, { cache: 'no-store' });
+          if (br.ok) {
+            const blogData = await br.json();
+            const post = (blogData.posts || []).find(p => p.id === postId);
+            if (post) {
+              if (post.titulo) document.title = `${post.titulo} — SISGRA`;
+              plantilla.secciones = plantilla.secciones.map(sec => {
+                if (sec.type === 'articulo-header') {
+                  return { ...sec, data: {
+                    ...sec.data,
+                    backLabel,
+                    backHref,
+                    badge:  post.categoria || sec.data.badge,
+                    titulo: post.titulo    || sec.data.titulo,
+                    lead:   post.extracto  || sec.data.lead,
+                    fecha:  post.fecha     || '',
+                  }};
+                }
+                if (sec.type === 'articulo-body') {
+                  return { ...sec, data: {
+                    ...sec.data,
+                    // Si el post no tiene imagen → string vacío (no se renderiza)
+                    featuredImageUrl: post.imagen || '',
+                    featuredImageAlt: post.titulo || '',
+                    contentHtml:      post.contenido || sec.data.contentHtml,
+                  }};
+                }
+                return sec;
+              });
+            }
+          }
+        } catch (e) {
+          console.warn('[bootstrap] No se pudo cargar el post:', e.message);
+        }
+      }
+    }
+
     root.innerHTML = renderPlantilla(plantilla);
     // Post-render: conectar funcionalidad que estaba en el HTML estático
     bindMobileDrawer();
     bindContactForm();
     applyGlobalContactoSEO();
     hydrateBlogList();
+    hydrateClientesTrack();
   } catch (e) {
     root.innerHTML = `<div style="padding:4rem;text-align:center;color:#900;font-family:sans-serif;">
       Error cargando la plantilla: ${e.message}
@@ -116,7 +205,7 @@ async function hydrateBlogList() {
             </div>
             <h3 class="news-title">${esc(p.titulo||'')}</h3>
             <p class="news-excerpt">${esc(p.extracto||'')}</p>
-            <a href="/html/articulo.html" class="news-link">Leer artículo completo <span>→</span></a>
+            <a href="/html/articulo.html?id=${esc(p.id)}" class="news-link">Leer artículo completo <span>→</span></a>
           </div>
         </article>`).join('');
     });
@@ -129,6 +218,35 @@ async function hydrateBlogList() {
 }
 
 function esc(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── Hidratar carrusel de clientes con datos en vivo y links a perfiles ──
+async function hydrateClientesTrack() {
+  const tracks = document.querySelectorAll('[data-clientes-track]');
+  if (!tracks.length) return;
+  try {
+    const r = await fetch(`${API_BASE}/data/clientes?t=${Date.now()}`, { cache: 'no-store' });
+    if (!r.ok) throw new Error('no clientes data');
+    const data = await r.json();
+    const clientes = (data.clientes || []).filter(c => c.activo !== false);
+    if (!clientes.length) return;
+
+    const makeCell = (c) => {
+      const inner = c.imagen
+        ? `<img src="${esc(c.imagen)}" alt="${esc(c.nombre)}">`
+        : `<div class="logos-cell-text">${esc(c.nombre)}</div>`;
+      if (c.estado_perfil === 'publicado') {
+        return `<a href="/html/cliente.html?id=${esc(c.id)}" class="logos-cell logos-cell-link" title="Ver caso: ${esc(c.nombre)}">${inner}</a>`;
+      }
+      return `<div class="logos-cell">${inner}</div>`;
+    };
+
+    // Triplicar para el loop infinito del carrusel (igual que el render estático)
+    const cells = [...clientes, ...clientes, ...clientes].map(makeCell).join('');
+    tracks.forEach(track => { track.innerHTML = cells; });
+  } catch (e) {
+    // Falla silenciosamente — queda el contenido estático del template
+  }
+}
 
 // ── Aplicar contacto + SEO globales (datos transversales a todas las plantillas) ──
 async function applyGlobalContactoSEO() {

@@ -8,5 +8,6 @@ router.get('/botones',        c.listarBotones);
 router.post('/botones',       authMiddleware, c.crearBoton);
 router.patch('/botones/:id',  authMiddleware, c.actualizarBoton);
 router.delete('/botones/:id', authMiddleware, c.eliminarBoton);
+router.post('/sync',          authMiddleware, c.syncPlantillas);
 
 module.exports = router;

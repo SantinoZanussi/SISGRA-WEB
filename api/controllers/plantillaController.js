@@ -1,14 +1,27 @@
 const fs = require('fs');
 const path = require('path');
-const { generateId } = require('../utils/id');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const FILE = path.join(DATA_DIR, 'plantillas.json');
 
-const TIPOS_VALIDOS = [
+const TIPOS_BASE = [
   'index', 'blog', 'articulo',
   'cableado', 'fibra', 'seguridad', 'soporte', 'desarrollo',
 ];
+
+// Genera el siguiente ID numérico secuencial basado en los existentes
+function nextId(plantillas) {
+  const nums = plantillas.map(p => parseInt(p.id_plantilla, 10)).filter(n => !isNaN(n));
+  return nums.length ? Math.max(...nums) + 1 : 1;
+}
+
+// Los tipos btn-* son páginas personalizadas creadas desde el panel de navbar
+function isTipoValido(tipo) {
+  return TIPOS_BASE.includes(tipo) || /^btn-/.test(tipo);
+}
+
+// Mantener array exportado para compatibilidad
+const TIPOS_VALIDOS = TIPOS_BASE;
 
 function read() {
   if (!fs.existsSync(FILE)) return { plantillas: [] };
@@ -36,7 +49,7 @@ exports.listarTipos = (_req, res) => {
 // GET /api/plantillas/activa/:tipo   (public, no auth)
 exports.activaPorTipo = (req, res) => {
   const { tipo } = req.params;
-  if (!TIPOS_VALIDOS.includes(tipo)) {
+  if (!isTipoValido(tipo)) {
     return res.status(400).json({ error: `Tipo inválido: ${tipo}` });
   }
   const { plantillas } = read();
@@ -58,8 +71,8 @@ exports.obtener = (req, res) => {
 exports.crear = (req, res) => {
   const { tipo, nombre, descripcion, secciones } = req.body || {};
   if (!tipo) return res.status(400).json({ error: 'El campo "tipo" es obligatorio' });
-  if (!TIPOS_VALIDOS.includes(tipo)) {
-    return res.status(400).json({ error: `Tipo inválido. Valores: ${TIPOS_VALIDOS.join(', ')}` });
+  if (!isTipoValido(tipo)) {
+    return res.status(400).json({ error: `Tipo inválido. Valores base: ${TIPOS_BASE.join(', ')} (o btn-*)` });
   }
   if (!nombre || !nombre.trim()) {
     return res.status(400).json({ error: 'El campo "nombre" es obligatorio' });
@@ -68,7 +81,7 @@ exports.crear = (req, res) => {
   const data = read();
   const now = new Date().toISOString();
   const nueva = {
-    id_plantilla: generateId('plt'),
+    id_plantilla: String(nextId(data.plantillas)),
     tipo,
     nombre: nombre.trim(),
     descripcion: descripcion || '',
@@ -90,8 +103,8 @@ exports.actualizar = (req, res) => {
   if (idx === -1) return res.status(404).json({ error: 'Plantilla no encontrada' });
 
   const { tipo, nombre, descripcion, secciones } = req.body || {};
-  if (tipo !== undefined && !TIPOS_VALIDOS.includes(tipo)) {
-    return res.status(400).json({ error: `Tipo inválido. Valores: ${TIPOS_VALIDOS.join(', ')}` });
+  if (tipo !== undefined && !isTipoValido(tipo)) {
+    return res.status(400).json({ error: `Tipo inválido. Valores base: ${TIPOS_BASE.join(', ')} (o btn-*)` });
   }
 
   const tpl = data.plantillas[idx];
@@ -107,15 +120,40 @@ exports.actualizar = (req, res) => {
 
 // POST /api/plantillas/:id/activar   [auth]
 // Marca esta plantilla como activa; desactiva las demás del mismo tipo.
+// Setea fecha_inicio (ahora) y fecha_fin (ahora + 7 días) en la activada.
 exports.activar = (req, res) => {
   const { id } = req.params;
   const data = read();
   const tpl = data.plantillas.find(p => p.id_plantilla === id);
   if (!tpl) return res.status(404).json({ error: 'Plantilla no encontrada' });
 
+  const now = new Date();
+  const fin = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+
   data.plantillas.forEach(p => {
     if (p.tipo === tpl.tipo) p.activa = (p.id_plantilla === id);
   });
+
+  tpl.fecha_inicio = now.toISOString();
+  tpl.fecha_fin    = fin.toISOString();
+  tpl.editado_en   = now.toISOString();
+  save(data);
+  res.json({ ok: true, plantilla: tpl });
+};
+
+// POST /api/plantillas/:id/extender   [auth]
+// Extiende fecha_fin 7 días desde fecha_fin actual (o desde ahora si ya venció).
+exports.extender = (req, res) => {
+  const { id } = req.params;
+  const data = read();
+  const tpl = data.plantillas.find(p => p.id_plantilla === id);
+  if (!tpl) return res.status(404).json({ error: 'Plantilla no encontrada' });
+
+  const base = tpl.fecha_fin
+    ? Math.max(Date.now(), new Date(tpl.fecha_fin).getTime())
+    : Date.now();
+  const nuevaFin = new Date(base + 7 * 24 * 60 * 60 * 1000);
+  tpl.fecha_fin  = nuevaFin.toISOString();
   tpl.editado_en = new Date().toISOString();
   save(data);
   res.json({ ok: true, plantilla: tpl });
@@ -145,7 +183,10 @@ exports.eliminar = (req, res) => {
     data.plantillas.forEach(p => {
       if (p.tipo === tpl.tipo) p.activa = (p.id_plantilla === promoted.id_plantilla);
     });
-    promoted.editado_en = new Date().toISOString();
+    const promNow = new Date();
+    promoted.fecha_inicio = promNow.toISOString();
+    promoted.fecha_fin    = new Date(promNow.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    promoted.editado_en   = promNow.toISOString();
   }
 
   data.plantillas = data.plantillas.filter(p => p.id_plantilla !== id);

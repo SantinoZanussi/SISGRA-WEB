@@ -4,7 +4,7 @@
       "id_boton": "btn-index",
       "titulo": "Inicio",
       "modulo": "home",
-      "href": "index.html",
+      "href": "/index.html",
       "id_plantilla": null,
       "orden": 1,
       "activo": true
@@ -13,7 +13,7 @@
       "id_boton": "btn-blog",
       "titulo": "Blog",
       "modulo": "blog",
-      "href": "html/blog.html",
+      "href": "/html/blog.html",
       "id_plantilla": null,
       "orden": 2,
       "activo": true
@@ -22,7 +22,7 @@
       "id_boton": "btn-cableado",
       "titulo": "Cableado Estructurado",
       "modulo": "cableado",
-      "href": "html/cableado_estructurado.html",
+      "href": "/html/cableado_estructurado.html",
       "id_plantilla": null,
       "orden": 3,
       "activo": true
@@ -31,7 +31,7 @@
       "id_boton": "btn-fibra",
       "titulo": "Fibra Óptica",
       "modulo": "fibra",
-      "href": "html/fibra_optica.html",
+      "href": "/html/fibra_optica.html",
       "id_plantilla": null,
       "orden": 4,
       "activo": true
@@ -40,7 +40,7 @@
       "id_boton": "btn-seguridad",
       "titulo": "Seguridad Electrónica",
       "modulo": "seguridad",
-      "href": "html/seguridad.html",
+      "href": "/html/seguridad.html",
       "id_plantilla": null,
       "orden": 5,
       "activo": true
@@ -49,7 +49,7 @@
       "id_boton": "btn-soporte",
       "titulo": "Soporte IT",
       "modulo": "soporte",
-      "href": "html/soporte_it.html",
+      "href": "/html/soporte_it.html",
       "id_plantilla": null,
       "orden": 6,
       "activo": true
@@ -58,7 +58,7 @@
       "id_boton": "btn-desarrollo",
       "titulo": "Desarrollo de Software",
       "modulo": "desarrollo",
-      "href": "html/desarrollo.html",
+      "href": "/html/desarrollo.html",
       "id_plantilla": null,
       "orden": 7,
       "activo": true

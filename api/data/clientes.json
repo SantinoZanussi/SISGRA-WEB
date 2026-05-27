@@ -8,7 +8,12 @@
       "nombre": "San Cristóbal",
       "imagen": "/img/sancristobal.png",
       "url": "",
-      "activo": true
+      "activo": true,
+      "estado_perfil": "publicado",
+      "titulo_proyecto": "San Cristóbal",
+      "subtitulo": "hudhdahwudadiadjawdiaiidaiwdhai",
+      "imagen_destacada": "",
+      "contenido": "doafoaofwodwdlwdlslwllsswsw"
     },
     {
       "id": "c2",

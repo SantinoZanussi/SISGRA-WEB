@@ -36,6 +36,9 @@ app.use("/api/nav", navRoutes);
 const webhookRoutes = require("./routes/webhookRoutes");
 app.use("/api/webhook", webhookRoutes);
 
+const modulosRoutes = require("./routes/modulosRoutes");
+app.use("/api/modulos", modulosRoutes);
+
 function getLocalIPv4() {
   const nets = os.networkInterfaces();
   for (const name of Object.keys(nets)) {

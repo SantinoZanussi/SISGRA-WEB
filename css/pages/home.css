@@ -361,6 +361,25 @@
   opacity: 0.4;
 }
 
+/* Logos con perfil publicado — clicables */
+a.logos-cell {
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+}
+a.logos-cell::after {
+  content: '↗';
+  position: absolute;
+  top: .5rem;
+  right: .625rem;
+  font-size: .55rem;
+  font-weight: 900;
+  color: var(--sisgra-blue);
+  opacity: 0;
+  transition: opacity .2s;
+}
+a.logos-cell:hover::after { opacity: 1; }
+
 /* ================================================
    BLOG SECTION (inicio)
 ================================================ */

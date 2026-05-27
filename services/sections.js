@@ -18,6 +18,11 @@ export const TIPOS_HTML = [
 ];
 
 const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// css(props) — builds a style=" " attribute from an object, skipping falsy values
+const css = (props) => {
+  const p = Object.entries(props).filter(([,v]) => v).map(([k,v]) => `${k}:${v}`);
+  return p.length ? ` style="${p.join(';')}"` : '';
+};
 
 // ═══════════════════════════════════════════════════════════════════
 export const SECTIONS = {
@@ -61,17 +66,28 @@ export const SECTIONS = {
     designFields: [],
     render: (data) => {
       const d = { ...SECTIONS.nav.defaultData, ...data };
-      return `
-<nav>
-  <div class="max-w-1400">
-    <div class="nav-inner">
-      <a href="${esc(d.logoSrcHref)}" class="nav-logo">
-        <div class="nav-logo-wrap"><div class="nav-logo-row">
-          <img src="${esc(d.logoSrc)}" alt="SISGRA">
-        </div></div>
-      </a>
-      <div class="nav-menu">
-        <div class="nav-menu-list">
+
+      // Formato nuevo: items array (sincronizado desde navbar.json)
+      let linksHtml;
+      if (Array.isArray(d.items) && d.items.length > 0) {
+        linksHtml = d.items.map(item => {
+          if (item.tipo === 'dropdown') {
+            return `
+          <div class="nav-dropdown">
+            <a href="#" class="nav-dropdown-trigger">
+              ${esc(item.titulo)}
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg>
+            </a>
+            <div class="dropdown-content">
+              ${(item.children || []).map(c => `<a href="${esc(c.href)}">${esc(c.titulo)}</a>`).join('')}
+            </div>
+          </div>`;
+          }
+          return `<a href="${esc(item.href || '#')}" class="nav-link">${esc(item.titulo)}</a>`;
+        }).join('');
+      } else {
+        // Formato viejo (compatibilidad hacia atrás)
+        linksHtml = `
           <div class="nav-dropdown">
             <a href="#instalaciones" class="nav-dropdown-trigger">
               ${esc(d.instalacionesLabel)}
@@ -85,13 +101,53 @@ export const SECTIONS = {
           </div>
           <a href="${esc(d.blogHref)}" class="nav-link">${esc(d.blogLabel)}</a>
           <a href="${esc(d.soporteHref)}" class="nav-link">${esc(d.soporteLabel)}</a>
-          <a href="${esc(d.desarrolloHref)}" class="nav-link">${esc(d.desarrolloLabel)}</a>
+          <a href="${esc(d.desarrolloHref)}" class="nav-link">${esc(d.desarrolloLabel)}</a>`;
+      }
+
+      // Mobile drawer links — dropdowns se despliegan como sección + hijos
+      let mobileLinksHtml;
+      if (Array.isArray(d.items) && d.items.length > 0) {
+        mobileLinksHtml = d.items.map(item => {
+          if (item.tipo === 'dropdown') {
+            const children = (item.children || []).map(c => `<a href="${esc(c.href)}">${esc(c.titulo)}</a>`).join('');
+            return `<div class="nav-mobile-section-title">${esc(item.titulo)}</div>${children}`;
+          }
+          return `<a href="${esc(item.href || '#')}">${esc(item.titulo)}</a>`;
+        }).join('');
+      } else {
+        mobileLinksHtml = `
+          <div class="nav-mobile-section-title">${esc(d.instalacionesLabel)}</div>
+          <a href="${esc(d.cableadoHref)}">${esc(d.cableadoLabel)}</a>
+          <a href="${esc(d.fibraHref)}">${esc(d.fibraLabel)}</a>
+          <a href="${esc(d.seguridadHref)}">${esc(d.seguridadLabel)}</a>
+          <a href="${esc(d.blogHref)}">${esc(d.blogLabel)}</a>
+          <a href="${esc(d.soporteHref)}">${esc(d.soporteLabel)}</a>
+          <a href="${esc(d.desarrolloHref)}">${esc(d.desarrolloLabel)}</a>`;
+      }
+
+      return `
+<nav>
+  <div class="max-w-1400">
+    <div class="nav-inner">
+      <a href="${esc(d.logoSrcHref)}" class="nav-logo">
+        <img src="${esc(d.logoSrc)}" alt="SISGRA">
+      </a>
+      <div class="nav-menu">
+        <div class="nav-menu-list">
+          ${linksHtml}
         </div>
       </div>
       <div class="nav-contact-wrap">
         <a href="${esc(d.ctaHref)}" class="btn-contact">${esc(d.ctaLabel)}</a>
       </div>
+      <button class="nav-mobile-toggle" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
     </div>
+  </div>
+  <div class="nav-mobile-drawer">
+    ${mobileLinksHtml}
+    <a href="${esc(d.ctaHref)}" class="nav-mobile-cta">${esc(d.ctaLabel)}</a>
   </div>
 </nav>`;
     },
@@ -108,15 +164,15 @@ export const SECTIONS = {
     validTipos: ['index'],
     defaultData: {
       badge: 'INFRAESTRUCTURA DE ELITE',
-      titulo1: 'Título Principal',
-      titulo2: 'Subtítulo en Acento',
-      descripcion: 'Descripción del hero.',
+      titulo1: 'Conectamos el futuro',
+      titulo2: 'de su empresa.',
+      descripcion: 'Diseñamos e implementamos infraestructura tecnológica para las empresas líderes de Argentina. 25 años de trayectoria y más de 500 clientes nos respaldan.',
       boton_primario: 'Ver Soluciones',
       boton_secundario: 'Conocer más',
       stat1_numero: '+25',  stat1_label: 'AÑOS DE EXPERIENCIA',
-      stat2_numero: '+500', stat2_label: 'Clientes activos',
+      stat2_numero: '+500', stat2_label: 'Clientes satisfechos',
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', titleColor: '', accentColor: '', btnBg: '', paddingY: '', titleSize: '', descSize: '', btnRadius: '' },
     dataFields: [
       { name: 'badge',            label: 'Badge',            type: 'text' },
       { name: 'titulo1',          label: 'Título línea 1',   type: 'text' },
@@ -129,22 +185,32 @@ export const SECTIONS = {
       { name: 'stat2_numero',     label: 'Stat 2 número',    type: 'text' },
       { name: 'stat2_label',      label: 'Stat 2 label',     type: 'text' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',          label: 'Fondo de sección',           type: 'color' },
+      { name: 'titleColor',  label: 'Color título principal',      type: 'color' },
+      { name: 'accentColor', label: 'Color acento (subtítulo)',    type: 'color' },
+      { name: 'btnBg',       label: 'Botón primario — fondo',      type: 'color' },
+      { name: 'paddingY',    label: 'Padding vertical (sección)',  type: 'text', placeholder: 'ej: 6rem' },
+      { name: 'titleSize',   label: 'Tamaño título (h1)',          type: 'text', placeholder: 'ej: 3.5rem' },
+      { name: 'descSize',    label: 'Tamaño descripción',          type: 'text', placeholder: 'ej: 1rem' },
+      { name: 'btnRadius',   label: 'Redondeo botón',              type: 'text', placeholder: 'ej: 0px ó 8px' },
+    ],
+    render: (data, design) => {
       const h = { ...SECTIONS.hero.defaultData, ...data };
+      const s = { ...SECTIONS.hero.defaultDesign, ...design };
       return `
-<header class="hero">
+<header class="hero"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="hero-dots"></div>
   <div class="max-w-7xl hero-inner">
     <div class="hero-grid">
       <div>
         <div class="hero-badge">${esc(h.badge)}</div>
-        <h1 class="hero-title">
-          ${esc(h.titulo1)} <span><i>${esc(h.titulo2)}</i></span>
+        <h1 class="hero-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>
+          ${esc(h.titulo1)} <span${css({ color: s.accentColor })}><i>${esc(h.titulo2)}</i></span>
         </h1>
-        <p class="hero-desc">${esc(h.descripcion)}</p>
+        <p class="hero-desc"${css({ 'font-size': s.descSize })}>${esc(h.descripcion)}</p>
         <div class="hero-buttons">
-          <a href="#servicios"><button class="btn-hero-primary">${esc(h.boton_primario)}</button></a>
+          <a href="#servicios"><button class="btn-hero-primary"${css({ background: s.btnBg, 'border-color': s.btnBg, 'border-radius': s.btnRadius })}>${esc(h.boton_primario)}</button></a>
           <a href="#nosotros"><button class="btn-hero-secondary">${esc(h.boton_secundario)}</button></a>
         </div>
       </div>
@@ -186,7 +252,7 @@ export const SECTIONS = {
       p2_metric2_num: '99.9%', p2_metric2_label: 'Disponibilidad',
       p2_metric3_num: '25+',   p2_metric3_label: 'Años de experiencia',
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', titleColor: '', accentColor: '', btnBg: '', paddingY: '', titleSize: '', btnRadius: '' },
     dataFields: [
       { name: 'p2_eyebrow',          label: 'Eyebrow',          type: 'text' },
       { name: 'p2_titulo',           label: 'Título',           type: 'text' },
@@ -204,9 +270,18 @@ export const SECTIONS = {
       { name: 'p2_metric3_num',   label: 'Métrica 3 número', type: 'text' },
       { name: 'p2_metric3_label', label: 'Métrica 3 label',  type: 'text' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',          label: 'Fondo de sección',          type: 'color' },
+      { name: 'titleColor',  label: 'Color título',               type: 'color' },
+      { name: 'accentColor', label: 'Color eyebrow / métricas',   type: 'color' },
+      { name: 'btnBg',       label: 'Botón primario — fondo',     type: 'color' },
+      { name: 'paddingY',    label: 'Padding vertical (sección)', type: 'text', placeholder: 'ej: 6rem' },
+      { name: 'titleSize',   label: 'Tamaño título',              type: 'text', placeholder: 'ej: 3rem' },
+      { name: 'btnRadius',   label: 'Redondeo botón',             type: 'text', placeholder: 'ej: 0px ó 8px' },
+    ],
+    render: (data, design) => {
       const h = { ...SECTIONS['hero-centered'].defaultData, ...data };
+      const s = { ...SECTIONS['hero-centered'].defaultDesign, ...design };
       const tags = [h.p2_tag1, h.p2_tag2, h.p2_tag3].filter(Boolean);
       const metrics = [
         { num: h.p2_metric1_num, label: h.p2_metric1_label },
@@ -214,22 +289,22 @@ export const SECTIONS = {
         { num: h.p2_metric3_num, label: h.p2_metric3_label },
       ].filter(m => m.num);
       return `
-<header class="hero-p2">
+<header class="hero-p2"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="hero-p2-inner">
-    <div class="hero-p2-eyebrow">${esc(h.p2_eyebrow)}</div>
-    <h1 class="hero-p2-title">${esc(h.p2_titulo)}</h1>
+    <div class="hero-p2-eyebrow"${css({ color: s.accentColor })}>${esc(h.p2_eyebrow)}</div>
+    <h1 class="hero-p2-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${esc(h.p2_titulo)}</h1>
     <p class="hero-p2-subtitle">${esc(h.p2_subtitulo)}</p>
     <p class="hero-p2-desc">${esc(h.p2_descripcion)}</p>
     ${tags.length ? `<div class="hero-p2-tags">${tags.map(t => `<span class="hero-p2-tag">${esc(t)}</span>`).join('')}</div>` : ''}
     <div class="hero-p2-buttons">
-      <a href="#servicios"><button class="btn-hero-primary">${esc(h.p2_boton_primario)}</button></a>
+      <a href="#servicios"><button class="btn-hero-primary"${css({ background: s.btnBg, 'border-color': s.btnBg, 'border-radius': s.btnRadius })}>${esc(h.p2_boton_primario)}</button></a>
       <a href="#nosotros"><button class="btn-hero-secondary">${esc(h.p2_boton_secundario)}</button></a>
     </div>
     ${metrics.length ? `
       <div class="hero-p2-metrics">
         ${metrics.map(m => `
           <div class="hero-p2-metric">
-            <span class="hero-p2-metric-num">${esc(m.num)}</span>
+            <span class="hero-p2-metric-num"${css({ color: s.accentColor })}>${esc(m.num)}</span>
             <span class="hero-p2-metric-label">${esc(m.label)}</span>
           </div>`).join('')}
       </div>` : ''}
@@ -279,7 +354,7 @@ export const SECTIONS = {
       <h2 class="logos-title">${esc(d.titulo_seccion)}</h2>
     </div>
     <div class="logos-track-wrapper">
-      <div class="logos-track ${d.auto_scroll !== false ? 'is-animating' : ''}">${cells}</div>
+      <div class="logos-track ${d.auto_scroll !== false ? 'is-animating' : ''}" data-clientes-track data-auto-scroll="${d.auto_scroll !== false}">${cells}</div>
     </div>
   </div>
 </section>`;
@@ -297,9 +372,9 @@ export const SECTIONS = {
     defaultData: {
       titulo_seccion: 'Novedades & Blog',
       posts: [
-        { titulo: 'Título del artículo 1', extracto: 'Resumen del artículo...', categoria: 'Novedades', imagen: '' },
-        { titulo: 'Título del artículo 2', extracto: 'Resumen del artículo...', categoria: 'Blog',      imagen: '' },
-        { titulo: 'Título del artículo 3', extracto: 'Resumen del artículo...', categoria: 'Casos',     imagen: '' },
+        { titulo: 'Certificación Cat 8: el estándar que toda empresa necesita', extracto: 'Conocé por qué la Categoría 8 es la elección inteligente para infraestructuras de alta demanda de datos.', categoria: 'Novedades', imagen: '' },
+        { titulo: 'Cómo reducir el tiempo de inactividad con soporte IT proactivo', extracto: 'Estrategias comprobadas para mantener tu infraestructura funcionando con 99.9% de disponibilidad.', categoria: 'Soporte IT', imagen: '' },
+        { titulo: 'Fibra Óptica FTTH: conectividad sin límites para tu empresa', extracto: 'Ventajas de implementar fibra óptica en instalaciones corporativas de gran escala en Argentina.', categoria: 'Instalaciones', imagen: '' },
       ],
     },
     defaultDesign: {},
@@ -329,7 +404,7 @@ export const SECTIONS = {
             <span class="blog-tag">${esc(p.categoria||'')}</span>
             <h3 class="blog-card-title">${esc(p.titulo||'')}</h3>
             <p class="blog-card-desc">${esc(p.extracto||'')}</p>
-            <a href="html/articulo.html" class="blog-card-link">Leer Artículo <span style="color: var(--blue-500);">→</span></a>
+            <a href="${p.id ? `/html/articulo.html?id=${esc(p.id)}` : '/html/blog.html'}" class="blog-card-link">Leer Artículo <span style="color: var(--blue-500);">→</span></a>
           </div>
         </article>`).join('')}
     </div>
@@ -350,33 +425,50 @@ export const SECTIONS = {
       titulo_seccion: 'Portafolio de Soluciones',
       eyebrow: 'Lo que hacemos',
       cards: [
-        { id: 'instalaciones', titulo: 'Instalaciones', descripcion: 'Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica.', enlace: './html/cableado_estructurado.html' },
-        { id: 'soporte',       titulo: 'Soporte IT',     descripcion: 'Mantenimiento integral de infraestructura y asistencia técnica corporativa.', enlace: './html/soporte_it.html' },
-        { id: 'software',      titulo: 'Software',       descripcion: 'Soluciones a medida para optimizar procesos logísticos y gestión empresarial.', enlace: './html/desarrollo.html' },
+        { id: 'instalaciones', titulo: 'Instalaciones', descripcion: 'Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas TIA/EIA para entornos corporativos exigentes.', enlace: './html/cableado_estructurado.html' },
+        { id: 'soporte',       titulo: 'Soporte IT',    descripcion: 'Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.', enlace: './html/soporte_it.html' },
+        { id: 'software',      titulo: 'Desarrollo de Software', descripcion: 'Soluciones digitales a medida: sistemas de gestión logística, control de inventario y procesos empresariales integrados.', enlace: './html/desarrollo.html' },
       ],
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', sectionColor: '', cardBg: '', cardTitleColor: '', cardLinkColor: '', paddingY: '', titleSize: '', cardRadius: '', cardPadding: '', gap: '' },
     dataFields: [
       { name: 'titulo_seccion', label: 'Título sección', type: 'text' },
       { name: 'eyebrow',        label: 'Eyebrow',        type: 'text' },
       { name: 'cards',          label: 'Cards',          type: 'cards' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',             label: 'Fondo de sección',          type: 'color' },
+      { name: 'sectionColor',   label: 'Color título sección',      type: 'color' },
+      { name: 'cardBg',         label: 'Fondo de cards',            type: 'color' },
+      { name: 'cardTitleColor', label: 'Título de cards',           type: 'color' },
+      { name: 'cardLinkColor',  label: 'Color enlace cards',        type: 'color' },
+      { name: 'paddingY',       label: 'Padding vertical sección',  type: 'text', placeholder: 'ej: 4rem' },
+      { name: 'titleSize',      label: 'Tamaño título sección',     type: 'text', placeholder: 'ej: 2.5rem' },
+      { name: 'cardRadius',     label: 'Redondeo de cards',         type: 'text', placeholder: 'ej: 0px ó 12px' },
+      { name: 'cardPadding',    label: 'Padding interno cards',     type: 'text', placeholder: 'ej: 2rem' },
+      { name: 'gap',            label: 'Espacio entre cards',       type: 'text', placeholder: 'ej: 1.5rem' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS.services.defaultData, ...data };
+      const s = { ...SECTIONS.services.defaultDesign, ...design };
+      const SERVICE_ICONS = {
+        instalaciones: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>`,
+        soporte:       `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>`,
+        software:      `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>`,
+      };
       return `
-<section id="servicios" class="services-section">
+<section id="servicios" class="services-section"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
     <div class="services-header">
-      <h2 class="services-title">${esc(d.titulo_seccion)}</h2>
+      <h2 class="services-title"${css({ color: s.sectionColor, 'font-size': s.titleSize })}>${esc(d.titulo_seccion)}</h2>
     </div>
-    <div class="cards-grid">
+    <div class="cards-grid"${css({ gap: s.gap })}>
       ${(d.cards||[]).map(c => `
-        <div class="service-card">
-          <div class="card-icon"></div>
-          <h3 class="card-title">${esc(c.titulo)}</h3>
+        <div class="service-card"${css({ background: s.cardBg, 'border-radius': s.cardRadius, padding: s.cardPadding })}>
+          <div class="card-icon">${SERVICE_ICONS[c.id] || ''}</div>
+          <h3 class="card-title"${css({ color: s.cardTitleColor })}>${esc(c.titulo)}</h3>
           <p class="card-desc">${esc(c.descripcion)}</p>
-          <a href="${esc(c.enlace||'#')}" class="card-link">Ver Detalles <span>→</span></a>
+          <a href="${esc(c.enlace||'#')}" class="card-link"${css({ color: s.cardLinkColor })}>Ver Detalles <span>→</span></a>
         </div>`).join('')}
     </div>
   </div>
@@ -395,21 +487,29 @@ export const SECTIONS = {
     defaultData: {
       eyebrow: 'Excelencia Corporativa',
       titulo: 'Liderando la industria\ndesde el año 1999.',
-      descripcion: 'En SISGRA, entendemos que la infraestructura crítica no permite errores.',
+      descripcion: 'En SISGRA, entendemos que la infraestructura crítica no permite errores. Cada proyecto atraviesa un riguroso proceso de planificación, ejecución certificada y soporte post-instalación que garantiza resultados duraderos para su organización.',
       imagen: '/img/img1.png',
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', eyebrowColor: '', titleColor: '', textColor: '', paddingY: '', titleSize: '' },
     dataFields: [
       { name: 'eyebrow',     label: 'Eyebrow',           type: 'text' },
       { name: 'titulo',      label: 'Título (\\n = <br>)',type: 'textarea' },
       { name: 'descripcion', label: 'Descripción',       type: 'textarea' },
       { name: 'imagen',      label: 'URL imagen',        type: 'text' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',           label: 'Fondo de sección',          type: 'color' },
+      { name: 'eyebrowColor', label: 'Color eyebrow',             type: 'color' },
+      { name: 'titleColor',   label: 'Color título',              type: 'color' },
+      { name: 'textColor',    label: 'Color texto',               type: 'color' },
+      { name: 'paddingY',     label: 'Padding vertical sección',  type: 'text', placeholder: 'ej: 5rem' },
+      { name: 'titleSize',    label: 'Tamaño título (h3)',         type: 'text', placeholder: 'ej: 2.5rem' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS.about.defaultData, ...data };
+      const s = { ...SECTIONS.about.defaultDesign, ...design };
       return `
-<section id="nosotros" class="about-section">
+<section id="nosotros" class="about-section"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
     <div class="about-inner">
       <div class="about-img-wrap">
@@ -418,9 +518,9 @@ export const SECTIONS = {
         </div>
       </div>
       <div class="about-content">
-        <p class="about-eyebrow">${esc(d.eyebrow)}</p>
-        <h3 class="about-title">${String(d.titulo||'').split('\n').map(esc).join('<br>')}</h3>
-        <p class="about-desc">${esc(d.descripcion)}</p>
+        <p class="about-eyebrow"${css({ color: s.eyebrowColor })}>${esc(d.eyebrow)}</p>
+        <h3 class="about-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${String(d.titulo||'').split('\n').map(esc).join('<br>')}</h3>
+        <p class="about-desc"${css({ color: s.textColor })}>${esc(d.descripcion)}</p>
       </div>
     </div>
   </div>
@@ -437,13 +537,13 @@ export const SECTIONS = {
     icon: '►',
     validTipos: ['index'],
     defaultData: {
-      title: '¿Listo para empezar?',
-      desc: 'Contactanos sin compromiso.',
-      btn: 'Contactar',
+      title: '¿Listo para transformar su infraestructura?',
+      desc: 'Hablemos sin compromiso. Analizamos su proyecto y le ofrecemos la mejor solución.',
+      btn: 'Solicitar Presupuesto',
       href: 'https://wa.me/548101220065',
     },
     defaultDesign: {
-      bg: '#0A1D37', btnBg: '#2563eb',
+      bg: '#0A1D37', btnBg: '#2563eb', paddingY: '', btnRadius: '',
     },
     dataFields: [
       { name: 'title', label: 'Título',      type: 'text' },
@@ -452,19 +552,22 @@ export const SECTIONS = {
       { name: 'href',  label: 'Link botón',  type: 'text' },
     ],
     designFields: [
-      { name: 'bg',    label: 'Color fondo', type: 'color' },
-      { name: 'btnBg', label: 'Color botón', type: 'color' },
+      { name: 'bg',        label: 'Color fondo',             type: 'color' },
+      { name: 'btnBg',     label: 'Color botón',             type: 'color' },
+      { name: 'paddingY',  label: 'Padding vertical sección',type: 'text', placeholder: 'ej: 4rem' },
+      { name: 'btnRadius', label: 'Redondeo botón',          type: 'text', placeholder: 'ej: 0px ó 8px' },
     ],
     render: (data, design) => {
       const d = { ...SECTIONS.cta.defaultData, ...data };
       const s = { ...SECTIONS.cta.defaultDesign, ...design };
+      const py = s.paddingY || '4rem';
       return `
-<section style="background:${s.bg};padding:4rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;">
+<section style="background:${s.bg};padding:${py};display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;">
   <div>
     <h2 style="font-size:2rem;font-weight:900;color:#fff;letter-spacing:-.04em;font-style:italic;margin-bottom:.5rem;">${esc(d.title)}</h2>
     <p style="color:rgba(255,255,255,.6);font-size:.9375rem;">${esc(d.desc)}</p>
   </div>
-  <a href="${esc(d.href)}" style="background:${s.btnBg};color:#fff;padding:.875rem 2rem;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;white-space:nowrap;flex-shrink:0;">${esc(d.btn)}</a>
+  <a href="${esc(d.href)}" style="background:${s.btnBg};color:#fff;padding:.875rem 2rem;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;white-space:nowrap;flex-shrink:0;${s.btnRadius ? `border-radius:${s.btnRadius};` : ''}">${esc(d.btn)}</a>
 </section>`;
     },
   },
@@ -590,7 +693,7 @@ export const SECTIONS = {
       stat1Label: 'Latencia',  stat1Value: '&lt; 1ms',
       stat2Label: 'Ancho B.',  stat2Value: '40 Gbps',
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', titleColor: '', accentColor: '', paddingY: '', titleSize: '' },
     dataFields: [
       { name: 'badge',        label: 'Badge superior',     type: 'text' },
       { name: 'titulo1',      label: 'Título línea 1',     type: 'text' },
@@ -606,18 +709,25 @@ export const SECTIONS = {
       { name: 'stat2Label',   label: 'Stat 2 — Label',     type: 'text' },
       { name: 'stat2Value',   label: 'Stat 2 — Valor',     type: 'text' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',          label: 'Fondo de sección',         type: 'color' },
+      { name: 'titleColor',  label: 'Color título',             type: 'color' },
+      { name: 'accentColor', label: 'Color acento',             type: 'color' },
+      { name: 'paddingY',    label: 'Padding vertical sección', type: 'text', placeholder: 'ej: 5rem' },
+      { name: 'titleSize',   label: 'Tamaño título (h2)',       type: 'text', placeholder: 'ej: 3rem' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS['cableado-hero'].defaultData, ...data };
+      const s = { ...SECTIONS['cableado-hero'].defaultDesign, ...design };
       const pct = Math.max(0, Math.min(100, Number(d.progressPct) || 0));
       return `
-<section id="cableado-estructurado" class="section-cableado">
+<section id="cableado-estructurado" class="section-cableado"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="container-7xl">
     <div class="section-header">
       <div class="badge-infra">${esc(d.badge)}</div>
-      <h2 class="section-title">
+      <h2 class="section-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>
         ${esc(d.titulo1)} <br>
-        <span class="accent">${esc(d.accent)}</span>
+        <span class="accent"${css({ color: s.accentColor })}>${esc(d.accent)}</span>
       </h2>
       <div class="title-bar"></div>
     </div>
@@ -690,7 +800,7 @@ export const SECTIONS = {
         { iconType: 'lightning', titulo: 'Fusión por Núcleo',             desc: 'Empalmes de alta precisión certificados.' },
       ],
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', titleColor: '', accentColor: '', paddingY: '', titleSize: '' },
     dataFields: [
       { name: 'imagenUrl',    label: 'Imagen (URL)',    type: 'text' },
       { name: 'badgeTitle',   label: 'Badge — Título',  type: 'text' },
@@ -701,9 +811,16 @@ export const SECTIONS = {
       { name: 'descripcion',  label: 'Descripción',     type: 'textarea' },
       { name: 'features',     label: 'Features (lista)',type: 'features-icon' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',          label: 'Fondo de sección',         type: 'color' },
+      { name: 'titleColor',  label: 'Color título',             type: 'color' },
+      { name: 'accentColor', label: 'Color acento',             type: 'color' },
+      { name: 'paddingY',    label: 'Padding vertical sección', type: 'text', placeholder: 'ej: 5rem' },
+      { name: 'titleSize',   label: 'Tamaño título (h2)',       type: 'text', placeholder: 'ej: 3rem' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS['fibra-hero'].defaultData, ...data };
+      const s = { ...SECTIONS['fibra-hero'].defaultDesign, ...design };
       const icon = (type) => {
         const i = {
           location:  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
@@ -714,7 +831,7 @@ export const SECTIONS = {
         return i[type] || i.check;
       };
       return `
-<section id="fibra-optica" class="section-fibra">
+<section id="fibra-optica" class="section-fibra"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="section-fibra-inner">
     <div class="fibra-layout">
       <div class="fibra-visual">
@@ -729,9 +846,9 @@ export const SECTIONS = {
       </div>
       <div class="fibra-text">
         <span class="section-badge">${esc(d.sectionBadge)}</span>
-        <h2 class="section-title">
+        <h2 class="section-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>
           ${esc(d.titulo1)} <br/>
-          <span class="accent">${esc(d.accent)}</span>
+          <span class="accent"${css({ color: s.accentColor })}>${esc(d.accent)}</span>
         </h2>
         <p class="section-description">${esc(d.descripcion)}</p>
         <ul class="feature-list">
@@ -772,7 +889,7 @@ export const SECTIONS = {
       imgBadgeLabel: 'Status',
       imgBadgeText: 'SECURE AREA',
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', titleColor: '', accentColor: '', paddingY: '', titleSize: '' },
     dataFields: [
       { name: 'badge',         label: 'Badge superior',    type: 'text' },
       { name: 'titulo1',       label: 'Título línea 1',    type: 'text' },
@@ -783,9 +900,16 @@ export const SECTIONS = {
       { name: 'imgBadgeLabel', label: 'Badge sobre img — Label', type: 'text' },
       { name: 'imgBadgeText',  label: 'Badge sobre img — Texto', type: 'text' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',          label: 'Fondo de sección',         type: 'color' },
+      { name: 'titleColor',  label: 'Color título',             type: 'color' },
+      { name: 'accentColor', label: 'Color línea 2',            type: 'color' },
+      { name: 'paddingY',    label: 'Padding vertical sección', type: 'text', placeholder: 'ej: 5rem' },
+      { name: 'titleSize',   label: 'Tamaño título (h2)',       type: 'text', placeholder: 'ej: 3rem' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS['seguridad-hero'].defaultData, ...data };
+      const s = { ...SECTIONS['seguridad-hero'].defaultDesign, ...design };
       const icon = (type) => {
         const i = {
           location:  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
@@ -797,15 +921,15 @@ export const SECTIONS = {
         return i[type] || i.check;
       };
       return `
-<section id="seguridad-electronica">
+<section id="seguridad-electronica"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="section-bg-overlay"></div>
   <div class="section-inner">
     <div class="section-flex">
       <div class="section-content">
         <div class="badge">${esc(d.badge)}</div>
-        <h2 class="section-title">
+        <h2 class="section-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>
           <span><i>${esc(d.titulo1)}</i></span><br>
-          <span><i>${esc(d.titulo2)}</i></span>
+          <span${css({ color: s.accentColor })}><i>${esc(d.titulo2)}</i></span>
         </h2>
         <p class="section-desc">${esc(d.descripcion)}</p>
         <div class="features-list">
@@ -864,7 +988,7 @@ export const SECTIONS = {
       dashStat2Highlight: true,
       btnRemote: 'Acceder al Soporte Remoto Inmediato 🎧',
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', titleColor: '', accentColor: '', paddingY: '', titleSize: '' },
     dataFields: [
       { name: 'badge',          label: 'Badge superior',     type: 'text' },
       { name: 'titulo1',        label: 'Título línea 1',     type: 'text' },
@@ -880,9 +1004,16 @@ export const SECTIONS = {
       { name: 'dashStat2Highlight', label: 'Stat 2 — Verde (highlight)', type: 'toggle' },
       { name: 'btnRemote',      label: 'Botón Soporte Remoto', type: 'text' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',          label: 'Fondo de sección',         type: 'color' },
+      { name: 'titleColor',  label: 'Color título',             type: 'color' },
+      { name: 'accentColor', label: 'Color acento',             type: 'color' },
+      { name: 'paddingY',    label: 'Padding vertical sección', type: 'text', placeholder: 'ej: 5rem' },
+      { name: 'titleSize',   label: 'Tamaño título (h2)',       type: 'text', placeholder: 'ej: 3rem' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS['soporte-hero'].defaultData, ...data };
+      const s = { ...SECTIONS['soporte-hero'].defaultDesign, ...design };
       const icon = (type) => {
         const i = {
           location:  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
@@ -896,13 +1027,13 @@ export const SECTIONS = {
         return i[type] || i.gear;
       };
       return `
-<section id="soporte-it" class="hero-section">
+<section id="soporte-it" class="hero-section"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="container hero-grid">
     <div class="hero-content">
       <div class="badge">${esc(d.badge)}</div>
-      <h2 class="hero-title">
+      <h2 class="hero-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>
         ${esc(d.titulo1)} <br/>
-        <span class="text-blue">${esc(d.accent)}</span>
+        <span class="text-blue"${css({ color: s.accentColor })}>${esc(d.accent)}</span>
       </h2>
       <p class="hero-description">${esc(d.descripcion)}</p>
       <div class="features-list">
@@ -976,7 +1107,7 @@ export const SECTIONS = {
         '}',
       ],
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', titleColor: '', accentColor: '', paddingY: '', titleSize: '' },
     dataFields: [
       { name: 'badge',         label: 'Badge superior',      type: 'text' },
       { name: 'titulo1',       label: 'Título línea 1',      type: 'text' },
@@ -988,9 +1119,16 @@ export const SECTIONS = {
       { name: 'editorLabel',   label: 'Editor — Label',      type: 'text' },
       { name: 'codeRows',      label: 'Líneas de código',    type: 'text-list' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',          label: 'Fondo de sección',         type: 'color' },
+      { name: 'titleColor',  label: 'Color título',             type: 'color' },
+      { name: 'accentColor', label: 'Color acento',             type: 'color' },
+      { name: 'paddingY',    label: 'Padding vertical sección', type: 'text', placeholder: 'ej: 5rem' },
+      { name: 'titleSize',   label: 'Tamaño título (h2)',       type: 'text', placeholder: 'ej: 3rem' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS['desarrollo-hero'].defaultData, ...data };
+      const s = { ...SECTIONS['desarrollo-hero'].defaultDesign, ...design };
       const icon = (type) => {
         const i = {
           location:  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
@@ -1006,14 +1144,14 @@ export const SECTIONS = {
         return i[type] || i.gear;
       };
       return `
-<section id="software">
+<section id="software"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="software-container">
     <div class="software-inner">
       <div class="software-text">
         <div class="badge">${esc(d.badge)}</div>
-        <h2 class="software-title">
+        <h2 class="software-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>
           ${esc(d.titulo1)} <br>
-          <span>${esc(d.accent)}</span>
+          <span${css({ color: s.accentColor })}>${esc(d.accent)}</span>
         </h2>
         <p class="software-desc">${esc(d.descripcion)}</p>
         <div class="solutions-list">
@@ -1096,6 +1234,7 @@ export const SECTIONS = {
       badge: 'Infraestructura',
       titulo: 'Nuevos estándares de certificación Cat8 para plantas industriales',
       lead: 'Análisis detallado sobre cómo la infraestructura física determina el rendimiento de los sistemas de datos en entornos de alta demanda.',
+      fecha: '',
     },
     defaultDesign: {},
     dataFields: [
@@ -1114,6 +1253,7 @@ export const SECTIONS = {
     <a href="${esc(d.backHref)}" class="back-link">${esc(d.backLabel)}</a>
     <div class="article-meta">
       <span class="badge-tech">${esc(d.badge)}</span>
+      ${d.fecha ? `<span style="font-size:.75rem;opacity:.7;font-weight:600;">${esc(d.fecha)}</span>` : ''}
     </div>
     <h1 class="article-main-title">${esc(d.titulo)}</h1>
     <p class="article-lead">${esc(d.lead)}</p>
@@ -1150,9 +1290,8 @@ export const SECTIONS = {
     },
     defaultDesign: {},
     dataFields: [
-      { name: 'featuredImageUrl', label: 'Imagen destacada — URL', type: 'text' },
-      { name: 'featuredImageAlt', label: 'Imagen destacada — Alt', type: 'text' },
-      { name: 'contentHtml',      label: 'Contenido (HTML libre — h2/h3/p/ul/blockquote/strong)', type: 'textarea' },
+      // featuredImageUrl, featuredImageAlt y contentHtml vienen del post de blog (?id=)
+      { name: 'featuredImageUrl', label: 'Imagen de respaldo (sin ?id=)', type: 'text' },
       { name: 'ctaTitle',         label: 'CTA — Título',           type: 'text' },
       { name: 'ctaText',          label: 'CTA — Texto',            type: 'textarea' },
       { name: 'ctaBtnLabel',      label: 'CTA — Botón texto',      type: 'text' },
@@ -1168,7 +1307,7 @@ export const SECTIONS = {
 <main class="article-container">
   <div class="max-w-7xl article-grid">
     <div class="article-body">
-      <img src="${esc(d.featuredImageUrl)}" alt="${esc(d.featuredImageAlt)}" class="featured-image">
+      ${d.featuredImageUrl ? `<img src="${esc(d.featuredImageUrl)}" alt="${esc(d.featuredImageAlt)}" class="featured-image">` : ''}
       ${d.contentHtml || ''}
       <div class="article-cta">
         <h3>${esc(d.ctaTitle)}</h3>
