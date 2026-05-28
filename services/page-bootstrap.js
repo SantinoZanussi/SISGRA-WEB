@@ -9,8 +9,28 @@
 //   </script>
 
 import { renderPlantilla } from './sections.js';
+import { cssFilesFor } from './css-pages.js';
 
 const API_BASE = `http://${window.location.hostname}:3000/api`;
+
+// Inyecta en el <head> los <link> de CSS que falten para los módulos de la
+// plantilla. El HTML de cada página trae un set base, pero los módulos de otra
+// página (o las páginas nuevas btn-*) necesitan su hoja de /css/pages/ propia.
+// Calcularlo en runtime cubre también módulos agregados después de generar el
+// HTML. Usa la misma cssFilesFor que el editor para no divergir.
+function ensurePageCss(plantilla) {
+  if (!plantilla) return;
+  const have = new Set(
+    Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(l => l.getAttribute('href'))
+  );
+  cssFilesFor(plantilla.tipo, plantilla.secciones || []).forEach(href => {
+    if (have.has(href)) return;
+    const l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = href;
+    document.head.appendChild(l);
+  });
+}
 
 export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) {
   const root = document.getElementById(rootId);
@@ -118,6 +138,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
       }
     }
 
+    ensurePageCss(plantilla);
     root.innerHTML = renderPlantilla(plantilla);
     // Post-render: conectar funcionalidad que estaba en el HTML estático
     bindMobileDrawer();

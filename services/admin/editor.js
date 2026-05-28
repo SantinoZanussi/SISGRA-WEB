@@ -1,19 +1,8 @@
 import { SECTIONS, TIPOS_HTML, renderSection, createSection } from '../sections.js';
+import { TIPO_CSS, TYPE_TO_PAGE, cssFilesFor } from '../css-pages.js';
 
 const API = `http://${window.location.hostname}:3000/api`;
 const token = () => sessionStorage.getItem('sisgra_token');
-
-// CSS files que carga el iframe de canvas según el tipo
-const TIPO_CSS = {
-  index:      ['/css/base.css', '/css/layout_home.css', '/css/components.css', '/css/pages/home.css', '/css/pages/blog_inicio.css'],
-  blog:       ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/blog.css'],
-  articulo:   ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/articulo.css'],
-  cableado:   ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/cableado.css'],
-  fibra:      ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/fibra_optica.css'],
-  seguridad:  ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/seguridad.css'],
-  soporte:    ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/soporte_it.css'],
-  desarrollo: ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/desarrollo.css'],
-};
 
 const ICON_CATALOG = ['location', 'lightning', 'shield', 'check', 'camera', 'gear', 'lock', 'chart', 'database'];
 
@@ -503,10 +492,29 @@ function renderTray() {
 }
 
 // ─── Iframe con CSS específico por tipo ─────────────────────────────
+
+// Inyecta en el <head> del iframe los <link> de CSS que falten para los módulos
+// actuales (sin quitar los existentes). Se llama en cada render del canvas, así
+// un módulo recién arrastrado de otro tipo obtiene su CSS sin recrear el iframe.
+// La lista de CSS la calcula cssFilesFor (compartida con el runtime).
+function ensureCanvasCss(doc) {
+  if (!doc || !doc.head) return;
+  const have = new Set(
+    Array.from(doc.querySelectorAll('link[rel="stylesheet"]')).map(l => l.getAttribute('href'))
+  );
+  cssFilesFor(e3.currentTipo, e3.activeTpl?.secciones || []).forEach(href => {
+    if (have.has(href)) return;
+    const l = doc.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = href;
+    doc.head.appendChild(l);
+  });
+}
+
 function initIframe(cb) {
   const iframe = document.getElementById('e3-canvas');
   if (!iframe) return;
-  const cssFiles = TIPO_CSS[e3.currentTipo] || TIPO_CSS.index;
+  const cssFiles = cssFilesFor(e3.currentTipo, e3.activeTpl?.secciones || []);
   // OJO: usamos `<bo${''}dy>` en vez de `<body>` para evitar que Live Server inyecte
   // su <script> de auto-reload acá adentro (rompería el template literal del padre).
   const B = 'bo'+'dy';
@@ -540,6 +548,7 @@ function renderCanvas() {
   const iframe = document.getElementById('e3-canvas');
   if (!iframe || !iframe.contentDocument) return;
   const doc = iframe.contentDocument;
+  ensureCanvasCss(doc);
   const secs = e3.activeTpl?.secciones || [];
   if (secs.length === 0) {
     doc.body.innerHTML = `<div class="e3-empty" data-e3-emptydrop style="min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:border-color .15s,background .15s;">
@@ -645,6 +654,7 @@ function addSection(type, atIdx, variantId) {
       sec.data   = { ...sec.data,   ...(v.data   || {}) };
       sec.design = { ...sec.design, ...(v.design || {}) };
       sec.variantId = v.id;
+      if (v.alerta === true) sec.alerta = true;
     }
   }
   const secs = e3.activeTpl.secciones = e3.activeTpl.secciones || [];
@@ -686,8 +696,27 @@ function renderProps() {
   if (!def) { body.innerHTML = `<div class="props-empty">Tipo desconocido: ${sec.type}</div>`; return; }
   if (typeEl) typeEl.textContent = def.label;
   const fields = e3.propsTab === 'data' ? def.dataFields : def.designFields;
-  body.innerHTML = (fields || []).map(f => fieldHTML(f, sec[e3.propsTab]?.[f.name], e3.propsTab)).join('');
+  body.innerHTML = alertaFieldHTML(sec) + (fields || []).map(f => fieldHTML(f, sec[e3.propsTab]?.[f.name], e3.propsTab)).join('');
   bindFieldEvents(sec);
+  bindAlertaField(sec);
+}
+
+// Check de alerta a nivel sección (módulo). Se persiste dentro de cada
+// objeto de `secciones`, así el scheduler del backend sabe qué módulos
+// deben disparar la alerta de vencimiento (id_alerta=1) al vencer la plantilla.
+function alertaFieldHTML(sec) {
+  return `<div class="props-field" style="border:1px solid #fed7aa;background:#fff7ed;padding:.6rem;margin-bottom:.85rem;">
+    <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9a3412;">
+      <input type="checkbox" id="e3-sec-alerta" ${sec.alerta ? 'checked' : ''}/> ⚠ Alerta de vencimiento
+    </label>
+    <div style="font-size:.6rem;color:#b45309;margin-top:.35rem;line-height:1.4;">Si está activo, se envía una alerta (ID 1) cuando esta plantilla venza.</div>
+  </div>`;
+}
+
+function bindAlertaField(sec) {
+  const cb = document.getElementById('e3-sec-alerta');
+  if (!cb) return;
+  cb.addEventListener('change', () => { sec.alerta = cb.checked; markDirty(); });
 }
 
 function fieldHTML(f, val, group) {
@@ -995,21 +1024,6 @@ if (!tryInit()) {
 /* ═══════════════════════════════════════════════════════
    MÓDULOS — catálogo 3-views: tipos → variantes → editor
    ═══════════════════════════════════════════════════════ */
-// Maps each section type to the page type (for TIPO_CSS CSS selection)
-const TYPE_TO_PAGE = {
-  nav: 'index', hero: 'index', 'hero-centered': 'index',
-  clientes: 'index', blog: 'index', services: 'index',
-  about: 'index', cta: 'index', spacer: 'index', footer: 'index',
-  'cableado-hero': 'cableado',
-  'fibra-hero': 'fibra',
-  'seguridad-hero': 'seguridad',
-  'soporte-hero': 'soporte',
-  'desarrollo-hero': 'desarrollo',
-  'blog-list': 'blog',
-  'articulo-header': 'articulo', 'articulo-body': 'articulo',
-  'footer-full': 'cableado',
-};
-
 const MOD_GROUPS = [
   { label: 'Globales',         types: ['nav','footer','footer-full','cta','spacer'] },
   { label: 'Inicio',           types: ['hero','hero-centered','clientes','blog','services','about'] },
@@ -1025,7 +1039,7 @@ const SIMPLE_FIELD_TYPES = ['text','textarea','number','color','toggle'];
 let _modData       = {};   // { [type]: { variantes: [...] } }
 let _curModType    = null;
 let _curVariantId  = null;
-let _curModData    = { nombre: '', data: {}, design: {} };
+let _curModData    = { nombre: '', alerta: false, data: {}, design: {} };
 
 function _showView(id) {
   ['modulos-catalog-view','modulos-variants-view','modulos-editor-view'].forEach(v => {
@@ -1137,6 +1151,7 @@ window.openModEditor = function(type, variantId) {
 
   _curModData = {
     nombre: variant.nombre || '',
+    alerta: variant.alerta === true,
     data:   { ...sec.defaultData,   ...(variant.data   || {}) },
     design: { ...sec.defaultDesign, ...(variant.design || {}) },
   };
@@ -1150,6 +1165,12 @@ window.openModEditor = function(type, variantId) {
   if (nameInput) {
     nameInput.value = variant.nombre || '';
     nameInput.oninput = () => { _curModData.nombre = nameInput.value; };
+  }
+
+  const alertaInput = document.getElementById('modulos-variant-alerta');
+  if (alertaInput) {
+    alertaInput.checked = _curModData.alerta;
+    alertaInput.onchange = () => { _curModData.alerta = alertaInput.checked; };
   }
 
   renderModFieldGroup('data',   sec.dataFields   || [], 'modulos-editor-data-fields');
@@ -1359,6 +1380,7 @@ document.getElementById('modulos-save-btn')?.addEventListener('click', async () 
   try {
     const res = await window.__svc.apiPut(`/modulos/${_curModType}/variantes/${_curVariantId}`, {
       nombre,
+      alerta: _curModData.alerta,
       data:   _curModData.data,
       design: _curModData.design,
     });

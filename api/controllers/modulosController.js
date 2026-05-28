@@ -32,7 +32,7 @@ exports.listarVariantes = (req, res) => {
 // POST /api/modulos/:type/variantes  [auth]
 exports.crearVariante = (req, res) => {
   const { type } = req.params;
-  const { nombre, data, design } = req.body || {};
+  const { nombre, data, design, alerta } = req.body || {};
   if (!nombre) return res.status(400).json({ error: 'El campo nombre es obligatorio' });
   const state = read();
   if (!state.modulos[type]) state.modulos[type] = { variantes: [] };
@@ -40,6 +40,7 @@ exports.crearVariante = (req, res) => {
   const variante = {
     id: `${type}-${uid()}`,
     nombre,
+    alerta: alerta === true,
     data:   data   || {},
     design: design || {},
     creada_en: new Date().toISOString(),
@@ -52,13 +53,14 @@ exports.crearVariante = (req, res) => {
 // PUT /api/modulos/:type/variantes/:id  [auth]
 exports.actualizarVariante = (req, res) => {
   const { type, id } = req.params;
-  const { nombre, data, design } = req.body || {};
+  const { nombre, data, design, alerta } = req.body || {};
   const state = read();
   const mod = state.modulos[type];
   if (!mod) return res.status(404).json({ error: 'Módulo no encontrado' });
   const idx = (mod.variantes || []).findIndex(v => v.id === id);
   if (idx === -1) return res.status(404).json({ error: 'Variante no encontrada' });
   if (nombre  !== undefined) mod.variantes[idx].nombre = nombre;
+  if (alerta  !== undefined) mod.variantes[idx].alerta = alerta === true;
   if (data    !== undefined) mod.variantes[idx].data   = data;
   if (design  !== undefined) mod.variantes[idx].design = design;
   mod.variantes[idx].editada_en = new Date().toISOString();
