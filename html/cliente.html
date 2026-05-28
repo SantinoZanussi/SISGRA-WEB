@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/css/base.css">
     <link rel="stylesheet" href="/css/layout.css">
     <link rel="stylesheet" href="/css/components.css">
-    <link rel="stylesheet" href="/css/pages/articulo.css">
+    <link rel="stylesheet" href="/css/pages/cliente.css">
 
     <style>
         /* FOOTER RESPONSIVE */
@@ -31,7 +31,7 @@
 </head>
 <body>
 
-<!-- Perfil de cliente — usa la plantilla activa "articulo" para nav/footer -->
+<!-- Perfil de cliente — usa la plantilla activa "cliente" -->
 <div id="plantilla-root">
   <div style="padding:6rem 2rem;text-align:center;color:#94a3b8;font-family:'Inter',system-ui,sans-serif;letter-spacing:.15em;text-transform:uppercase;font-size:.75rem;">Cargando…</div>
 </div>
@@ -39,7 +39,7 @@
 <script type="module">
   import { bootstrapPage } from '/services/page-bootstrap.js';
   const clienteId = new URLSearchParams(window.location.search).get('id');
-  bootstrapPage('articulo', 'plantilla-root', { clienteId });
+  bootstrapPage('cliente', 'plantilla-root', { clienteId });
 </script>
 
 </body>

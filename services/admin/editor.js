@@ -521,6 +521,7 @@ function initIframe(cb) {
   iframe.srcdoc = `<!DOCTYPE html><html lang="es"><head>
 <meta charset="UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
 <style>
   body{margin:0;background:#fff;min-height:100vh;}
@@ -1033,6 +1034,7 @@ const MOD_GROUPS = [
   { label: 'Soporte IT',       types: ['soporte-hero'] },
   { label: 'Desarrollo',       types: ['desarrollo-hero'] },
   { label: 'Blog / Artículos', types: ['blog-list','articulo-header','articulo-body'] },
+  { label: 'Clientes',         types: ['cliente-header','cliente-body'] },
 ];
 const SIMPLE_FIELD_TYPES = ['text','textarea','number','color','toggle'];
 
@@ -1272,7 +1274,7 @@ function previewCurrentVariant() {
   const pageType = TYPE_TO_PAGE[_curModType] || 'index';
   const cssFiles = TIPO_CSS[pageType] || TIPO_CSS.index;
   const origin   = window.location.origin;
-  const links    = cssFiles.map(f => `<link rel="stylesheet" href="${origin}${f}">`).join('\n');
+  const links    = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">\n' + cssFiles.map(f => `<link rel="stylesheet" href="${origin}${f}">`).join('\n');
 
   // Partir los tags para que Live Server no inyecte su script de hot-reload
   // dentro del template literal (busca </'+'body> literalmente).

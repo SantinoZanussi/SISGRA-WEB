@@ -9,7 +9,6 @@ const {
 
 const PLT_FILE = path.join(__dirname, '..', 'data', 'plantillas.json');
 
-// ID de alerta para vencimientos de módulo (el resto de la lista llega después).
 const ID_VENCIMIENTO = 1;
 
 function leerPlantillas() {
@@ -18,7 +17,6 @@ function leerPlantillas() {
   catch { return { plantillas: [] }; }
 }
 
-// Una plantilla está vencida si está activa, tiene fecha_fin y ya pasó.
 function estaVencida(p) {
   return p.activa && p.fecha_fin && Date.now() > new Date(p.fecha_fin).getTime();
 }
@@ -32,13 +30,10 @@ function buildKey(plantilla, seccion) {
 function yaAlertada(log, key, tieneUrl) {
   const previas = log.alertas.filter(a => a.key === key);
   if (!previas.length) return false;
-  // Si antes no había URL y ahora sí, permitimos reintentar el envío real.
   if (tieneUrl && previas.every(a => a.estado === 'sin_url')) return false;
   return true;
 }
 
-// Recorre las plantillas vencidas y dispara una alerta por cada sección que
-// tenga el check de alerta activado (sec.alerta === true), evitando duplicados.
 async function chequearVencimientos() {
   const { plantillas } = leerPlantillas();
   const tieneUrl = !!leerConfig().webhook_url;
@@ -74,12 +69,11 @@ function iniciarSchedulerAlertas() {
     return;
   }
   const intervalo = cfg.intervalo_check_ms || 60000;
-  // Chequeo inmediato al arrancar y luego periódico.
   chequearVencimientos().catch(e => console.error('[alertas] error en chequeo:', e));
   _timer = setInterval(() => {
     chequearVencimientos().catch(e => console.error('[alertas] error en chequeo:', e));
   }, intervalo);
-  console.log(`[alertas] scheduler de vencimientos activo (cada ${intervalo}ms)`);
+  //console.log(`[alertas] scheduler de vencimientos activo (cada ${intervalo}ms)`);
 }
 
 module.exports = { iniciarSchedulerAlertas, chequearVencimientos };

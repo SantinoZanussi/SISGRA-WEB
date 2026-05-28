@@ -1,0 +1,246 @@
+/* ═══════════════════════════════════════════════════════════════════
+   PERFIL DE CLIENTE / CASO DE ÉXITO — clases cl-*
+   Diseño propio (más detallado que articulo.css): header con logo en
+   tarjeta, ficha lateral del proyecto y cuerpo con galería de imágenes.
+   Reusa las variables de color de base.css y el contenedor .max-w-7xl.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── HEADER ── */
+.cl-header {
+    background: linear-gradient(135deg, var(--sisgra-blue) 0%, #0b2a52 100%);
+    padding: 9rem 0 4.5rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+.cl-header::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, .06) 1px, transparent 1px);
+    background-size: 22px 22px;
+    pointer-events: none;
+}
+.cl-back {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    color: var(--blue-400);
+    text-decoration: none;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    margin-bottom: 2.5rem;
+    transition: color .2s;
+}
+.cl-back:hover { color: #fff; }
+
+.cl-header-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+@media (max-width: 768px) {
+    .cl-header { padding: 7rem 0 3.5rem; }
+    .cl-header-inner { flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+}
+
+.cl-logo-wrap {
+    flex-shrink: 0;
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 150px;
+    min-height: 110px;
+    box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .55);
+}
+.cl-logo {
+    max-height: 72px;
+    max-width: 220px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.cl-header-text { min-width: 0; }
+.cl-eyebrow {
+    font-size: .7rem;
+    font-weight: 900;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--blue-400);
+    margin-bottom: .85rem;
+}
+.cl-title {
+    font-size: clamp(1.9rem, 4.5vw, 3rem);
+    font-weight: 900;
+    line-height: 1.12;
+    text-transform: uppercase;
+    font-style: italic;
+    margin: 0 0 1.1rem;
+}
+.cl-lead {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    opacity: .82;
+    max-width: 720px;
+    margin: 0 0 1.4rem;
+}
+.cl-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .65rem;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .7);
+}
+.cl-meta-sep { opacity: .4; }
+
+/* ── CUERPO ── */
+.cl-body { background: #fff; }
+.cl-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 4.5rem;
+    padding: 5rem 0;
+}
+@media (max-width: 1024px) {
+    .cl-grid { grid-template-columns: 1fr; gap: 3rem; }
+}
+
+.cl-content {
+    color: #334155;
+    line-height: 1.7;
+    font-size: 1rem;
+    min-width: 0;
+}
+.cl-featured {
+    width: 100%;
+    max-height: 440px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-bottom: 2.5rem;
+    display: block;
+}
+
+/* Rich text del caso (incluye imágenes del proceso) */
+.cl-richtext h2,
+.cl-richtext h3 {
+    color: var(--sisgra-blue);
+    font-weight: 800;
+    line-height: 1.3;
+}
+.cl-richtext h2 { font-size: 1.4rem; margin: 1.4rem 0 .6rem; }
+.cl-richtext h3 { font-size: 1.15rem; font-weight: 700; margin: 1.2rem 0 .5rem; }
+.cl-richtext p { margin: 0 0 .9rem; }
+.cl-richtext ul,
+.cl-richtext ol { margin: 0 0 .9rem; padding-left: 1.5rem; }
+.cl-richtext li { margin-bottom: .35rem; }
+.cl-richtext a { color: var(--blue-600); text-decoration: underline; }
+.cl-richtext blockquote {
+    border-left: 3px solid var(--blue-500);
+    padding: .5rem 1rem;
+    background: transparent;
+    font-size: 1rem;
+    font-style: italic;
+    font-weight: 500;
+    margin: 1rem 0;
+    color: #475569;
+}
+
+/* Imágenes del contenido: NO ocupan todo el ancho de la web.
+   Centradas, con tope de ancho y alto para no romper el layout. */
+.cl-richtext img {
+    display: block;
+    max-width: 100%;
+    max-height: 520px;
+    width: auto;
+    height: auto;
+    margin: 2rem auto;
+    border-radius: 6px;
+    object-fit: contain;
+    box-shadow: 0 12px 30px -16px rgba(10, 29, 55, .35);
+}
+/* Galería: dos o más imágenes seguidas se acomodan en fila */
+.cl-richtext p:has(> img + img) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+.cl-richtext p:has(> img + img) img { margin: 0; flex: 1 1 280px; max-width: calc(50% - .5rem); }
+
+/* ── CTA dentro del cuerpo ── */
+.cl-cta {
+    background: #eff6ff;
+    border: 1px solid #dbeafe;
+    border-radius: 10px;
+    padding: 2rem 2.25rem;
+    margin-top: 3rem;
+}
+.cl-cta h3 {
+    color: var(--sisgra-blue);
+    font-size: 1.3rem;
+    font-weight: 900;
+    margin: 0 0 .6rem;
+}
+.cl-cta p { color: #475569; margin: 0 0 1.25rem; line-height: 1.6; }
+.cl-cta-btn {
+    display: inline-block;
+    background: var(--sisgra-blue);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: .9rem;
+    padding: .8rem 1.6rem;
+    border-radius: 6px;
+    transition: background .2s, transform .2s;
+}
+.cl-cta-btn:hover { background: var(--blue-600); transform: translateY(-1px); }
+
+/* ── SIDEBAR: ficha del proyecto ── */
+.cl-sidebar { min-width: 0; }
+.cl-ficha {
+    position: sticky;
+    top: 2rem;
+    background: var(--sisgra-blue);
+    color: #fff;
+    border-radius: 10px;
+    padding: 1.75rem;
+}
+.cl-ficha-title {
+    font-size: .7rem;
+    font-weight: 900;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--blue-400);
+    margin: 0 0 1.25rem;
+    padding-bottom: .85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, .14);
+}
+.cl-ficha-list { margin: 0; }
+.cl-ficha-row { padding: .7rem 0; border-bottom: 1px solid rgba(255, 255, 255, .08); }
+.cl-ficha-row:last-child { border-bottom: none; }
+.cl-ficha-label {
+    font-size: .62rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .55);
+    margin-bottom: .2rem;
+}
+.cl-ficha-value { font-size: .92rem; font-weight: 600; margin: 0; line-height: 1.45; }
+
+@media (max-width: 1024px) {
+    .cl-ficha { position: static; }
+}

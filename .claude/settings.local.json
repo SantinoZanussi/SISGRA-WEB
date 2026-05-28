@@ -94,7 +94,32 @@
       "Bash(curl -s -m 5 http://localhost:3000/services/page-bootstrap.js)",
       "Bash(curl -s -m 5 http://localhost:3000/services/admin/editor.js)",
       "Bash(ls -la .claude/)",
-      "Bash(cat .claude/launch.json)"
+      "Bash(cat .claude/launch.json)",
+      "Bash(node -e \"const p=require\\('./api/data/plantillas.json'\\); console.log\\(JSON.stringify\\(p.map\\(t=>\\({id:t.id,nombre:t.nombre,tipo:t.tipo,activa:t.activa,secciones:\\(t.secciones||[]\\).length}\\)\\),null,2\\)\\)\")",
+      "Bash(node -e \"const p=require\\('./api/data/plantillas.json'\\); const arr=Array.isArray\\(p\\)?p:\\(p.plantillas||Object.values\\(p\\)\\); console.log\\('TOP KEYS:', Object.keys\\(p\\)\\); const list=p.plantillas||p; console.log\\(JSON.stringify\\(\\(list.plantillas||list\\).map?\\(list\\).map\\(t=>\\({id:t.id,nombre:t.nombre,tipo:t.tipo,activa:t.activa}\\)\\): 'notarray', null,2\\)\\);\")",
+      "Bash(node -e \"const p=require\\('./api/data/plantillas.json'\\); const c=p.plantillas.find\\(t=>t.tipo==='cliente'\\); console.log\\('id:',c.id_plantilla\\); console.log\\('nombre:',c.nombre\\); console.log\\('secciones:', JSON.stringify\\(\\(c.secciones||c.sections||[]\\).map\\(s=>\\({id:s.id,type:s.type||s.tipo}\\)\\),null,2\\)\\); console.log\\('KEYS:', Object.keys\\(c\\)\\);\")",
+      "Bash(node -e \"const fs=require\\('fs'\\); const p=JSON.parse\\(fs.readFileSync\\('./api/data/plantillas.json','utf8'\\)\\); const c=p.plantillas.find\\(t=>t.tipo==='cliente'\\); console.log\\(JSON.stringify\\(c,null,2\\)\\);\")",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('./api/data/plantillas.json','utf8'\\)\\); console.log\\('plantillas.json valid'\\)\")",
+      "Bash(node --check services/admin/panel.js)",
+      "Bash(node --check services/admin/editor.js)",
+      "Bash(curl -s \"http://localhost:3000/api/plantillas/activa/cliente?t=1\")",
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(s\\);console.log\\('tipo:',j.plantilla.tipo\\);console.log\\('secciones:',j.plantilla.secciones.map\\(x=>x.type\\).join\\(', '\\)\\);}\\)\")",
+      "Bash(curl -s \"http://localhost:3000/api/plantillas/activa/cliente?t=2\")",
+      "Bash(curl -s \"http://localhost:3000/api/plantillas/activa/cliente?t=3\")",
+      "Bash(curl -s \"http://localhost:3000/api/data/clientes\")",
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(s\\);\\(j.clientes||[]\\).forEach\\(c=>console.log\\(c.id, '| estado:', c.estado_perfil||'\\(none\\)', '|', c.nombre\\)\\);}\\)\")",
+      "Bash(ls .claude/launch.json)",
+      "Bash(curl -s \"http://localhost:3000/api/plantillas/tipos\")",
+      "Bash(curl -s \"http://localhost:3000/html/admin_panel.html\")",
+      "Bash(curl -s \"http://localhost:3000/api/data/blog\")",
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(s\\);const pub=\\(j.posts||[]\\).filter\\(p=>p.estado==='publicado'\\);console.log\\('published posts:',pub.length\\); if\\(pub[0]\\) console.log\\('first id:',pub[0].id\\);}\\)\")",
+      "Bash(node -e \"const m=require\\('./api/data/modulos.json'\\); const o=m.modulos||m; Object.keys\\(o\\).forEach\\(k=>console.log\\(k,'→ variantes:',\\(o[k].variantes||[]\\).length\\)\\)\")",
+      "Bash(node -e \"const m=require\\('./api/data/modulos.json'\\); const o=m.modulos||m; console.log\\('TOP KEYS:', Object.keys\\(m\\)\\); console.log\\(JSON.stringify\\(o['articulo-header'],null,2\\)\\)\")",
+      "Bash(node --check services/sections.js)",
+      "Bash(node --check services/page-bootstrap.js)",
+      "Bash(node -e \"require\\('fs'\\).readFileSync\\('./api/data/modulos.json','utf8'\\) && JSON.parse\\(require\\('fs'\\).readFileSync\\('./api/data/modulos.json','utf8'\\)\\); console.log\\('modulos.json valid'\\)\")",
+      "Bash(curl -s \"http://localhost:3000/api/modulos\")",
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(s\\);const o=j.modulos||j;console.log\\('cliente-header variantes:',\\(o['cliente-header']?.variantes||[]\\).length\\);console.log\\('cliente-body variantes:',\\(o['cliente-body']?.variantes||[]\\).length\\);}\\)\")"
     ]
   }
 }

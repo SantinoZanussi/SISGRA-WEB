@@ -78,7 +78,7 @@
           "id": "sec-nav-default",
           "type": "nav",
           "data": {
-            "logoSrc": "/img/logo sisgra.png",
+            "logoSrc": "/img/sisgra_blanco.png",
             "logoSrcHref": "../index.html",
             "instalacionesLabel": "Instalaciones",
             "cableadoLabel": "Cableado Estructurado",
@@ -186,14 +186,14 @@
             "whatsappText": "Consultar por WhatsApp",
             "formLabel": "Complete el formulario",
             "btnEnviar": "Enviar consulta",
-            "brandImg": "/img/logo sisgra.png",
+            "brandImg": "/img/sisgra_blanco.png",
             "copyright": "© 2026 SISGRA S.R.L. — Todos los derechos reservados"
           },
           "design": {}
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-27T17:09:14.227Z",
+      "editado_en": "2026-05-28T17:29:59.233Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
       "fecha_fin": "2026-06-17T11:38:57.111Z"
     },
@@ -208,7 +208,7 @@
           "id": "sec-nav-blog",
           "type": "nav",
           "data": {
-            "logoSrc": "/img/logo sisgra.png",
+            "logoSrc": "/img/sisgra_blanco.png",
             "instalacionesLabel": "Instalaciones",
             "cableadoLabel": "Cableado Estructurado",
             "cableadoHref": "/html/cableado_estructurado.html",
@@ -298,7 +298,7 @@
           "id": "sec-nav-articulo",
           "type": "nav",
           "data": {
-            "logoSrc": "/img/logo sisgra.png",
+            "logoSrc": "/img/sisgra_blanco.png",
             "instalacionesLabel": "Instalaciones",
             "cableadoLabel": "Cableado Estructurado",
             "cableadoHref": "/html/cableado_estructurado.html",
@@ -406,7 +406,7 @@
           "id": "sec-nav-cableado",
           "type": "nav",
           "data": {
-            "logoSrc": "/img/logo sisgra.png",
+            "logoSrc": "/img/sisgra_blanco.png",
             "instalacionesLabel": "Instalaciones",
             "cableadoLabel": "Cableado Estructurado",
             "cableadoHref": "/html/cableado_estructurado.html",
@@ -517,7 +517,7 @@
           "id": "sec-nav-fibra",
           "type": "nav",
           "data": {
-            "logoSrc": "/img/logo sisgra.png",
+            "logoSrc": "/img/sisgra_blanco.png",
             "instalacionesLabel": "Instalaciones",
             "cableadoLabel": "Cableado Estructurado",
             "cableadoHref": "/html/cableado_estructurado.html",
@@ -623,7 +623,7 @@
           "id": "sec-nav-seguridad",
           "type": "nav",
           "data": {
-            "logoSrc": "/img/logo sisgra.png",
+            "logoSrc": "/img/sisgra_blanco.png",
             "instalacionesLabel": "Instalaciones",
             "cableadoLabel": "Cableado Estructurado",
             "cableadoHref": "/html/cableado_estructurado.html",
@@ -724,7 +724,7 @@
           "id": "sec-nav-soporte",
           "type": "nav",
           "data": {
-            "logoSrc": "/img/logo sisgra.png",
+            "logoSrc": "/img/sisgra_blanco.png",
             "instalacionesLabel": "Instalaciones",
             "cableadoLabel": "Cableado Estructurado",
             "cableadoHref": "/html/cableado_estructurado.html",
@@ -835,7 +835,7 @@
           "id": "sec-nav-desarrollo",
           "type": "nav",
           "data": {
-            "logoSrc": "/img/logo sisgra.png",
+            "logoSrc": "/img/sisgra_blanco.png",
             "instalacionesLabel": "Instalaciones",
             "cableadoLabel": "Cableado Estructurado",
             "cableadoHref": "/html/cableado_estructurado.html",
@@ -940,6 +940,105 @@
       "editado_en": "2026-05-25T17:00:00.000Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
       "fecha_fin": "2026-06-03T11:38:57.111Z"
+    },
+    {
+      "id_plantilla": "cliente-1",
+      "tipo": "cliente",
+      "nombre": "Clientes",
+      "descripcion": "Plantilla base para el perfil de cada cliente (accedido desde el carrusel).",
+      "activa": true,
+      "secciones": [
+        {
+          "id": "sec-nav-cliente",
+          "type": "nav",
+          "data": {
+            "items": [
+              {
+                "tipo": "dropdown",
+                "titulo": "Instalaciones",
+                "children": [
+                  {
+                    "titulo": "Cableado Estructurado",
+                    "href": "/html/cableado_estructurado.html"
+                  },
+                  {
+                    "titulo": "Fibra Óptica",
+                    "href": "/html/fibra_optica.html"
+                  },
+                  {
+                    "titulo": "Seguridad Electrónica",
+                    "href": "/html/seguridad.html"
+                  }
+                ]
+              },
+              {
+                "tipo": "link",
+                "titulo": "Blog",
+                "href": "/html/blog.html",
+                "id_boton": "btn-blog"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Soporte IT",
+                "href": "/html/soporte_it.html",
+                "id_boton": "btn-soporte"
+              },
+              {
+                "tipo": "link",
+                "titulo": "Desarrollo de Software",
+                "href": "/html/desarrollo.html",
+                "id_boton": "btn-desarrollo"
+              }
+            ]
+          },
+          "design": {}
+        },
+        {
+          "id": "sec-cliente-header",
+          "type": "cliente-header",
+          "data": {
+            "backLabel": "← Volver al Inicio",
+            "backHref": "/index.html",
+            "empresaLogo": "",
+            "empresaNombre": "Nombre de la empresa",
+            "titulo": "Caso de éxito",
+            "lead": "Descripción del proyecto o caso de éxito.",
+            "sector": "",
+            "ubicacion": "",
+            "anio": ""
+          },
+          "design": {}
+        },
+        {
+          "id": "sec-cliente-body",
+          "type": "cliente-body",
+          "data": {
+            "featuredImageUrl": "",
+            "featuredImageAlt": "",
+            "contentHtml": "<h2>El desafío</h2><p>Describí el contexto inicial del cliente y los objetivos del proyecto.</p><h2>La solución</h2><p>Contá qué implementó SISGRA y cómo se ejecutó.</p>",
+            "fichaTitle": "Ficha del proyecto",
+            "empresa": "Nombre de la empresa",
+            "sector": "",
+            "ubicacion": "",
+            "anio": "",
+            "servicios": "",
+            "ctaTitle": "¿Tenés un proyecto similar?",
+            "ctaText": "Conversemos sobre cómo SISGRA puede ayudar a tu empresa.",
+            "ctaBtnLabel": "Contactar a SISGRA",
+            "ctaBtnHref": "https://wa.me/548101220065"
+          },
+          "design": {}
+        },
+        {
+          "id": "sec-footer-cliente",
+          "type": "footer-full",
+          "data": {},
+          "design": {}
+        }
+      ],
+      "creado_en": "2026-05-28T00:00:00.000Z",
+      "editado_en": "2026-05-28T18:21:40.450Z",
+      "fecha_fin": "2026-06-04T18:21:29.982Z"
     }
   ]
 }

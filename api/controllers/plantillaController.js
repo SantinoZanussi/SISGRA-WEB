@@ -5,7 +5,7 @@ const DATA_DIR = path.join(__dirname, '..', 'data');
 const FILE = path.join(DATA_DIR, 'plantillas.json');
 
 const TIPOS_BASE = [
-  'index', 'blog', 'articulo',
+  'index', 'blog', 'articulo', 'cliente',
   'cableado', 'fibra', 'seguridad', 'soporte', 'desarrollo',
 ];
 

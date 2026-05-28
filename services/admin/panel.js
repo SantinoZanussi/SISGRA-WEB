@@ -92,6 +92,7 @@ function closeModal(id){ window.__svc?.closeModal(id); }
    NAVIGATION
 ══════════════════════════════════════════════ */
 function showPanel(id){
+  try { sessionStorage.setItem('sisgra_panel', id); } catch(_){}
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
   document.querySelectorAll('.sidebar-tpl-item').forEach(i=>i.classList.remove('active'));
@@ -890,6 +891,7 @@ function attachInlineEdits(sec, container, tplId){
 function openTemplateEditor(tplId){
   const tpl = state.templates.find(t=>t.id===tplId);
   if(!tpl) return;
+  try { sessionStorage.setItem('sisgra_panel', 'tpl-editor'); sessionStorage.setItem('sisgra_tpl', tplId); } catch(_){}
   state.selectedSectionId = null;
  
   showPanel('tpl-editor');
@@ -1456,6 +1458,7 @@ window.deletePost = async function(id){
 async function saveBlogPost(){
   const item={titulo:document.getElementById('b-title').value.trim(),categoria:document.getElementById('b-categoria').value,estado:document.getElementById('b-estado').value,fecha:document.getElementById('b-fecha').value,extracto:document.getElementById('b-extracto').value.trim(),contenido:document.getElementById('b-content').innerHTML,imagen:document.getElementById('b-img').value.trim()};
   if(!item.titulo) return showNotif('El título es requerido','error');
+  if(!item.imagen) return showNotif('La imagen de portada es obligatoria','error');
   if(state.editingPostId){ await apiPatch('/data/blog/posts/'+state.editingPostId,item); const i=state.blog.posts.findIndex(x=>x.id===state.editingPostId); if(i>-1) state.blog.posts[i]={...state.blog.posts[i],...item}; }
   else { const r=await apiPost('/data/blog/posts',item); state.blog.posts = state.blog.posts||[]; state.blog.posts.unshift(r.item); }
   closeModal('modal-blog'); renderBlogList(); showNotif('✓ Artículo guardado');
@@ -1582,6 +1585,10 @@ window.editCliente = function(id){
   document.getElementById('c-estado-perfil').value   = c.estado_perfil||'borrador';
   document.getElementById('c-titulo-proyecto').value = c.titulo_proyecto||'';
   document.getElementById('c-subtitulo').value       = c.subtitulo||'';
+  document.getElementById('c-sector').value          = c.sector||'';
+  document.getElementById('c-ubicacion').value       = c.ubicacion||'';
+  document.getElementById('c-anio').value            = c.anio||'';
+  document.getElementById('c-servicios').value       = c.servicios||'';
   document.getElementById('c-imagen-dest').value     = c.imagen_destacada||'';
   document.getElementById('c-content-cliente').innerHTML = c.contenido||'';
   openModal('modal-cliente');
@@ -1593,6 +1600,10 @@ async function saveCliente(){
   const estadoPerfil = document.getElementById('c-estado-perfil')?.value || 'borrador';
   const tituloProy   = document.getElementById('c-titulo-proyecto')?.value.trim() || '';
   const subtitulo    = document.getElementById('c-subtitulo')?.value.trim() || '';
+  const sector       = document.getElementById('c-sector')?.value.trim() || '';
+  const ubicacion    = document.getElementById('c-ubicacion')?.value.trim() || '';
+  const anio         = document.getElementById('c-anio')?.value.trim() || '';
+  const servicios    = document.getElementById('c-servicios')?.value.trim() || '';
   const imagenDest   = document.getElementById('c-imagen-dest')?.value.trim() || '';
   const contenido    = document.getElementById('c-content-cliente')?.innerHTML || '';
   if(!name) return showNotif('El nombre es requerido','error');
@@ -1602,7 +1613,7 @@ async function saveCliente(){
       c.id===state.editingClienteId ? {
         ...c, nombre:name, imagen:img||c.imagen,
         estado_perfil:estadoPerfil, titulo_proyecto:tituloProy,
-        subtitulo, imagen_destacada:imagenDest, contenido,
+        subtitulo, sector, ubicacion, anio, servicios, imagen_destacada:imagenDest, contenido,
       } : c
     );
     updated = { ...(state.clientes||{}), clientes:list };
@@ -1610,7 +1621,7 @@ async function saveCliente(){
     const newCliente = {
       id:'c'+Date.now(), nombre:name, imagen:img||'', url:'', activo:true,
       estado_perfil:estadoPerfil, titulo_proyecto:tituloProy,
-      subtitulo, imagen_destacada:imagenDest, contenido,
+      subtitulo, sector, ubicacion, anio, servicios, imagen_destacada:imagenDest, contenido,
     };
     updated = { ...(state.clientes||{}), clientes:[...(state.clientes?.clientes||[]), newCliente] };
   }
@@ -1738,6 +1749,7 @@ window.editarNavItem = function(id_boton) {
   document.getElementById('nav-edit-titulo').value = b.titulo || '';
   document.getElementById('nav-edit-href').value = b.href || '';
   document.getElementById('nav-edit-orden').value = b.orden || '';
+  document.getElementById('nav-edit-activo').value = b.activo !== false ? 'visible' : 'oculto';
   // If custom HTML page, show href as read-only info
   const hrefField = document.getElementById('nav-edit-href-field');
   if (b.id_plantilla) {
@@ -1860,6 +1872,10 @@ function initApp(){
         const url = prompt('URL del enlace (ej: https://sisgra.com.ar):');
         if (url) document.execCommand('createLink',false,url);
       }
+      else if (cmd==='insertImage') {
+        const url = prompt('URL de la imagen (ej: /img/clients/proceso-1.jpg):');
+        if (url) document.execCommand('insertImage',false,url);
+      }
       else document.execCommand(cmd,false,null);
     });
   });
@@ -1928,7 +1944,7 @@ function initApp(){
     if (!titulo) { window.__svc.showNotif('El título es obligatorio', 'error'); return; }
     const hrefEl = document.getElementById('nav-edit-href');
     const orden = parseInt(document.getElementById('nav-edit-orden').value) || undefined;
-    const body = { titulo };
+    const body = { titulo, activo: document.getElementById('nav-edit-activo').value === 'visible' };
     if (hrefEl) body.href = hrefEl.value.trim();
     if (orden) body.orden = orden;
     try {
@@ -1950,6 +1966,10 @@ function initApp(){
     document.getElementById('c-estado-perfil').value='borrador';
     document.getElementById('c-titulo-proyecto').value='';
     document.getElementById('c-subtitulo').value='';
+    document.getElementById('c-sector').value='';
+    document.getElementById('c-ubicacion').value='';
+    document.getElementById('c-anio').value='';
+    document.getElementById('c-servicios').value='';
     document.getElementById('c-imagen-dest').value='';
     document.getElementById('c-content-cliente').innerHTML='';
     openModal('modal-cliente');
@@ -1958,6 +1978,20 @@ function initApp(){
   document.getElementById('abrir-modal-blog')?.addEventListener('click',openNewPost);
   document.getElementById('dash-nuevo-post')?.addEventListener('click',()=>{ showPanel('blog'); openNewPost(); });
   document.getElementById('guardar-blog')?.addEventListener('click',saveBlogPost);
+
+  // Restaurar panel activo tras recarga (Live Server / hot-reload)
+  try {
+    const savedPanel = sessionStorage.getItem('sisgra_panel');
+    if (savedPanel && savedPanel !== 'dashboard') {
+      if (savedPanel === 'tpl-editor') {
+        const savedTpl = sessionStorage.getItem('sisgra_tpl');
+        const tplId = savedTpl || state.templates[0]?.id;
+        if (tplId) { state.currentTplId = tplId; renderSidebarTemplates(); openTemplateEditor(tplId); }
+      } else {
+        showPanel(savedPanel);
+      }
+    }
+  } catch(_){}
 }
  
 document.getElementById('login-btn').addEventListener('click', doLogin);

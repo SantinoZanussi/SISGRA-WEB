@@ -942,8 +942,40 @@
         {
           "id": "nav-v1",
           "nombre": "Navbar — Default",
-          "data": {},
-          "design": {}
+          "data": {
+            "logoSrc": "/img/sisgra_azul.png",
+            "logoSrcHref": "../index.html",
+            "instalacionesLabel": "Instalaciones",
+            "cableadoLabel": "Cableado Estructurado",
+            "cableadoHref": "/html/cableado_estructurado.html",
+            "fibraLabel": "Fibra Óptica",
+            "fibraHref": "/html/fibra_optica.html",
+            "seguridadLabel": "Seguridad Electrónica",
+            "seguridadHref": "/html/seguridad.html",
+            "blogLabel": "Blog",
+            "blogHref": "/html/blog.html",
+            "soporteLabel": "Soporte IT",
+            "soporteHref": "/html/soporte_it.html",
+            "desarrolloLabel": "Desarrollo de Software",
+            "desarrolloHref": "/html/desarrollo.html",
+            "ctaLabel": "Contáctese",
+            "ctaHref": "https://wa.me/548101220065"
+          },
+          "design": {
+            "bg": "",
+            "linkColor": "",
+            "dropdownBg": "",
+            "dropdownLinkColor": "",
+            "ctaBg": "",
+            "ctaColor": "",
+            "mobileBg": "",
+            "mobileLinkColor": "",
+            "marginTop": "",
+            "marginBottom": "",
+            "display": ""
+          },
+          "alerta": false,
+          "editada_en": "2026-05-28T18:13:42.012Z"
         }
       ]
     },
@@ -992,6 +1024,45 @@
         {
           "id": "articulo-body-v1",
           "nombre": "Cuerpo Artículo — Default",
+          "data": {},
+          "design": {}
+        },
+        {
+          "id": "articulo-body-brunbydl",
+          "nombre": "Cuerpo Artículo — 2",
+          "alerta": false,
+          "data": {
+            "featuredImageUrl": "",
+            "featuredImageAlt": "Infraestructura IT",
+            "contentHtml": "<h2>La evolución hacia la Categoría 8</h2>\n<p>En el panorama actual de la industria 4.0, la velocidad de transmisión de datos no es solo una ventaja competitiva, sino un requisito operativo. El cableado <strong>Categoría 8 (Cat8)</strong> representa el salto más significativo en infraestructura de cobre de la última década.</p>\n<p>A diferencia de sus predecesores, Cat8 permite frecuencias de hasta 2000 MHz y velocidades de 25Gbps a 40Gbps, lo que lo hace ideal para el backbone de centros de datos y plantas automatizadas en Rosario y la región.</p>\n<blockquote>\"La certificación no es un trámite, es el seguro de vida de su red de datos.\"</blockquote>\n<h3>Beneficios clave de la certificación profesional:</h3>\n<ul>\n  <li><strong>Reducción de Latencia:</strong> Minimiza la retransmisión de paquetes perdidos por interferencias.</li>\n  <li><strong>Escalabilidad:</strong> Prepara la planta para futuras actualizaciones de hardware sin cambiar el cableado.</li>\n  <li><strong>Cumplimiento de Normas:</strong> Garantiza que la instalación respeta los estándares internacionales TIA/EIA.</li>\n</ul>\n<p>En <strong>SISGRA</strong>, utilizamos equipos de medición Fluke de última generación para entregar reportes detallados de cada nodo instalado, asegurando que cada centímetro de su red rinda al 100% de su capacidad nominal.</p>",
+            "ctaTitle": "¿Necesita auditar su infraestructura actual?",
+            "ctaText": "Nuestros asesores técnicos pueden realizar un relevamiento de su planta y proponer mejoras de conectividad.",
+            "ctaBtnLabel": "Solicitar Asesoría Técnica",
+            "ctaBtnHref": "https://wa.me/03418610863",
+            "sidebarTitle": "SISGRA SRL",
+            "sidebarText": "Expertos en integración tecnológica desde 1999. Soluciones certificadas para empresas que no pueden detenerse."
+          },
+          "design": {},
+          "creada_en": "2026-05-28T16:30:11.708Z",
+          "editada_en": "2026-05-28T16:30:39.827Z"
+        }
+      ]
+    },
+    "cliente-header": {
+      "variantes": [
+        {
+          "id": "cliente-header-v1",
+          "nombre": "Header Cliente — Default",
+          "data": {},
+          "design": {}
+        }
+      ]
+    },
+    "cliente-body": {
+      "variantes": [
+        {
+          "id": "cliente-body-v1",
+          "nombre": "Cuerpo Cliente — Default",
           "data": {},
           "design": {}
         }

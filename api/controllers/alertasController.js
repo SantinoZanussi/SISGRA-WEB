@@ -6,8 +6,6 @@ const DATA_DIR    = path.join(__dirname, '..', 'data');
 const CONFIG_FILE = path.join(DATA_DIR, 'alertas_config.json');
 const LOG_FILE    = path.join(DATA_DIR, 'alertas_log.json');
 
-// Catálogo de tipos de alerta. La lista completa la define el cliente más
-// adelante; por ahora solo conocemos la 1 (vencimiento de módulo).
 const CATALOGO_ALERTAS = {
   1: 'Vencimiento de módulo',
 };
@@ -35,8 +33,7 @@ function guardarLog(data) {
   fs.writeFileSync(LOG_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
-// Núcleo del sistema: arma el JSON { id_alerta, alerta, date_time_hour } y lo
-// manda por POST a la URL configurada (node-red). Si todavía no hay URL, igual
+// arma el JSON { id_alerta, alerta, date_time_hour }
 // registra el intento en el log (estado "sin_url") para no perder el evento.
 // `key` permite deduplicar disparos; `meta` guarda contexto extra en el log.
 async function dispararAlerta({ id_alerta, alerta, key = null, meta = {} }) {
@@ -87,9 +84,7 @@ async function dispararAlerta({ id_alerta, alerta, key = null, meta = {} }) {
   return registro;
 }
 
-// ─── HTTP handlers ──────────────────────────────────────────────────
-
-// POST /api/alertas/disparar  [auth]   Body: { id_alerta, alerta? }
+// POST /api/alertas/disparar [auth] Body: { id_alerta, alerta? }
 exports.disparar = async (req, res) => {
   const { id_alerta, alerta } = req.body || {};
   if (id_alerta === undefined || id_alerta === null) {
@@ -100,13 +95,13 @@ exports.disparar = async (req, res) => {
   res.status(201).json({ ok: true, alerta: registro });
 };
 
-// GET /api/alertas/catalogo   (público)
+// GET /api/alertas/catalogo (público)
 exports.catalogo = (_req, res) => res.json({ catalogo: CATALOGO_ALERTAS });
 
-// GET /api/alertas/log   [auth]
+// GET /api/alertas/log [auth]
 exports.listarLog = (_req, res) => res.json(leerLog());
 
-// GET /api/alertas/config   [auth]
+// GET /api/alertas/config [auth]
 exports.obtenerConfig = (_req, res) => {
   res.json({ config: leerConfig(), env_override: !!process.env.ALERTAS_WEBHOOK_URL });
 };

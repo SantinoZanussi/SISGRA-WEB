@@ -8,6 +8,7 @@ export const TIPO_CSS = {
   index:      ['/css/base.css', '/css/layout_home.css', '/css/components.css', '/css/pages/home.css', '/css/pages/blog_inicio.css'],
   blog:       ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/blog.css'],
   articulo:   ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/articulo.css'],
+  cliente:    ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/cliente.css'],
   cableado:   ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/cableado.css'],
   fibra:      ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/fibra_optica.css'],
   seguridad:  ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/seguridad.css'],
@@ -26,7 +27,7 @@ export const TYPE_TO_PAGE = {
   'soporte-hero': 'soporte',
   'desarrollo-hero': 'desarrollo',
   'blog-list': 'blog',
-  'articulo-header': 'articulo', 'articulo-body': 'articulo',
+  'articulo-header': 'articulo', 'articulo-body': 'articulo', 'cliente-header': 'cliente', 'cliente-body': 'cliente',
   'footer-full': 'cableado',
 };
 

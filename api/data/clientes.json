@@ -6,7 +6,7 @@
     {
       "id": "c1",
       "nombre": "San Cristóbal",
-      "imagen": "/img/sancristobal.png",
+      "imagen": "/img/clients/sancristobal.png",
       "url": "",
       "activo": true,
       "estado_perfil": "publicado",
@@ -16,23 +16,32 @@
       "contenido": "<b>esto tambien</b><div><br></div>"
     },
     {
-      "id": "c2",
+      "id": "c1779988727357",
+      "nombre": "Sisgra",
+      "imagen": "/img/sisgra_azul.png",
+      "url": "",
+      "activo": true,
+      "estado_perfil": "borrador",
+      "titulo_proyecto": "",
+      "subtitulo": "",
+      "imagen_destacada": "",
+      "contenido": ""
+    },
+    {
+      "id": "c1779992770993",
       "nombre": "Syngenta",
-      "imagen": "/img/syngenta.png",
+      "imagen": "/img/clients/syngenta.png",
       "url": "",
       "activo": true,
       "estado_perfil": "publicado",
-      "titulo_proyecto": "",
-      "subtitulo": "Esto es una prueba",
+      "titulo_proyecto": "Syngenta",
+      "subtitulo": "Nuestro trabajo",
+      "sector": "Industria",
+      "ubicacion": "Rosario, Argentina",
+      "anio": "2024",
+      "servicios": "Instalación de fibra óptica",
       "imagen_destacada": "",
-      "contenido": "Esto es una prueba"
-    },
-    {
-      "id": "c1779387542739",
-      "nombre": "dwadad",
-      "imagen": "https://polotecnologico.net/wp-content/uploads/2023/08/sisgra-300x300.jpg",
-      "url": "",
-      "activo": true
+      "contenido": "<p><span style=\"font-size: 0.875rem;\">En SISGRA llevamos adelante la instalación completa de infraestructura de fibra óptica para las oficinas y planta operativa de Syngenta en Rosario, Argentina. El objetivo principal fue optimizar la conectividad interna, mejorar la estabilidad de la red y garantizar una mayor velocidad de transmisión de datos para las distintas áreas de trabajo.</span></p><p><span style=\"font-size: 0.875rem;\"><br></span></p><p><b>Alcance del trabajo</b></p><p><ul><li><i>Relevamiento técnico de las instalaciones.</i></li><li><i>Tendido y organización de cableado de fibra óptica.</i></li><li><i>Instalación de bandejas, racks y patch panels.</i></li><li><i>Configuración y pruebas de conectividad.</i></li><li><i>Certificación y verificación del rendimiento de la red.</i></li></ul></p><p><br><span style=\"font-size: 0.875rem;\"><u><b>Resultados</b></u></span></p><p><span style=\"font-size: 0.875rem;\"><u><b><br></b></u></span></p><p>La implementación permitió mejorar significativamente la comunicación entre sectores, reducir tiempos de respuesta en los sistemas internos y garantizar una infraestructura preparada para futuras ampliaciones tecnológicas.</p><p>“Un proyecto desarrollado con altos estándares de calidad, priorizando estabilidad, rendimiento y escalabilidad.”</p>"
     }
   ]
 }

@@ -15,9 +15,13 @@ export const TIPOS_HTML = [
   { value: 'seguridad',  label: 'Seguridad Electrónica', file: 'html/seguridad.html' },
   { value: 'soporte',    label: 'Soporte IT',            file: 'html/soporte_it.html' },
   { value: 'desarrollo', label: 'Desarrollo de Software',file: 'html/desarrollo.html' },
+  { value: 'cliente',    label: 'Perfil de Cliente',     file: 'html/cliente.html' },
 ];
 
 const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// Quita una flecha (←/→) inicial del texto de un enlace "volver", para
+// reemplazarla por un icono de Font Awesome en el render.
+const stripArrow = s => String(s ?? '').replace(/^\s*[←→]\s*/, '');
 // css(props) — builds a style=" " attribute from an object, skipping falsy values
 const css = (props) => {
   const p = Object.entries(props).filter(([,v]) => v).map(([k,v]) => `${k}:${v}`);
@@ -32,7 +36,7 @@ export const SECTIONS = {
     icon: '☰',
     validTipos: ['*'],
     defaultData: {
-      logoSrc: '/img/logo sisgra.png',
+      logoSrc: '/img/sisgra_blanco.png',
       logoSrcHref: '../index.html',
       instalacionesLabel: 'Instalaciones',
       cableadoLabel: 'Cableado Estructurado', cableadoHref: '/html/cableado_estructurado.html',
@@ -43,7 +47,6 @@ export const SECTIONS = {
       desarrolloLabel: 'Desarrollo de Software',desarrolloHref:'/html/desarrollo.html',
       ctaLabel: 'Contáctese',                  ctaHref:      'https://wa.me/548101220065',
     },
-    defaultDesign: {},
     dataFields: [
       { name: 'logoSrc',            label: 'Logo (URL)',         type: 'text' },
       { name: 'logoSrcHref',        label: 'Link Inicio',        type: 'text' },
@@ -63,9 +66,20 @@ export const SECTIONS = {
       { name: 'ctaLabel',           label: 'Botón Contacto',     type: 'text' },
       { name: 'ctaHref',            label: 'Link Contacto',      type: 'text' },
     ],
-    designFields: [],
-    render: (data) => {
+    defaultDesign: { bg: '', linkColor: '', dropdownBg: '', dropdownLinkColor: '', ctaBg: '', ctaColor: '', mobileBg: '', mobileLinkColor: '' },
+    designFields: [
+      { name: 'bg',               label: 'Fondo navbar',           type: 'color' },
+      { name: 'linkColor',        label: 'Color enlaces nav',      type: 'color' },
+      { name: 'dropdownBg',       label: 'Fondo dropdown',         type: 'color' },
+      { name: 'dropdownLinkColor',label: 'Color enlaces dropdown', type: 'color' },
+      { name: 'ctaBg',            label: 'Botón CTA — fondo',      type: 'color' },
+      { name: 'ctaColor',         label: 'Botón CTA — texto',      type: 'color' },
+      { name: 'mobileBg',         label: 'Drawer móvil — fondo',   type: 'color' },
+      { name: 'mobileLinkColor',  label: 'Drawer móvil — enlaces', type: 'color' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS.nav.defaultData, ...data };
+      const s = { ...SECTIONS.nav.defaultDesign, ...design };
 
       // Formato nuevo: items array (sincronizado desde navbar.json)
       let linksHtml;
@@ -76,7 +90,7 @@ export const SECTIONS = {
           <div class="nav-dropdown">
             <a href="#" class="nav-dropdown-trigger">
               ${esc(item.titulo)}
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg>
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
             </a>
             <div class="dropdown-content">
               ${(item.children || []).map(c => `<a href="${esc(c.href)}">${esc(c.titulo)}</a>`).join('')}
@@ -91,7 +105,7 @@ export const SECTIONS = {
           <div class="nav-dropdown">
             <a href="#instalaciones" class="nav-dropdown-trigger">
               ${esc(d.instalacionesLabel)}
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg>
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
             </a>
             <div class="dropdown-content">
               <a href="${esc(d.cableadoHref)}">${esc(d.cableadoLabel)}</a>
@@ -125,7 +139,18 @@ export const SECTIONS = {
           <a href="${esc(d.desarrolloHref)}">${esc(d.desarrolloLabel)}</a>`;
       }
 
+      const navCss = [
+        s.bg              ? `nav{background:${s.bg}}`                                           : '',
+        s.linkColor       ? `.nav-link,.nav-dropdown-trigger{color:${s.linkColor}}`             : '',
+        s.dropdownBg      ? `.dropdown-content{background:${s.dropdownBg}}`                    : '',
+        s.dropdownLinkColor?`.dropdown-content a{color:${s.dropdownLinkColor}}`                : '',
+        s.ctaBg           ? `.btn-contact,.nav-mobile-cta{background:${s.ctaBg}}`              : '',
+        s.ctaColor        ? `.btn-contact,.nav-mobile-cta{color:${s.ctaColor}}`                : '',
+        s.mobileBg        ? `.nav-mobile-drawer{background:${s.mobileBg}}`                     : '',
+        s.mobileLinkColor ? `.nav-mobile-drawer a{color:${s.mobileLinkColor}}`                 : '',
+      ].filter(Boolean).join('');
       return `
+${navCss ? `<style>${navCss}</style>` : ''}
 <nav>
   <div class="max-w-1400">
     <div class="nav-inner">
@@ -331,30 +356,40 @@ export const SECTIONS = {
         { nombre: 'Syngenta',      imagen: '/img/syngenta.png',     activo: true },
       ],
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', paddingY: '', titleColor: '', titleSize: '', trackBg: '', cellBg: '', cellFilter: '', trackHeight: '' },
     dataFields: [
       { name: 'titulo_seccion',  label: 'Título sección', type: 'text' },
       { name: 'carrusel_activo', label: 'Mostrar carrusel', type: 'toggle' },
       { name: 'auto_scroll',     label: 'Auto-scroll',      type: 'toggle' },
       { name: 'clientes',        label: 'Clientes',         type: 'clientes' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',          label: 'Fondo de sección',      type: 'color' },
+      { name: 'paddingY',    label: 'Padding vertical',      type: 'text', placeholder: 'ej: 3rem' },
+      { name: 'titleColor',  label: 'Color título',          type: 'color' },
+      { name: 'titleSize',   label: 'Tamaño título',         type: 'text', placeholder: 'ej: 1.5rem' },
+      { name: 'trackBg',     label: 'Fondo del track',       type: 'color' },
+      { name: 'cellBg',      label: 'Fondo celda logo',      type: 'color' },
+      { name: 'cellFilter',  label: 'Filtro logos (CSS)',    type: 'text', placeholder: 'ej: grayscale(1) ó invert(1)' },
+      { name: 'trackHeight', label: 'Altura del track',      type: 'text', placeholder: 'ej: 80px' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS.clientes.defaultData, ...data };
+      const s = { ...SECTIONS.clientes.defaultDesign, ...design };
       if (d.carrusel_activo === false) return '';
       const clientes = (d.clientes || []).filter(c => c.activo !== false);
       const cells = [...clientes, ...clientes, ...clientes].map(c => `
-        <div class="logos-cell">
-          ${c.imagen ? `<img src="${esc(c.imagen)}" alt="${esc(c.nombre)}">` : `<div class="logos-cell-text">${esc(c.nombre)}</div>`}
+        <div class="logos-cell"${css({ background: s.cellBg })}>
+          ${c.imagen ? `<img src="${esc(c.imagen)}" alt="${esc(c.nombre)}"${css({ filter: s.cellFilter })}>` : `<div class="logos-cell-text">${esc(c.nombre)}</div>`}
         </div>`).join('');
       return `
-<section class="logos-section" id="section-clientes">
+<section class="logos-section" id="section-clientes"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
     <div class="logos-header">
-      <h2 class="logos-title">${esc(d.titulo_seccion)}</h2>
+      <h2 class="logos-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${esc(d.titulo_seccion)}</h2>
     </div>
     <div class="logos-track-wrapper">
-      <div class="logos-track ${d.auto_scroll !== false ? 'is-animating' : ''}" data-clientes-track data-auto-scroll="${d.auto_scroll !== false}">${cells}</div>
+      <div class="logos-track ${d.auto_scroll !== false ? 'is-animating' : ''}" data-clientes-track data-auto-scroll="${d.auto_scroll !== false}"${css({ background: s.trackBg, height: s.trackHeight })}>${cells}</div>
     </div>
   </div>
 </section>`;
@@ -377,34 +412,48 @@ export const SECTIONS = {
         { titulo: 'Fibra Óptica FTTH: conectividad sin límites para tu empresa', extracto: 'Ventajas de implementar fibra óptica en instalaciones corporativas de gran escala en Argentina.', categoria: 'Instalaciones', imagen: '' },
       ],
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', paddingY: '', titleColor: '', titleSize: '', cardBg: '', cardBorderColor: '', cardRadius: '', cardTitleColor: '', cardTextColor: '', tagBg: '', tagColor: '', linkColor: '' },
     dataFields: [
       { name: 'titulo_seccion', label: 'Título sección', type: 'text' },
       { name: 'posts',          label: 'Artículos',      type: 'posts' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',              label: 'Fondo de sección',       type: 'color' },
+      { name: 'paddingY',        label: 'Padding vertical',       type: 'text', placeholder: 'ej: 4rem' },
+      { name: 'titleColor',      label: 'Color título sección',   type: 'color' },
+      { name: 'titleSize',       label: 'Tamaño título sección',  type: 'text', placeholder: 'ej: 2.5rem' },
+      { name: 'cardBg',          label: 'Fondo de cards',         type: 'color' },
+      { name: 'cardBorderColor', label: 'Borde de cards',         type: 'color' },
+      { name: 'cardRadius',      label: 'Redondeo de cards',      type: 'text', placeholder: 'ej: 12px' },
+      { name: 'cardTitleColor',  label: 'Título de card',         type: 'color' },
+      { name: 'cardTextColor',   label: 'Extracto de card',       type: 'color' },
+      { name: 'tagBg',           label: 'Badge categoría — fondo',type: 'color' },
+      { name: 'tagColor',        label: 'Badge categoría — texto',type: 'color' },
+      { name: 'linkColor',       label: 'Color enlace "Leer más"',type: 'color' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS.blog.defaultData, ...data };
+      const s = { ...SECTIONS.blog.defaultDesign, ...design };
       const posts = d.posts || [];
       return `
-<section class="blog-section">
+<section class="blog-section"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
     <div class="blog-header">
-      <h2 class="blog-title">${esc(d.titulo_seccion)}</h2>
+      <h2 class="blog-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${esc(d.titulo_seccion)}</h2>
     </div>
     <div class="blog-grid">
       ${posts.map(p => `
-        <article class="blog-card">
+        <article class="blog-card"${css({ background: s.cardBg, 'border-color': s.cardBorderColor, 'border-radius': s.cardRadius })}>
           <div class="blog-card-img">
             ${p.imagen
               ? `<img src="${esc(p.imagen)}" alt="${esc(p.titulo)}">`
               : `<div style="width:100%;height:100%;background:linear-gradient(135deg,#0A1D37,#1e3a8a);display:flex;align-items:center;justify-content:center;"><span style="color:#60a5fa;font-size:.625rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;">${esc(p.categoria||'Blog')}</span></div>`}
           </div>
           <div class="blog-card-content">
-            <span class="blog-tag">${esc(p.categoria||'')}</span>
-            <h3 class="blog-card-title">${esc(p.titulo||'')}</h3>
-            <p class="blog-card-desc">${esc(p.extracto||'')}</p>
-            <a href="${p.id ? `/html/articulo.html?id=${esc(p.id)}` : '/html/blog.html'}" class="blog-card-link">Leer Artículo <span style="color: var(--blue-500);">→</span></a>
+            <span class="blog-tag"${css({ background: s.tagBg, color: s.tagColor })}>${esc(p.categoria||'')}</span>
+            <h3 class="blog-card-title"${css({ color: s.cardTitleColor })}>${esc(p.titulo||'')}</h3>
+            <p class="blog-card-desc"${css({ color: s.cardTextColor })}>${esc(p.extracto||'')}</p>
+            <a href="${p.id ? `/html/articulo.html?id=${esc(p.id)}` : '/html/blog.html'}" class="blog-card-link"${css({ color: s.linkColor })}>Leer Artículo <i class="fa-solid fa-arrow-right" style="color: var(--blue-500);" aria-hidden="true"></i></a>
           </div>
         </article>`).join('')}
     </div>
@@ -468,7 +517,7 @@ export const SECTIONS = {
           <div class="card-icon">${SERVICE_ICONS[c.id] || ''}</div>
           <h3 class="card-title"${css({ color: s.cardTitleColor })}>${esc(c.titulo)}</h3>
           <p class="card-desc">${esc(c.descripcion)}</p>
-          <a href="${esc(c.enlace||'#')}" class="card-link"${css({ color: s.cardLinkColor })}>Ver Detalles <span>→</span></a>
+          <a href="${esc(c.enlace||'#')}" class="card-link"${css({ color: s.cardLinkColor })}>Ver Detalles <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
         </div>`).join('')}
     </div>
   </div>
@@ -606,10 +655,10 @@ export const SECTIONS = {
       whatsappText: 'Consultar por WhatsApp',
       formLabel: 'Complete el formulario',
       btnEnviar: 'Enviar consulta',
-      brandImg: '/img/logo sisgra.png',
+      brandImg: '/img/sisgra_blanco.png',
       copyright: '© 2026 SISGRA S.R.L. — Todos los derechos reservados',
     },
-    defaultDesign: {},
+    defaultDesign: { topBg: '', panelLeftBg: '', panelRightBg: '', titleColor: '', descColor: '', btnWaBg: '', btnWaColor: '', submitBg: '', submitColor: '', bottomBg: '', linkColor: '', copyBg: '', copyColor: '' },
     dataFields: [
       { name: 'formTitulo',   label: 'Título formulario',  type: 'text' },
       { name: 'formDesc',     label: 'Texto formulario',   type: 'textarea' },
@@ -620,26 +669,41 @@ export const SECTIONS = {
       { name: 'brandImg',     label: 'Logo URL',           type: 'text' },
       { name: 'copyright',    label: 'Copyright',          type: 'text' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'topBg',        label: 'Fondo panel superior',     type: 'color' },
+      { name: 'panelLeftBg',  label: 'Fondo panel izquierdo',    type: 'color' },
+      { name: 'panelRightBg', label: 'Fondo panel formulario',   type: 'color' },
+      { name: 'titleColor',   label: 'Color título',             type: 'color' },
+      { name: 'descColor',    label: 'Color descripción',        type: 'color' },
+      { name: 'btnWaBg',      label: 'Botón WhatsApp — fondo',   type: 'color' },
+      { name: 'btnWaColor',   label: 'Botón WhatsApp — texto',   type: 'color' },
+      { name: 'submitBg',     label: 'Botón enviar — fondo',     type: 'color' },
+      { name: 'submitColor',  label: 'Botón enviar — texto',     type: 'color' },
+      { name: 'bottomBg',     label: 'Franja inferior — fondo',  type: 'color' },
+      { name: 'linkColor',    label: 'Color enlaces inferiores', type: 'color' },
+      { name: 'copyBg',       label: 'Fondo copyright',         type: 'color' },
+      { name: 'copyColor',    label: 'Color copyright',         type: 'color' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS.footer.defaultData, ...data };
+      const s = { ...SECTIONS.footer.defaultDesign, ...design };
       return `
 <footer>
-  <div class="footer-top">
-    <div class="panel-left">
+  <div class="footer-top"${css({ background: s.topBg })}>
+    <div class="panel-left"${css({ background: s.panelLeftBg })}>
       <div>
         <p class="section-label">Contacto</p>
-        <h2>${esc(d.formTitulo)}</h2>
-        <p class="panel-desc">${esc(d.formDesc)}</p>
+        <h2${css({ color: s.titleColor })}>${esc(d.formTitulo)}</h2>
+        <p class="panel-desc"${css({ color: s.descColor })}>${esc(d.formDesc)}</p>
       </div>
       <div class="action-buttons">
-        <a href="https://wa.me/${esc(d.whatsapp)}" class="btn btn-whatsapp">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.845L.057 23.882a.5.5 0 00.61.61l6.037-1.471A11.944 11.944 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.804 9.804 0 01-5.026-1.381l-.36-.214-3.733.909.925-3.733-.234-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.43-4.388 9.818-9.818 9.818z"/></svg>
+        <a href="https://wa.me/${esc(d.whatsapp)}" class="btn btn-whatsapp"${css({ background: s.btnWaBg, color: s.btnWaColor })}>
+          <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
           ${esc(d.whatsappText)}
         </a>
       </div>
     </div>
-    <div class="panel-right">
+    <div class="panel-right"${css({ background: s.panelRightBg })}>
       <p class="form-title">${esc(d.formLabel)}</p>
       <div class="form-grid">
         <div class="field"><label>Nombre</label><input type="text" placeholder="Su nombre completo"/></div>
@@ -648,21 +712,21 @@ export const SECTIONS = {
         <div class="field"><label>Email</label><input type="email" placeholder="nombre@empresa.com"/></div>
         <div class="field full"><label>Mensaje</label><textarea placeholder="Cuéntenos qué necesita resolver"></textarea></div>
       </div>
-      <button class="btn-submit">${esc(d.btnEnviar)}</button>
+      <button class="btn-submit"${css({ background: s.submitBg, color: s.submitColor })}>${esc(d.btnEnviar)}</button>
     </div>
   </div>
-  <div class="footer-bottom">
+  <div class="footer-bottom"${css({ background: s.bottomBg })}>
     <div class="footer-brand"><img src="${esc(d.brandImg)}" alt="SISGRA"></div>
     <div class="footer-links">
-      <a href="/html/cableado_estructurado.html">Cableado Estructurado</a>
-      <a href="/html/fibra_optica.html">Fibra Óptica</a>
-      <a href="/html/seguridad.html">Seguridad Electrónica</a>
-      <a href="/html/soporte_it.html">Soporte IT</a>
-      <a href="/html/desarrollo.html">Desarrollo de Software</a>
-      <a href="/html/blog.html">Blog</a>
+      <a href="/html/cableado_estructurado.html"${css({ color: s.linkColor })}>Cableado Estructurado</a>
+      <a href="/html/fibra_optica.html"${css({ color: s.linkColor })}>Fibra Óptica</a>
+      <a href="/html/seguridad.html"${css({ color: s.linkColor })}>Seguridad Electrónica</a>
+      <a href="/html/soporte_it.html"${css({ color: s.linkColor })}>Soporte IT</a>
+      <a href="/html/desarrollo.html"${css({ color: s.linkColor })}>Desarrollo de Software</a>
+      <a href="/html/blog.html"${css({ color: s.linkColor })}>Blog</a>
     </div>
   </div>
-  <div class="footer-copy"><span>${esc(d.copyright)}</span></div>
+  <div class="footer-copy"${css({ background: s.copyBg })}><span${css({ color: s.copyColor })}>${esc(d.copyright)}</span></div>
 </footer>`;
     },
   },
@@ -823,10 +887,10 @@ export const SECTIONS = {
       const s = { ...SECTIONS['fibra-hero'].defaultDesign, ...design };
       const icon = (type) => {
         const i = {
-          location:  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
-          lightning: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
-          shield:    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/></svg>',
-          check:     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+          location:  '<i class="fa-solid fa-location-dot" aria-hidden="true"></i>',
+          lightning: '<i class="fa-solid fa-bolt" aria-hidden="true"></i>',
+          shield:    '<i class="fa-solid fa-shield-halved" aria-hidden="true"></i>',
+          check:     '<i class="fa-solid fa-check" aria-hidden="true"></i>',
         };
         return i[type] || i.check;
       };
@@ -912,11 +976,11 @@ export const SECTIONS = {
       const s = { ...SECTIONS['seguridad-hero'].defaultDesign, ...design };
       const icon = (type) => {
         const i = {
-          location:  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
-          lightning: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
-          shield:    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/></svg>',
-          check:     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
-          camera:    '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>',
+          location:  '<i class="fa-solid fa-location-dot" aria-hidden="true"></i>',
+          lightning: '<i class="fa-solid fa-bolt" aria-hidden="true"></i>',
+          shield:    '<i class="fa-solid fa-shield-halved" aria-hidden="true"></i>',
+          check:     '<i class="fa-solid fa-check" aria-hidden="true"></i>',
+          camera:    '<i class="fa-solid fa-video" aria-hidden="true"></i>',
         };
         return i[type] || i.check;
       };
@@ -1016,13 +1080,13 @@ export const SECTIONS = {
       const s = { ...SECTIONS['soporte-hero'].defaultDesign, ...design };
       const icon = (type) => {
         const i = {
-          location:  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
-          lightning: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
-          shield:    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/></svg>',
-          check:     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
-          camera:    '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>',
-          gear:      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
-          lock:      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+          location:  '<i class="fa-solid fa-location-dot" aria-hidden="true"></i>',
+          lightning: '<i class="fa-solid fa-bolt" aria-hidden="true"></i>',
+          shield:    '<i class="fa-solid fa-shield-halved" aria-hidden="true"></i>',
+          check:     '<i class="fa-solid fa-check" aria-hidden="true"></i>',
+          camera:    '<i class="fa-solid fa-video" aria-hidden="true"></i>',
+          gear:      '<i class="fa-solid fa-gear" aria-hidden="true"></i>',
+          lock:      '<i class="fa-solid fa-lock" aria-hidden="true"></i>',
         };
         return i[type] || i.gear;
       };
@@ -1131,15 +1195,15 @@ export const SECTIONS = {
       const s = { ...SECTIONS['desarrollo-hero'].defaultDesign, ...design };
       const icon = (type) => {
         const i = {
-          location:  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
-          lightning: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>',
-          shield:    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-12V5l-8-3-8 3v5c0 8 8 12 8 12z"/></svg>',
-          gear:      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
-          chart:     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
-          database:  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>',
-          camera:    '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>',
-          check:     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
-          lock:      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+          location:  '<i class="fa-solid fa-location-dot" aria-hidden="true"></i>',
+          lightning: '<i class="fa-solid fa-bolt" aria-hidden="true"></i>',
+          shield:    '<i class="fa-solid fa-shield-halved" aria-hidden="true"></i>',
+          gear:      '<i class="fa-solid fa-gear" aria-hidden="true"></i>',
+          chart:     '<i class="fa-solid fa-chart-column" aria-hidden="true"></i>',
+          database:  '<i class="fa-solid fa-database" aria-hidden="true"></i>',
+          camera:    '<i class="fa-solid fa-video" aria-hidden="true"></i>',
+          check:     '<i class="fa-solid fa-check" aria-hidden="true"></i>',
+          lock:      '<i class="fa-solid fa-lock" aria-hidden="true"></i>',
         };
         return i[type] || i.gear;
       };
@@ -1199,18 +1263,43 @@ export const SECTIONS = {
       emptyMessage: 'No hay artículos publicados aún.',
       errorMessage: 'No se pudieron cargar los artículos.',
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', paddingTop: '', paddingBottom: '', textColor: '', cardBg: '', cardBorderColor: '', cardRadius: '', cardTitleColor: '', cardTagBg: '', cardTagColor: '', cardLinkColor: '' },
     dataFields: [
       { name: 'loadingMessage', label: 'Mensaje cargando', type: 'text' },
       { name: 'emptyMessage',   label: 'Mensaje vacío',    type: 'text' },
       { name: 'errorMessage',   label: 'Mensaje error',    type: 'text' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',              label: 'Fondo de sección',        type: 'color' },
+      { name: 'paddingTop',      label: 'Padding superior',        type: 'text', placeholder: 'ej: 4rem' },
+      { name: 'paddingBottom',   label: 'Padding inferior',        type: 'text', placeholder: 'ej: 4rem' },
+      { name: 'textColor',       label: 'Color texto base',        type: 'color' },
+      { name: 'cardBg',          label: 'Fondo de cards',          type: 'color' },
+      { name: 'cardBorderColor', label: 'Borde de cards',          type: 'color' },
+      { name: 'cardRadius',      label: 'Redondeo de cards',       type: 'text', placeholder: 'ej: 12px' },
+      { name: 'cardTitleColor',  label: 'Título de cards',         type: 'color' },
+      { name: 'cardTagBg',       label: 'Tag categoría — fondo',   type: 'color' },
+      { name: 'cardTagColor',    label: 'Tag categoría — texto',   type: 'color' },
+      { name: 'cardLinkColor',   label: 'Color enlace cards',      type: 'color' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS['blog-list'].defaultData, ...data };
+      const s = { ...SECTIONS['blog-list'].defaultDesign, ...design };
+      const blCss = [
+        s.bg              ? `.blog-container{background:${s.bg}}`                     : '',
+        s.textColor       ? `.blog-container{color:${s.textColor}}`                   : '',
+        s.cardBg          ? `.blog-row-card{background:${s.cardBg}}`                  : '',
+        s.cardBorderColor ? `.blog-row-card{border-color:${s.cardBorderColor}}`       : '',
+        s.cardRadius      ? `.blog-row-card{border-radius:${s.cardRadius}}`           : '',
+        s.cardTitleColor  ? `.blog-row-card h2,.blog-row-card h3{color:${s.cardTitleColor}}` : '',
+        s.cardTagBg       ? `.blog-tag,.blog-row-tag{background:${s.cardTagBg}}`      : '',
+        s.cardTagColor    ? `.blog-tag,.blog-row-tag{color:${s.cardTagColor}}`        : '',
+        s.cardLinkColor   ? `.blog-row-card a{color:${s.cardLinkColor}}`              : '',
+      ].filter(Boolean).join('');
       return `
-<section class="blog-container">
-  <div class="max-w-7xl" style="padding-top: 4rem;">
+${blCss ? `<style>${blCss}</style>` : ''}
+<section class="blog-container"${css({ background: s.bg, color: s.textColor })}>
+  <div class="max-w-7xl"${css({ 'padding-top': s.paddingTop || '4rem', 'padding-bottom': s.paddingBottom })}>
     <div class="blog-rows-list" data-blog-list data-loading-msg="${esc(d.loadingMessage)}" data-empty-msg="${esc(d.emptyMessage)}" data-error-msg="${esc(d.errorMessage)}">
       <div style="text-align:center;padding:3rem 0;color:#94a3b8;font-size:.875rem;">${esc(d.loadingMessage)}</div>
     </div>
@@ -1227,7 +1316,7 @@ export const SECTIONS = {
     label: 'Header artículo',
     description: 'Header de artículo: back link + badge + título + lead',
     icon: '◫',
-    validTipos: ['articulo'],
+    validTipos: ['articulo', 'cliente'],
     defaultData: {
       backLabel: '← Volver al Blog',
       backHref: '/html/blog.html',
@@ -1236,7 +1325,7 @@ export const SECTIONS = {
       lead: 'Análisis detallado sobre cómo la infraestructura física determina el rendimiento de los sistemas de datos en entornos de alta demanda.',
       fecha: '',
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', paddingY: '', titleColor: '', titleSize: '', leadColor: '', leadSize: '', backLinkColor: '', badgeBg: '', badgeColor: '' },
     dataFields: [
       { name: 'backLabel', label: 'Link volver — Texto', type: 'text' },
       { name: 'backHref',  label: 'Link volver — URL',   type: 'text' },
@@ -1244,19 +1333,30 @@ export const SECTIONS = {
       { name: 'titulo',    label: 'Título principal',    type: 'textarea' },
       { name: 'lead',      label: 'Subtítulo / lead',    type: 'textarea' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',            label: 'Fondo del header',      type: 'color' },
+      { name: 'paddingY',      label: 'Padding vertical',      type: 'text', placeholder: 'ej: 4rem' },
+      { name: 'titleColor',    label: 'Color título',          type: 'color' },
+      { name: 'titleSize',     label: 'Tamaño título',         type: 'text', placeholder: 'ej: 2.5rem' },
+      { name: 'leadColor',     label: 'Color lead / subtítulo',type: 'color' },
+      { name: 'leadSize',      label: 'Tamaño lead',           type: 'text', placeholder: 'ej: 1.125rem' },
+      { name: 'backLinkColor', label: 'Color enlace volver',   type: 'color' },
+      { name: 'badgeBg',       label: 'Badge — fondo',         type: 'color' },
+      { name: 'badgeColor',    label: 'Badge — texto',         type: 'color' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS['articulo-header'].defaultData, ...data };
+      const s = { ...SECTIONS['articulo-header'].defaultDesign, ...design };
       return `
-<header class="article-header">
+<header class="article-header"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
-    <a href="${esc(d.backHref)}" class="back-link">${esc(d.backLabel)}</a>
+    <a href="${esc(d.backHref)}" class="back-link"${css({ color: s.backLinkColor })}><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> ${esc(stripArrow(d.backLabel))}</a>
     <div class="article-meta">
-      <span class="badge-tech">${esc(d.badge)}</span>
+      <span class="badge-tech"${css({ background: s.badgeBg, color: s.badgeColor })}>${esc(d.badge)}</span>
       ${d.fecha ? `<span style="font-size:.75rem;opacity:.7;font-weight:600;">${esc(d.fecha)}</span>` : ''}
     </div>
-    <h1 class="article-main-title">${esc(d.titulo)}</h1>
-    <p class="article-lead">${esc(d.lead)}</p>
+    <h1 class="article-main-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${esc(d.titulo)}</h1>
+    <p class="article-lead"${css({ color: s.leadColor, 'font-size': s.leadSize })}>${esc(d.lead)}</p>
   </div>
 </header>`;
     },
@@ -1266,7 +1366,7 @@ export const SECTIONS = {
     label: 'Cuerpo del artículo',
     description: 'Cuerpo del artículo: imagen + contenido HTML libre + CTA + sidebar',
     icon: '¶',
-    validTipos: ['articulo'],
+    validTipos: ['articulo', 'cliente'],
     defaultData: {
       featuredImageUrl: '/img/chatgptfoto.png',
       featuredImageAlt: 'Infraestructura IT',
@@ -1288,7 +1388,7 @@ export const SECTIONS = {
       sidebarTitle: 'SISGRA SRL',
       sidebarText: 'Expertos en integración tecnológica desde 1999. Soluciones certificadas para empresas que no pueden detenerse.',
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', paddingY: '', bodyTextColor: '', ctaBg: '', ctaTitleColor: '', ctaTextColor: '', ctaBtnBg: '', ctaBtnColor: '', sidebarBg: '', sidebarTitleColor: '', sidebarTextColor: '', imgRadius: '' },
     dataFields: [
       // featuredImageUrl, featuredImageAlt y contentHtml vienen del post de blog (?id=)
       { name: 'featuredImageUrl', label: 'Imagen de respaldo (sin ?id=)', type: 'text' },
@@ -1299,26 +1399,197 @@ export const SECTIONS = {
       { name: 'sidebarTitle',     label: 'Sidebar — Título',       type: 'text' },
       { name: 'sidebarText',      label: 'Sidebar — Texto',        type: 'textarea' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',               label: 'Fondo de sección',        type: 'color' },
+      { name: 'paddingY',         label: 'Padding vertical',        type: 'text', placeholder: 'ej: 3rem' },
+      { name: 'bodyTextColor',    label: 'Color texto cuerpo',      type: 'color' },
+      { name: 'imgRadius',        label: 'Redondeo imagen',         type: 'text', placeholder: 'ej: 12px' },
+      { name: 'ctaBg',            label: 'CTA — fondo',             type: 'color' },
+      { name: 'ctaTitleColor',    label: 'CTA — color título',      type: 'color' },
+      { name: 'ctaTextColor',     label: 'CTA — color texto',       type: 'color' },
+      { name: 'ctaBtnBg',         label: 'CTA botón — fondo',       type: 'color' },
+      { name: 'ctaBtnColor',      label: 'CTA botón — texto',       type: 'color' },
+      { name: 'sidebarBg',        label: 'Sidebar — fondo',         type: 'color' },
+      { name: 'sidebarTitleColor',label: 'Sidebar — color título',  type: 'color' },
+      { name: 'sidebarTextColor', label: 'Sidebar — color texto',   type: 'color' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS['articulo-body'].defaultData, ...data };
+      const s = { ...SECTIONS['articulo-body'].defaultDesign, ...design };
       // contentHtml is INTENTIONALLY rendered as raw HTML (no escape) — editor users can paste rich content
       return `
-<main class="article-container">
+<main class="article-container"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl article-grid">
-    <div class="article-body">
-      ${d.featuredImageUrl ? `<img src="${esc(d.featuredImageUrl)}" alt="${esc(d.featuredImageAlt)}" class="featured-image">` : ''}
+    <div class="article-body"${css({ color: s.bodyTextColor })}>
+      ${d.featuredImageUrl ? `<img src="${esc(d.featuredImageUrl)}" alt="${esc(d.featuredImageAlt)}" class="featured-image"${css({ 'border-radius': s.imgRadius })}>` : ''}
       ${d.contentHtml || ''}
-      <div class="article-cta">
-        <h3>${esc(d.ctaTitle)}</h3>
-        <p>${esc(d.ctaText)}</p>
-        <a href="${esc(d.ctaBtnHref)}" class="btn-hero-primary" style="background: var(--sisgra-blue); color: white;">${esc(d.ctaBtnLabel)}</a>
+      <div class="article-cta"${css({ background: s.ctaBg })}>
+        <h3${css({ color: s.ctaTitleColor })}>${esc(d.ctaTitle)}</h3>
+        <p${css({ color: s.ctaTextColor })}>${esc(d.ctaText)}</p>
+        <a href="${esc(d.ctaBtnHref)}" class="btn-hero-primary"${css({ background: s.ctaBtnBg || 'var(--sisgra-blue)', color: s.ctaBtnColor || 'white' })}>${esc(d.ctaBtnLabel)}</a>
       </div>
     </div>
     <aside class="article-sidebar">
-      <div class="sidebar-box dark">
-        <h4>${esc(d.sidebarTitle)}</h4>
-        <p>${esc(d.sidebarText)}</p>
+      <div class="sidebar-box dark"${css({ background: s.sidebarBg })}>
+        <h4${css({ color: s.sidebarTitleColor })}>${esc(d.sidebarTitle)}</h4>
+        <p${css({ color: s.sidebarTextColor })}>${esc(d.sidebarText)}</p>
+      </div>
+    </aside>
+  </div>
+</main>`;
+    },
+  },
+
+  // ═══════════════════════════════════════════════════════════════════
+  //  MÓDULOS CLIENTE (caso de éxito / perfil de cliente)
+  //  Diseño propio en css/pages/cliente.css (clases cl-*)
+  // ═══════════════════════════════════════════════════════════════════
+
+  'cliente-header': {
+    label: 'Header de cliente',
+    description: 'Cabecera de caso: logo empresa + nombre + título de proyecto + lead + meta',
+    icon: '◫',
+    validTipos: ['cliente'],
+    defaultData: {
+      backLabel: '← Volver al Inicio',
+      backHref: '/index.html',
+      empresaLogo: '/img/clients/syngenta.png',
+      empresaNombre: 'Nombre de la empresa',
+      titulo: 'Caso de éxito: infraestructura tecnológica a medida',
+      lead: 'Resumen breve del proyecto que SISGRA realizó para este cliente.',
+      sector: 'Industria',
+      ubicacion: 'Rosario, Argentina',
+      anio: '2025',
+    },
+    defaultDesign: { bg: '', paddingY: '', eyebrowColor: '', titleColor: '', titleSize: '', leadColor: '', metaColor: '', backLinkColor: '', logoMaxHeight: '' },
+    dataFields: [
+      { name: 'backLabel',     label: 'Link volver — Texto', type: 'text' },
+      { name: 'backHref',      label: 'Link volver — URL',   type: 'text' },
+      { name: 'empresaLogo',   label: 'Logo empresa (URL)',  type: 'text' },
+      { name: 'empresaNombre', label: 'Nombre empresa',      type: 'text' },
+      { name: 'titulo',        label: 'Título del proyecto', type: 'textarea' },
+      { name: 'lead',          label: 'Subtítulo / lead',    type: 'textarea' },
+      { name: 'sector',        label: 'Sector',              type: 'text' },
+      { name: 'ubicacion',     label: 'Ubicación',           type: 'text' },
+      { name: 'anio',          label: 'Año',                 type: 'text' },
+    ],
+    designFields: [
+      { name: 'bg',            label: 'Fondo del header',      type: 'color' },
+      { name: 'paddingY',      label: 'Padding vertical',      type: 'text', placeholder: 'ej: 4rem' },
+      { name: 'eyebrowColor',  label: 'Color nombre empresa',  type: 'color' },
+      { name: 'titleColor',    label: 'Color título',          type: 'color' },
+      { name: 'titleSize',     label: 'Tamaño título',         type: 'text', placeholder: 'ej: 2.75rem' },
+      { name: 'leadColor',     label: 'Color lead',            type: 'color' },
+      { name: 'metaColor',     label: 'Color meta (sector/año)', type: 'color' },
+      { name: 'backLinkColor', label: 'Color enlace volver',   type: 'color' },
+      { name: 'logoMaxHeight', label: 'Altura máx. logo',      type: 'text', placeholder: 'ej: 64px' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['cliente-header'].defaultData, ...data };
+      const s = { ...SECTIONS['cliente-header'].defaultDesign, ...design };
+      const meta = [d.sector, d.ubicacion, d.anio].filter(Boolean)
+        .map(m => `<span class="cl-meta-item">${esc(m)}</span>`).join('<span class="cl-meta-sep">·</span>');
+      return `
+<header class="cl-header"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
+  <div class="max-w-7xl">
+    <a href="${esc(d.backHref)}" class="cl-back"${css({ color: s.backLinkColor })}><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> ${esc(stripArrow(d.backLabel))}</a>
+    <div class="cl-header-inner">
+      ${d.empresaLogo ? `<div class="cl-logo-wrap"><img src="${esc(d.empresaLogo)}" alt="${esc(d.empresaNombre)}" class="cl-logo"${css({ 'max-height': s.logoMaxHeight })}></div>` : ''}
+      <div class="cl-header-text">
+        ${d.empresaNombre ? `<div class="cl-eyebrow"${css({ color: s.eyebrowColor })}>${esc(d.empresaNombre)}</div>` : ''}
+        <h1 class="cl-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${esc(d.titulo)}</h1>
+        ${d.lead ? `<p class="cl-lead"${css({ color: s.leadColor })}>${esc(d.lead)}</p>` : ''}
+        ${meta ? `<div class="cl-meta"${css({ color: s.metaColor })}>${meta}</div>` : ''}
+      </div>
+    </div>
+  </div>
+</header>`;
+    },
+  },
+
+  'cliente-body': {
+    label: 'Cuerpo de cliente',
+    description: 'Imagen destacada + contenido (con galería) + ficha del proyecto + CTA',
+    icon: '¶',
+    validTipos: ['cliente'],
+    defaultData: {
+      featuredImageUrl: '',
+      featuredImageAlt: '',
+      contentHtml: `<h2>El desafío</h2>
+<p>Describí el contexto inicial del cliente y los objetivos del proyecto.</p>
+<h2>La solución</h2>
+<p>Contá qué implementó SISGRA y cómo se ejecutó. Podés intercalar imágenes del proceso usando el botón de imagen del editor.</p>
+<h2>Resultados</h2>
+<p>Resumí los resultados y beneficios obtenidos.</p>`,
+      fichaTitle: 'Ficha del proyecto',
+      empresa: 'Nombre de la empresa',
+      sector: 'Industria',
+      ubicacion: 'Rosario, Argentina',
+      anio: '2025',
+      servicios: 'Cableado estructurado, Fibra óptica',
+      ctaTitle: '¿Tenés un proyecto similar?',
+      ctaText: 'Conversemos sobre cómo SISGRA puede ayudar a tu empresa.',
+      ctaBtnLabel: 'Contactar a SISGRA',
+      ctaBtnHref: 'https://wa.me/548101220065',
+    },
+    defaultDesign: { bg: '', paddingY: '', bodyTextColor: '', imgRadius: '', fichaBg: '', fichaTitleColor: '', fichaLabelColor: '', fichaValueColor: '', ctaBg: '', ctaTitleColor: '', ctaTextColor: '', ctaBtnBg: '', ctaBtnColor: '' },
+    dataFields: [
+      { name: 'featuredImageUrl', label: 'Imagen destacada (URL)', type: 'text' },
+      { name: 'fichaTitle',       label: 'Ficha — Título',       type: 'text' },
+      { name: 'empresa',          label: 'Ficha — Empresa',      type: 'text' },
+      { name: 'sector',           label: 'Ficha — Sector',       type: 'text' },
+      { name: 'ubicacion',        label: 'Ficha — Ubicación',    type: 'text' },
+      { name: 'anio',             label: 'Ficha — Año',          type: 'text' },
+      { name: 'servicios',        label: 'Ficha — Servicios',    type: 'text' },
+      { name: 'ctaTitle',         label: 'CTA — Título',         type: 'text' },
+      { name: 'ctaText',          label: 'CTA — Texto',          type: 'textarea' },
+      { name: 'ctaBtnLabel',      label: 'CTA — Botón texto',    type: 'text' },
+      { name: 'ctaBtnHref',       label: 'CTA — Botón URL',      type: 'text' },
+    ],
+    designFields: [
+      { name: 'bg',              label: 'Fondo de sección',       type: 'color' },
+      { name: 'paddingY',        label: 'Padding vertical',       type: 'text', placeholder: 'ej: 3rem' },
+      { name: 'bodyTextColor',   label: 'Color texto cuerpo',     type: 'color' },
+      { name: 'imgRadius',       label: 'Redondeo imágenes',      type: 'text', placeholder: 'ej: 8px' },
+      { name: 'fichaBg',         label: 'Ficha — fondo',          type: 'color' },
+      { name: 'fichaTitleColor', label: 'Ficha — color título',   type: 'color' },
+      { name: 'fichaLabelColor', label: 'Ficha — color etiquetas',type: 'color' },
+      { name: 'fichaValueColor', label: 'Ficha — color valores',  type: 'color' },
+      { name: 'ctaBg',           label: 'CTA — fondo',            type: 'color' },
+      { name: 'ctaTitleColor',   label: 'CTA — color título',     type: 'color' },
+      { name: 'ctaTextColor',    label: 'CTA — color texto',      type: 'color' },
+      { name: 'ctaBtnBg',        label: 'CTA botón — fondo',      type: 'color' },
+      { name: 'ctaBtnColor',     label: 'CTA botón — texto',      type: 'color' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['cliente-body'].defaultData, ...data };
+      const s = { ...SECTIONS['cliente-body'].defaultDesign, ...design };
+      // contentHtml es HTML enriquecido (incluye imágenes) — se renderiza sin escapar
+      const fichaRows = [
+        ['Empresa',   d.empresa],
+        ['Sector',    d.sector],
+        ['Ubicación', d.ubicacion],
+        ['Año',       d.anio],
+        ['Servicios', d.servicios],
+      ].filter(([, v]) => v).map(([k, v]) =>
+        `<div class="cl-ficha-row"><dt class="cl-ficha-label"${css({ color: s.fichaLabelColor })}>${esc(k)}</dt><dd class="cl-ficha-value"${css({ color: s.fichaValueColor })}>${esc(v)}</dd></div>`
+      ).join('');
+      return `
+<main class="cl-body"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
+  <div class="max-w-7xl cl-grid">
+    <div class="cl-content"${css({ color: s.bodyTextColor })}>
+      ${d.featuredImageUrl ? `<img src="${esc(d.featuredImageUrl)}" alt="${esc(d.featuredImageAlt)}" class="cl-featured"${css({ 'border-radius': s.imgRadius })}>` : ''}
+      <div class="cl-richtext">${d.contentHtml || ''}</div>
+      <div class="cl-cta"${css({ background: s.ctaBg })}>
+        <h3${css({ color: s.ctaTitleColor })}>${esc(d.ctaTitle)}</h3>
+        <p${css({ color: s.ctaTextColor })}>${esc(d.ctaText)}</p>
+        <a href="${esc(d.ctaBtnHref)}" class="cl-cta-btn"${css({ background: s.ctaBtnBg, color: s.ctaBtnColor })}>${esc(d.ctaBtnLabel)}</a>
+      </div>
+    </div>
+    <aside class="cl-sidebar">
+      <div class="cl-ficha"${css({ background: s.fichaBg })}>
+        <h4 class="cl-ficha-title"${css({ color: s.fichaTitleColor })}>${esc(d.fichaTitle)}</h4>
+        <dl class="cl-ficha-list">${fichaRows}</dl>
       </div>
     </aside>
   </div>
@@ -1336,7 +1607,7 @@ export const SECTIONS = {
     label: 'Footer completo',
     description: 'Footer con wordmark SISGRA + grid 3 cols (servicios / contacto / mapa) + copyright',
     icon: '⎽',
-    validTipos: ['cableado','fibra','seguridad','soporte','desarrollo','blog','articulo'],
+    validTipos: ['cableado','fibra','seguridad','soporte','desarrollo','blog','articulo','cliente'],
     defaultData: {
       wordmark: 'SISGRA',
       col1Label: 'Servicios',
@@ -1357,7 +1628,7 @@ export const SECTIONS = {
       mapaLabel: 'Rosario · ARG',
       copyright: '© 2026 <span>SISGRA S.R.L.</span> — Todos los derechos reservados',
     },
-    defaultDesign: {},
+    defaultDesign: { bg: '', wordmarkBg: '', wordmarkColor: '', gridBg: '', colLabelColor: '', textColor: '', linkColor: '', socialBtnBg: '', socialBtnColor: '', bottomBg: '', copyColor: '' },
     dataFields: [
       { name: 'wordmark',         label: 'Marca grande',    type: 'text' },
       { name: 'col1Label',        label: 'Col 1 — Título',  type: 'text' },
@@ -1371,43 +1642,56 @@ export const SECTIONS = {
       { name: 'mapaLabel',        label: 'Label sobre mapa',type: 'text' },
       { name: 'copyright',        label: 'Copyright (HTML)',type: 'text' },
     ],
-    designFields: [],
-    render: (data) => {
+    designFields: [
+      { name: 'bg',            label: 'Fondo general footer',      type: 'color' },
+      { name: 'wordmarkBg',    label: 'Banda wordmark — fondo',    type: 'color' },
+      { name: 'wordmarkColor', label: 'Banda wordmark — texto',    type: 'color' },
+      { name: 'gridBg',        label: 'Grid columnas — fondo',     type: 'color' },
+      { name: 'colLabelColor', label: 'Etiquetas de columna',      type: 'color' },
+      { name: 'textColor',     label: 'Color texto general',       type: 'color' },
+      { name: 'linkColor',     label: 'Color enlaces',             type: 'color' },
+      { name: 'socialBtnBg',   label: 'Botón social — fondo',      type: 'color' },
+      { name: 'socialBtnColor',label: 'Botón social — texto',      type: 'color' },
+      { name: 'bottomBg',      label: 'Franja inferior — fondo',   type: 'color' },
+      { name: 'copyColor',     label: 'Color copyright',           type: 'color' },
+    ],
+    render: (data, design) => {
       const d = { ...SECTIONS['footer-full'].defaultData, ...data };
+      const s = { ...SECTIONS['footer-full'].defaultDesign, ...design };
       const ofi = d.contactoOficina || {};
       const tel = d.contactoTelefono || {};
       const mail = d.contactoEmail || {};
       return `
-<footer>
-  <div class="wordmark-band">
-    <h1>${esc(d.wordmark)}</h1>
+<footer${css({ background: s.bg, color: s.textColor })}>
+  <div class="wordmark-band"${css({ background: s.wordmarkBg })}>
+    <h1${css({ color: s.wordmarkColor })}>${esc(d.wordmark)}</h1>
   </div>
-  <div class="footer-grid">
+  <div class="footer-grid"${css({ background: s.gridBg })}>
     <div class="footer-col">
-      <div class="col-label">${esc(d.col1Label)}</div>
+      <div class="col-label"${css({ color: s.colLabelColor })}>${esc(d.col1Label)}</div>
       <ul class="services-list">
-        ${(d.servicios||[]).map(s => `<li><a href="${esc(s.href)}">${esc(s.label)}</a></li>`).join('')}
+        ${(d.servicios||[]).map(sv => `<li><a href="${esc(sv.href)}"${css({ color: s.linkColor })}>${esc(sv.label)}</a></li>`).join('')}
       </ul>
     </div>
     <div class="footer-col">
-      <div class="col-label">${esc(d.col2Label)}</div>
+      <div class="col-label"${css({ color: s.colLabelColor })}>${esc(d.col2Label)}</div>
       <div class="contact-stack">
         <div class="contact-item">
           <div class="ci-type">${esc(ofi.tipo||'Oficina')}</div>
-          <div class="ci-value">${ofi.valor||''}</div>
+          <div class="ci-value"${css({ color: s.textColor })}>${ofi.valor||''}</div>
         </div>
         <div class="contact-item">
           <div class="ci-type">${esc(tel.tipo||'Teléfono')}</div>
-          <div class="ci-value"><a href="${esc(tel.href||'#')}">${esc(tel.valor||'')}</a></div>
+          <div class="ci-value"><a href="${esc(tel.href||'#')}"${css({ color: s.linkColor })}>${esc(tel.valor||'')}</a></div>
         </div>
         <div class="contact-item">
           <div class="ci-type">${esc(mail.tipo||'Email')}</div>
-          <div class="ci-value"><a href="${esc(mail.href||'#')}">${esc(mail.valor||'')}</a></div>
+          <div class="ci-value"><a href="${esc(mail.href||'#')}"${css({ color: s.linkColor })}>${esc(mail.valor||'')}</a></div>
         </div>
         <div class="contact-item">
           <div class="ci-type">Redes</div>
           <div class="social-row">
-            <a class="social-btn" href="${esc(d.facebookUrl||'#')}" aria-label="Facebook">FB</a>
+            <a class="social-btn" href="${esc(d.facebookUrl||'#')}" aria-label="Facebook"${css({ background: s.socialBtnBg, color: s.socialBtnColor })}><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a>
           </div>
         </div>
       </div>
@@ -1419,8 +1703,8 @@ export const SECTIONS = {
       </div>
     </div>
   </div>
-  <div class="footer-bottom">
-    <p class="copy">${d.copyright}</p>
+  <div class="footer-bottom"${css({ background: s.bottomBg })}>
+    <p class="copy"${css({ color: s.copyColor })}>${d.copyright}</p>
   </div>
 </footer>`;
     },
@@ -1429,13 +1713,37 @@ export const SECTIONS = {
 };
 
 // ═══════════════════════════════════════════════════════════════════
+//  CAMPOS COMUNES — se agregan a todos los módulos automáticamente
+// ═══════════════════════════════════════════════════════════════════
+
+Object.values(SECTIONS).forEach(sec => {
+  sec.defaultDesign = sec.defaultDesign || {};
+  Object.assign(sec.defaultDesign, { marginTop: '', marginBottom: '', display: '' });
+  (sec.designFields = sec.designFields || []).push(
+    { name: 'marginTop',    label: 'Margen superior',   type: 'text', placeholder: 'ej: 0 ó 2rem' },
+    { name: 'marginBottom', label: 'Margen inferior',   type: 'text', placeholder: 'ej: 0 ó 2rem' },
+    { name: 'display',      label: 'Display CSS',       type: 'text', placeholder: 'ej: none, flex, block' },
+  );
+});
+
+// ═══════════════════════════════════════════════════════════════════
 //  HELPERS
 // ═══════════════════════════════════════════════════════════════════
 
 export function renderSection(sec) {
   const def = SECTIONS[sec.type];
   if (!def) return `<div style="padding:2rem;background:#fee;color:#900;text-align:center;">Sección desconocida: ${esc(sec.type)}</div>`;
-  return def.render(sec.data || {}, sec.design || {});
+  const html = def.render(sec.data || {}, sec.design || {});
+  const d = sec.design || {};
+  if (d.marginTop || d.marginBottom || d.display) {
+    const s = [
+      d.marginTop    ? `margin-top:${d.marginTop}`       : '',
+      d.marginBottom ? `margin-bottom:${d.marginBottom}` : '',
+      d.display      ? `display:${d.display}`            : '',
+    ].filter(Boolean).join(';');
+    return `<div style="${s}">${html}</div>`;
+  }
+  return html;
 }
 
 export function renderPlantilla(plantilla) {

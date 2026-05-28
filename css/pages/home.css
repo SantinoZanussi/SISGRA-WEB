@@ -310,11 +310,12 @@
   width: 180px;
   padding: 1.5rem 2rem;
   text-align: center;
-  border-right: 1px solid var(--slate-100);
+  border-right: 1px solid var(--slate-500);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background-color 0.2s;
+  background-color: var(--slate-100);
 }
 
 @media (min-width: 640px) {
@@ -331,7 +332,7 @@
   }
 }
 
-.logos-cell:hover { background-color: var(--slate-50); }
+.logos-cell:hover { background-color: var(--slate-200); }
 
 .logos-cell img {
   max-width: 120px;
@@ -361,23 +362,26 @@
   opacity: 0.4;
 }
 
-/* Logos con perfil publicado — clicables */
 a.logos-cell {
   text-decoration: none;
   cursor: pointer;
   position: relative;
 }
+
 a.logos-cell::after {
-  content: '↗';
+  content: '';
   position: absolute;
-  top: .5rem;
-  right: .625rem;
-  font-size: .55rem;
-  font-weight: 900;
-  color: var(--sisgra-blue);
+  top: .75rem;
+  right: .5rem;
+  width: 1rem;
+  height: 1rem;
+  background-color: var(--slate-500);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l82.7 0-201.4 201.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3 448 192c0 17.7 14.3 32 32 32s32-14.3 32-32l0-160c0-17.7-14.3-32-32-32L320 0zM80 96C35.8 96 0 131.8 0 176L0 432c0 44.2 35.8 80 80 80l256 0c44.2 0 80-35.8 80-80l0-80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 80c0 8.8-7.2 16-16 16L80 448c-8.8 0-16-7.2-16-16l0-256c0-8.8 7.2-16 16-16l80 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L80 96z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M320 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l82.7 0-201.4 201.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L448 109.3 448 192c0 17.7 14.3 32 32 32s32-14.3 32-32l0-160c0-17.7-14.3-32-32-32L320 0zM80 96C35.8 96 0 131.8 0 176L0 432c0 44.2 35.8 80 80 80l256 0c44.2 0 80-35.8 80-80l0-80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 80c0 8.8-7.2 16-16 16L80 448c-8.8 0-16-7.2-16-16l0-256c0-8.8 7.2-16 16-16l80 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L80 96z'/%3E%3C/svg%3E") center / contain no-repeat;
   opacity: 0;
   transition: opacity .2s;
 }
+
 a.logos-cell:hover::after { opacity: 1; }
 
 /* ================================================

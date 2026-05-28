@@ -18,6 +18,19 @@ const API_BASE = `http://${window.location.hostname}:3000/api`;
 // página (o las páginas nuevas btn-*) necesitan su hoja de /css/pages/ propia.
 // Calcularlo en runtime cubre también módulos agregados después de generar el
 // HTML. Usa la misma cssFilesFor que el editor para no divergir.
+// Carga Font Awesome (iconos del sitio) una sola vez, si no está ya presente.
+const FONT_AWESOME_HREF = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css';
+function ensureFontAwesome() {
+  if (document.querySelector('link[data-fa]')) return;
+  const l = document.createElement('link');
+  l.rel = 'stylesheet';
+  l.href = FONT_AWESOME_HREF;
+  l.setAttribute('data-fa', '1');
+  l.crossOrigin = 'anonymous';
+  l.referrerPolicy = 'no-referrer';
+  document.head.appendChild(l);
+}
+
 function ensurePageCss(plantilla) {
   if (!plantilla) return;
   const have = new Set(
@@ -38,6 +51,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
     console.error(`[bootstrap] No se encontró #${rootId}`);
     return;
   }
+  ensureFontAwesome();
   try {
     // cache:'no-store' + cache-buster ?t= → fuerza fetch fresh siempre.
     // Sin esto el browser cachea la plantilla y los cambios del editor no se ven hasta refresh duro.
@@ -64,6 +78,34 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
           }
           if (cliente.nombre) document.title = `${cliente.nombre} — SISGRA`;
           plantilla.secciones = plantilla.secciones.map(sec => {
+            // Header dedicado de cliente (cliente-header) o el viejo articulo-header
+            if (sec.type === 'cliente-header') {
+              return { ...sec, data: {
+                ...sec.data,
+                backLabel: '← Volver al Inicio',
+                backHref:  '/index.html',
+                empresaLogo:   cliente.imagen          || sec.data.empresaLogo,
+                empresaNombre: cliente.nombre          || sec.data.empresaNombre,
+                titulo:        cliente.titulo_proyecto || cliente.nombre || sec.data.titulo,
+                lead:          cliente.subtitulo       || sec.data.lead,
+                sector:        cliente.sector          || sec.data.sector || '',
+                ubicacion:     cliente.ubicacion       || sec.data.ubicacion || '',
+                anio:          cliente.anio            || sec.data.anio || '',
+              }};
+            }
+            if (sec.type === 'cliente-body') {
+              return { ...sec, data: {
+                ...sec.data,
+                featuredImageUrl: cliente.imagen_destacada || '',
+                featuredImageAlt: cliente.nombre || '',
+                contentHtml:      cliente.contenido || sec.data.contentHtml,
+                empresa:          cliente.nombre    || sec.data.empresa,
+                sector:           cliente.sector    || sec.data.sector || '',
+                ubicacion:        cliente.ubicacion || sec.data.ubicacion || '',
+                anio:             cliente.anio      || sec.data.anio || '',
+              }};
+            }
+            // Compatibilidad: plantillas viejas que aún usan articulo-header/body
             if (sec.type === 'articulo-header') {
               return { ...sec, data: {
                 ...sec.data,
@@ -78,7 +120,6 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
             if (sec.type === 'articulo-body') {
               return { ...sec, data: {
                 ...sec.data,
-                // Si no hay imagen destacada → string vacío (no se renderiza)
                 featuredImageUrl: cliente.imagen_destacada || '',
                 featuredImageAlt: cliente.nombre || '',
                 contentHtml:      cliente.contenido || sec.data.contentHtml,
@@ -226,7 +267,7 @@ async function hydrateBlogList() {
             </div>
             <h3 class="news-title">${esc(p.titulo||'')}</h3>
             <p class="news-excerpt">${esc(p.extracto||'')}</p>
-            <a href="/html/articulo.html?id=${esc(p.id)}" class="news-link">Leer artículo completo <span>→</span></a>
+            <a href="/html/articulo.html?id=${esc(p.id)}" class="news-link">Leer artículo completo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
           </div>
         </article>`).join('');
     });

@@ -28,9 +28,19 @@
       "estado": "publicado",
       "fecha": "2026-05-21",
       "extracto": "dwadawd",
-      "contenido": "dwadawdaw",
+      "contenido": "d<a href=\"youtube.com\">wadawdaw</a>",
       "imagen": "/img/img1.png",
       "id": "po-1779385550236"
+    },
+    {
+      "titulo": "hola",
+      "categoria": "Infraestructura",
+      "estado": "publicado",
+      "fecha": "2026-05-28",
+      "extracto": "saas",
+      "contenido": "asdas",
+      "imagen": "/img/img1.png",
+      "id": "po-1779985550732"
     }
   ]
 }

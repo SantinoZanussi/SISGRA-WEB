@@ -35,7 +35,7 @@
     <!-- SIDEBAR -->
     <aside class="sidebar" id="admin-sidebar">
       <div class="sidebar-brand">
-        <img src="../img/logo sisgra.png" alt="Sisgra Logo" class="sidebar-logo"/>
+        <img src="../img/sisgra_blanco.png" alt="Sisgra Logo" class="sidebar-logo"/>
       </div>
  
       <div class="sidebar-section-label">General</div>
@@ -240,9 +240,9 @@
                   <span class="section-card-title">Preview</span>
                   <button class="btn-secondary" id="modulos-preview-close-btn" style="padding:.25rem .625rem;font-size:.7rem;">✕ Cerrar</button>
                 </div>
-                <div class="section-card-body" style="padding:0;overflow:hidden;border-radius:0 0 .5rem .5rem;">
+                <div class="section-card-body" style="padding:0;overflow-x:auto;overflow-y:hidden;border-radius:0 0 .5rem .5rem;">
                   <iframe id="modulos-preview-iframe"
-                    style="width:100%;min-height:400px;border:none;display:block;"
+                    style="width:100%;min-width:1200px;min-height:400px;border:none;display:block;"
                     sandbox="allow-scripts allow-same-origin"></iframe>
                 </div>
               </div>
@@ -379,6 +379,14 @@
         <div class="form-row">
           <div class="form-group"><label class="form-label">Subtítulo / lead</label><textarea class="form-textarea" id="c-subtitulo" rows="2" placeholder="Descripción breve del proyecto…"></textarea></div>
         </div>
+        <div class="form-row cols-2">
+          <div class="form-group"><label class="form-label">Sector</label><input class="form-input" id="c-sector" placeholder="Ej: Industria / Agro / Salud"/></div>
+          <div class="form-group"><label class="form-label">Ubicación</label><input class="form-input" id="c-ubicacion" placeholder="Ej: Rosario, Argentina"/></div>
+        </div>
+        <div class="form-row cols-2">
+          <div class="form-group"><label class="form-label">Año</label><input class="form-input" id="c-anio" placeholder="Ej: 2025"/></div>
+          <div class="form-group"><label class="form-label">Servicios</label><input class="form-input" id="c-servicios" placeholder="Ej: Cableado, Fibra óptica"/></div>
+        </div>
         <div class="form-row">
           <div class="form-group"><label class="form-label">Imagen destacada (URL)</label><input class="form-input" id="c-imagen-dest" placeholder="/img/proyecto-empresa.jpg"/></div>
         </div>
@@ -396,6 +404,7 @@
             <span style="width:1px;background:var(--slate-200);margin:0 .25rem;align-self:stretch;"></span>
             <button class="rich-btn" data-cmd="insertUnorderedList" title="Lista">• —</button>
             <button class="rich-btn" data-cmd="createLink" title="Enlace">🔗</button>
+            <button class="rich-btn" data-cmd="insertImage" title="Insertar imagen">🖼</button>
           </div>
           <div class="rich-editor-content" contenteditable="true" id="c-content-cliente" style="min-height:200px;"></div>
         </div>
@@ -429,7 +438,7 @@
           </select>
         </div>
       </div>
-      <div class="form-row"><div class="form-group"><label class="form-label">Imagen (URL)</label><input class="form-input" id="b-img" placeholder="/img/articulo.png"/></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Imagen de portada (URL) *</label><input class="form-input" id="b-img" placeholder="/img/articulo.png"/></div></div>
       <div class="form-row"><div class="form-group"><label class="form-label">Extracto</label><textarea class="form-textarea" id="b-extracto" placeholder="Resumen breve..."></textarea></div></div>
       <div class="form-group" style="margin-bottom:1rem;">
         <label class="form-label">Contenido</label>
@@ -445,6 +454,7 @@
           <span style="width:1px;background:var(--slate-200);margin:0 .25rem;align-self:stretch;"></span>
           <button class="rich-btn" data-cmd="insertUnorderedList" title="Lista">• —</button>
           <button class="rich-btn" data-cmd="createLink" title="Enlace">🔗</button>
+          <button class="rich-btn" data-cmd="insertImage" title="Insertar imagen">🖼</button>
         </div>
         <div class="rich-editor-content" contenteditable="true" id="b-content" style="min-height:200px;"></div>
       </div>
@@ -534,6 +544,13 @@
       <div>
         <label class="form-label">Orden</label>
         <input class="form-input" id="nav-edit-orden" type="number" min="1">
+      </div>
+      <div>
+        <label class="form-label">Visibilidad</label>
+        <select class="form-select" id="nav-edit-activo">
+          <option value="visible">Visible</option>
+          <option value="oculto">Oculto</option>
+        </select>
       </div>
     </div>
     <div class="modal-footer">
