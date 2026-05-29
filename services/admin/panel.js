@@ -36,30 +36,30 @@ const SECTION_TYPES = [
   {
     group: 'Navegación',
     items: [
-      { type: 'nav', label: 'Barra de Navegación', desc: 'Logo + links + CTA', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="36" height="20" rx="1"/><line x1="7" y1="11" x2="15" y2="11"/><line x1="18" y1="11" x2="24" y2="11"/><rect x="27" y="8" width="8" height="6" rx="1" fill="currentColor" stroke="none" opacity=".3"/></svg>` },
+      { type: 'nav', label: 'Barra de Navegación', desc: 'Logo + links + CTA', icon: `<i class="fa-solid fa-window-maximize"></i>` },
     ]
   },
   {
     group: 'Heroes',
     items: [
-      { type: 'hero',          label: 'Hero Lateral',        desc: 'Texto izq. + stats der.', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="26" height="20" fill="currentColor" opacity=".08"/><rect x="30" y="2" width="8" height="9" fill="currentColor" opacity=".15"/><rect x="30" y="13" width="8" height="9" fill="currentColor" opacity=".15"/><rect x="4" y="5" width="10" height="2" rx="1" fill="currentColor" opacity=".4"/><rect x="4" y="9" width="18" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="4" y="15" width="8" height="3" rx="1" fill="currentColor" opacity=".2"/></svg>` },
-      { type: 'hero-centered', label: 'Hero Centrado',       desc: 'Texto centrado + métricas', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="36" height="20" fill="currentColor" opacity=".08"/><rect x="12" y="5" width="16" height="2" rx="1" fill="currentColor" opacity=".4"/><rect x="8" y="9" width="24" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="2" y="17" width="11" height="5"/><rect x="15" y="17" width="11" height="5"/><rect x="28" y="17" width="11" height="5"/></svg>` },
+      { type: 'hero',          label: 'Hero Lateral',        desc: 'Texto izq. + stats der.', icon: `<i class="fa-solid fa-table-columns"></i>` },
+      { type: 'hero-centered', label: 'Hero Centrado',       desc: 'Texto centrado + métricas', icon: `<i class="fa-solid fa-heading"></i>` },
     ]
   },
   {
     group: 'Secciones',
     items: [
-      { type: 'services', label: 'Servicios / Cards',   desc: 'Grid de 3 tarjetas de servicios', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="8" width="11" height="14"/><rect x="15" y="8" width="11" height="14"/><rect x="28" y="8" width="10" height="14"/><rect x="4" y="3" width="7" height="3" rx="1" fill="currentColor" opacity=".3"/></svg>` },
-      { type: 'about',    label: 'Nosotros / About',    desc: 'Texto + imagen lateral', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="17" height="16"/><rect x="21" y="4" width="17" height="16" fill="currentColor" opacity=".15"/><rect x="4" y="7" width="6" height="1" rx=".5" fill="currentColor" opacity=".4"/><rect x="4" y="10" width="12" height="4" rx="1" fill="currentColor" opacity=".2"/></svg>` },
-      { type: 'news',     label: 'Blog / Noticias',     desc: 'Grid de 3 artículos', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="11" height="20"/><rect x="15" y="2" width="11" height="20"/><rect x="28" y="2" width="10" height="20"/><rect x="4" y="4" width="7" height="5" fill="currentColor" opacity=".15"/></svg>` },
-      { type: 'logos',    label: 'Carrusel de Logos',   desc: 'Logos de clientes', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="8" width="7" height="8"/><rect x="12" y="8" width="7" height="8"/><rect x="22" y="8" width="7" height="8"/><rect x="32" y="8" width="6" height="8"/></svg>` },
-      { type: 'cta',      label: 'Banda CTA',           desc: 'Call to action horizontal', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="36" height="12" fill="currentColor" opacity=".1"/><rect x="5" y="10" width="16" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="27" y="9" width="10" height="6" rx="1" fill="currentColor" opacity=".4"/></svg>` },
+      { type: 'services', label: 'Servicios / Cards',   desc: 'Grid de 3 tarjetas de servicios', icon: `<i class="fa-solid fa-table-cells-large"></i>` },
+      { type: 'about',    label: 'Nosotros / About',    desc: 'Texto + imagen lateral', icon: `<i class="fa-solid fa-image"></i>` },
+      { type: 'news',     label: 'Blog / Noticias',     desc: 'Grid de 3 artículos', icon: `<i class="fa-solid fa-newspaper"></i>` },
+      { type: 'logos',    label: 'Carrusel de Logos',   desc: 'Logos de clientes', icon: `<i class="fa-solid fa-images"></i>` },
+      { type: 'cta',      label: 'Banda CTA',           desc: 'Call to action horizontal', icon: `<i class="fa-solid fa-bullhorn"></i>` },
     ]
   },
   {
     group: 'Cierre',
     items: [
-      { type: 'spacer',  label: 'Espacio',   desc: 'Separador en blanco', icon: `<svg viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="10" y1="12" x2="30" y2="12" stroke-dasharray="3 2" stroke-opacity=".4"/></svg>` },
+      { type: 'spacer',  label: 'Espacio',   desc: 'Separador en blanco', icon: `<i class="fa-solid fa-arrows-up-down"></i>` },
     ]
   },
 ];
@@ -70,6 +70,22 @@ const apiPut = (...args) => window.__svc?.apiPut(...args);
 const apiPost = (...args) => window.__svc?.apiPost(...args);
 const apiPatch = (...args) => window.__svc?.apiPatch(...args);
 const apiDelete = (...args) => window.__svc?.apiDelete(...args);
+
+/* ── Preview de imágenes por path/URL ── */
+function updateImgPreview(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  if (!preview) return;
+  const url = (input?.value || '').trim();
+  if (url) { preview.src = url; preview.style.display = 'block'; }
+  else { preview.src = ''; preview.style.display = 'none'; }
+}
+
+function bindImgPreview(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  input.addEventListener('input', () => updateImgPreview(inputId, previewId));
+}
  
 /* ══════════════════════════════════════════════
    HELPERS
@@ -104,7 +120,7 @@ function showPanel(id){
   if(sideEl) sideEl.classList.add('active');
  
   const NAMES = {
-    dashboard:'Dashboard', modulos:'Catálogo de Módulos', navbar:'Ítems del Navbar', clientes:'Clientes / Logos',
+    dashboard:'Dashboard', modulos:'Catálogo de Módulos', navbar:'Ítems del Navbar', clientes:'Clientes',
     blog:'Blog / Noticias', contacto:'Datos de Contacto', seo:'SEO & Meta',
     plantillas:'Plantillas', 'tpl-editor':'Editor de Plantilla',
   };
@@ -274,7 +290,7 @@ function renderSectionHTML(sec){
         <div class="cards-grid">
           ${(state.servicios?.cards||[]).map(s=>`
             <div class="svc-card">
-              <div class="svc-icon"><svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg></div>
+              <div class="svc-icon"><i class="fa-solid fa-bolt"></i></div>
               <div class="svc-name">${s.titulo||''}</div>
               <div class="svc-desc">${s.descripcion||''}</div>
             </div>`).join('') || '<div style="padding:1rem;color:#94a3b8;text-align:center;font-size:.75rem;">Cargando servicios...</div>'}
@@ -516,9 +532,9 @@ function buildDesignPanel(sec, tplId){
       <div class="design-group">
         <div class="design-group-title">Layout</div>
         ${pillRow('Disposición','layout',[
-          ['split','<svg viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1" width="7" height="8"/><rect x="10" y="1" width="3" height="3.5"/><rect x="10" y="5.5" width="3" height="3.5"/></svg>','Lateral'],
-          ['centered','<svg viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1" width="12" height="8"/><line x1="4" y1="4" x2="10" y2="4"/></svg>','Centrado'],
-          ['full','<svg viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="1" y="1" width="12" height="8" fill="currentColor" opacity=".1"/><line x1="3" y1="4" x2="8" y2="4"/></svg>','Full'],
+          ['split','<i class="fa-solid fa-table-columns"></i>','Lateral'],
+          ['centered','<i class="fa-solid fa-align-center"></i>','Centrado'],
+          ['full','<i class="fa-solid fa-expand"></i>','Full'],
         ], d.layout)}
         ${rangeRow('Padding vertical','paddingV',d.paddingV,20,160)}
         ${rangeRow('Padding horizontal','paddingH',d.paddingH,20,120)}
@@ -991,7 +1007,7 @@ function renderPageSections(tplId){
   if(tpl.sections.length===0){
     container.innerHTML = `
       <div class="canvas-empty-state">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/></svg>
+        <i class="fa-solid fa-plus"></i>
         <p>Arrastrá secciones desde el panel izquierdo<br>para construir tu página</p>
       </div>`;
     return;
@@ -1433,6 +1449,7 @@ function openNewPost(){
   const img = document.getElementById('b-img'); if(img) img.value='';
   const c = document.getElementById('b-content'); if(c) c.innerHTML='';
   const e = document.getElementById('b-estado'); if(e) e.value='borrador';
+  updateImgPreview('b-img','b-img-preview');
   openModal('modal-blog');
 }
 window.editPost = function(id){
@@ -1446,6 +1463,7 @@ window.editPost = function(id){
   const c = document.getElementById('b-content'); if(c) c.innerHTML=p.contenido||'';
   const cat = document.getElementById('b-categoria'); if(cat) cat.value=p.categoria||'Infraestructura';
   const e = document.getElementById('b-estado'); if(e) e.value=p.estado||'borrador';
+  updateImgPreview('b-img','b-img-preview');
   openModal('modal-blog');
 }
 window.deletePost = async function(id){
@@ -1558,7 +1576,7 @@ function renderClientesList(){
       : 'background:#fef3c7;color:#92400e;';
     const perfilLabel = c.estado_perfil==='publicado' ? 'Publicado' : 'Borrador';
     const verLink = c.estado_perfil==='publicado'
-      ? `<a href="/html/cliente.html?id=${c.id}" target="_blank" class="btn-edit-small" style="text-decoration:none;">Ver ↗</a>`
+      ? `<a href="/html/cliente?id=${c.id}" target="_blank" class="btn-edit-small" style="text-decoration:none;">Ver ↗</a>`
       : '';
     return `<tr>
       <td>${c.nombre||''}</td>
@@ -1591,6 +1609,8 @@ window.editCliente = function(id){
   document.getElementById('c-servicios').value       = c.servicios||'';
   document.getElementById('c-imagen-dest').value     = c.imagen_destacada||'';
   document.getElementById('c-content-cliente').innerHTML = c.contenido||'';
+  updateImgPreview('c-img','c-img-preview');
+  updateImgPreview('c-imagen-dest','c-imagen-dest-preview');
   openModal('modal-cliente');
 };
 
@@ -1755,7 +1775,7 @@ window.editarNavItem = function(id_boton) {
   if (b.id_plantilla) {
     hrefField.innerHTML = `<label class="form-label">URL de destino</label><div style="font-size:.78rem;color:#94a3b8;padding:.5rem 0;">Página HTML propia — la URL se gestiona desde Plantillas.</div>`;
   } else {
-    hrefField.innerHTML = `<label class="form-label">URL de destino</label><input class="form-input" id="nav-edit-href" placeholder="ej. /html/servicios.html o https://…" value="${(b.href||'').replace(/"/g,'&quot;')}">`;
+    hrefField.innerHTML = `<label class="form-label">URL de destino</label><input class="form-input" id="nav-edit-href" placeholder="ej. /html/servicios o https://…" value="${(b.href||'').replace(/"/g,'&quot;')}">`;
   }
   window.__svc.openModal('modal-editar-navbar');
 };
@@ -1859,24 +1879,63 @@ function initApp(){
     openTemplateEditor(state.currentTplId);
   });
  
+  // ── Editor de texto enriquecido ──
+  // El prompt() del navegador colapsa la selección del contenteditable, por eso
+  // antes fallaban "enlace" e "insertar imagen". Guardamos el rango y lo
+  // restauramos antes de ejecutar el comando.
+  let savedRange = null;
+  function saveSelection(){
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount && document.activeElement?.classList.contains('rich-editor-content')) {
+      savedRange = sel.getRangeAt(0).cloneRange();
+    }
+  }
+  function restoreSelection(){
+    if (!savedRange) return;
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(savedRange);
+  }
+  function refreshToolbarState(){
+    document.querySelectorAll('.rich-btn[data-cmd]').forEach(b=>{
+      const c = b.dataset.cmd;
+      let active = false;
+      try {
+        if (['bold','italic','underline','insertUnorderedList','insertOrderedList'].includes(c)) active = document.queryCommandState(c);
+        else if (['h2','h3','p','blockquote'].includes(c)) active = (document.queryCommandValue('formatBlock')||'').toLowerCase() === c;
+      } catch(_){}
+      b.classList.toggle('active', active);
+    });
+  }
+  document.querySelectorAll('.rich-editor-content').forEach(ed=>{
+    ['keyup','mouseup','focus'].forEach(evt=>{
+      ed.addEventListener(evt, ()=>{ saveSelection(); refreshToolbarState(); });
+    });
+  });
   document.querySelectorAll('.rich-btn[data-cmd]').forEach(btn=>{
-    btn.addEventListener('mousedown', ev => ev.preventDefault()); // evita perder foco del editor
+    btn.addEventListener('mousedown', ev => ev.preventDefault()); // mantiene la selección del editor
     btn.addEventListener('click',()=>{
       const cmd = btn.dataset.cmd;
-      if      (cmd==='h2')                   document.execCommand('formatBlock',false,'h2');
-      else if (cmd==='h3')                   document.execCommand('formatBlock',false,'h3');
-      else if (cmd==='p')                    document.execCommand('formatBlock',false,'p');
-      else if (cmd==='blockquote')           document.execCommand('formatBlock',false,'blockquote');
-      else if (cmd==='insertUnorderedList')  document.execCommand('insertUnorderedList',false,null);
+      const exec = (c,v=null)=>document.execCommand(c,false,v);
+      if      (cmd==='h2')                   exec('formatBlock','h2');
+      else if (cmd==='h3')                   exec('formatBlock','h3');
+      else if (cmd==='p')                    exec('formatBlock','p');
+      else if (cmd==='blockquote')           exec('formatBlock','blockquote');
+      else if (cmd==='insertUnorderedList')  exec('insertUnorderedList');
+      else if (cmd==='insertOrderedList')    exec('insertOrderedList');
       else if (cmd==='createLink') {
         const url = prompt('URL del enlace (ej: https://sisgra.com.ar):');
-        if (url) document.execCommand('createLink',false,url);
+        restoreSelection();
+        if (url) exec('createLink', url);
       }
       else if (cmd==='insertImage') {
-        const url = prompt('URL de la imagen (ej: /img/clients/proceso-1.jpg):');
-        if (url) document.execCommand('insertImage',false,url);
+        const url = prompt('Ruta de la imagen (ej: /img/clients/proceso-1.jpg):');
+        restoreSelection();
+        if (url) exec('insertImage', url);
       }
-      else document.execCommand(cmd,false,null);
+      else exec(cmd);
+      saveSelection();
+      refreshToolbarState();
     });
   });
  
@@ -1893,7 +1952,11 @@ function initApp(){
     btn.addEventListener('click',()=>closeModal(btn.dataset.close));
   });
   document.querySelectorAll('.modal-overlay').forEach(overlay=>{
-    overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.classList.remove('open'); });
+    // Solo cerrar si el click empieza Y termina sobre el overlay (no al arrastrar
+    // selección de texto desde dentro del modal, ni por un click accidental al borde).
+    let downOnOverlay = false;
+    overlay.addEventListener('mousedown', e=>{ downOnOverlay = (e.target===overlay); });
+    overlay.addEventListener('click', e=>{ if(e.target===overlay && downOnOverlay) overlay.classList.remove('open'); });
   });
  
   document.getElementById('logout-btn')?.addEventListener('click',()=>{
@@ -1972,8 +2035,13 @@ function initApp(){
     document.getElementById('c-servicios').value='';
     document.getElementById('c-imagen-dest').value='';
     document.getElementById('c-content-cliente').innerHTML='';
+    updateImgPreview('c-img','c-img-preview');
+    updateImgPreview('c-imagen-dest','c-imagen-dest-preview');
     openModal('modal-cliente');
   });
+  bindImgPreview('b-img','b-img-preview');
+  bindImgPreview('c-img','c-img-preview');
+  bindImgPreview('c-imagen-dest','c-imagen-dest-preview');
   document.getElementById('guardar-cliente-btn')?.addEventListener('click', saveCliente);
   document.getElementById('abrir-modal-blog')?.addEventListener('click',openNewPost);
   document.getElementById('dash-nuevo-post')?.addEventListener('click',()=>{ showPanel('blog'); openNewPost(); });

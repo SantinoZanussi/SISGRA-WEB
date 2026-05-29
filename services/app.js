@@ -15,7 +15,7 @@ const PANEL_NAMES = {
   dashboard:    'Dashboard',
   home:         'Inicio — Hero',
   nosotros:     'Nosotros',
-  clientes:     'Clientes / Logos',
+  clientes:     'Clientes',
   blog:         'Blog / Noticias',
   'p-cableado':   'Cableado Estructurado',
   'p-fibra':      'Fibra Óptica',

@@ -140,7 +140,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
         // Detectar de dónde viene el usuario para el botón "Volver"
         const fromBlog = document.referrer.includes('blog.html');
         const backLabel = fromBlog ? '← Volver al Blog'   : '← Volver al Inicio';
-        const backHref  = fromBlog ? '/html/blog.html'     : '/index.html';
+        const backHref  = fromBlog ? '/html/blog'     : '/index.html';
         try {
           const br = await fetch(`${API_BASE}/data/blog?t=${Date.now()}`, { cache: 'no-store' });
           if (br.ok) {
@@ -163,9 +163,10 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
                 if (sec.type === 'articulo-body') {
                   return { ...sec, data: {
                     ...sec.data,
-                    // Si el post no tiene imagen → string vacío (no se renderiza)
-                    featuredImageUrl: post.imagen || '',
-                    featuredImageAlt: post.titulo || '',
+                    // La portada (post.imagen) es solo para la card del index/blog,
+                    // NO se muestra al principio del artículo.
+                    featuredImageUrl: '',
+                    featuredImageAlt: '',
                     contentHtml:      post.contenido || sec.data.contentHtml,
                   }};
                 }
@@ -186,6 +187,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
     bindContactForm();
     applyGlobalContactoSEO();
     hydrateBlogList();
+    hydrateBlogCards();
     hydrateClientesTrack();
   } catch (e) {
     root.innerHTML = `<div style="padding:4rem;text-align:center;color:#900;font-family:sans-serif;">
@@ -267,7 +269,7 @@ async function hydrateBlogList() {
             </div>
             <h3 class="news-title">${esc(p.titulo||'')}</h3>
             <p class="news-excerpt">${esc(p.extracto||'')}</p>
-            <a href="/html/articulo.html?id=${esc(p.id)}" class="news-link">Leer artículo completo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+            <a href="/html/articulo?id=${esc(p.id)}" class="news-link">Leer artículo completo <i class="fa-solid fa-arrow-right fa-lg" aria-hidden="true"></i></a>
           </div>
         </article>`).join('');
     });
@@ -280,6 +282,49 @@ async function hydrateBlogList() {
 }
 
 function esc(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── Hidratar [data-blog-cards] (grid del index) desde /api/data/blog ──
+async function hydrateBlogCards() {
+  const grids = document.querySelectorAll('[data-blog-cards]');
+  if (!grids.length) return;
+  try {
+    const r = await fetch(`${API_BASE}/data/blog?t=${Date.now()}`, { cache: 'no-store' });
+    if (!r.ok) throw new Error('no blog data');
+    const data = await r.json();
+    let posts = (data.posts || []).filter(p => p.estado === 'publicado');
+    posts.sort((a, b) => String(b.fecha || '').localeCompare(String(a.fecha || '')));
+    grids.forEach(grid => {
+      const ds = grid.dataset;
+      const limit = parseInt(ds.limit || '3', 10);
+      const list = posts.slice(0, limit);
+      if (!list.length) {
+        grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem 0;color:#94a3b8;font-size:.875rem;">No hay artículos publicados aún.</div>`;
+        return;
+      }
+      const st = (prop, v) => v ? `${prop}:${v};` : '';
+      grid.innerHTML = list.map(p => {
+        const cardStyle = st('background', ds.cardBg) + st('border-color', ds.cardBorder) + st('border-radius', ds.cardRadius);
+        const imgInner = p.imagen
+          ? `<img src="${esc(p.imagen)}" alt="${esc(p.titulo)}">`
+          : `<div style="width:100%;height:100%;background:linear-gradient(135deg,#0A1D37,#1e3a8a);display:flex;align-items:center;justify-content:center;"><span style="color:#60a5fa;font-size:.625rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;">${esc(p.categoria || 'Blog')}</span></div>`;
+        return `
+        <article class="blog-card"${cardStyle ? ` style="${cardStyle}"` : ''}>
+          <div class="blog-card-img">${imgInner}</div>
+          <div class="blog-card-content">
+            <span class="blog-tag"${(ds.tagBg || ds.tagColor) ? ` style="${st('background', ds.tagBg)}${st('color', ds.tagColor)}"` : ''}>${esc(p.categoria || '')}</span>
+            <h3 class="blog-card-title"${ds.cardTitle ? ` style="color:${ds.cardTitle};"` : ''}>${esc(p.titulo || '')}</h3>
+            <p class="blog-card-desc"${ds.cardText ? ` style="color:${ds.cardText};"` : ''}>${esc(p.extracto || '')}</p>
+            <a href="${p.id ? `/html/articulo?id=${esc(p.id)}` : '/html/blog'}" class="blog-card-link"${ds.linkColor ? ` style="color:${ds.linkColor};"` : ''}>Leer Artículo <i class="fa-solid fa-arrow-right fa-lg" style="color: var(--blue-500);" aria-hidden="true"></i></a>
+          </div>
+        </article>`;
+      }).join('');
+    });
+  } catch (e) {
+    grids.forEach(grid => {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem 0;color:#94a3b8;font-size:.875rem;">No se pudieron cargar los artículos.</div>`;
+    });
+  }
+}
 
 // ── Hidratar carrusel de clientes con datos en vivo y links a perfiles ──
 async function hydrateClientesTrack() {
@@ -297,7 +342,7 @@ async function hydrateClientesTrack() {
         ? `<img src="${esc(c.imagen)}" alt="${esc(c.nombre)}">`
         : `<div class="logos-cell-text">${esc(c.nombre)}</div>`;
       if (c.estado_perfil === 'publicado') {
-        return `<a href="/html/cliente.html?id=${esc(c.id)}" class="logos-cell logos-cell-link" title="Ver caso: ${esc(c.nombre)}">${inner}</a>`;
+        return `<a href="/html/cliente?id=${esc(c.id)}" class="logos-cell logos-cell-link" title="Ver caso: ${esc(c.nombre)}">${inner}</a>`;
       }
       return `<div class="logos-cell">${inner}</div>`;
     };

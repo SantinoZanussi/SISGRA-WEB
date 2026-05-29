@@ -255,7 +255,7 @@ function renderSidebarList() {
         <span class="sidebar-tpl-dot" style="${vencida ? 'background:#f87171;' : ''}"></span>
         <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escAttr(p.nombre)}</span>
         ${vencida ? '<span class="sidebar-vencida-badge">VENC.</span>' : p.activa ? '<span style="font-size:.5rem;font-weight:900;letter-spacing:.1em;color:#86efac;">LIVE</span>' : ''}
-        <button data-e3-sb-del="${p.id_plantilla}" title="Eliminar" style="background:transparent;border:1px solid rgba(220,38,38,.4);color:rgba(252,165,165,.85);width:1.1rem;height:1.1rem;display:flex;align-items:center;justify-content:center;font-size:.7rem;line-height:1;padding:0;flex-shrink:0;margin-left:.3rem;">×</button>
+        <button data-e3-sb-del="${p.id_plantilla}" title="Eliminar" style="background:transparent;border:1px solid rgba(220,38,38,.4);color:rgba(252,165,165,.85);width:1.1rem;height:1.1rem;display:flex;align-items:center;justify-content:center;font-size:.7rem;line-height:1;padding:0;flex-shrink:0;margin-left:.3rem;"><i class="fa-solid fa-xmark"></i></button>
       </div>
       ${expiryLine}
     </div>`;
@@ -388,7 +388,7 @@ function renderEditorShell() {
   inner.innerHTML = `
     <div style="background:var(--white);border-bottom:1px solid var(--slate-200);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
-        <button class="btn-edit-small" id="e3-back">← Volver</button>
+        <button class="btn-edit-small" id="e3-back"><i class="fa-solid fa-arrow-left fa-lg"></i> Volver</button>
         <span style="font-size:.5rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;background:var(--sisgra-blue);color:#fff;padding:.2rem .6rem;">Plantilla</span>
         <span style="font-size:1rem;font-weight:900;color:var(--sisgra-blue);letter-spacing:-.03em;font-style:italic;">${escAttr(tpl.nombre)}</span>
         <span style="font-size:.55rem;font-weight:700;color:var(--slate-400);letter-spacing:.2em;text-transform:uppercase;">— ${escAttr(tpl.tipo)}</span>
@@ -459,7 +459,7 @@ function renderTray() {
     if (!variantes.length) {
       return [`
         <div class="tray-chip" draggable="true" data-e3-type="${type}" data-e3-variant="">
-          <div class="tray-chip-thumb">${def.icon || '◻'}</div>
+          <div class="tray-chip-thumb"></div>
           <div class="tray-chip-info">
             <div class="tray-chip-name">${escAttr(def.label)}</div>
             <div class="tray-chip-desc">${escAttr(def.description || '')}</div>
@@ -468,7 +468,7 @@ function renderTray() {
     }
     return variantes.map(v => `
       <div class="tray-chip" draggable="true" data-e3-type="${type}" data-e3-variant="${escAttr(v.id)}">
-        <div class="tray-chip-thumb">${def.icon || '◻'}</div>
+        <div class="tray-chip-thumb"></div>
         <div class="tray-chip-info">
           <div class="tray-chip-name">${escAttr(v.nombre || def.label)}</div>
           <div class="tray-chip-desc">${escAttr(def.label)}</div>
@@ -562,9 +562,9 @@ function renderCanvas() {
 <div class="e3-drop" data-dropidx="${i}"></div>
 <div class="e3-sec-wrap ${e3.selectedSecId === sec.id ? 'e3-selected' : ''}" data-e3-sec="${sec.id}">
   <div class="e3-sec-ctrls">
-    <button data-e3-act="up">▲</button>
-    <button data-e3-act="down">▼</button>
-    <button data-e3-act="del" class="e3-danger">✕</button>
+    <button data-e3-act="up"><i class="fa-solid fa-chevron-up"></i></button>
+    <button data-e3-act="down"><i class="fa-solid fa-chevron-down"></i></button>
+    <button data-e3-act="del" class="e3-danger"><i class="fa-solid fa-trash"></i></button>
   </div>
   ${renderSection(sec)}
 </div>`).join('') + `<div class="e3-drop" data-dropidx="${secs.length}"></div>`;
@@ -769,9 +769,9 @@ function arrayEditorHTML(kind, items, fieldKeys, labels, extraToggle) {
             : `<input class="props-input" data-e3-akey="${k}" value="${escAttr(it[k]||'')}" placeholder="${labels[k]}" style="margin-bottom:.3rem;"/>`
         ).join('')}
         ${extraToggle ? `<label style="display:flex;align-items:center;gap:.4rem;font-size:.65rem;color:var(--slate-500);cursor:pointer;"><input type="checkbox" data-e3-akey="activo" ${it.activo !== false ? 'checked' : ''}/> Activo</label>` : ''}
-        <button class="btn-edit-small" data-e3-aremove="${i}" style="color:#dc2626;border-color:#fca5a5;width:100%;margin-top:.3rem;">✕ Quitar</button>
+        <button class="btn-edit-small" data-e3-aremove="${i}" style="color:#dc2626;border-color:#fca5a5;width:100%;margin-top:.3rem;"><i class="fa-solid fa-trash"></i> Quitar</button>
       </div>`).join('')}
-    <button class="btn-edit-small" data-e3-aadd style="width:100%;">+ Agregar</button>
+    <button class="btn-edit-small" data-e3-aadd style="width:100%;"><i class="fa-solid fa-plus"></i> Agregar</button>
   </div></div>`;
 }
 
@@ -785,9 +785,9 @@ function iconFeaturesEditorHTML(items) {
         </select>
         <input class="props-input" data-e3-akey="titulo" value="${escAttr(it.titulo||'')}" placeholder="Título" style="margin-bottom:.3rem;"/>
         <textarea class="props-textarea" data-e3-akey="desc" placeholder="Descripción" style="margin-bottom:.3rem;min-height:50px;">${escAttr(it.desc||'').replace(/&quot;/g,'"')}</textarea>
-        <button class="btn-edit-small" data-e3-aremove="${i}" style="color:#dc2626;border-color:#fca5a5;width:100%;">✕ Quitar</button>
+        <button class="btn-edit-small" data-e3-aremove="${i}" style="color:#dc2626;border-color:#fca5a5;width:100%;"><i class="fa-solid fa-trash"></i> Quitar</button>
       </div>`).join('')}
-    <button class="btn-edit-small" data-e3-aadd style="width:100%;">+ Agregar feature</button>
+    <button class="btn-edit-small" data-e3-aadd style="width:100%;"><i class="fa-solid fa-plus"></i> Agregar feature</button>
   </div></div>`;
 }
 
@@ -796,9 +796,9 @@ function textListEditorHTML(items) {
     ${items.map((s, i) => `
       <div data-e3-aitem="${i}" style="display:flex;gap:.3rem;margin-bottom:.3rem;">
         <input class="props-input" data-e3-akey="_text" value="${escAttr(s)}" style="flex:1;font-family:monospace;"/>
-        <button class="btn-edit-small" data-e3-aremove="${i}" style="color:#dc2626;border-color:#fca5a5;">✕</button>
+        <button class="btn-edit-small" data-e3-aremove="${i}" style="color:#dc2626;border-color:#fca5a5;"><i class="fa-solid fa-xmark"></i></button>
       </div>`).join('')}
-    <button class="btn-edit-small" data-e3-aadd style="width:100%;">+ Agregar línea</button>
+    <button class="btn-edit-small" data-e3-aadd style="width:100%;"><i class="fa-solid fa-plus"></i> Agregar línea</button>
   </div></div>`;
 }
 
@@ -952,7 +952,7 @@ function injectSidebarLink() {
   sb.className = 'sidebar-item';
   sb.id = 'sidebar-go-plantillas';
   sb.style.cssText = 'font-size:.65rem;font-weight:600;color:rgba(255,255,255,.6);';
-  sb.innerHTML = `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" stroke-width="2"/><rect x="14" y="3" width="7" height="7" stroke-width="2"/><rect x="3" y="14" width="7" height="7" stroke-width="2"/><rect x="14" y="14" width="7" height="7" stroke-width="2"/></svg>Ver todas las plantillas`;
+  sb.innerHTML = `<i class="fa-solid fa-layer-group"></i>Ver todas las plantillas`;
   sb.addEventListener('click', goToPlantillas);
   label.parentElement.insertAdjacentElement('afterend', sb);
 }
@@ -969,7 +969,7 @@ function injectDashboardCard() {
       <div style="font-size:1.25rem;font-weight:900;letter-spacing:-.02em;margin-bottom:.25rem;">Plantillas del sitio</div>
       <div style="font-size:.8125rem;color:rgba(255,255,255,.7);">Editá visualmente cada HTML del sitio. Cada plantilla controla en vivo su página correspondiente.</div>
     </div>
-    <div style="background:#2563eb;color:#fff;padding:.75rem 1.5rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:.7rem;white-space:nowrap;">Ir a Plantillas →</div>`;
+    <div style="background:#2563eb;color:#fff;padding:.75rem 1.5rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:.7rem;white-space:nowrap;">Ir a Plantillas <i class="fa-solid fa-arrow-right fa-lg"></i></div>`;
   card.addEventListener('mouseenter', () => card.style.transform = 'translateY(-2px)');
   card.addEventListener('mouseleave', () => card.style.transform = 'translateY(0)');
   card.addEventListener('click', goToPlantillas);
@@ -1079,7 +1079,7 @@ function renderModCatalog() {
         <div class="section-card-body" style="padding:1rem;">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.75rem;">
             <div>
-              <span style="font-size:1.4rem;line-height:1;display:block;margin-bottom:.35rem;">${sec.icon || '◻'}</span>
+              <span style="font-size:1.4rem;line-height:1;display:block;margin-bottom:.35rem;"></span>
               <div style="font-size:.78rem;font-weight:700;color:#1e293b;margin-bottom:.2rem;">${sec.label}</div>
               <div style="font-size:.68rem;color:#64748b;line-height:1.4;">${sec.description || ''}</div>
             </div>
@@ -1108,7 +1108,7 @@ window.openModVariants = function(type) {
   _showView('modulos-variants-view');
   const titleEl = document.getElementById('modulos-variants-title');
   const descEl  = document.getElementById('modulos-variants-desc');
-  if (titleEl) titleEl.textContent = `${sec.icon || ''} ${sec.label}`;
+  if (titleEl) titleEl.innerHTML = `${sec.icon || ''} ${sec.label}`;
   if (descEl)  descEl.textContent  = sec.description || '';
   renderVariantsList();
 };
@@ -1160,7 +1160,7 @@ window.openModEditor = function(type, variantId) {
 
   const titleEl = document.getElementById('modulos-editor-title');
   const nameEl  = document.getElementById('modulos-editor-variant-name');
-  if (titleEl) titleEl.textContent = `${sec.icon || ''} ${sec.label}`;
+  if (titleEl) titleEl.innerHTML = `${sec.icon || ''} ${sec.label}`;
   if (nameEl)  nameEl.textContent  = variant.nombre || '';
 
   const nameInput = document.getElementById('modulos-variant-name-input');

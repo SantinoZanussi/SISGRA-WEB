@@ -33,18 +33,18 @@ export const SECTIONS = {
   nav: {
     label: 'Navbar',
     description: 'Barra superior con logo y enlaces',
-    icon: '☰',
+    icon: `<i class="fa-solid fa-bars"></i>`,
     validTipos: ['*'],
     defaultData: {
       logoSrc: '/img/sisgra_blanco.png',
       logoSrcHref: '../index.html',
       instalacionesLabel: 'Instalaciones',
-      cableadoLabel: 'Cableado Estructurado', cableadoHref: '/html/cableado_estructurado.html',
-      fibraLabel: 'Fibra Óptica',              fibraHref:    '/html/fibra_optica.html',
-      seguridadLabel: 'Seguridad Electrónica', seguridadHref:'/html/seguridad.html',
-      blogLabel: 'Blog',                       blogHref:     '/html/blog.html',
-      soporteLabel: 'Soporte IT',              soporteHref:  '/html/soporte_it.html',
-      desarrolloLabel: 'Desarrollo de Software',desarrolloHref:'/html/desarrollo.html',
+      cableadoLabel: 'Cableado Estructurado', cableadoHref: '/html/cableado_estructurado',
+      fibraLabel: 'Fibra Óptica',              fibraHref:    '/html/fibra_optica',
+      seguridadLabel: 'Seguridad Electrónica', seguridadHref:'/html/seguridad',
+      blogLabel: 'Blog',                       blogHref:     '/html/blog',
+      soporteLabel: 'Soporte IT',              soporteHref:  '/html/soporte_it',
+      desarrolloLabel: 'Desarrollo de Software',desarrolloHref:'/html/desarrollo',
       ctaLabel: 'Contáctese',                  ctaHref:      'https://wa.me/548101220065',
     },
     dataFields: [
@@ -185,7 +185,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   hero: {
     label: 'Hero lateral',
     description: 'Hero con stats laterales (igual al index actual)',
-    icon: '◫',
+    icon: `<i class="fa-solid fa-table-columns"></i>`,
     validTipos: ['index'],
     defaultData: {
       badge: 'INFRAESTRUCTURA DE ELITE',
@@ -261,7 +261,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   'hero-centered': {
     label: 'Hero centrado',
     description: 'Hero centrado con métricas y tags',
-    icon: '▣',
+    icon: `<i class="fa-solid fa-heading"></i>`,
     validTipos: ['index'],
     defaultData: {
       p2_eyebrow: '25 años de confianza',
@@ -343,9 +343,9 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   //  Estructura: <section class="logos-section">…<div class="logos-track">…
   // ─────────────────────────────────────────────────────────────────
   clientes: {
-    label: 'Clientes / Logos',
+    label: 'Clientes',
     description: 'Carrusel de logos de clientes',
-    icon: '◷',
+    icon: `<i class="fa-solid fa-images"></i>`,
     validTipos: ['index'],
     defaultData: {
       titulo_seccion: 'NUESTROS CLIENTES',
@@ -402,7 +402,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   blog: {
     label: 'Blog / Noticias',
     description: 'Grid de tarjetas de artículos',
-    icon: '◰',
+    icon: `<i class="fa-solid fa-newspaper"></i>`,
     validTipos: ['index'],
     defaultData: {
       titulo_seccion: 'Novedades & Blog',
@@ -434,28 +434,28 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     render: (data, design) => {
       const d = { ...SECTIONS.blog.defaultData, ...data };
       const s = { ...SECTIONS.blog.defaultDesign, ...design };
-      const posts = d.posts || [];
+      // El grid se hidrata en vivo desde /api/data/blog (posts publicados).
+      // Los colores de diseño se pasan por data-* y los aplica hydrateBlogCards().
+      const dataAttrs = [
+        `data-blog-cards`,
+        `data-limit="3"`,
+        s.cardBg          ? `data-card-bg="${esc(s.cardBg)}"`            : '',
+        s.cardBorderColor ? `data-card-border="${esc(s.cardBorderColor)}"` : '',
+        s.cardRadius      ? `data-card-radius="${esc(s.cardRadius)}"`     : '',
+        s.cardTitleColor  ? `data-card-title="${esc(s.cardTitleColor)}"`  : '',
+        s.cardTextColor   ? `data-card-text="${esc(s.cardTextColor)}"`    : '',
+        s.tagBg           ? `data-tag-bg="${esc(s.tagBg)}"`              : '',
+        s.tagColor        ? `data-tag-color="${esc(s.tagColor)}"`        : '',
+        s.linkColor       ? `data-link-color="${esc(s.linkColor)}"`      : '',
+      ].filter(Boolean).join(' ');
       return `
 <section class="blog-section"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
     <div class="blog-header">
       <h2 class="blog-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${esc(d.titulo_seccion)}</h2>
     </div>
-    <div class="blog-grid">
-      ${posts.map(p => `
-        <article class="blog-card"${css({ background: s.cardBg, 'border-color': s.cardBorderColor, 'border-radius': s.cardRadius })}>
-          <div class="blog-card-img">
-            ${p.imagen
-              ? `<img src="${esc(p.imagen)}" alt="${esc(p.titulo)}">`
-              : `<div style="width:100%;height:100%;background:linear-gradient(135deg,#0A1D37,#1e3a8a);display:flex;align-items:center;justify-content:center;"><span style="color:#60a5fa;font-size:.625rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;">${esc(p.categoria||'Blog')}</span></div>`}
-          </div>
-          <div class="blog-card-content">
-            <span class="blog-tag"${css({ background: s.tagBg, color: s.tagColor })}>${esc(p.categoria||'')}</span>
-            <h3 class="blog-card-title"${css({ color: s.cardTitleColor })}>${esc(p.titulo||'')}</h3>
-            <p class="blog-card-desc"${css({ color: s.cardTextColor })}>${esc(p.extracto||'')}</p>
-            <a href="${p.id ? `/html/articulo.html?id=${esc(p.id)}` : '/html/blog.html'}" class="blog-card-link"${css({ color: s.linkColor })}>Leer Artículo <i class="fa-solid fa-arrow-right" style="color: var(--blue-500);" aria-hidden="true"></i></a>
-          </div>
-        </article>`).join('')}
+    <div class="blog-grid" ${dataAttrs}>
+      <div style="grid-column:1/-1;text-align:center;padding:3rem 0;color:#94a3b8;font-size:.875rem;">Cargando artículos…</div>
     </div>
   </div>
 </section>`;
@@ -468,15 +468,15 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   services: {
     label: 'Servicios (cards)',
     description: 'Grid de tarjetas de servicios',
-    icon: '◰',
+    icon: `<i class="fa-solid fa-table-cells-large"></i>`,
     validTipos: ['index'],
     defaultData: {
       titulo_seccion: 'Portafolio de Soluciones',
       eyebrow: 'Lo que hacemos',
       cards: [
-        { id: 'instalaciones', titulo: 'Instalaciones', descripcion: 'Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas TIA/EIA para entornos corporativos exigentes.', enlace: './html/cableado_estructurado.html' },
-        { id: 'soporte',       titulo: 'Soporte IT',    descripcion: 'Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.', enlace: './html/soporte_it.html' },
-        { id: 'software',      titulo: 'Desarrollo de Software', descripcion: 'Soluciones digitales a medida: sistemas de gestión logística, control de inventario y procesos empresariales integrados.', enlace: './html/desarrollo.html' },
+        { id: 'instalaciones', titulo: 'Instalaciones', descripcion: 'Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas TIA/EIA para entornos corporativos exigentes.', enlace: './html/cableado_estructurado' },
+        { id: 'soporte',       titulo: 'Soporte IT',    descripcion: 'Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.', enlace: './html/soporte_it' },
+        { id: 'software',      titulo: 'Desarrollo de Software', descripcion: 'Soluciones digitales a medida: sistemas de gestión logística, control de inventario y procesos empresariales integrados.', enlace: './html/desarrollo' },
       ],
     },
     defaultDesign: { bg: '', sectionColor: '', cardBg: '', cardTitleColor: '', cardLinkColor: '', paddingY: '', titleSize: '', cardRadius: '', cardPadding: '', gap: '' },
@@ -501,9 +501,9 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       const d = { ...SECTIONS.services.defaultData, ...data };
       const s = { ...SECTIONS.services.defaultDesign, ...design };
       const SERVICE_ICONS = {
-        instalaciones: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>`,
-        soporte:       `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>`,
-        software:      `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>`,
+        instalaciones: `<i class="fa-solid fa-server fa-2xl"></i>`,
+        soporte:       `<i class="fa-solid fa-headset fa-2xl"></i>`,
+        software:      `<i class="fa-solid fa-code fa-2xl"></i>`,
       };
       return `
 <section id="servicios" class="services-section"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
@@ -517,7 +517,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
           <div class="card-icon">${SERVICE_ICONS[c.id] || ''}</div>
           <h3 class="card-title"${css({ color: s.cardTitleColor })}>${esc(c.titulo)}</h3>
           <p class="card-desc">${esc(c.descripcion)}</p>
-          <a href="${esc(c.enlace||'#')}" class="card-link"${css({ color: s.cardLinkColor })}>Ver Detalles <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+          <a href="${esc(c.enlace||'#')}" class="card-link"${css({ color: s.cardLinkColor })}>Ver Detalles <i class="fa-solid fa-arrow-right fa-lg" aria-hidden="true"></i></a>
         </div>`).join('')}
     </div>
   </div>
@@ -531,7 +531,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   about: {
     label: 'Nosotros',
     description: 'Sección "Sobre nosotros" con texto e imagen',
-    icon: '◐',
+    icon: `<i class="fa-solid fa-image"></i>`,
     validTipos: ['index'],
     defaultData: {
       eyebrow: 'Excelencia Corporativa',
@@ -583,7 +583,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   cta: {
     label: 'Call to Action',
     description: 'Banda con título y botón de contacto',
-    icon: '►',
+    icon: `<i class="fa-solid fa-bullhorn"></i>`,
     validTipos: ['index'],
     defaultData: {
       title: '¿Listo para transformar su infraestructura?',
@@ -627,7 +627,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   spacer: {
     label: 'Espaciador',
     description: 'Espacio en blanco',
-    icon: '⎯',
+    icon: `<i class="fa-solid fa-arrows-up-down"></i>`,
     validTipos: ['index'],
     defaultData: { height: 60 },
     defaultDesign: { bg: '#ffffff' },
@@ -646,7 +646,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   footer: {
     label: 'Footer (index)',
     description: 'Pie de página del index con formulario y links',
-    icon: '⎽',
+    icon: `<i class="fa-solid fa-grip-lines"></i>`,
     validTipos: ['index'],
     defaultData: {
       formTitulo: 'Solicite un presupuesto',
@@ -698,7 +698,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       </div>
       <div class="action-buttons">
         <a href="https://wa.me/${esc(d.whatsapp)}" class="btn btn-whatsapp"${css({ background: s.btnWaBg, color: s.btnWaColor })}>
-          <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+          <i class="fa-brands fa-whatsapp fa-xl" aria-hidden="true"></i>
           ${esc(d.whatsappText)}
         </a>
       </div>
@@ -718,12 +718,12 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   <div class="footer-bottom"${css({ background: s.bottomBg })}>
     <div class="footer-brand"><img src="${esc(d.brandImg)}" alt="SISGRA"></div>
     <div class="footer-links">
-      <a href="/html/cableado_estructurado.html"${css({ color: s.linkColor })}>Cableado Estructurado</a>
-      <a href="/html/fibra_optica.html"${css({ color: s.linkColor })}>Fibra Óptica</a>
-      <a href="/html/seguridad.html"${css({ color: s.linkColor })}>Seguridad Electrónica</a>
-      <a href="/html/soporte_it.html"${css({ color: s.linkColor })}>Soporte IT</a>
-      <a href="/html/desarrollo.html"${css({ color: s.linkColor })}>Desarrollo de Software</a>
-      <a href="/html/blog.html"${css({ color: s.linkColor })}>Blog</a>
+      <a href="/html/cableado_estructurado"${css({ color: s.linkColor })}>Cableado Estructurado</a>
+      <a href="/html/fibra_optica"${css({ color: s.linkColor })}>Fibra Óptica</a>
+      <a href="/html/seguridad"${css({ color: s.linkColor })}>Seguridad Electrónica</a>
+      <a href="/html/soporte_it"${css({ color: s.linkColor })}>Soporte IT</a>
+      <a href="/html/desarrollo"${css({ color: s.linkColor })}>Desarrollo de Software</a>
+      <a href="/html/blog"${css({ color: s.linkColor })}>Blog</a>
     </div>
   </div>
   <div class="footer-copy"${css({ background: s.copyBg })}><span${css({ color: s.copyColor })}>${esc(d.copyright)}</span></div>
@@ -739,7 +739,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   'cableado-hero': {
     label: 'Hero Cableado',
     description: 'Hero principal de cableado: badge + título partido + grid (cards / dark-panel)',
-    icon: '◫',
+    icon: `<i class="fa-solid fa-table-columns"></i>`,
     validTipos: ['cableado'],
     defaultData: {
       badge: 'Infraestructura Crítica',
@@ -849,7 +849,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   'fibra-hero': {
     label: 'Hero Fibra Óptica',
     description: 'Hero de fibra: layout 2 cols (imagen+badge / texto+features)',
-    icon: '◫',
+    icon: `<i class="fa-solid fa-table-columns"></i>`,
     validTipos: ['fibra'],
     defaultData: {
       imagenUrl: 'https://images.unsplash.com/photo-1551703599-6b3e8379aa8c?q=80&w=2072&auto=format&fit=crop',
@@ -939,7 +939,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   'seguridad-hero': {
     label: 'Hero Seguridad',
     description: 'Hero seguridad: texto izq + imagen der con badge SECURE AREA',
-    icon: '◫',
+    icon: `<i class="fa-solid fa-table-columns"></i>`,
     validTipos: ['seguridad'],
     defaultData: {
       badge: 'Protección Perimetral',
@@ -1032,7 +1032,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   'soporte-hero': {
     label: 'Hero Soporte IT',
     description: 'Hero soporte: texto izq + dashboard mockup der',
-    icon: '◫',
+    icon: `<i class="fa-solid fa-table-columns"></i>`,
     validTipos: ['soporte'],
     defaultData: {
       badge: 'Continuidad Operativa Garantizada',
@@ -1050,7 +1050,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       dashStat2Label: 'Vida del Sistema',
       dashStat2Value: 'OPTIMIZADO',
       dashStat2Highlight: true,
-      btnRemote: 'Acceder al Soporte Remoto Inmediato 🎧',
+      btnRemote: 'Acceder al Soporte Remoto Inmediato',
     },
     defaultDesign: { bg: '', titleColor: '', accentColor: '', paddingY: '', titleSize: '' },
     dataFields: [
@@ -1132,7 +1132,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
               <div class="dash-subvalue ${d.dashStat2Highlight ? 'text-green' : ''}">${esc(d.dashStat2Value)}</div>
             </div>
           </div>
-          <button class="btn-remote">${esc(d.btnRemote)}</button>
+          <button class="btn-remote">${esc(String(d.btnRemote ?? '').replace(/\s*🎧\s*$/,''))} <i class="fa-solid fa-headset" aria-hidden="true"></i></button>
         </div>
       </div>
       <div class="dash-decor"></div>
@@ -1149,7 +1149,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   'desarrollo-hero': {
     label: 'Hero Desarrollo Software',
     description: 'Hero desarrollo: texto + code editor mock',
-    icon: '◫',
+    icon: `<i class="fa-solid fa-table-columns"></i>`,
     validTipos: ['desarrollo'],
     defaultData: {
       badge: 'Intelligence Labs',
@@ -1256,7 +1256,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   'blog-list': {
     label: 'Lista de artículos',
     description: 'Lista de artículos publicados (carga desde /api/data/blog)',
-    icon: '◰',
+    icon: `<i class="fa-solid fa-list"></i>`,
     validTipos: ['blog'],
     defaultData: {
       loadingMessage: 'Cargando artículos…',
@@ -1315,11 +1315,11 @@ ${blCss ? `<style>${blCss}</style>` : ''}
   'articulo-header': {
     label: 'Header artículo',
     description: 'Header de artículo: back link + badge + título + lead',
-    icon: '◫',
+    icon: `<i class="fa-solid fa-heading"></i>`,
     validTipos: ['articulo', 'cliente'],
     defaultData: {
       backLabel: '← Volver al Blog',
-      backHref: '/html/blog.html',
+      backHref: '/html/blog',
       badge: 'Infraestructura',
       titulo: 'Nuevos estándares de certificación Cat8 para plantas industriales',
       lead: 'Análisis detallado sobre cómo la infraestructura física determina el rendimiento de los sistemas de datos en entornos de alta demanda.',
@@ -1350,7 +1350,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
       return `
 <header class="article-header"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
-    <a href="${esc(d.backHref)}" class="back-link"${css({ color: s.backLinkColor })}><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> ${esc(stripArrow(d.backLabel))}</a>
+    <a href="${esc(d.backHref)}" class="back-link"${css({ color: s.backLinkColor })}><i class="fa-solid fa-arrow-left fa-lg" aria-hidden="true"></i> ${esc(stripArrow(d.backLabel))}</a>
     <div class="article-meta">
       <span class="badge-tech"${css({ background: s.badgeBg, color: s.badgeColor })}>${esc(d.badge)}</span>
       ${d.fecha ? `<span style="font-size:.75rem;opacity:.7;font-weight:600;">${esc(d.fecha)}</span>` : ''}
@@ -1365,7 +1365,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
   'articulo-body': {
     label: 'Cuerpo del artículo',
     description: 'Cuerpo del artículo: imagen + contenido HTML libre + CTA + sidebar',
-    icon: '¶',
+    icon: `<i class="fa-solid fa-paragraph"></i>`,
     validTipos: ['articulo', 'cliente'],
     defaultData: {
       featuredImageUrl: '/img/chatgptfoto.png',
@@ -1448,7 +1448,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
   'cliente-header': {
     label: 'Header de cliente',
     description: 'Cabecera de caso: logo empresa + nombre + título de proyecto + lead + meta',
-    icon: '◫',
+    icon: `<i class="fa-solid fa-id-card"></i>`,
     validTipos: ['cliente'],
     defaultData: {
       backLabel: '← Volver al Inicio',
@@ -1492,7 +1492,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
       return `
 <header class="cl-header"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
-    <a href="${esc(d.backHref)}" class="cl-back"${css({ color: s.backLinkColor })}><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> ${esc(stripArrow(d.backLabel))}</a>
+    <a href="${esc(d.backHref)}" class="cl-back"${css({ color: s.backLinkColor })}><i class="fa-solid fa-arrow-left fa-lg" aria-hidden="true"></i> ${esc(stripArrow(d.backLabel))}</a>
     <div class="cl-header-inner">
       ${d.empresaLogo ? `<div class="cl-logo-wrap"><img src="${esc(d.empresaLogo)}" alt="${esc(d.empresaNombre)}" class="cl-logo"${css({ 'max-height': s.logoMaxHeight })}></div>` : ''}
       <div class="cl-header-text">
@@ -1510,7 +1510,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
   'cliente-body': {
     label: 'Cuerpo de cliente',
     description: 'Imagen destacada + contenido (con galería) + ficha del proyecto + CTA',
-    icon: '¶',
+    icon: `<i class="fa-solid fa-paragraph"></i>`,
     validTipos: ['cliente'],
     defaultData: {
       featuredImageUrl: '',
@@ -1606,18 +1606,18 @@ ${blCss ? `<style>${blCss}</style>` : ''}
   'footer-full': {
     label: 'Footer completo',
     description: 'Footer con wordmark SISGRA + grid 3 cols (servicios / contacto / mapa) + copyright',
-    icon: '⎽',
+    icon: `<i class="fa-solid fa-grip-lines"></i>`,
     validTipos: ['cableado','fibra','seguridad','soporte','desarrollo','blog','articulo','cliente'],
     defaultData: {
       wordmark: 'SISGRA',
       col1Label: 'Servicios',
       servicios: [
-        { label: 'Cableado Estructurado', href: '/html/cableado_estructurado.html' },
-        { label: 'Fibra Óptica',          href: '/html/fibra_optica.html' },
-        { label: 'Seguridad Electrónica', href: '/html/seguridad.html' },
-        { label: 'Soporte IT',            href: '/html/soporte_it.html' },
-        { label: 'Desarrollo de Software',href: '/html/desarrollo.html' },
-        { label: 'Blog',                  href: '/html/blog.html' },
+        { label: 'Cableado Estructurado', href: '/html/cableado_estructurado' },
+        { label: 'Fibra Óptica',          href: '/html/fibra_optica' },
+        { label: 'Seguridad Electrónica', href: '/html/seguridad' },
+        { label: 'Soporte IT',            href: '/html/soporte_it' },
+        { label: 'Desarrollo de Software',href: '/html/desarrollo' },
+        { label: 'Blog',                  href: '/html/blog' },
       ],
       col2Label: 'Contacto',
       contactoOficina: { tipo: 'Oficina',  valor: 'Lamadrid 468<br>(ZONA I) NAVE 2 - Oficina 05 - NODO ROSARIO' },

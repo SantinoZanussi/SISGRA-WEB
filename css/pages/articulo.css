@@ -77,7 +77,9 @@
    Centradas, con tope de ancho/alto para no romper el layout. */
 .article-body img:not(.featured-image) {
     display: block;
+    min-width: min(320px, 100%);
     max-width: 100%;
+    min-height: 200px;
     max-height: 520px;
     width: auto;
     height: auto;

@@ -481,7 +481,9 @@ footer::before {
   border-bottom: none;
 }
 .services-list li a::before {
-  content: "→";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  content: "\f061";
   color: var(--accent);
   font-size: 11px;
   opacity: 0;

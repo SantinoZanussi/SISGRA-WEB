@@ -119,7 +119,17 @@
       "Bash(node --check services/page-bootstrap.js)",
       "Bash(node -e \"require\\('fs'\\).readFileSync\\('./api/data/modulos.json','utf8'\\) && JSON.parse\\(require\\('fs'\\).readFileSync\\('./api/data/modulos.json','utf8'\\)\\); console.log\\('modulos.json valid'\\)\")",
       "Bash(curl -s \"http://localhost:3000/api/modulos\")",
-      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(s\\);const o=j.modulos||j;console.log\\('cliente-header variantes:',\\(o['cliente-header']?.variantes||[]\\).length\\);console.log\\('cliente-body variantes:',\\(o['cliente-body']?.variantes||[]\\).length\\);}\\)\")"
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>{const j=JSON.parse\\(s\\);const o=j.modulos||j;console.log\\('cliente-header variantes:',\\(o['cliente-header']?.variantes||[]\\).length\\);console.log\\('cliente-body variantes:',\\(o['cliente-body']?.variantes||[]\\).length\\);}\\)\")",
+      "Bash(lsof -ti:3000)",
+      "Bash(perl -i -pe 's{\\(<button class=\"modal-close\"[^>]*>\\)\\(×|✕\\)\\(</button>\\)}{$1<i class=\"fa-solid fa-xmark\"></i>$3}g' html/admin_panel.html)",
+      "Bash(perl -i -pe ' *)",
+      "Bash(perl -i -pe \"s/\\\\\\\\\\\\$\\\\{def\\\\.icon \\\\|\\\\| '◻'\\\\}/\\\\${def.icon || '<i class=\\\\\"fa-solid fa-square\\\\\"><\\\\/i>'}/g; s/\\\\\\\\\\\\$\\\\{sec\\\\.icon \\\\|\\\\| '◻'\\\\}/\\\\${sec.icon || '<i class=\\\\\"fa-solid fa-square\\\\\"><\\\\/i>'}/g;\" services/admin/editor.js)",
+      "Bash(grep -nP \"['\\\\\"\\\\`][^'\\\\\"\\\\`]*[\\\\x{2190}-\\\\x{2199}\\\\x{2300}-\\\\x{27BF}\\\\x{2B00}-\\\\x{2BFF}\\\\x{1F000}-\\\\x{1FAFF}\\\\x{2605}\\\\x{2606}\\\\x{2713}\\\\x{2714}\\\\x{25A0}-\\\\x{25FF}\\\\x{2022}]\" services/sections.js services/page-bootstrap.js)",
+      "Bash(git mv *)",
+      "Bash(grep -rnoE \"href[^>]{0,40}\" services/page-bootstrap.js)",
+      "Bash(grep -rnoE \"href[\\\\\"'=][^,;\\)]{0,60}\" services/page-bootstrap.js services/app.js)",
+      "Bash(perl -pi -e 's{/html/__TRACKED_VAR__\\\\.html}{/html/__TRACKED_VAR__}g' services/page-bootstrap.js services/sections.js services/admin/panel.js html/admin/index.html)",
+      "Bash(perl -pi -e 's{/html/servicios\\\\.html}{/html/servicios}g' services/admin/panel.js html/admin/index.html)"
     ]
   }
 }

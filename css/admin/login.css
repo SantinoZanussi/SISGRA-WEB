@@ -3,13 +3,13 @@
 #login-screen{position:fixed;inset:0;background:var(--sisgra-blue);display:flex;align-items:center;justify-content:center;z-index:1000;}
 #login-screen::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(59,130,246,.15) 0,transparent 55%),radial-gradient(circle at 80% 20%,rgba(37,99,235,.1) 0,transparent 50%);pointer-events:none;}
 .login-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);padding:3rem;width:100%;max-width:400px;position:relative;}
-.login-logo{font-family:'IBM Plex Mono',monospace;font-size:1.75rem;font-weight:600;color:var(--white);letter-spacing:.1em;margin-bottom:.25rem;}
-.login-sub{font-size:.625rem;font-weight:700;letter-spacing:.4em;text-transform:uppercase;color:var(--blue-400);margin-bottom:2.5rem;}
-.login-label{font-size:.625rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.5rem;display:block;}
+.login-logo{padding-bottom:2rem;display:flex;align-items:center;gap:1rem;   }
+.login-sub{font-size:0.9rem;font-weight:700;letter-spacing:.35em;text-transform:uppercase;color:var(--blue-400);margin-bottom:1.5rem;}
+.login-label{font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:.5rem;display:block;}
 .login-input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--white);padding:.75rem 1rem;font-size:.875rem;outline:none;margin-bottom:1rem;transition:border-color .2s;}
 .login-input:focus{border-color:var(--blue-400);}
 .login-input::placeholder{color:rgba(255,255,255,.25);}
 .login-btn{width:100%;padding:.875rem;background:var(--blue-600);color:var(--white);border:none;font-weight:700;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;transition:background .2s,transform .1s;margin-top:.5rem;}
 .login-btn:hover{background:var(--blue-500);}
 .login-btn:active{transform:scale(.98);}
-.login-error{font-size:.75rem;color:var(--red-400);margin-top:.75rem;display:none;}
+.login-error{font-size:.9rem;color:var(--red-400);margin-top:1.5rem;}

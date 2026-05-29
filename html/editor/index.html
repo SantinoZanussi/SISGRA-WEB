@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>SISGRA — Editor Visual</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet"/>
-<link rel="icon" href="../img/sdesigra.png"/>
+<link rel="icon" href="/img/sdesigra.png"/>
 <style>
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Inter',system-ui,sans-serif;background:#f1f5f9;color:#0f172a;font-size:14px;height:100vh;overflow:hidden;}
@@ -145,7 +145,7 @@
     <input id="li-pass" type="password" placeholder="Contraseña" autocomplete="current-password"/>
     <div class="err" id="li-err">Usuario o contraseña incorrectos.</div>
     <button id="li-btn">Ingresar</button>
-    <p class="hint">¿Querés el panel viejo? <a href="admin_panel.html">Ir a admin_panel</a></p>
+    <p class="hint">¿Querés el panel viejo? <a href="/html/admin">Ir a admin_panel</a></p>
   </div>
 </div>
 
@@ -154,7 +154,7 @@
   <div class="topbar">
     <span class="logo">SISGRA · EDITOR</span>
     <span class="crumb" id="crumb">Dashboard</span>
-    <a class="back-old" href="admin_panel.html" title="Panel viejo (formularios)">Panel viejo</a>
+    <a class="back-old" href="/html/admin" title="Panel viejo (formularios)">Panel viejo</a>
     <button class="logout" id="logout-btn">Cerrar sesión</button>
   </div>
   <div class="main">
@@ -222,7 +222,7 @@
 <div class="notif" id="notif"></div>
 
 <script type="module">
-import { SECTIONS, TIPOS_HTML, renderSection, createSection } from '../services/sections.js';
+import { SECTIONS, TIPOS_HTML, renderSection, createSection } from '/services/sections.js';
 
 const API = `http://${window.location.hostname}:3000/api`;
 const $ = (s,r=document)=>r.querySelector(s);

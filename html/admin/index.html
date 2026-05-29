@@ -6,6 +6,7 @@
       <link rel="icon" href="/img/sdesigra.png" type="image/png"/>
   <title>Panel administrativo · SISGRA S.R.L.</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:ital,wght@0,400;0,500;0,700;0,900;1,700;1,900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
   <link rel="stylesheet" href="/css/admin/base.css"/>
   <link rel="stylesheet" href="/css/admin/login.css"/>
   <link rel="stylesheet" href="/css/admin/layout.css"/>
@@ -17,11 +18,14 @@
  
 <div id="login-screen">
   <div class="login-box">
-    <div class="login-logo">SISGRA</div>
+    <!-- <div class="login-logo">SISGRA</div> -->
+    <div class="login-logo">
+      <img src="/img/sisgra_blanco.png" alt="SISGRA Logo"/>
+    </div>
     <div class="login-sub">Panel Administrativo</div>
-    <label class="login-label" for="l-user">Usuario</label>
+    <label class="login-label" for="l-user">Usuario <i class="fa-regular fa-user fa-lg"></i></label>
     <input class="login-input" id="l-user" type="text" placeholder="admin" autocomplete="username"/>
-    <label class="login-label" for="l-pass">Contraseña</label>
+    <label class="login-label" for="l-pass">Contraseña <i class="fa-solid fa-key fa-lg"></i></label>
     <input class="login-input" id="l-pass" type="password" placeholder="•••••••••" autocomplete="current-password"/>
     <button class="login-btn" id="login-btn">Ingresar al Sistema</button>
     <div class="login-error" id="login-error">Usuario o contraseña incorrectos.</div>
@@ -35,53 +39,53 @@
     <!-- SIDEBAR -->
     <aside class="sidebar" id="admin-sidebar">
       <div class="sidebar-brand">
-        <img src="../img/sisgra_blanco.png" alt="Sisgra Logo" class="sidebar-logo"/>
+        <img src="/img/sisgra_blanco.png" alt="Sisgra Logo" class="sidebar-logo"/>
       </div>
  
       <div class="sidebar-section-label">General</div>
       <div class="sidebar-item active" data-panel="dashboard">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" stroke-width="2"/><rect x="14" y="3" width="7" height="7" stroke-width="2"/><rect x="3" y="14" width="7" height="7" stroke-width="2"/><rect x="14" y="14" width="7" height="7" stroke-width="2"/></svg>
+        <i class="fa-solid fa-gauge-high"></i>
         Dashboard
       </div>
  
       <div class="sidebar-section-label">Contenido</div>
       <div class="sidebar-item" data-panel="navbar">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <i class="fa-solid fa-bars"></i>
         Ítems del Navbar
       </div>
       <div class="sidebar-item" data-panel="clientes">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1"/></svg>
-        Clientes / Logos
+        <i class="fa-solid fa-building"></i>
+        Clientes
       </div>
       <div class="sidebar-item" data-panel="blog">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828z"/></svg>
+        <i class="fa-solid fa-newspaper"></i>
         Blog / Noticias
       </div>
  
       <div class="sidebar-section-label">Módulos</div>
       <div class="sidebar-item" data-panel="modulos">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10 0a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/></svg>
+        <i class="fa-solid fa-puzzle-piece"></i>
         Catálogo de Módulos
       </div>
 
       <!-- PLANTILLAS -->
       <div class="sidebar-section-label" style="display:flex;align-items:center;justify-content:space-between;padding-right:.875rem;">
         <span>Plantillas</span>
-        <button class="btn-icon" id="btn-nueva-plantilla" title="Nueva plantilla">+</button>
+        <button class="btn-icon" id="btn-nueva-plantilla" title="Nueva plantilla"><i class="fa-solid fa-plus"></i></button>
       </div>
       <div class="sidebar-item" data-panel="plantillas" id="sidebar-go-plantillas" style="font-size:.65rem;font-weight:600;color:rgba(255,255,255,.6);">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" stroke-width="2"/><rect x="14" y="3" width="7" height="7" stroke-width="2"/><rect x="3" y="14" width="7" height="7" stroke-width="2"/><rect x="14" y="14" width="7" height="7" stroke-width="2"/></svg>
+        <i class="fa-solid fa-layer-group"></i>
         Ver todas las plantillas
       </div>
       <div class="sidebar-tpl-group" id="sidebar-tpl-list"></div>
  
       <div class="sidebar-section-label">Configuración</div>
       <div class="sidebar-item" data-panel="contacto">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        <i class="fa-solid fa-envelope"></i>
         Datos de Contacto
       </div>
       <div class="sidebar-item" data-panel="seo">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35"/></svg>
+        <i class="fa-solid fa-magnifying-glass"></i>
         SEO &amp; Meta
       </div>
  
@@ -92,7 +96,7 @@
             <div class="sidebar-user-name">Administrador</div>
             <div class="sidebar-user-role">Conectado</div>
           </div>
-          <button class="sidebar-logout" id="logout-btn" title="Cerrar sesión">✕</button>
+          <button class="sidebar-logout" id="logout-btn" title="Cerrar sesión"><i class="fa-solid fa-right-from-bracket"></i></button>
         </div>
       </div>
     </aside>
@@ -111,7 +115,7 @@
           </span>
         </div>
         <div class="topbar-actions">
-          <button type="button" class="btn-secondary btn-hide-mobile" onclick="window.open('../index.html','_blank')">Vista previa</button>
+          <button type="button" class="btn-secondary btn-hide-mobile" onclick="window.open('/index.html','_blank')">Vista previa</button>
           <button class="btn-save" id="btn-guardar">Guardar cambios</button>
         </div>
       </div>
@@ -126,7 +130,7 @@
           </div>
           <!-- Banner de plantillas vencidas (oculto por defecto, se muestra con JS) -->
           <div class="dash-vencidas-banner" id="dash-vencidas-banner" style="display:none;">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+            <i class="fa-solid fa-triangle-exclamation"></i>
             <div class="dash-vencidas-banner-text" id="dash-vencidas-text"></div>
           </div>
           <div class="stats-row">
@@ -141,7 +145,7 @@
               <div class="stat-card-sub" id="dash-blog-sub"><span class="stat-card-indicator ind-amber"></span>Cargando...</div>
             </div>
             <div class="stat-card">
-              <div class="stat-card-label">Clientes / Logos</div>
+              <div class="stat-card-label">Clientes</div>
               <div class="stat-card-value" id="dash-clientes-count">—</div>
               <div class="stat-card-sub"><span class="stat-card-indicator ind-blue"></span>Carrusel</div>
             </div>
@@ -153,10 +157,10 @@
           </div>
           <div class="section-card">
             <div class="section-card-header"><span class="section-card-title">Accesos rápidos</span></div>
-            <div id="dash-accesos-grid" class="section-card-body" style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;">
-              <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-nuevo-post">+ Nuevo post de blog</button>
-              <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-nuevo-cliente">+ Agregar cliente</button>
-              <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-editar-home">Gestionar Plantillas</button>
+            <div id="dash-accesos-grid" class="section-card-body" style="display:grid;gap:1.25rem;">
+              <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-nuevo-post"><i class="fa-solid fa-plus fa-xl"></i> Nuevo post de blog</button>
+              <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-nuevo-cliente"><i class="fa-solid fa-plus fa-xl"></i> Agregar cliente</button>
+              <button class="btn-secondary" style="padding:.75rem;font-size:.625rem;" id="dash-editar-home"><i class="fa-brands fa-buffer fa-xl"></i> Gestionar Plantillas</button>
             </div>
           </div>
         </div>
@@ -176,12 +180,12 @@
           <!-- Vista 2: variantes de un tipo -->
           <div id="modulos-variants-view" style="display:none;">
             <div class="page-header" style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
-              <button class="btn-secondary" id="modulos-variants-back-btn" style="padding:.5rem 1rem;font-size:.75rem;flex-shrink:0;">← Volver</button>
+              <button class="btn-secondary" id="modulos-variants-back-btn" style="padding:.5rem 1rem;font-size:.75rem;flex-shrink:0;"><i class="fa-solid fa-arrow-left fa-lg"></i> Volver</button>
               <div style="flex:1;">
                 <div class="page-title" id="modulos-variants-title"></div>
                 <div class="page-desc" id="modulos-variants-desc"></div>
               </div>
-              <button class="btn-add" id="modulos-add-variant-btn" style="font-size:.65rem;padding:.5rem 1rem;">+ Nueva variante</button>
+              <button class="btn-add" id="modulos-add-variant-btn" style="font-size:.65rem;padding:.5rem 1rem;"><i class="fa-solid fa-plus"></i> Nueva variante</button>
             </div>
             <div class="section-card">
               <div class="section-card-body data-table-scroll" style="padding:0;">
@@ -196,13 +200,13 @@
           <!-- Vista 3: editor de variante -->
           <div id="modulos-editor-view" style="display:none;">
             <div class="page-header modulos-editor-header" style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
-              <button class="btn-secondary" id="modulos-back-btn" style="padding:.5rem 1rem;font-size:.75rem;flex-shrink:0;">← Volver</button>
+              <button class="btn-secondary" id="modulos-back-btn" style="padding:.5rem 1rem;font-size:.75rem;flex-shrink:0;"><i class="fa-solid fa-arrow-left fa-lg"></i> Volver</button>
               <div style="flex:1;min-width:120px;">
                 <div class="page-title" id="modulos-editor-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
                 <div class="page-desc" id="modulos-editor-variant-name"></div>
               </div>
               <div style="display:flex;gap:.5rem;flex-shrink:0;">
-                <button class="btn-secondary" id="modulos-preview-btn" style="padding:.5rem 1rem;font-size:.75rem;">👁 Preview</button>
+                <button class="btn-secondary" id="modulos-preview-btn" style="padding:.5rem 1rem;font-size:.75rem;"><i class="fa-solid fa-eye"></i> Preview</button>
                 <button class="btn-save" id="modulos-save-btn">Guardar</button>
               </div>
             </div>
@@ -238,7 +242,7 @@
               <div class="section-card" id="modulos-preview-card" style="display:none;">
                 <div class="section-card-header" style="display:flex;align-items:center;justify-content:space-between;">
                   <span class="section-card-title">Preview</span>
-                  <button class="btn-secondary" id="modulos-preview-close-btn" style="padding:.25rem .625rem;font-size:.7rem;">✕ Cerrar</button>
+                  <button class="btn-secondary" id="modulos-preview-close-btn" style="padding:.25rem .625rem;font-size:.7rem;"><i class="fa-solid fa-xmark"></i> Cerrar</button>
                 </div>
                 <div class="section-card-body" style="padding:0;overflow-x:auto;overflow-y:hidden;border-radius:0 0 .5rem .5rem;">
                   <iframe id="modulos-preview-iframe"
@@ -258,7 +262,7 @@
               <div class="page-title">Ítems del Navbar</div>
               <div class="page-desc">Gestioná las pestañas del menú de navegación.</div>
             </div>
-            <button class="btn-add" id="abrir-modal-navbar">+ Agregar ítem</button>
+            <button class="btn-add" id="abrir-modal-navbar"><i class="fa-solid fa-plus"></i> Agregar ítem</button>
           </div>
           <div class="section-card">
             <div class="section-card-body data-table-scroll" style="padding:0;">
@@ -272,9 +276,9 @@
 
         <!-- CLIENTES -->
         <div class="panel" id="panel-clientes">
-          <div class="page-header"><div class="page-title">Clientes / Logos</div><div class="page-desc">Logos del carrusel.</div></div>
+          <div class="page-header"><div class="page-title">Clientes</div><div class="page-desc">Logos del carrusel.</div></div>
           <div class="section-card">
-            <div class="section-card-header"><span class="section-card-title">Logos actuales</span><button class="btn-add" id="abrir-modal-cliente">+ Agregar</button></div>
+            <div class="section-card-header"><span class="section-card-title">Logos actuales</span><button class="btn-add" id="abrir-modal-cliente"><i class="fa-solid fa-plus"></i> Agregar</button></div>
             <div class="section-card-body data-table-scroll" style="padding:0;">
               <table class="data-table">
                 <thead><tr><th>Nombre</th><th>Logo</th><th>Carrusel</th><th>Perfil</th><th>Acciones</th></tr></thead>
@@ -288,7 +292,7 @@
         <div class="panel" id="panel-blog">
           <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;">
             <div><div class="page-title">Blog / Noticias</div><div class="page-desc">Artículos del blog corporativo.</div></div>
-            <button class="btn-add" id="abrir-modal-blog">+ Nuevo artículo</button>
+            <button class="btn-add" id="abrir-modal-blog"><i class="fa-solid fa-plus"></i> Nuevo artículo</button>
           </div>
           <div class="blog-grid" id="blog-list"></div>
         </div>
@@ -302,7 +306,7 @@
           <div class="section-card">
             <div class="section-card-header">
               <span class="section-card-title">Plantillas del sitio</span>
-              <button class="btn-add" id="btn-nueva-plantilla-main">+ Nueva plantilla</button>
+              <button class="btn-add" id="btn-nueva-plantilla-main"><i class="fa-solid fa-plus"></i> Nueva plantilla</button>
             </div>
             <div class="section-card-body">
               <div class="tpl-list" id="tpl-overview-list"></div>
@@ -355,12 +359,16 @@
 <!-- MODALES -->
 <div class="modal-overlay" id="modal-cliente">
   <div class="modal" style="max-width:760px;">
-    <div class="modal-header"><span class="modal-title">Agregar Cliente</span><button class="modal-close" data-close="modal-cliente">×</button></div>
+    <div class="modal-header"><span class="modal-title">Agregar Cliente</span><button class="modal-close" data-close="modal-cliente"><i class="fa-solid fa-xmark"></i></button></div>
     <div class="modal-body">
       <!-- Datos del carrusel -->
       <div class="form-row cols-2">
         <div class="form-group"><label class="form-label">Nombre empresa *</label><input class="form-input" id="c-name" placeholder="Ej: San Cristóbal"/></div>
-        <div class="form-group"><label class="form-label">Logo (carrusel)</label><input class="form-input" id="c-img" placeholder="/img/logo.png"/></div>
+        <div class="form-group">
+          <label class="form-label">Logo (carrusel)</label>
+          <input class="form-input" id="c-img" placeholder="/img/clients/logo.png"/>
+          <img id="c-img-preview" class="img-path-preview" src="" alt=""/>
+        </div>
       </div>
       <div class="form-row cols-2">
         <div class="form-group"><label class="form-label">Estado del perfil</label>
@@ -388,23 +396,28 @@
           <div class="form-group"><label class="form-label">Servicios</label><input class="form-input" id="c-servicios" placeholder="Ej: Cableado, Fibra óptica"/></div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label class="form-label">Imagen destacada (URL)</label><input class="form-input" id="c-imagen-dest" placeholder="/img/proyecto-empresa.jpg"/></div>
+          <div class="form-group">
+            <label class="form-label">Imagen destacada (URL)</label>
+            <input class="form-input" id="c-imagen-dest" placeholder="/img/proyecto-empresa.jpg"/>
+            <img id="c-imagen-dest-preview" class="img-path-preview" src="" alt=""/>
+          </div>
         </div>
         <div class="form-group" style="margin-bottom:1rem;">
           <label class="form-label">Contenido del caso</label>
           <div class="rich-editor-toolbar">
-            <button class="rich-btn" data-cmd="bold" title="Negrita"><b>N</b></button>
-            <button class="rich-btn" data-cmd="italic" title="Cursiva"><i>K</i></button>
-            <button class="rich-btn" data-cmd="underline" title="Subrayado"><u>S</u></button>
+            <button class="rich-btn" data-cmd="bold" title="Negrita"><i class="fa-solid fa-bold"></i></button>
+            <button class="rich-btn" data-cmd="italic" title="Cursiva"><i class="fa-solid fa-italic"></i></button>
+            <button class="rich-btn" data-cmd="underline" title="Subrayado"><i class="fa-solid fa-underline"></i></button>
             <span style="width:1px;background:var(--slate-200);margin:0 .25rem;align-self:stretch;"></span>
-            <button class="rich-btn" data-cmd="h2" title="Título H2">H2</button>
-            <button class="rich-btn" data-cmd="h3" title="Título H3">H3</button>
-            <button class="rich-btn" data-cmd="p" title="Párrafo">¶</button>
-            <button class="rich-btn" data-cmd="blockquote" title="Cita">❝</button>
+            <button class="rich-btn" data-cmd="h2" title="Título H2"><i class="fa-solid fa-heading"></i><span style="font-size:.6em;vertical-align:sub;">2</span></button>
+            <button class="rich-btn" data-cmd="h3" title="Título H3"><i class="fa-solid fa-heading"></i><span style="font-size:.6em;vertical-align:sub;">3</span></button>
+            <button class="rich-btn" data-cmd="p" title="Párrafo"><i class="fa-solid fa-paragraph"></i></button>
+            <button class="rich-btn" data-cmd="blockquote" title="Cita"><i class="fa-solid fa-quote-left"></i></button>
             <span style="width:1px;background:var(--slate-200);margin:0 .25rem;align-self:stretch;"></span>
-            <button class="rich-btn" data-cmd="insertUnorderedList" title="Lista">• —</button>
-            <button class="rich-btn" data-cmd="createLink" title="Enlace">🔗</button>
-            <button class="rich-btn" data-cmd="insertImage" title="Insertar imagen">🖼</button>
+            <button class="rich-btn" data-cmd="insertUnorderedList" title="Lista con viñetas"><i class="fa-solid fa-list-ul"></i></button>
+            <button class="rich-btn" data-cmd="insertOrderedList" title="Lista numerada"><i class="fa-solid fa-list-ol"></i></button>
+            <button class="rich-btn" data-cmd="createLink" title="Enlace"><i class="fa-solid fa-link"></i></button>
+            <button class="rich-btn" data-cmd="insertImage" title="Insertar imagen en el contenido (por ruta)"><i class="fa-solid fa-image"></i></button>
           </div>
           <div class="rich-editor-content" contenteditable="true" id="c-content-cliente" style="min-height:200px;"></div>
         </div>
@@ -419,7 +432,7 @@
  
 <div class="modal-overlay" id="modal-blog">
   <div class="modal" style="max-width:740px;">
-    <div class="modal-header"><span class="modal-title">Nuevo artículo</span><button class="modal-close" data-close="modal-blog">×</button></div>
+    <div class="modal-header"><span class="modal-title">Nuevo artículo</span><button class="modal-close" data-close="modal-blog"><i class="fa-solid fa-xmark"></i></button></div>
     <div class="modal-body">
       <div class="form-row cols-2">
         <div class="form-group"><label class="form-label">Título</label><input class="form-input" id="b-title" placeholder="Título del artículo"/></div>
@@ -438,23 +451,28 @@
           </select>
         </div>
       </div>
-      <div class="form-row"><div class="form-group"><label class="form-label">Imagen de portada (URL) *</label><input class="form-input" id="b-img" placeholder="/img/articulo.png"/></div></div>
+      <div class="form-row"><div class="form-group">
+        <label class="form-label">Imagen de portada (URL) *</label>
+        <input class="form-input" id="b-img" placeholder="/img/articulo.png"/>
+        <img id="b-img-preview" class="img-path-preview" src="" alt=""/>
+      </div></div>
       <div class="form-row"><div class="form-group"><label class="form-label">Extracto</label><textarea class="form-textarea" id="b-extracto" placeholder="Resumen breve..."></textarea></div></div>
       <div class="form-group" style="margin-bottom:1rem;">
         <label class="form-label">Contenido</label>
         <div class="rich-editor-toolbar">
-          <button class="rich-btn" data-cmd="bold" title="Negrita"><b>N</b></button>
-          <button class="rich-btn" data-cmd="italic" title="Cursiva"><i>K</i></button>
-          <button class="rich-btn" data-cmd="underline" title="Subrayado"><u>S</u></button>
+          <button class="rich-btn" data-cmd="bold" title="Negrita"><i class="fa-solid fa-bold"></i></button>
+          <button class="rich-btn" data-cmd="italic" title="Cursiva"><i class="fa-solid fa-italic"></i></button>
+          <button class="rich-btn" data-cmd="underline" title="Subrayado"><i class="fa-solid fa-underline"></i></button>
           <span style="width:1px;background:var(--slate-200);margin:0 .25rem;align-self:stretch;"></span>
-          <button class="rich-btn" data-cmd="h2" title="Título H2">H2</button>
-          <button class="rich-btn" data-cmd="h3" title="Título H3">H3</button>
-          <button class="rich-btn" data-cmd="p" title="Párrafo">¶</button>
-          <button class="rich-btn" data-cmd="blockquote" title="Cita">❝</button>
+          <button class="rich-btn" data-cmd="h2" title="Título H2"><i class="fa-solid fa-heading"></i><span style="font-size:.6em;vertical-align:sub;">2</span></button>
+          <button class="rich-btn" data-cmd="h3" title="Título H3"><i class="fa-solid fa-heading"></i><span style="font-size:.6em;vertical-align:sub;">3</span></button>
+          <button class="rich-btn" data-cmd="p" title="Párrafo"><i class="fa-solid fa-paragraph"></i></button>
+          <button class="rich-btn" data-cmd="blockquote" title="Cita"><i class="fa-solid fa-quote-left"></i></button>
           <span style="width:1px;background:var(--slate-200);margin:0 .25rem;align-self:stretch;"></span>
-          <button class="rich-btn" data-cmd="insertUnorderedList" title="Lista">• —</button>
-          <button class="rich-btn" data-cmd="createLink" title="Enlace">🔗</button>
-          <button class="rich-btn" data-cmd="insertImage" title="Insertar imagen">🖼</button>
+          <button class="rich-btn" data-cmd="insertUnorderedList" title="Lista con viñetas"><i class="fa-solid fa-list-ul"></i></button>
+          <button class="rich-btn" data-cmd="insertOrderedList" title="Lista numerada"><i class="fa-solid fa-list-ol"></i></button>
+          <button class="rich-btn" data-cmd="createLink" title="Enlace"><i class="fa-solid fa-link"></i></button>
+          <button class="rich-btn" data-cmd="insertImage" title="Insertar imagen en el contenido (por ruta)"><i class="fa-solid fa-image"></i></button>
         </div>
         <div class="rich-editor-content" contenteditable="true" id="b-content" style="min-height:200px;"></div>
       </div>
@@ -468,7 +486,7 @@
  
 <div class="modal-overlay" id="modal-nueva-plantilla">
   <div class="modal" style="max-width:480px;">
-    <div class="modal-header"><span class="modal-title">Nueva Plantilla</span><button class="modal-close" data-close="modal-nueva-plantilla">×</button></div>
+    <div class="modal-header"><span class="modal-title">Nueva Plantilla</span><button class="modal-close" data-close="modal-nueva-plantilla"><i class="fa-solid fa-xmark"></i></button></div>
     <div class="modal-body">
       <div class="form-row"><div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="np-name" placeholder="Ej.: Landing Servicios"/></div></div>
       <div class="form-row"><div class="form-group"><label class="form-label">HTML destino *</label>
@@ -491,7 +509,7 @@
   <div class="modal" style="max-width:520px;">
     <div class="modal-header">
       <div class="modal-title" id="modal-navbar-title">Agregar ítem al Navbar</div>
-      <button class="modal-close" data-close="modal-navbar">✕</button>
+      <button class="modal-close" data-close="modal-navbar"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem;">
       <div>
@@ -511,7 +529,7 @@
       </div>
       <div id="nav-href-field">
         <label class="form-label">URL de destino <span style="color:#f87171">*</span></label>
-        <input class="form-input" id="nav-href" placeholder="ej. /html/servicios.html o https://…">
+        <input class="form-input" id="nav-href" placeholder="ej. /html/servicios o https://…">
       </div>
       <div id="nav-custom-info" style="display:none;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:.5rem;padding:.875rem;font-size:.78rem;color:#a5b4fc;line-height:1.6;">
         Se creará automáticamente una nueva página HTML con nav y footer. Podrás editarla desde el panel de Plantillas.
@@ -529,7 +547,7 @@
   <div class="modal" style="max-width:520px;">
     <div class="modal-header">
       <div class="modal-title">Editar ítem del Navbar</div>
-      <button class="modal-close" data-close="modal-editar-navbar">✕</button>
+      <button class="modal-close" data-close="modal-editar-navbar"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem;">
       <input type="hidden" id="nav-edit-id">
@@ -539,7 +557,7 @@
       </div>
       <div id="nav-edit-href-field">
         <label class="form-label">URL de destino</label>
-        <input class="form-input" id="nav-edit-href" placeholder="ej. /html/servicios.html o https://…">
+        <input class="form-input" id="nav-edit-href" placeholder="ej. /html/servicios o https://…">
       </div>
       <div>
         <label class="form-label">Orden</label>
@@ -565,7 +583,7 @@
   <div class="modal" style="max-width:460px;">
     <div class="modal-header" style="border-bottom-color:#fca5a5;">
       <div class="modal-title" style="color:#dc2626;">⚠ Acción irreversible</div>
-      <button class="modal-close" data-close="modal-confirm-nav-delete">✕</button>
+      <button class="modal-close" data-close="modal-confirm-nav-delete"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem;">
       <p style="font-size:.85rem;color:#334155;margin:0;">
@@ -585,24 +603,22 @@
 </div>
 
 <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" type="button" aria-label="Ocultar barra lateral" title="Ocultar barra lateral">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="M15 18l-6-6 6-6"/>
-  </svg>
+  <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
 </button>
 
 <div class="save-notif success" id="save-notif"></div>
  
 
-<script src="../services/admin/panel.js"></script>
-<script type="module" src="../services/admin/services-bridge.js"></script>
-<script type="module" src="../services/admin/editor.js"></script>
+<script src="/services/admin/panel.js"></script>
+<script type="module" src="/services/admin/services-bridge.js"></script>
+<script type="module" src="/services/admin/editor.js"></script>
 
 <div class="e3-mobile-block" id="e3-mobile-block">
   <div class="e3-mobile-block-card">
-    <div class="e3-mobile-block-icon">🖥️</div>
+    <div class="e3-mobile-block-icon"><i class="fa-solid fa-desktop"></i></div>
     <h2 class="e3-mobile-block-title">El editor de plantillas no está disponible en celular</h2>
     <p class="e3-mobile-block-desc">Para editar plantillas necesitás una pantalla más grande. Accedé desde una computadora o tablet en horizontal.</p>
-    <button class="btn-save" onclick="document.getElementById('e3-mobile-block').classList.remove('active');">← Volver al panel</button>
+    <button class="btn-save" onclick="document.getElementById('e3-mobile-block').classList.remove('active');"><i class="fa-solid fa-arrow-left fa-lg"></i> Volver al panel</button>
   </div>
 </div>
 

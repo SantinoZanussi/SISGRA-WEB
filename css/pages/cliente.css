@@ -162,7 +162,9 @@
    Centradas, con tope de ancho y alto para no romper el layout. */
 .cl-richtext img {
     display: block;
+    min-width: min(320px, 100%);
     max-width: 100%;
+    min-height: 200px;
     max-height: 520px;
     width: auto;
     height: auto;
