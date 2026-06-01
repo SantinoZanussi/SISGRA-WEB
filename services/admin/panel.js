@@ -86,6 +86,23 @@ function bindImgPreview(inputId, previewId) {
   if (!input) return;
   input.addEventListener('input', () => updateImgPreview(inputId, previewId));
 }
+
+/* Inserta un botón "Elegir imagen" junto al input que abre el selector modal */
+function attachImgPicker(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  if (!input || input.dataset.pickerWired) return;
+  input.dataset.pickerWired = '1';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'btn-secondary';
+  btn.style.cssText = 'margin-top:.4rem;font-size:.78rem;';
+  btn.innerHTML = '<i class="fa-solid fa-image"></i> Elegir imagen';
+  btn.addEventListener('click', async () => {
+    const path = await window.__imgPicker?.open({ current: input.value || '' });
+    if (path) { input.value = path; updateImgPreview(inputId, previewId); }
+  });
+  input.insertAdjacentElement('afterend', btn);
+}
  
 /* ══════════════════════════════════════════════
    HELPERS
@@ -1714,9 +1731,9 @@ function renderNavbarTable() {
   tbody.innerHTML = navbarItems
     .sort((a, b) => a.orden - b.orden)
     .map(b => {
-      const destino = b.id_plantilla
-        ? `<span style="color:#818cf8;font-size:.75rem;">HTML propio</span>`
-        : `<span style="font-size:.75rem;color:#94a3b8;">${b.href || '—'}</span>`;
+      const plantillaCell = b.plantilla
+        ? `<span style="font-size:.75rem;color:#475569;">${b.titulo} - ID: ${b.plantilla.id}</span>`
+        : `<span style="font-size:.75rem;color:#94a3b8;">Sin plantilla</span>`;
       const estado = b.activo !== false
         ? '<span class="badge-active">Activo</span>'
         : '<span class="badge-inactive">Inactivo</span>';
@@ -1731,7 +1748,7 @@ function renderNavbarTable() {
       return `<tr>
         <td>${b.titulo}</td>
         <td>${b.orden}</td>
-        <td>${destino}</td>
+        <td>${plantillaCell}</td>
         <td>${estado}</td>
         <td style="display:flex;gap:.4rem;flex-wrap:wrap;">${acciones}</td>
       </tr>`;
@@ -1929,9 +1946,13 @@ function initApp(){
         if (url) exec('createLink', url);
       }
       else if (cmd==='insertImage') {
-        const url = prompt('Ruta de la imagen (ej: /img/clients/proceso-1.jpg):');
-        restoreSelection();
-        if (url) exec('insertImage', url);
+        window.__imgPicker?.open({ current: '' }).then(url=>{
+          restoreSelection();
+          if (url) exec('insertImage', url);
+          saveSelection();
+          refreshToolbarState();
+        });
+        return;
       }
       else exec(cmd);
       saveSelection();
@@ -2042,6 +2063,9 @@ function initApp(){
   bindImgPreview('b-img','b-img-preview');
   bindImgPreview('c-img','c-img-preview');
   bindImgPreview('c-imagen-dest','c-imagen-dest-preview');
+  attachImgPicker('b-img','b-img-preview');
+  attachImgPicker('c-img','c-img-preview');
+  attachImgPicker('c-imagen-dest','c-imagen-dest-preview');
   document.getElementById('guardar-cliente-btn')?.addEventListener('click', saveCliente);
   document.getElementById('abrir-modal-blog')?.addEventListener('click',openNewPost);
   document.getElementById('dash-nuevo-post')?.addEventListener('click',()=>{ showPanel('blog'); openNewPost(); });

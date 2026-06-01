@@ -7,5 +7,6 @@ router.get('/catalogo',   c.catalogo);
 router.get('/config',     authMiddleware, c.obtenerConfig);
 router.get('/log',        authMiddleware, c.listarLog);
 router.post('/disparar',  authMiddleware, c.disparar);
+router.post('/check',     c.check);
 
 module.exports = router;

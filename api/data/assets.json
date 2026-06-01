@@ -10,7 +10,8 @@
       "size": 1619041,
       "origen": "existente",
       "creado_en": "2026-06-01T01:15:25.896Z",
-      "editado_en": "2026-06-01T01:15:25.896Z"
+      "editado_en": "2026-06-01T23:08:00.874Z",
+      "etiquetas": []
     },
     {
       "id": "img-b14249d2-ea50-4dda-bf36-6bc8f695e648",
@@ -22,7 +23,8 @@
       "size": 19811,
       "origen": "existente",
       "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-01T01:15:25.897Z"
+      "editado_en": "2026-06-01T23:13:30.582Z",
+      "etiquetas": []
     },
     {
       "id": "img-a7da701d-ab34-4d4a-8bdc-43e4744df1eb",
@@ -130,7 +132,76 @@
       "size": 8688,
       "origen": "existente",
       "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-01T01:15:25.897Z"
+      "editado_en": "2026-06-01T23:20:34.394Z",
+      "etiquetas": []
+    }
+  ],
+  "labels": [
+    {
+      "id": "lbl-0db5df12-da86-44b5-8fcd-e587e0f27a7b",
+      "nombre": "Rojo",
+      "color": "#ef4444",
+      "grupo": "color"
+    },
+    {
+      "id": "lbl-d5dcaeb9-e97d-4bc6-8168-ed6e5fb01f8f",
+      "nombre": "Naranja",
+      "color": "#f97316",
+      "grupo": "color"
+    },
+    {
+      "id": "lbl-51ed47b4-355a-446a-b736-9d6d30197d92",
+      "nombre": "Amarillo",
+      "color": "#eab308",
+      "grupo": "color"
+    },
+    {
+      "id": "lbl-abbdd095-f3e1-4323-aa01-fb8653bdc9df",
+      "nombre": "Verde",
+      "color": "#22c55e",
+      "grupo": "color"
+    },
+    {
+      "id": "lbl-4450ec2d-836e-4c6f-842f-67ea9f9e05fe",
+      "nombre": "Azul",
+      "color": "#3b82f6",
+      "grupo": "color"
+    },
+    {
+      "id": "lbl-e0303a1c-ab65-420b-ab2b-32748b2613f8",
+      "nombre": "Violeta",
+      "color": "#8b5cf6",
+      "grupo": "color"
+    },
+    {
+      "id": "lbl-4652751b-4b94-46c6-828b-6e032e9d56bd",
+      "nombre": "Rosa",
+      "color": "#ec4899",
+      "grupo": "color"
+    },
+    {
+      "id": "lbl-71b4126f-da74-4d89-b443-e16900adc888",
+      "nombre": "Gris",
+      "color": "#64748b",
+      "grupo": "color"
+    },
+    {
+      "id": "lbl-3b8dce50-6335-4c4a-8a6e-8088bb226ef2",
+      "nombre": "Ejemplo Plantilla",
+      "color": "#1eff00",
+      "grupo": "plantilla"
+    },
+    {
+      "id": "lbl-1581ddb7-d575-400a-a057-673856842ccb",
+      "nombre": "Ejemplo Módulos",
+      "color": "#b19d20",
+      "grupo": "modulo"
+    },
+    {
+      "id": "lbl-b1520c69-6f83-4d97-8eb4-e107d433df9d",
+      "nombre": "Ejemplo Menú",
+      "color": "#f73bf1",
+      "grupo": "menu"
     }
   ]
 }

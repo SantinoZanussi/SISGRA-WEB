@@ -28,10 +28,42 @@ const EXT_MIME = {
   '.avif': 'image/avif',
 };
 
+// Paleta de colores tipo Finder con la que se siembran las etiquetas al iniciar
+const DEFAULT_COLOR_LABELS = [
+  { nombre: 'Rojo',     color: '#ef4444' },
+  { nombre: 'Naranja',  color: '#f97316' },
+  { nombre: 'Amarillo', color: '#eab308' },
+  { nombre: 'Verde',    color: '#22c55e' },
+  { nombre: 'Azul',     color: '#3b82f6' },
+  { nombre: 'Violeta',  color: '#8b5cf6' },
+  { nombre: 'Rosa',     color: '#ec4899' },
+  { nombre: 'Gris',     color: '#64748b' },
+];
+
+const GRUPOS_VALIDOS = ['color', 'modulo', 'plantilla', 'menu'];
+
 function read() {
-  if (!fs.existsSync(FILE)) return { assets: [] };
-  try { return JSON.parse(fs.readFileSync(FILE, 'utf-8')); }
-  catch { return { assets: [] }; }
+  let data;
+  if (!fs.existsSync(FILE)) data = { assets: [], labels: [] };
+  else {
+    try { data = JSON.parse(fs.readFileSync(FILE, 'utf-8')); }
+    catch { data = { assets: [], labels: [] }; }
+  }
+  if (!Array.isArray(data.assets)) data.assets = [];
+  if (!Array.isArray(data.labels)) data.labels = [];
+  return data;
+}
+
+// Siembra la paleta de colores la primera vez (cuando no hay ninguna etiqueta)
+function seedLabels(data) {
+  if (data.labels.length) return false;
+  data.labels = DEFAULT_COLOR_LABELS.map(l => ({
+    id: generateId('lbl'),
+    nombre: l.nombre,
+    color: l.color,
+    grupo: 'color',
+  }));
+  return true;
 }
 
 function save(data) {
@@ -116,6 +148,7 @@ function sincronizar(data) {
       mime: EXT_MIME[path.extname(rel).toLowerCase()] || 'application/octet-stream',
       size,
       origen: 'existente',
+      etiquetas: [],
       creado_en: now,
       editado_en: now,
     });
@@ -130,18 +163,19 @@ function sincronizar(data) {
   return changed;
 }
 
-// GET /api/assets  → lista todas las imágenes (subidas + detectadas en /img)
+// GET /api/assets  → lista todas las imágenes (subidas + detectadas en /img) + etiquetas
 exports.listar = (_req, res) => {
   const data = read();
-  if (sincronizar(data)) save(data);
+  const changed = [sincronizar(data), seedLabels(data)].some(Boolean);
+  if (changed) save(data);
   // Subidas primero, luego las detectadas, ambas por fecha desc
   const orden = { subida: 0, existente: 1 };
   const assets = [...data.assets].sort((a, b) => {
     const oa = orden[a.origen] ?? 0, ob = orden[b.origen] ?? 0;
     if (oa !== ob) return oa - ob;
     return (b.creado_en || '').localeCompare(a.creado_en || '');
-  });
-  res.json({ assets });
+  }).map(a => ({ ...a, etiquetas: Array.isArray(a.etiquetas) ? a.etiquetas : [] }));
+  res.json({ assets, labels: data.labels });
 };
 
 // POST /api/assets  [auth, multipart]  campo "file" + opcional "nombre"
@@ -176,6 +210,7 @@ exports.subir = (req, res) => {
     mime: req.file.mimetype,
     size: req.file.size,
     origen: 'subida',
+    etiquetas: [],
     creado_en: now,
     editado_en: now,
   };
@@ -247,4 +282,77 @@ exports.eliminar = (req, res) => {
   data.assets = data.assets.filter(a => a.id !== id);
   save(data);
   res.json({ ok: true });
+};
+
+// ─── Etiquetas (labels) ─────────────────────────────────────────────
+// Registro global de etiquetas tipo Finder: colores + categorías
+// (grupo ∈ color | modulo | plantilla | menu). Se asignan a las imágenes.
+
+// GET /api/assets/labels  → lista las etiquetas (público)
+exports.listarLabels = (_req, res) => {
+  const data = read();
+  if (seedLabels(data)) save(data);
+  res.json({ labels: data.labels });
+};
+
+// POST /api/assets/labels  [auth]  { nombre, color, grupo }
+exports.crearLabel = (req, res) => {
+  const { nombre, color, grupo } = req.body || {};
+  const nom = (nombre || '').trim();
+  if (!nom) return res.status(400).json({ error: 'El campo "nombre" es obligatorio' });
+  const grp = GRUPOS_VALIDOS.includes(grupo) ? grupo : 'color';
+  const col = (color || '').trim() || '#64748b';
+
+  const data = read();
+  const label = { id: generateId('lbl'), nombre: nom, color: col, grupo: grp };
+  data.labels.push(label);
+  save(data);
+  res.status(201).json({ ok: true, label });
+};
+
+// PATCH /api/assets/labels/:id  [auth]  { nombre?, color?, grupo? }
+exports.editarLabel = (req, res) => {
+  const { id } = req.params;
+  const data = read();
+  const label = data.labels.find(l => l.id === id);
+  if (!label) return res.status(404).json({ error: 'Etiqueta no encontrada' });
+
+  const { nombre, color, grupo } = req.body || {};
+  if (typeof nombre === 'string' && nombre.trim()) label.nombre = nombre.trim();
+  if (typeof color === 'string' && color.trim()) label.color = color.trim();
+  if (GRUPOS_VALIDOS.includes(grupo)) label.grupo = grupo;
+  save(data);
+  res.json({ ok: true, label });
+};
+
+// DELETE /api/assets/labels/:id  [auth]  → borra la etiqueta y la quita de las imágenes
+exports.eliminarLabel = (req, res) => {
+  const { id } = req.params;
+  const data = read();
+  const existe = data.labels.some(l => l.id === id);
+  if (!existe) return res.status(404).json({ error: 'Etiqueta no encontrada' });
+
+  data.labels = data.labels.filter(l => l.id !== id);
+  for (const a of data.assets) {
+    if (Array.isArray(a.etiquetas) && a.etiquetas.includes(id)) {
+      a.etiquetas = a.etiquetas.filter(e => e !== id);
+    }
+  }
+  save(data);
+  res.json({ ok: true });
+};
+
+// PATCH /api/assets/:id/tags  [auth]  { etiquetas: [labelId,...] }
+exports.asignarTags = (req, res) => {
+  const { id } = req.params;
+  const data = read();
+  const asset = data.assets.find(a => a.id === id);
+  if (!asset) return res.status(404).json({ error: 'Imagen no encontrada' });
+
+  const entrada = Array.isArray(req.body?.etiquetas) ? req.body.etiquetas : [];
+  const validas = new Set(data.labels.map(l => l.id));
+  asset.etiquetas = [...new Set(entrada.filter(e => validas.has(e)))];
+  asset.editado_en = new Date().toISOString();
+  save(data);
+  res.json({ ok: true, asset });
 };

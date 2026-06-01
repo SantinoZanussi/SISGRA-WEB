@@ -55,7 +55,7 @@ export const SECTIONS = {
       ],
     },
     dataFields: [
-      { name: 'logoSrc',     label: 'Logo (URL)',         type: 'text' },
+      { name: 'logoSrc',     label: 'Logo (URL)',         type: 'image' },
       { name: 'logoSrcHref', label: 'Link Inicio (logo)', type: 'text' },
       { name: 'ctaLabel',    label: 'Botón Contacto',     type: 'text' },
       { name: 'ctaHref',     label: 'Link Contacto',      type: 'text' },
@@ -509,7 +509,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       { name: 'eyebrow',     label: 'Eyebrow',           type: 'text' },
       { name: 'titulo',      label: 'Título (\\n = <br>)',type: 'textarea' },
       { name: 'descripcion', label: 'Descripción',       type: 'textarea' },
-      { name: 'imagen',      label: 'URL imagen',        type: 'text' },
+      { name: 'imagen',      label: 'URL imagen',        type: 'image' },
     ],
     designFields: [
       { name: 'bg',           label: 'Fondo de sección',          type: 'color' },
@@ -631,7 +631,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       { name: 'whatsappText', label: 'Texto botón WhatsApp', type: 'text' },
       { name: 'formLabel',    label: 'Label formulario',   type: 'text' },
       { name: 'btnEnviar',    label: 'Botón enviar',       type: 'text' },
-      { name: 'brandImg',     label: 'Logo URL',           type: 'text' },
+      { name: 'brandImg',     label: 'Logo URL',           type: 'image' },
       { name: 'copyright',    label: 'Copyright',          type: 'text' },
     ],
     designFields: [
@@ -831,7 +831,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
     defaultDesign: { bg: '', titleColor: '', accentColor: '', paddingY: '', titleSize: '' },
     dataFields: [
-      { name: 'imagenUrl',    label: 'Imagen (URL)',    type: 'text' },
+      { name: 'imagenUrl',    label: 'Imagen (URL)',    type: 'image' },
       { name: 'badgeTitle',   label: 'Badge — Título',  type: 'text' },
       { name: 'badgeSub',     label: 'Badge — Subtítulo',type: 'text' },
       { name: 'sectionBadge', label: 'Section badge',   type: 'text' },
@@ -925,7 +925,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       { name: 'titulo2',       label: 'Título línea 2',    type: 'text' },
       { name: 'descripcion',   label: 'Descripción',       type: 'textarea' },
       { name: 'features',      label: 'Feature cards',     type: 'features-icon' },
-      { name: 'imagenUrl',     label: 'Imagen (URL)',      type: 'text' },
+      { name: 'imagenUrl',     label: 'Imagen (URL)',      type: 'image' },
       { name: 'imgBadgeLabel', label: 'Badge sobre img — Label', type: 'text' },
       { name: 'imgBadgeText',  label: 'Badge sobre img — Texto', type: 'text' },
     ],
@@ -1356,7 +1356,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     defaultDesign: { bg: '', paddingY: '', bodyTextColor: '', ctaBg: '', ctaTitleColor: '', ctaTextColor: '', ctaBtnBg: '', ctaBtnColor: '', sidebarBg: '', sidebarTitleColor: '', sidebarTextColor: '', imgRadius: '' },
     dataFields: [
       // featuredImageUrl, featuredImageAlt y contentHtml vienen del post de blog (?id=)
-      { name: 'featuredImageUrl', label: 'Imagen de respaldo (sin ?id=)', type: 'text' },
+      { name: 'featuredImageUrl', label: 'Imagen de respaldo (sin ?id=)', type: 'image' },
       { name: 'ctaTitle',         label: 'CTA — Título',           type: 'text' },
       { name: 'ctaText',          label: 'CTA — Texto',            type: 'textarea' },
       { name: 'ctaBtnLabel',      label: 'CTA — Botón texto',      type: 'text' },
@@ -1430,7 +1430,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     dataFields: [
       { name: 'backLabel',     label: 'Link volver — Texto', type: 'text' },
       { name: 'backHref',      label: 'Link volver — URL',   type: 'text' },
-      { name: 'empresaLogo',   label: 'Logo empresa (URL)',  type: 'text' },
+      { name: 'empresaLogo',   label: 'Logo empresa (URL)',  type: 'image' },
       { name: 'empresaNombre', label: 'Nombre empresa',      type: 'text' },
       { name: 'titulo',        label: 'Título del proyecto', type: 'textarea' },
       { name: 'lead',          label: 'Subtítulo / lead',    type: 'textarea' },
@@ -1499,7 +1499,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     },
     defaultDesign: { bg: '', paddingY: '', bodyTextColor: '', imgRadius: '', fichaBg: '', fichaTitleColor: '', fichaLabelColor: '', fichaValueColor: '', ctaBg: '', ctaTitleColor: '', ctaTextColor: '', ctaBtnBg: '', ctaBtnColor: '' },
     dataFields: [
-      { name: 'featuredImageUrl', label: 'Imagen destacada (URL)', type: 'text' },
+      { name: 'featuredImageUrl', label: 'Imagen destacada (URL)', type: 'image' },
       { name: 'fichaTitle',       label: 'Ficha — Título',       type: 'text' },
       { name: 'empresa',          label: 'Ficha — Empresa',      type: 'text' },
       { name: 'sector',           label: 'Ficha — Sector',       type: 'text' },

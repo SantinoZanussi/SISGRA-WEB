@@ -109,10 +109,25 @@ exports.getPage = (req, res) => {
   });
 };
 
+const MODULO_TIPO = { home: 'index' };
+
+function resolverPlantilla(boton, plantillas) {
+  if (boton.id_plantilla) {
+    return plantillas.find(p => p.id_plantilla === boton.id_plantilla) || null;
+  }
+  const tipo = MODULO_TIPO[boton.modulo] || boton.modulo;
+  return plantillas.find(p => p.tipo === tipo) || null;
+}
+
 // GET /api/nav/botones
 exports.listarBotones = (_req, res) => {
   const { botones } = readNav();
-  res.json({ botones });
+  const { plantillas } = readPlantillas();
+  const out = botones.map(b => {
+    const p = resolverPlantilla(b, plantillas);
+    return { ...b, plantilla: p ? { id: p.id_plantilla, nombre: p.nombre, tipo: p.tipo } : null };
+  });
+  res.json({ botones: out });
 };
 
 // POST /api/nav/botones  [auth]

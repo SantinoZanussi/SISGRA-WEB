@@ -3,7 +3,6 @@ const cors = require('cors');
 const os = require('os');
 const path = require('path');
 const { JWT_SECRET } = require("./middleware/auth.js");
-const { iniciarSchedulerAlertas } = require("./utils/alertScheduler");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -78,5 +77,4 @@ app.listen(PORT, host, () => {
   console.log(` → Servidor corriendo en:`);
   console.log(`    • http://localhost:${PORT}`);
   console.log(`    • http://${localIP}:${PORT}`);
-  iniciarSchedulerAlertas();
 });

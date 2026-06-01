@@ -5,7 +5,9 @@ const { generateId } = require('../utils/id');
 const DATA_DIR    = path.join(__dirname, '..', 'data');
 const CONFIG_FILE = path.join(DATA_DIR, 'alertas_config.json');
 const LOG_FILE    = path.join(DATA_DIR, 'alertas_log.json');
+const PLT_FILE    = path.join(DATA_DIR, 'plantillas.json');
 
+const ID_VENCIMIENTO = 1;
 const CATALOGO_ALERTAS = {
   1: 'Vencimiento de módulo',
 };
@@ -106,8 +108,59 @@ exports.obtenerConfig = (_req, res) => {
   res.json({ config: leerConfig(), env_override: !!process.env.ALERTAS_WEBHOOK_URL });
 };
 
-// Reutilizables por el scheduler de vencimientos
-exports.dispararAlerta   = dispararAlerta;
-exports.leerConfig       = leerConfig;
-exports.leerLog          = leerLog;
-exports.CATALOGO_ALERTAS = CATALOGO_ALERTAS;
+function leerPlantillas() {
+  if (!fs.existsSync(PLT_FILE)) return { plantillas: [] };
+  try { return JSON.parse(fs.readFileSync(PLT_FILE, 'utf-8')); }
+  catch { return { plantillas: [] }; }
+}
+
+function estaVencida(p) {
+  return p.activa && p.fecha_fin && Date.now() > new Date(p.fecha_fin).getTime();
+}
+
+function detectarVencimientos() {
+  const { plantillas } = leerPlantillas();
+  const log = leerLog();
+  const vencidos = [];
+  let logChanged = false;
+
+  for (const p of plantillas) {
+    if (!estaVencida(p)) continue;
+    for (const sec of (p.secciones || []).filter(s => s.alerta === true)) {
+      const key = `venc|${p.id_plantilla}|${sec.id}|${p.fecha_fin}`;
+      const alerta = `${CATALOGO_ALERTAS[ID_VENCIMIENTO]}: módulo "${sec.type || 'módulo'}" de la plantilla "${p.nombre}" (${p.tipo}) venció el ${p.fecha_fin}`;
+      vencidos.push({
+        id_alerta: ID_VENCIMIENTO,
+        alerta,
+        id_plantilla:     p.id_plantilla,
+        nombre_plantilla: p.nombre,
+        tipo_plantilla:   p.tipo,
+        id_seccion:       sec.id,
+        tipo_seccion:     sec.type || null,
+        fecha_fin:        p.fecha_fin,
+      });
+
+      if (!log.alertas.some(a => a.key === key)) {
+        log.alertas.push({
+          id: generateId('alert'),
+          key,
+          id_alerta: ID_VENCIMIENTO,
+          alerta,
+          date_time_hour: new Date().toISOString(),
+          estado: 'detectado',
+          meta: { id_plantilla: p.id_plantilla, id_seccion: sec.id, tipo_seccion: sec.type, fecha_fin: p.fecha_fin },
+        });
+        logChanged = true;
+      }
+    }
+  }
+
+  if (logChanged) guardarLog(log);
+  return vencidos;
+}
+
+// POST /api/alertas/check — la API PRES consulta si hay módulos/plantillas vencidos
+exports.check = (_req, res) => {
+  const vencidos = detectarVencimientos();
+  res.json({ ok: true, total: vencidos.length, vencidos });
+};

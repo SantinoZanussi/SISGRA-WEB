@@ -2,16 +2,17 @@
 // CRUD de assets: subir, renombrar (cambia la ruta), bloquear/desbloquear y eliminar.
 // Autocontenido: maneja su propio panel y navegación para no depender de panel.js.
 
-import { apiGet, apiPatch, apiDelete } from '../api.js';
+import { apiGet, apiPost, apiPatch, apiDelete } from '../api.js';
 import { authToken, API_BASE } from '../store.js';
+import { escAttr, fetchAssets, matchAsset, indexLabels, tagDotsHTML, createFilterBar, GRUPOS, GRUPO_NOMBRES } from './asset-shared.js';
 
 const notif = (msg, type = 'success') =>
   window.__svc?.showNotif?.(msg, type) ?? console.log('[assets]', msg);
 
-const escAttr = s => String(s ?? '')
-  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
-
 let assets = [];
+let labels = [];
+let labelIndex = {};
+let filterBar = null;
 
 // ─── Navegación: mostrar el panel de imágenes ───────────────────────
 function showAssetsPanel() {
@@ -36,8 +37,11 @@ async function loadAssets() {
   const grid = document.getElementById('assets-grid');
   if (grid) grid.innerHTML = '<div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--slate-400);font-size:.8rem;">Cargando…</div>';
   try {
-    const res = await apiGet('/assets');
-    assets = res.assets || [];
+    const res = await fetchAssets();
+    assets = res.assets;
+    labels = res.labels;
+    labelIndex = indexLabels(labels);
+    filterBar?.render(labels);
     renderAssets();
   } catch (e) {
     if (grid) grid.innerHTML = `<div style="grid-column:1/-1;padding:2rem;text-align:center;color:#dc2626;font-size:.8rem;">Error al cargar imágenes: ${escAttr(e.message)}</div>`;
@@ -57,7 +61,15 @@ function renderAssets() {
     return;
   }
 
-  grid.innerHTML = assets.map(a => `
+  const list = filterBar ? assets.filter(a => matchAsset(a, filterBar.getFilters())) : assets;
+  if (!list.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;padding:3rem 2rem;text-align:center;color:var(--slate-400);border:2px dashed var(--slate-200);border-radius:.5rem;">
+      <i class="fa-solid fa-magnifying-glass" style="font-size:1.6rem;opacity:.3;display:block;margin-bottom:.6rem;"></i>
+      Ninguna imagen coincide con los filtros.</div>`;
+    return;
+  }
+
+  grid.innerHTML = list.map(a => `
     <div class="asset-card" style="border:3px solid var(--slate-200);border-radius:.5rem;overflow:hidden;background:#fff;display:flex;flex-direction:column;">
       <div data-act="view" data-id="${a.id}" title="Ver en grande" style="position:relative;aspect-ratio:16/10;background:repeating-conic-gradient(#f1f5f9 0% 25%, #fff 0% 50%) 50% / 16px 16px;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:zoom-in;">
         <img src="${escAttr(a.path)}" alt="${escAttr(a.nombre)}" style="max-width:100%;max-height:100%;object-fit:contain;" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','<span style=\\'color:#94a3b8;font-size:.7rem;\\'>sin vista previa</span>')"/>
@@ -68,11 +80,13 @@ function renderAssets() {
           <span style="font-weight:700;font-size:.78rem;color:var(--slate-800);word-break:break-word;">${escAttr(a.nombre)}</span>
           ${a.origen === 'existente' ? '<span title="Detectada en la carpeta /img" style="font-size:.5rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--slate-100);color:var(--slate-500);padding:.15rem .35rem;border-radius:.25rem;">NATIVO</span>' : ''}
         </div>
+        ${tagDotsHTML(a, labelIndex)}
         <div style="display:flex;gap:1rem;align-items:center;">
           <code style="flex:1;font-size:.65rem;background:var(--slate-50);border:1px solid var(--slate-200);padding:.25rem .4rem;border-radius:.25rem;color:var(--slate-600);word-break:break-all;font-family:'IBM Plex Mono',monospace;">${escAttr(a.path)}</code>
           <button class="btn-edit-small" data-act="copy" data-id="${a.id}" title="Copiar ruta" style="flex-shrink:0;"><i class="fa-solid fa-copy"></i></button>
         </div>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:auto;">
+          <button class="btn-edit-small" data-act="tags" data-id="${a.id}"><i class="fa-solid fa-tags"></i> Etiquetas</button>
           <button class="btn-edit-small" data-act="rename" data-id="${a.id}" ${a.locked ? 'disabled style="opacity:.4;cursor:not-allowed;"' : ''}><i class="fa-solid fa-pen"></i> Renombrar</button>
           <button class="btn-edit-small" data-act="lock" data-id="${a.id}">${a.locked ? '<i class="fa-solid fa-lock-open"></i> Desbloquear' : '<i class="fa-solid fa-lock"></i> Bloquear'}</button>
           <button class="btn-edit-small" data-act="delete" data-id="${a.id}" ${a.locked ? 'disabled style="opacity:.4;cursor:not-allowed;"' : 'style="color:#dc2626;border-color:#fca5a5;"'}><i class="fa-solid fa-trash"></i></button>
@@ -92,6 +106,11 @@ async function handleAction(act, id) {
 
   if (act === 'view') {
     openLightbox(asset);
+    return;
+  }
+
+  if (act === 'tags') {
+    openTagAssign(asset);
     return;
   }
 
@@ -232,10 +251,182 @@ function closeLightbox() {
   ov.querySelector('#assets-lightbox-img').src = '';
 }
 
+// ─── Etiquetas: asignar a una imagen ────────────────────────────────
+function buildOverlay(id, z = 9998) {
+  let ov = document.getElementById(id);
+  if (ov) return ov;
+  ov = document.createElement('div');
+  ov.id = id;
+  ov.style.cssText = `position:fixed;inset:0;z-index:${z};display:none;align-items:center;justify-content:center;padding:2rem;background:rgba(15,23,42,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);`;
+  document.body.appendChild(ov);
+  ov.addEventListener('click', e => { if (e.target === ov) ov.style.display = 'none'; });
+  return ov;
+}
+
+function gruposConItems() {
+  return GRUPOS
+    .map(g => ({ ...g, items: labels.filter(l => (l.grupo || 'color') === g.key) }))
+    .filter(g => g.items.length);
+}
+
+function dot(l) {
+  return `<span style="width:.7rem;height:.7rem;border-radius:50%;background:${escAttr(l.color)};display:inline-block;flex-shrink:0;"></span>`;
+}
+
+function openTagAssign(asset) {
+  const ov = buildOverlay('assets-tag-overlay');
+  const checked = new Set(asset.etiquetas || []);
+  const grupos = gruposConItems();
+
+  ov.innerHTML = `
+    <div style="background:#fff;border-radius:.75rem;width:min(480px,95vw);max-height:85vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,.4);">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--slate-200);">
+        <span style="font-weight:800;"><i class="fa-solid fa-tags" style="margin-right:.4rem;color:#2563eb;"></i> Etiquetas de "${escAttr(asset.nombre)}"</span>
+        <button type="button" class="modal-close" data-x><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div style="flex:1;overflow:auto;padding:1rem 1.25rem;display:flex;flex-direction:column;gap:.9rem;">
+        ${grupos.length ? grupos.map(g => `
+          <div>
+            <div style="font-size:.55rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--slate-400);margin-bottom:.4rem;">${g.label}</div>
+            <div style="display:flex;flex-direction:column;gap:.3rem;">
+              ${g.items.map(l => `
+                <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;color:var(--slate-700);">
+                  <input type="checkbox" value="${l.id}" ${checked.has(l.id) ? 'checked' : ''}/> ${dot(l)} ${escAttr(l.nombre)}
+                </label>`).join('')}
+            </div>
+          </div>`).join('')
+          : '<div style="color:var(--slate-400);font-size:.8rem;">Todavía no hay etiquetas. Creá algunas desde "Gestionar etiquetas".</div>'}
+      </div>
+      <div style="border-top:1px solid var(--slate-200);padding:.85rem 1.25rem;display:flex;justify-content:space-between;gap:.6rem;background:var(--slate-50);">
+        <button type="button" class="btn-secondary" data-manage><i class="fa-solid fa-gear"></i> Gestionar etiquetas</button>
+        <div style="display:flex;gap:.6rem;">
+          <button type="button" class="btn-secondary" data-x>Cancelar</button>
+          <button type="button" class="btn-add" data-save>Guardar</button>
+        </div>
+      </div>
+    </div>`;
+
+  ov.querySelectorAll('[data-x]').forEach(b => b.addEventListener('click', () => { ov.style.display = 'none'; }));
+  ov.querySelector('[data-manage]').addEventListener('click', () => { ov.style.display = 'none'; openLabelManager(); });
+  ov.querySelector('[data-save]').addEventListener('click', async () => {
+    const etiquetas = [...ov.querySelectorAll('input[type=checkbox]:checked')].map(c => c.value);
+    try {
+      const { asset: updated } = await apiPatch(`/assets/${asset.id}/tags`, { etiquetas });
+      Object.assign(asset, updated);
+      ov.style.display = 'none';
+      renderAssets();
+      notif('✓ Etiquetas actualizadas');
+    } catch (e) { notif('Error al guardar etiquetas: ' + e.message, 'error'); }
+  });
+
+  ov.style.display = 'flex';
+}
+
+// ─── Etiquetas: gestor global (crear / editar / eliminar) ───────────
+function openLabelManager() {
+  const ov = buildOverlay('assets-labels-overlay', 9999);
+  renderLabelManager(ov);
+  ov.style.display = 'flex';
+}
+
+function renderLabelManager(ov) {
+  const grupos = gruposConItems();
+  ov.innerHTML = `
+    <div style="background:#fff;border-radius:.75rem;width:min(560px,95vw);max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 25px 70px rgba(0,0,0,.4);">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--slate-200);">
+        <span style="font-weight:800;"><i class="fa-solid fa-gear" style="margin-right:.4rem;color:#2563eb;"></i> Gestionar etiquetas</span>
+        <button type="button" class="modal-close" data-x><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div style="flex:1;overflow:auto;padding:1rem 1.25rem;display:flex;flex-direction:column;gap:1rem;">
+        ${grupos.length ? grupos.map(g => `
+          <div>
+            <div style="font-size:.55rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--slate-400);margin-bottom:.4rem;">${g.label}</div>
+            ${g.items.map(l => `
+              <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;" data-lbl="${l.id}">
+                <input type="color" value="${escAttr(/^#[0-9a-f]{6}$/i.test(l.color) ? l.color : '#64748b')}" data-lc style="width:2rem;height:2rem;border:1px solid var(--slate-200);border-radius:.35rem;padding:0;cursor:pointer;"/>
+                <input type="text" value="${escAttr(l.nombre)}" data-ln style="flex:1;padding:.4rem .55rem;border:1px solid var(--slate-200);border-radius:.4rem;font-size:.8rem;"/>
+                <button type="button" class="btn-edit-small" data-lsave title="Guardar cambios"><i class="fa-solid fa-check"></i></button>
+                <button type="button" class="btn-edit-small" data-ldel title="Eliminar" style="color:#dc2626;border-color:#fca5a5;"><i class="fa-solid fa-trash"></i></button>
+              </div>`).join('')}
+          </div>`).join('')
+          : '<div style="color:var(--slate-400);font-size:.8rem;">Todavía no hay etiquetas.</div>'}
+      </div>
+      <div style="border-top:1px solid var(--slate-200);padding:.85rem 1.25rem;background:var(--slate-50);display:flex;flex-direction:column;gap:.55rem;">
+        <span style="font-size:.55rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--slate-400);">Nueva etiqueta</span>
+        <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+          <input type="color" value="#3b82f6" data-nc style="width:2rem;height:2rem;border:1px solid var(--slate-200);border-radius:.35rem;padding:0;cursor:pointer;"/>
+          <input type="text" placeholder="Nombre" data-nn style="flex:1;min-width:120px;padding:.45rem .55rem;border:1px solid var(--slate-200);border-radius:.4rem;font-size:.8rem;"/>
+          <select data-ng style="padding:.45rem .55rem;border:1px solid var(--slate-200);border-radius:.4rem;font-size:.8rem;">
+            ${GRUPOS.map(g => `<option value="${g.key}">${g.label}</option>`).join('')}
+          </select>
+          <button type="button" class="btn-add" data-nadd><i class="fa-solid fa-plus"></i> Crear</button>
+        </div>
+      </div>
+    </div>`;
+
+  ov.querySelectorAll('[data-x]').forEach(b => b.addEventListener('click', () => { ov.style.display = 'none'; }));
+
+  ov.querySelectorAll('[data-lbl]').forEach(row => {
+    const id = row.dataset.lbl;
+    row.querySelector('[data-lsave]').addEventListener('click', async () => {
+      const nombre = row.querySelector('[data-ln]').value.trim();
+      const color = row.querySelector('[data-lc]').value;
+      if (!nombre) return notif('El nombre no puede estar vacío', 'error');
+      try {
+        await apiPatch(`/assets/labels/${id}`, { nombre, color });
+        await refreshLabels();
+        renderLabelManager(ov);
+        notif('✓ Etiqueta actualizada');
+      } catch (e) { notif('Error: ' + e.message, 'error'); }
+    });
+    row.querySelector('[data-ldel]').addEventListener('click', async () => {
+      if (!confirm('¿Eliminar esta etiqueta? Se quitará de todas las imágenes.')) return;
+      try {
+        await apiDelete(`/assets/labels/${id}`);
+        await refreshLabels();
+        renderLabelManager(ov);
+        notif('✓ Etiqueta eliminada');
+      } catch (e) { notif('Error: ' + e.message, 'error'); }
+    });
+  });
+
+  ov.querySelector('[data-nadd]').addEventListener('click', async () => {
+    const nombre = ov.querySelector('[data-nn]').value.trim();
+    const color = ov.querySelector('[data-nc]').value;
+    const grupo = ov.querySelector('[data-ng]').value;
+    if (!nombre) return notif('Poné un nombre para la etiqueta', 'error');
+    try {
+      await apiPost('/assets/labels', { nombre, color, grupo });
+      await refreshLabels();
+      renderLabelManager(ov);
+      notif('✓ Etiqueta creada');
+    } catch (e) { notif('Error: ' + e.message, 'error'); }
+  });
+}
+
+// Recarga solo las etiquetas + reindexa + refresca filtros y grid
+async function refreshLabels() {
+  const res = await fetchAssets();
+  assets = res.assets;
+  labels = res.labels;
+  labelIndex = indexLabels(labels);
+  filterBar?.render(labels);
+  renderAssets();
+}
+
 // ─── Init ───────────────────────────────────────────────────────────
 function init() {
   document.querySelector('.sidebar-item[data-panel="assets"]')
     ?.addEventListener('click', showAssetsPanel);
+
+  // Barra de filtros Finder (buscador + chips de etiquetas)
+  const toolbar = document.getElementById('assets-toolbar');
+  if (toolbar) {
+    filterBar = createFilterBar({ onChange: renderAssets });
+    toolbar.appendChild(filterBar.el);
+  }
+  document.getElementById('assets-manage-labels')
+    ?.addEventListener('click', openLabelManager);
 
   const input = document.getElementById('assets-file-input');
   const btn = document.getElementById('assets-upload-btn');

@@ -727,6 +727,14 @@ function fieldHTML(f, val, group) {
       return `<div class="props-field"><label class="props-label">${f.label}</label><input class="props-input" type="text" data-ef="${f.name}" data-eg="${group}" value="${safe}"/></div>`;
     case 'textarea':
       return `<div class="props-field"><label class="props-label">${f.label}</label><textarea class="props-textarea" data-ef="${f.name}" data-eg="${group}" style="min-height:80px;">${escAttr(val).replace(/&quot;/g,'"')}</textarea></div>`;
+    case 'image':
+      return `<div class="props-field"><label class="props-label">${f.label}</label>
+        <div style="display:flex;gap:.4rem;align-items:center;">
+          <input class="props-input" type="text" data-ef="${f.name}" data-eg="${group}" value="${safe}" placeholder="/img/… o URL externa" style="flex:1;"/>
+          <button type="button" class="btn-edit-small" data-eimg="${f.name}" data-eg="${group}" title="Elegir imagen"><i class="fa-solid fa-image"></i></button>
+        </div>
+        <img data-eimgprev="${f.name}" data-eg="${group}" src="${safe}" alt="" style="margin-top:.4rem;max-height:70px;border:1px solid var(--slate-200);border-radius:.35rem;background:#fff;object-fit:contain;${val ? '' : 'display:none;'}" onerror="this.style.display='none'"/>
+      </div>`;
     case 'number':
       return `<div class="props-field"><label class="props-label">${f.label}</label><input class="props-input" type="number" data-ef="${f.name}" data-eg="${group}" min="${f.min ?? 0}" max="${f.max ?? 9999}" value="${val ?? ''}"/></div>`;
     case 'color': {
@@ -764,10 +772,16 @@ function arrayEditorHTML(kind, items, fieldKeys, labels, extraToggle) {
   return `<div class="props-field"><label class="props-label">${kind}</label><div data-e3-arr="${kind}">
     ${items.map((it, i) => `
       <div data-e3-aitem="${i}" style="border:1px solid var(--slate-200);padding:.55rem;margin-bottom:.4rem;background:var(--slate-50);">
-        ${fieldKeys.map(k => labels[k]?.toLowerCase().includes('extracto') || labels[k]?.toLowerCase().includes('descripción')
-            ? `<textarea class="props-textarea" data-e3-akey="${k}" placeholder="${labels[k]}" style="margin-bottom:.3rem;min-height:50px;">${escAttr(it[k]||'').replace(/&quot;/g,'"')}</textarea>`
-            : `<input class="props-input" data-e3-akey="${k}" value="${escAttr(it[k]||'')}" placeholder="${labels[k]}" style="margin-bottom:.3rem;"/>`
-        ).join('')}
+        ${fieldKeys.map(k => {
+          if (labels[k]?.toLowerCase().includes('extracto') || labels[k]?.toLowerCase().includes('descripción'))
+            return `<textarea class="props-textarea" data-e3-akey="${k}" placeholder="${labels[k]}" style="margin-bottom:.3rem;min-height:50px;">${escAttr(it[k]||'').replace(/&quot;/g,'"')}</textarea>`;
+          if (k === 'imagen')
+            return `<div style="display:flex;gap:.3rem;margin-bottom:.3rem;">
+              <input class="props-input" data-e3-akey="${k}" value="${escAttr(it[k]||'')}" placeholder="${labels[k]}" style="flex:1;"/>
+              <button type="button" class="btn-edit-small" data-e3-aimg title="Elegir imagen"><i class="fa-solid fa-image"></i></button>
+            </div>`;
+          return `<input class="props-input" data-e3-akey="${k}" value="${escAttr(it[k]||'')}" placeholder="${labels[k]}" style="margin-bottom:.3rem;"/>`;
+        }).join('')}
         ${extraToggle ? `<label style="display:flex;align-items:center;gap:.4rem;font-size:.65rem;color:var(--slate-500);cursor:pointer;"><input type="checkbox" data-e3-akey="activo" ${it.activo !== false ? 'checked' : ''}/> Activo</label>` : ''}
         <button class="btn-edit-small" data-e3-aremove="${i}" style="color:#dc2626;border-color:#fca5a5;width:100%;margin-top:.3rem;"><i class="fa-solid fa-trash"></i> Quitar</button>
       </div>`).join('')}
@@ -840,6 +854,23 @@ function bindFieldEvents(sec) {
     });
   });
 
+  // Campos de imagen: botón "Elegir" → abre el selector modal
+  body.querySelectorAll('[data-eimg]').forEach(btn => {
+    const f = btn.dataset.eimg, g = btn.dataset.eg;
+    const input = body.querySelector(`input[data-ef="${f}"][data-eg="${g}"]`);
+    const prev = body.querySelector(`img[data-eimgprev="${f}"][data-eg="${g}"]`);
+    const syncPrev = () => { if (!prev) return; const v = input?.value || ''; prev.src = v; prev.style.display = v ? '' : 'none'; };
+    input?.addEventListener('input', syncPrev);
+    btn.addEventListener('click', async () => {
+      const path = await window.__imgPicker?.open({ current: input?.value || '' });
+      if (path && input) {
+        input.value = path;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+        syncPrev();
+      }
+    });
+  });
+
   // Array editors (cards / spec-cards / logos / clientes / posts / icon-features / emoji-features / links / text-list)
   body.querySelectorAll('[data-e3-arr]').forEach(arrWrap => {
     const kind = arrWrap.dataset.e3Arr;
@@ -889,6 +920,11 @@ function bindFieldEvents(sec) {
           }
           markDirty(); renderCanvas();
         });
+      });
+      item.querySelector('[data-e3-aimg]')?.addEventListener('click', async () => {
+        const inp = item.querySelector('[data-e3-akey="imagen"]');
+        const path = await window.__imgPicker?.open({ current: inp?.value || '' });
+        if (path && inp) { inp.value = path; inp.dispatchEvent(new Event('input', { bubbles: true })); }
       });
       item.querySelector('[data-e3-aremove]')?.addEventListener('click', () => {
         sec.data[arrField].splice(idx, 1);
