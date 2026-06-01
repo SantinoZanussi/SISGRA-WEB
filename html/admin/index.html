@@ -61,7 +61,11 @@
         <i class="fa-solid fa-newspaper"></i>
         Blog / Noticias
       </div>
- 
+      <div class="sidebar-item" data-panel="assets">
+        <i class="fa-solid fa-images"></i>
+        Imágenes
+      </div>
+
       <div class="sidebar-section-label">Módulos</div>
       <div class="sidebar-item" data-panel="modulos">
         <i class="fa-solid fa-puzzle-piece"></i>
@@ -297,6 +301,22 @@
           <div class="blog-grid" id="blog-list"></div>
         </div>
  
+        <!-- IMÁGENES / ASSETS -->
+        <div class="panel" id="panel-assets">
+          <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;">
+            <div>
+              <div class="page-title">Imágenes</div>
+              <div class="page-desc">Subí imágenes al panel y copiá su ruta fija para usarla en plantillas, clientes, blog, etc.</div>
+            </div>
+            <button class="btn-add" id="assets-upload-btn"><i class="fa-solid fa-upload"></i> Subir imagen</button>
+          </div>
+          <input type="file" id="assets-file-input" accept="image/*" multiple style="display:none;"/>
+          <div id="assets-dropzone" style="border:2px dashed var(--slate-200);border-radius:.5rem;padding:1rem;text-align:center;color:var(--slate-400);font-size:.75rem;margin-bottom:1.25rem;transition:border-color .15s,background .15s;cursor:pointer;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Arrastrá imágenes acá o hacé clic en "Subir imagen"
+          </div>
+          <div id="assets-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;"></div>
+        </div>
+
         <!-- PLANTILLAS overview -->
         <div class="panel" id="panel-plantillas">
           <div class="page-header">
@@ -612,6 +632,7 @@
 <script src="/services/admin/panel.js"></script>
 <script type="module" src="/services/admin/services-bridge.js"></script>
 <script type="module" src="/services/admin/editor.js"></script>
+<script type="module" src="/services/admin/assets.js"></script>
 
 <div class="e3-mobile-block" id="e3-mobile-block">
   <div class="e3-mobile-block-card">

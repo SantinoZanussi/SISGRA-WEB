@@ -43,6 +43,9 @@ app.use("/api/modulos", modulosRoutes);
 const alertasRoutes = require("./routes/alertasRoutes");
 app.use("/api/alertas", alertasRoutes);
 
+const assetRoutes = require("./routes/assetRoutes");
+app.use("/api/assets", assetRoutes);
+
 app.use(express.static(PROJECT_ROOT, {
   index: 'index.html',
   extensions: ['html'],

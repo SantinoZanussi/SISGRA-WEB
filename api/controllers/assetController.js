@@ -1,0 +1,250 @@
+const fs = require('fs');
+const path = require('path');
+const { generateId } = require('../utils/id');
+
+const DATA_DIR = path.join(__dirname, '..', 'data');
+const FILE = path.join(DATA_DIR, 'assets.json');
+// Las imágenes se guardan directamente en /img (servida estáticamente por el server)
+const IMG_DIR = path.join(__dirname, '..', '..', 'img');
+
+const MIME_EXT = {
+  'image/png': '.png',
+  'image/jpeg': '.jpg',
+  'image/jpg': '.jpg',
+  'image/gif': '.gif',
+  'image/webp': '.webp',
+  'image/svg+xml': '.svg',
+  'image/avif': '.avif',
+};
+
+// Extensiones de imagen reconocidas al escanear /img (ext → mime)
+const EXT_MIME = {
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.gif': 'image/gif',
+  '.webp': 'image/webp',
+  '.svg': 'image/svg+xml',
+  '.avif': 'image/avif',
+};
+
+function read() {
+  if (!fs.existsSync(FILE)) return { assets: [] };
+  try { return JSON.parse(fs.readFileSync(FILE, 'utf-8')); }
+  catch { return { assets: [] }; }
+}
+
+function save(data) {
+  fs.writeFileSync(FILE, JSON.stringify(data, null, 2), 'utf-8');
+}
+
+// Convierte un nombre a un slug seguro para usar como nombre de archivo
+function slugify(s) {
+  return String(s || '')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '') // saca acentos
+    .toLowerCase().trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '') || 'imagen';
+}
+
+// Nombre legible a partir de un filename (para imágenes detectadas en /img)
+function nombreDesdeArchivo(rel) {
+  const base = path.basename(rel, path.extname(rel));
+  return base.replace(/[-_]+/g, ' ').trim() || base;
+}
+
+// Devuelve un filename único (dir/base+ext) relativo a IMG_DIR, evitando
+// colisiones en el registro y con archivos ya existentes en disco.
+// excludeFilename permite ignorar el archivo actual al renombrar.
+function uniqueFilename(dir, base, ext, assets, excludeFilename = null) {
+  const prefix = dir ? `${dir}/` : '';
+  const taken = new Set(
+    assets.map(a => a.filename).filter(f => f && f !== excludeFilename)
+  );
+  const exists = (rel) =>
+    taken.has(rel) || (rel !== excludeFilename && fs.existsSync(path.join(IMG_DIR, rel)));
+
+  let candidate = `${prefix}${base}${ext}`;
+  let n = 2;
+  while (exists(candidate)) {
+    candidate = `${prefix}${base}-${n}${ext}`;
+    n++;
+  }
+  return candidate;
+}
+
+// Escanea /img recursivamente y devuelve rutas de imágenes relativas a IMG_DIR
+function escanearImagenes(dir = IMG_DIR, baseRel = '') {
+  let out = [];
+  let entries;
+  try { entries = fs.readdirSync(dir, { withFileTypes: true }); }
+  catch { return out; }
+  for (const ent of entries) {
+    const rel = baseRel ? `${baseRel}/${ent.name}` : ent.name;
+    if (ent.isDirectory()) {
+      out = out.concat(escanearImagenes(path.join(dir, ent.name), rel));
+    } else if (EXT_MIME[path.extname(ent.name).toLowerCase()]) {
+      out.push(rel);
+    }
+  }
+  return out;
+}
+
+// Sincroniza el registro con el contenido real de /img:
+//  - importa imágenes presentes en disco que aún no están registradas
+//    (las pre-existentes se importan BLOQUEADAS por seguridad)
+//  - elimina del registro las entradas cuyo archivo ya no existe
+// Devuelve { assets, changed }
+function sincronizar(data) {
+  const enDisco = escanearImagenes();
+  const setDisco = new Set(enDisco);
+  const setRegistro = new Set(data.assets.map(a => a.filename));
+  let changed = false;
+
+  // Importar nuevas
+  for (const rel of enDisco) {
+    if (setRegistro.has(rel)) continue;
+    const now = new Date().toISOString();
+    let size = 0;
+    try { size = fs.statSync(path.join(IMG_DIR, rel)).size; } catch {}
+    data.assets.push({
+      id: generateId('img'),
+      nombre: nombreDesdeArchivo(rel),
+      filename: rel,
+      path: `/img/${rel}`,
+      locked: true,            // pre-existentes bloqueadas por seguridad
+      mime: EXT_MIME[path.extname(rel).toLowerCase()] || 'application/octet-stream',
+      size,
+      origen: 'existente',
+      creado_en: now,
+      editado_en: now,
+    });
+    changed = true;
+  }
+
+  // Eliminar entradas huérfanas (archivo borrado del disco)
+  const before = data.assets.length;
+  data.assets = data.assets.filter(a => setDisco.has(a.filename));
+  if (data.assets.length !== before) changed = true;
+
+  return changed;
+}
+
+// GET /api/assets  → lista todas las imágenes (subidas + detectadas en /img)
+exports.listar = (_req, res) => {
+  const data = read();
+  if (sincronizar(data)) save(data);
+  // Subidas primero, luego las detectadas, ambas por fecha desc
+  const orden = { subida: 0, existente: 1 };
+  const assets = [...data.assets].sort((a, b) => {
+    const oa = orden[a.origen] ?? 0, ob = orden[b.origen] ?? 0;
+    if (oa !== ob) return oa - ob;
+    return (b.creado_en || '').localeCompare(a.creado_en || '');
+  });
+  res.json({ assets });
+};
+
+// POST /api/assets  [auth, multipart]  campo "file" + opcional "nombre"
+exports.subir = (req, res) => {
+  if (!req.file) return res.status(400).json({ error: 'No se recibió ningún archivo (campo "file")' });
+
+  const ext = MIME_EXT[req.file.mimetype];
+  if (!ext) {
+    return res.status(400).json({ error: `Tipo de archivo no permitido: ${req.file.mimetype}. Solo imágenes.` });
+  }
+
+  const data = read();
+  const nombreBase = (req.body && req.body.nombre && req.body.nombre.trim())
+    || path.parse(req.file.originalname).name;
+  const slug = slugify(nombreBase);
+  const filename = uniqueFilename('', slug, ext, data.assets);
+
+  try {
+    if (!fs.existsSync(IMG_DIR)) fs.mkdirSync(IMG_DIR, { recursive: true });
+    fs.writeFileSync(path.join(IMG_DIR, filename), req.file.buffer);
+  } catch (e) {
+    return res.status(500).json({ error: 'No se pudo guardar el archivo', detail: e.message });
+  }
+
+  const now = new Date().toISOString();
+  const asset = {
+    id: generateId('img'),
+    nombre: nombreBase,
+    filename,
+    path: `/img/${filename}`,
+    locked: false,
+    mime: req.file.mimetype,
+    size: req.file.size,
+    origen: 'subida',
+    creado_en: now,
+    editado_en: now,
+  };
+  data.assets.push(asset);
+  save(data);
+  res.status(201).json({ ok: true, asset });
+};
+
+// PATCH /api/assets/:id  [auth]  { nombre }  → renombra archivo + ruta
+exports.renombrar = (req, res) => {
+  const { id } = req.params;
+  const data = read();
+  const asset = data.assets.find(a => a.id === id);
+  if (!asset) return res.status(404).json({ error: 'Imagen no encontrada' });
+  if (asset.locked) return res.status(403).json({ error: 'La imagen está bloqueada. Desbloqueala para renombrarla.' });
+
+  const nuevoNombre = (req.body && req.body.nombre || '').trim();
+  if (!nuevoNombre) return res.status(400).json({ error: 'El campo "nombre" es obligatorio' });
+
+  const ext = path.extname(asset.filename);
+  let dir = path.dirname(asset.filename);
+  if (dir === '.') dir = '';
+  const slug = slugify(nuevoNombre);
+  const nuevoFilename = uniqueFilename(dir, slug, ext, data.assets, asset.filename);
+
+  if (nuevoFilename !== asset.filename) {
+    try {
+      fs.renameSync(path.join(IMG_DIR, asset.filename), path.join(IMG_DIR, nuevoFilename));
+    } catch (e) {
+      return res.status(500).json({ error: 'No se pudo renombrar el archivo', detail: e.message });
+    }
+    asset.filename = nuevoFilename;
+    asset.path = `/img/${nuevoFilename}`;
+  }
+  asset.nombre = nuevoNombre;
+  asset.editado_en = new Date().toISOString();
+  save(data);
+  res.json({ ok: true, asset });
+};
+
+// PATCH /api/assets/:id/lock  [auth]  → alterna bloqueo
+exports.toggleLock = (req, res) => {
+  const { id } = req.params;
+  const data = read();
+  const asset = data.assets.find(a => a.id === id);
+  if (!asset) return res.status(404).json({ error: 'Imagen no encontrada' });
+
+  asset.locked = !asset.locked;
+  asset.editado_en = new Date().toISOString();
+  save(data);
+  res.json({ ok: true, asset });
+};
+
+// DELETE /api/assets/:id  [auth]  → borra registro + archivo
+exports.eliminar = (req, res) => {
+  const { id } = req.params;
+  const data = read();
+  const asset = data.assets.find(a => a.id === id);
+  if (!asset) return res.status(404).json({ error: 'Imagen no encontrada' });
+  if (asset.locked) return res.status(403).json({ error: 'La imagen está bloqueada. Desbloqueala para eliminarla.' });
+
+  try {
+    const fp = path.join(IMG_DIR, asset.filename);
+    if (fs.existsSync(fp)) fs.unlinkSync(fp);
+  } catch (e) {
+    return res.status(500).json({ error: 'No se pudo borrar el archivo', detail: e.message });
+  }
+
+  data.assets = data.assets.filter(a => a.id !== id);
+  save(data);
+  res.json({ ok: true });
+};

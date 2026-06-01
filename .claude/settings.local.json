@@ -129,7 +129,24 @@
       "Bash(grep -rnoE \"href[^>]{0,40}\" services/page-bootstrap.js)",
       "Bash(grep -rnoE \"href[\\\\\"'=][^,;\\)]{0,60}\" services/page-bootstrap.js services/app.js)",
       "Bash(perl -pi -e 's{/html/__TRACKED_VAR__\\\\.html}{/html/__TRACKED_VAR__}g' services/page-bootstrap.js services/sections.js services/admin/panel.js html/admin/index.html)",
-      "Bash(perl -pi -e 's{/html/servicios\\\\.html}{/html/servicios}g' services/admin/panel.js html/admin/index.html)"
+      "Bash(perl -pi -e 's{/html/servicios\\\\.html}{/html/servicios}g' services/admin/panel.js html/admin/index.html)",
+      "Bash(find api *)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(echo \"---EXIT $?---\")",
+      "Bash(node -e \"require\\('./controllers/assetController'\\); require\\('./routes/assetRoutes'\\); console.log\\('OK: módulos cargan sin errores de sintaxis'\\);\")",
+      "Bash(curl -s http://localhost:3000/api/assets)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/html/admin/)",
+      "Bash(curl -s -X POST http://localhost:3000/api/assets)",
+      "Bash(set +e)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/html/admin/)",
+      "Bash(sed -n '1,70p' /Users/santi/Documents/SISGRA-WEB/api/controllers/userController.js)",
+      "Bash(python3 -c \"import sys,json;[print\\(a['path']\\) for a in json.load\\(sys.stdin\\)['assets']]\")",
+      "Bash(git checkout *)",
+      "Bash(python3 -c \"import sys,json;d=json.load\\(sys.stdin\\)['assets'];print\\('importadas:',len\\(d\\)\\);[print\\('  ',a['path'],'lock='+str\\(a['locked']\\)\\) for a in d]\")",
+      "Bash(curl -s -o /dev/null http://localhost:3000/api/assets)",
+      "Bash(xargs kill -9)",
+      "Bash(pkill -f \"node server.js\")",
+      "Bash(node --check /tmp/assets_check.mjs)"
     ]
   }
 }

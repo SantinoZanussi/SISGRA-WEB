@@ -1,0 +1,136 @@
+{
+  "assets": [
+    {
+      "id": "img-c607bbce-3246-452a-a95b-95a5be8b7e9a",
+      "nombre": "chatgptfoto",
+      "filename": "chatgptfoto.png",
+      "path": "/img/chatgptfoto.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 1619041,
+      "origen": "existente",
+      "creado_en": "2026-06-01T01:15:25.896Z",
+      "editado_en": "2026-06-01T01:15:25.896Z"
+    },
+    {
+      "id": "img-b14249d2-ea50-4dda-bf36-6bc8f695e648",
+      "nombre": "sancristobal",
+      "filename": "clients/fondo/sancristobal.png",
+      "path": "/img/clients/fondo/sancristobal.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 19811,
+      "origen": "existente",
+      "creado_en": "2026-06-01T01:15:25.897Z",
+      "editado_en": "2026-06-01T01:15:25.897Z"
+    },
+    {
+      "id": "img-a7da701d-ab34-4d4a-8bdc-43e4744df1eb",
+      "nombre": "syngenta",
+      "filename": "clients/fondo/syngenta.png",
+      "path": "/img/clients/fondo/syngenta.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 4738,
+      "origen": "existente",
+      "creado_en": "2026-06-01T01:15:25.897Z",
+      "editado_en": "2026-06-01T01:15:25.897Z"
+    },
+    {
+      "id": "img-8777908f-b433-481c-9cbe-91a613153c43",
+      "nombre": "sancristobal",
+      "filename": "clients/sancristobal.png",
+      "path": "/img/clients/sancristobal.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 86671,
+      "origen": "existente",
+      "creado_en": "2026-06-01T01:15:25.897Z",
+      "editado_en": "2026-06-01T01:15:25.897Z"
+    },
+    {
+      "id": "img-e25fa458-964f-4c3f-a8c1-8c6fc62a6569",
+      "nombre": "syngenta",
+      "filename": "clients/syngenta.png",
+      "path": "/img/clients/syngenta.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 40908,
+      "origen": "existente",
+      "creado_en": "2026-06-01T01:15:25.897Z",
+      "editado_en": "2026-06-01T01:15:38.946Z"
+    },
+    {
+      "id": "img-642137ab-45c3-49f5-a1c8-9d8e754e7d9b",
+      "nombre": "fondoinicio",
+      "filename": "fondoinicio.png",
+      "path": "/img/fondoinicio.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 2162810,
+      "origen": "existente",
+      "creado_en": "2026-06-01T01:15:25.897Z",
+      "editado_en": "2026-06-01T01:26:48.689Z"
+    },
+    {
+      "id": "img-ba785df8-ef75-4aac-9582-8f188066ddb4",
+      "nombre": "img1",
+      "filename": "img1.png",
+      "path": "/img/img1.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 2394030,
+      "origen": "existente",
+      "creado_en": "2026-06-01T01:15:25.897Z",
+      "editado_en": "2026-06-01T01:15:25.897Z"
+    },
+    {
+      "id": "img-0de96d78-40cc-44c7-bb19-3a6dac1aa219",
+      "nombre": "sdesigra",
+      "filename": "sdesigra.png",
+      "path": "/img/sdesigra.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 1295,
+      "origen": "existente",
+      "creado_en": "2026-06-01T01:15:25.897Z",
+      "editado_en": "2026-06-01T01:15:25.897Z"
+    },
+    {
+      "id": "img-0e279b5c-5f4f-4aab-8d1f-8f4d1f9344cd",
+      "nombre": "seguridadelectronica",
+      "filename": "seguridadelectronica.png",
+      "path": "/img/seguridadelectronica.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 1926428,
+      "origen": "existente",
+      "creado_en": "2026-06-01T01:15:25.897Z",
+      "editado_en": "2026-06-01T01:15:25.897Z"
+    },
+    {
+      "id": "img-a939ed7d-289b-42af-b424-df8c8cc0a670",
+      "nombre": "sisgra azul",
+      "filename": "sisgra_azul.png",
+      "path": "/img/sisgra_azul.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 14696,
+      "origen": "existente",
+      "creado_en": "2026-06-01T01:15:25.897Z",
+      "editado_en": "2026-06-01T01:15:25.897Z"
+    },
+    {
+      "id": "img-3210640c-1f43-416f-9e71-542ffa4a40ca",
+      "nombre": "sisgra blanco",
+      "filename": "sisgra_blanco.png",
+      "path": "/img/sisgra_blanco.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 8688,
+      "origen": "existente",
+      "creado_en": "2026-06-01T01:15:25.897Z",
+      "editado_en": "2026-06-01T01:15:25.897Z"
+    }
+  ]
+}

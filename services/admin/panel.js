@@ -122,7 +122,7 @@ function showPanel(id){
   const NAMES = {
     dashboard:'Dashboard', modulos:'Catálogo de Módulos', navbar:'Ítems del Navbar', clientes:'Clientes',
     blog:'Blog / Noticias', contacto:'Datos de Contacto', seo:'SEO & Meta',
-    plantillas:'Plantillas', 'tpl-editor':'Editor de Plantilla',
+    plantillas:'Plantillas', 'tpl-editor':'Editor de Plantilla', assets:'Imágenes',
   };
   document.getElementById('topbar-title').textContent = NAMES[id] || id;
 
@@ -2013,7 +2013,7 @@ function initApp(){
     try {
       await window.__svc.apiPatch(`/nav/botones/${id_boton}`, body);
       window.__svc.closeModal('modal-editar-navbar');
-      window.__svc.showNotif('Ítem actualizado', 'success');
+      window.__svc.showNotif('✓ Ítem actualizado', 'success');
       loadNavbarItems();
     } catch(e) {
       window.__svc.showNotif(e.message, 'error');
