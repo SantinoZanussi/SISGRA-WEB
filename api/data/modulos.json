@@ -216,19 +216,19 @@
                 "id": "instalaciones",
                 "titulo": "Instalaciones",
                 "descripcion": "Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas TIA/EIA para entornos corporativos exigentes.",
-                "enlace": "./html/cableado_estructurado.html"
+                "enlace": "/html/cableado_estructurado/"
               },
               {
                 "id": "soporte",
                 "titulo": "Soporte IT",
                 "descripcion": "Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.",
-                "enlace": "./html/soporte_it.html"
+                "enlace": "/html/soporte_it/"
               },
               {
                 "id": "software",
                 "titulo": "Desarrollo de Software",
                 "descripcion": "Soluciones digitales a medida: sistemas de gestión logística, control de inventario y procesos empresariales integrados.",
-                "enlace": "./html/desarrollo.html"
+                "enlace": "/html/desarrollo/"
               }
             ]
           },
@@ -944,7 +944,7 @@
           "nombre": "Navbar — Default",
           "data": {
             "logoSrc": "/img/sisgra_azul.png",
-            "logoSrcHref": "../index.html",
+            "logoSrcHref": "",
             "instalacionesLabel": "Instalaciones",
             "cableadoLabel": "Cableado Estructurado",
             "cableadoHref": "/html/cableado_estructurado.html",

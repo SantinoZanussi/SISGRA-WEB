@@ -4,7 +4,7 @@
       "id_boton": "btn-index",
       "titulo": "Inicio",
       "modulo": "home",
-      "href": "/index.html",
+      "href": "/",
       "id_plantilla": null,
       "orden": 1,
       "activo": true

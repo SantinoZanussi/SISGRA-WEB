@@ -25,7 +25,11 @@
       "titulo_proyecto": "",
       "subtitulo": "",
       "imagen_destacada": "",
-      "contenido": ""
+      "contenido": "",
+      "sector": "",
+      "ubicacion": "",
+      "anio": "",
+      "servicios": ""
     },
     {
       "id": "c1779992770993",

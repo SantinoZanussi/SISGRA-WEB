@@ -261,15 +261,16 @@ async function hydrateBlogList() {
         return;
       }
       list.innerHTML = posts.map(p => `
-        <article class="news-row">
-          <div class="news-content">
-            <div class="news-meta">
-              <span class="news-tag">${esc(p.categoria||'')}</span>
-              <span class="news-date">${esc(p.fecha||'')}</span>
+        <article class="blog-row-card">
+          <div class="blog-row-icon"><i class="fa-solid ${blogCategoriaIcon(p.categoria)}" aria-hidden="true"></i></div>
+          <div class="blog-row-body">
+            <div class="blog-row-meta">
+              <span class="blog-row-tag">${esc(p.categoria||'')}</span>
+              ${p.fecha ? `<span class="blog-row-date">${esc(p.fecha)}</span>` : ''}
             </div>
-            <h3 class="news-title">${esc(p.titulo||'')}</h3>
-            <p class="news-excerpt">${esc(p.extracto||'')}</p>
-            <a href="/html/articulo?id=${esc(p.id)}" class="news-link">Leer artículo completo <i class="fa-solid fa-arrow-right fa-lg" aria-hidden="true"></i></a>
+            <h3 class="blog-row-title">${esc(p.titulo||'')}</h3>
+            <p class="blog-row-excerpt">${esc(p.extracto||'')}</p>
+            <a href="/html/articulo?id=${esc(p.id)}" class="blog-row-link">Leer artículo completo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
           </div>
         </article>`).join('');
     });
@@ -282,6 +283,17 @@ async function hydrateBlogList() {
 }
 
 function esc(s) { return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function blogCategoriaIcon(categoria) {
+  const c = String(categoria || '').toLowerCase();
+  if (/cablead|infra|red/.test(c)) return 'fa-sitemap';
+  if (/fibra|óptic|optic/.test(c)) return 'fa-wifi';
+  if (/segurid|cámara|camara|cctv|alarma/.test(c)) return 'fa-shield-halved';
+  if (/soporte|it\b|help/.test(c)) return 'fa-headset';
+  if (/software|desarrollo|web|app|código|codigo/.test(c)) return 'fa-code';
+  if (/novedad|noticia|evento/.test(c)) return 'fa-bullhorn';
+  return 'fa-newspaper';
+}
 
 // ── Hidratar [data-blog-cards] (grid del index) desde /api/data/blog ──
 async function hydrateBlogCards() {

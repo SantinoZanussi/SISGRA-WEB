@@ -146,7 +146,8 @@
       "Bash(curl -s -o /dev/null http://localhost:3000/api/assets)",
       "Bash(xargs kill -9)",
       "Bash(pkill -f \"node server.js\")",
-      "Bash(node --check /tmp/assets_check.mjs)"
+      "Bash(node --check /tmp/assets_check.mjs)",
+      "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('api/data/plantillas.json','utf8'\\)\\);JSON.parse\\(require\\('fs'\\).readFileSync\\('api/data/modulos.json','utf8'\\)\\);console.log\\('JSON OK'\\)\")"
     ]
   }
 }

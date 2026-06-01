@@ -32,39 +32,33 @@ const css = (props) => {
 export const SECTIONS = {
   nav: {
     label: 'Navbar',
-    description: 'Barra superior con logo y enlaces',
+    description: 'Barra superior con logo y enlaces. Los enlaces del menú se gestionan en "Items del navbar".',
     icon: `<i class="fa-solid fa-bars"></i>`,
     validTipos: ['*'],
     defaultData: {
       logoSrc: '/img/sisgra_blanco.png',
-      logoSrcHref: '../index.html',
-      instalacionesLabel: 'Instalaciones',
-      cableadoLabel: 'Cableado Estructurado', cableadoHref: '/html/cableado_estructurado',
-      fibraLabel: 'Fibra Óptica',              fibraHref:    '/html/fibra_optica',
-      seguridadLabel: 'Seguridad Electrónica', seguridadHref:'/html/seguridad',
-      blogLabel: 'Blog',                       blogHref:     '/html/blog',
-      soporteLabel: 'Soporte IT',              soporteHref:  '/html/soporte_it',
-      desarrolloLabel: 'Desarrollo de Software',desarrolloHref:'/html/desarrollo',
-      ctaLabel: 'Contáctese',                  ctaHref:      'https://wa.me/548101220065',
+      logoSrcHref: '/',
+      ctaLabel: 'Contáctese',
+      ctaHref: 'https://wa.me/548101220065',
+      // Los enlaces del menú vienen de "Items del navbar": el backend los
+      // sincroniza en data.items desde navbar.json. Estos valores por defecto
+      // solo se usan como vista previa en la librería de módulos.
+      items: [
+        { tipo: 'dropdown', titulo: 'Instalaciones', children: [
+          { titulo: 'Cableado Estructurado', href: '/html/cableado_estructurado' },
+          { titulo: 'Fibra Óptica',          href: '/html/fibra_optica' },
+          { titulo: 'Seguridad Electrónica', href: '/html/seguridad' },
+        ] },
+        { tipo: 'link', titulo: 'Blog',                   href: '/html/blog' },
+        { tipo: 'link', titulo: 'Soporte IT',             href: '/html/soporte_it' },
+        { tipo: 'link', titulo: 'Desarrollo de Software', href: '/html/desarrollo' },
+      ],
     },
     dataFields: [
-      { name: 'logoSrc',            label: 'Logo (URL)',         type: 'text' },
-      { name: 'logoSrcHref',        label: 'Link Inicio',        type: 'text' },
-      { name: 'instalacionesLabel', label: 'Menú: Instalaciones',type: 'text' },
-      { name: 'cableadoLabel',      label: 'Cableado',           type: 'text' },
-      { name: 'cableadoHref',       label: 'Link Cableado',      type: 'text' },
-      { name: 'fibraLabel',         label: 'Fibra Óptica',       type: 'text' },
-      { name: 'fibraHref',          label: 'Link Fibra',         type: 'text' },
-      { name: 'seguridadLabel',     label: 'Seguridad',          type: 'text' },
-      { name: 'seguridadHref',      label: 'Link Seguridad',     type: 'text' },
-      { name: 'blogLabel',          label: 'Blog',               type: 'text' },
-      { name: 'blogHref',           label: 'Link Blog',          type: 'text' },
-      { name: 'soporteLabel',       label: 'Soporte IT',         type: 'text' },
-      { name: 'soporteHref',        label: 'Link Soporte',       type: 'text' },
-      { name: 'desarrolloLabel',    label: 'Desarrollo',         type: 'text' },
-      { name: 'desarrolloHref',     label: 'Link Desarrollo',    type: 'text' },
-      { name: 'ctaLabel',           label: 'Botón Contacto',     type: 'text' },
-      { name: 'ctaHref',            label: 'Link Contacto',      type: 'text' },
+      { name: 'logoSrc',     label: 'Logo (URL)',         type: 'text' },
+      { name: 'logoSrcHref', label: 'Link Inicio (logo)', type: 'text' },
+      { name: 'ctaLabel',    label: 'Botón Contacto',     type: 'text' },
+      { name: 'ctaHref',     label: 'Link Contacto',      type: 'text' },
     ],
     defaultDesign: { bg: '', linkColor: '', dropdownBg: '', dropdownLinkColor: '', ctaBg: '', ctaColor: '', mobileBg: '', mobileLinkColor: '' },
     designFields: [
@@ -81,63 +75,34 @@ export const SECTIONS = {
       const d = { ...SECTIONS.nav.defaultData, ...data };
       const s = { ...SECTIONS.nav.defaultDesign, ...design };
 
-      // Formato nuevo: items array (sincronizado desde navbar.json)
-      let linksHtml;
-      if (Array.isArray(d.items) && d.items.length > 0) {
-        linksHtml = d.items.map(item => {
-          if (item.tipo === 'dropdown') {
-            return `
+      // Los enlaces del menú provienen de "Items del navbar" (data.items),
+      // que el backend sincroniza desde navbar.json. Es la única fuente.
+      const items = Array.isArray(d.items) ? d.items : [];
+
+      const linksHtml = items.map(item => {
+        if (item.tipo === 'dropdown') {
+          return `
           <div class="nav-dropdown">
             <a href="#" class="nav-dropdown-trigger">
               ${esc(item.titulo)}
-              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+              <i class="fa-solid fa-chevron-down fa-lg" aria-hidden="true"></i>
             </a>
             <div class="dropdown-content">
               ${(item.children || []).map(c => `<a href="${esc(c.href)}">${esc(c.titulo)}</a>`).join('')}
             </div>
           </div>`;
-          }
-          return `<a href="${esc(item.href || '#')}" class="nav-link">${esc(item.titulo)}</a>`;
-        }).join('');
-      } else {
-        // Formato viejo (compatibilidad hacia atrás)
-        linksHtml = `
-          <div class="nav-dropdown">
-            <a href="#instalaciones" class="nav-dropdown-trigger">
-              ${esc(d.instalacionesLabel)}
-              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
-            </a>
-            <div class="dropdown-content">
-              <a href="${esc(d.cableadoHref)}">${esc(d.cableadoLabel)}</a>
-              <a href="${esc(d.fibraHref)}">${esc(d.fibraLabel)}</a>
-              <a href="${esc(d.seguridadHref)}">${esc(d.seguridadLabel)}</a>
-            </div>
-          </div>
-          <a href="${esc(d.blogHref)}" class="nav-link">${esc(d.blogLabel)}</a>
-          <a href="${esc(d.soporteHref)}" class="nav-link">${esc(d.soporteLabel)}</a>
-          <a href="${esc(d.desarrolloHref)}" class="nav-link">${esc(d.desarrolloLabel)}</a>`;
-      }
+        }
+        return `<a href="${esc(item.href || '#')}" class="nav-link">${esc(item.titulo)}</a>`;
+      }).join('');
 
       // Mobile drawer links — dropdowns se despliegan como sección + hijos
-      let mobileLinksHtml;
-      if (Array.isArray(d.items) && d.items.length > 0) {
-        mobileLinksHtml = d.items.map(item => {
-          if (item.tipo === 'dropdown') {
-            const children = (item.children || []).map(c => `<a href="${esc(c.href)}">${esc(c.titulo)}</a>`).join('');
-            return `<div class="nav-mobile-section-title">${esc(item.titulo)}</div>${children}`;
-          }
-          return `<a href="${esc(item.href || '#')}">${esc(item.titulo)}</a>`;
-        }).join('');
-      } else {
-        mobileLinksHtml = `
-          <div class="nav-mobile-section-title">${esc(d.instalacionesLabel)}</div>
-          <a href="${esc(d.cableadoHref)}">${esc(d.cableadoLabel)}</a>
-          <a href="${esc(d.fibraHref)}">${esc(d.fibraLabel)}</a>
-          <a href="${esc(d.seguridadHref)}">${esc(d.seguridadLabel)}</a>
-          <a href="${esc(d.blogHref)}">${esc(d.blogLabel)}</a>
-          <a href="${esc(d.soporteHref)}">${esc(d.soporteLabel)}</a>
-          <a href="${esc(d.desarrolloHref)}">${esc(d.desarrolloLabel)}</a>`;
-      }
+      const mobileLinksHtml = items.map(item => {
+        if (item.tipo === 'dropdown') {
+          const children = (item.children || []).map(c => `<a href="${esc(c.href)}">${esc(c.titulo)}</a>`).join('');
+          return `<div class="nav-mobile-section-title">${esc(item.titulo)}</div>${children}`;
+        }
+        return `<a href="${esc(item.href || '#')}">${esc(item.titulo)}</a>`;
+      }).join('');
 
       const navCss = [
         s.bg              ? `nav{background:${s.bg}}`                                           : '',
@@ -1621,7 +1586,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
       ],
       col2Label: 'Contacto',
       contactoOficina: { tipo: 'Oficina',  valor: 'Lamadrid 468<br>(ZONA I) NAVE 2 - Oficina 05 - NODO ROSARIO' },
-      contactoTelefono:{ tipo: 'Teléfono', valor: '+54 341 322-0052', href: 'tel:+5403413220052' },
+      contactoTelefono:{ tipo: 'Teléfono', valor: '8101220065', href: 'tel:8101220065' },
       contactoEmail:   { tipo: 'Email',    valor: 'info@sisgra.com.ar', href: 'mailto:info@sisgra.com.ar' },
       facebookUrl: 'https://www.facebook.com/sisgra.srl',
       mapaSrc: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3348.9!2d-60.6530!3d-32.9440!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b652f52c9a5e3b%3A0x0!2sLamadrid+468%2C+Rosario%2C+Argentina!5e0!3m2!1ses!2sar!4v1680000000000',

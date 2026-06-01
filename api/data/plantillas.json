@@ -79,7 +79,7 @@
           "type": "nav",
           "data": {
             "logoSrc": "/img/sisgra_blanco.png",
-            "logoSrcHref": "../index.html",
+            "logoSrcHref": "/",
             "instalacionesLabel": "Instalaciones",
             "cableadoLabel": "Cableado Estructurado",
             "cableadoHref": "/html/cableado_estructurado.html",
@@ -147,7 +147,8 @@
                 "id": "instalaciones",
                 "titulo": "Instalaciones",
                 "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
-                "enlace": "./html/cableado_estructurado.html"
+                "enlace": "./html/cableado_estructurado.html",
+                "link": ""
               },
               {
                 "id": "soporte",
@@ -193,7 +194,7 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-28T17:29:59.233Z",
+      "editado_en": "2026-06-01T17:53:46.115Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
       "fecha_fin": "2026-06-17T11:38:57.111Z"
     },
@@ -391,9 +392,9 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-25T18:00:00.000Z",
+      "editado_en": "2026-06-01T17:50:27.387Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
-      "fecha_fin": "2026-06-03T11:38:57.111Z"
+      "fecha_fin": "2026-06-10T11:38:57.111Z"
     },
     {
       "id_plantilla": "4",
@@ -502,9 +503,9 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-25T15:00:00.000Z",
+      "editado_en": "2026-06-01T17:50:28.665Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
-      "fecha_fin": "2026-06-03T11:38:57.111Z"
+      "fecha_fin": "2026-06-10T11:38:57.111Z"
     },
     {
       "id_plantilla": "5",
@@ -608,9 +609,9 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-25T23:42:41.222Z",
+      "editado_en": "2026-06-01T17:50:30.313Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
-      "fecha_fin": "2026-06-03T11:38:57.111Z"
+      "fecha_fin": "2026-06-10T11:38:57.111Z"
     },
     {
       "id_plantilla": "6",
@@ -820,9 +821,9 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-25T16:30:00.000Z",
+      "editado_en": "2026-06-01T17:50:32.457Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
-      "fecha_fin": "2026-06-03T11:38:57.111Z"
+      "fecha_fin": "2026-06-10T11:38:57.111Z"
     },
     {
       "id_plantilla": "8",
@@ -937,9 +938,9 @@
         }
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-25T17:00:00.000Z",
+      "editado_en": "2026-06-01T17:50:34.264Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
-      "fecha_fin": "2026-06-03T11:38:57.111Z"
+      "fecha_fin": "2026-06-10T11:38:57.111Z"
     },
     {
       "id_plantilla": "9",
@@ -998,7 +999,7 @@
           "type": "cliente-header",
           "data": {
             "backLabel": "← Volver al Inicio",
-            "backHref": "/index.html",
+            "backHref": "/",
             "empresaLogo": "",
             "empresaNombre": "Nombre de la empresa",
             "titulo": "Caso de éxito",

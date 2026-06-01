@@ -73,8 +73,6 @@
     border-radius: 4px;
 }
 
-/* Imágenes dentro del contenido del artículo: NO ocupan todo el ancho.
-   Centradas, con tope de ancho/alto para no romper el layout. */
 .article-body img:not(.featured-image) {
     display: block;
     min-width: min(320px, 100%);
@@ -87,6 +85,7 @@
     border-radius: 6px;
     object-fit: contain;
     box-shadow: 0 12px 30px -16px rgba(10, 29, 55, .35);
+    border: 3px solid var(--slate-200);
 }
 
 .article-body h2 {
