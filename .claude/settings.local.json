@@ -148,7 +148,19 @@
       "Bash(pkill -f \"node server.js\")",
       "Bash(node --check /tmp/assets_check.mjs)",
       "Bash(node -e \"JSON.parse\\(require\\('fs'\\).readFileSync\\('api/data/plantillas.json','utf8'\\)\\);JSON.parse\\(require\\('fs'\\).readFileSync\\('api/data/modulos.json','utf8'\\)\\);console.log\\('JSON OK'\\)\")",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/html/admin/index.html)"
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/html/admin/index.html)",
+      "Bash(grep -E '\\\\.\\(js|html|php|json|mjs|cjs\\)$')",
+      "Bash(grep -E '\\\\.\\(js|html\\)$')",
+      "Bash(xargs wc -l)",
+      "Bash(node api/scripts/migrate-to-v2.js)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue | ForEach-Object { $p = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue; \"PID $\\($_.OwningProcess\\) — $\\($p.ProcessName\\) — $\\($p.Path\\)\" })",
+      "PowerShell(Get-CimInstance Win32_Process -Filter \"ProcessId = 7308\")",
+      "Bash(node --check api/controllers/navController.js)",
+      "Bash(node --check api/controllers/modulosController.js)",
+      "Bash(node --check api/routes/modulosRoutes.js)",
+      "Bash(node --input-type=module --check)",
+      "PowerShell($p = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue; if \\($p\\) { \"in use by PID \" + $p.OwningProcess } else { \"free\" })",
+      "PowerShell($cl = \\(Get-CimInstance Win32_Process -Filter \"ProcessId = 13504\"\\).CommandLine; $cl; if \\($cl -match 'server\\\\.js'\\) { Stop-Process -Id 13504 -Force; Start-Sleep -Milliseconds 500; \"killed\" })"
     ]
   }
 }

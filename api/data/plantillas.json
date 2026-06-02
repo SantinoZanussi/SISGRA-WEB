@@ -1,287 +1,41 @@
 {
   "plantillas": [
     {
-      "id_plantilla": "1",
+      "id_plantilla": 1,
       "tipo": "index",
       "nombre": "Inicio principal",
       "descripcion": "Plantilla por defecto del home — copia exacta del index.html actual",
       "activa": true,
-      "secciones": [
-        {
-          "id": "sec-hero-default",
-          "type": "hero",
-          "data": {
-            "badge": "INFRAESTRUCTURA DE ELITE",
-            "titulo1": "HOLA",
-            "titulo2": "MARCE",
-            "descripcion": "Descripción del hero. Editá este texto haciendo clic directamente sobre él.",
-            "boton_primario": "Ver Soluciones",
-            "boton_secundario": "Conocer más",
-            "stat1_numero": "+25",
-            "stat1_label": "AÑOS DE EXPERIENCIA",
-            "stat2_numero": "+500",
-            "stat2_label": "Clientes activos"
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-clientes-default",
-          "type": "clientes",
-          "data": {
-            "titulo_seccion": "NUESTROS CLIENTES",
-            "carrusel_activo": true,
-            "auto_scroll": true,
-            "clientes": [
-              {
-                "nombre": "San Cristóbal",
-                "imagen": "/img/sancristobal.png",
-                "activo": true
-              },
-              {
-                "nombre": "Syngenta",
-                "imagen": "/img/syngenta.png",
-                "activo": true
-              }
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-blog-default",
-          "type": "blog",
-          "data": {
-            "titulo_seccion": "Novedades & Blog",
-            "posts": [
-              {
-                "titulo": "SISGRA cumple 25 años",
-                "extracto": "Un cuarto de siglo conectando empresas con la mejor infraestructura.",
-                "categoria": "Novedades",
-                "imagen": ""
-              },
-              {
-                "titulo": "Nuevas certificaciones Cat8",
-                "extracto": "Ampliamos nuestras capacidades de certificación en cableado de alta velocidad.",
-                "categoria": "Servicios",
-                "imagen": ""
-              },
-              {
-                "titulo": "Casos de éxito 2026",
-                "extracto": "Conocé los proyectos más destacados del año.",
-                "categoria": "Casos",
-                "imagen": ""
-              }
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-nav-default",
-          "type": "nav",
-          "data": {
-            "logoSrc": "/img/sisgra_blanco.png",
-            "logoSrcHref": "/",
-            "instalacionesLabel": "Instalaciones",
-            "cableadoLabel": "Cableado Estructurado",
-            "cableadoHref": "/html/cableado_estructurado.html",
-            "fibraLabel": "Fibra Óptica",
-            "fibraHref": "/html/fibra_optica.html",
-            "seguridadLabel": "Seguridad Electrónica",
-            "seguridadHref": "/html/seguridad.html",
-            "blogLabel": "Blog",
-            "blogHref": "/html/blog.html",
-            "soporteLabel": "Soporte IT",
-            "soporteHref": "/html/soporte_it.html",
-            "desarrolloLabel": "Desarrollo de Software",
-            "desarrolloHref": "/html/desarrollo.html",
-            "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/548101220065",
-            "items": [
-              {
-                "tipo": "dropdown",
-                "titulo": "Instalaciones",
-                "children": [
-                  {
-                    "titulo": "Cableado Estructurado",
-                    "href": "/html/cableado_estructurado"
-                  },
-                  {
-                    "titulo": "Fibra Óptica",
-                    "href": "/html/fibra_optica"
-                  },
-                  {
-                    "titulo": "Seguridad Electrónica",
-                    "href": "/html/seguridad"
-                  }
-                ]
-              },
-              {
-                "tipo": "link",
-                "titulo": "Blog",
-                "href": "/html/blog",
-                "id_boton": "btn-blog"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Soporte IT",
-                "href": "/html/soporte_it",
-                "id_boton": "btn-soporte"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Desarrollo de Software",
-                "href": "/html/desarrollo",
-                "id_boton": "btn-desarrollo"
-              }
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-services-default",
-          "type": "services",
-          "data": {
-            "titulo_seccion": "Portafolio de Soluciones",
-            "eyebrow": "Lo que hacemos",
-            "cards": [
-              {
-                "id": "instalaciones",
-                "titulo": "Instalaciones",
-                "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
-                "enlace": "./html/cableado_estructurado.html",
-                "link": ""
-              },
-              {
-                "id": "soporte",
-                "titulo": "Soporte IT",
-                "descripcion": "Mantenimiento integral de infraestructura y asistencia técnica corporativa especializada.",
-                "enlace": "./html/soporte_it.html"
-              },
-              {
-                "id": "software",
-                "titulo": "Software",
-                "descripcion": "Soluciones a medida para optimizar procesos logísticos y gestión de datos empresariales.",
-                "enlace": "./html/desarrollo.html"
-              }
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-about-default",
-          "type": "about",
-          "data": {
-            "eyebrow": "Excelencia Corporativa",
-            "titulo": "Liderando la industria\ndesde el año 1999.",
-            "descripcion": "En SISGRA, entendemos que la infraestructura crítica no permite errores. Nos dedicamos a integrar soluciones que garantizan la continuidad operativa y la escalabilidad técnica de su negocio.",
-            "imagen": "/img/img1.png"
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-footer-default",
-          "type": "footer",
-          "data": {
-            "formTitulo": "Solicite un presupuesto",
-            "formDesc": "Cuéntenos sobre su organización. Un asesor se comunicará para recomendarle la mejor solución.",
-            "whatsapp": "548101220065",
-            "whatsappText": "Consultar por WhatsApp",
-            "formLabel": "Complete el formulario",
-            "btnEnviar": "Enviar consulta",
-            "brandImg": "/img/sisgra_blanco.png",
-            "copyright": "© 2026 SISGRA S.R.L. — Todos los derechos reservados"
-          },
-          "design": {}
-        }
+      "id_menu": [
+        1
+      ],
+      "id_modulos": [
+        4,
+        5,
+        6,
+        1,
+        7,
+        8,
+        2
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-01T17:53:46.115Z",
+      "editado_en": "2026-06-02T18:45:50.689Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
       "fecha_fin": "2026-06-17T11:38:57.111Z"
     },
     {
-      "id_plantilla": "2",
+      "id_plantilla": 2,
       "tipo": "blog",
       "nombre": "Blog principal",
       "descripcion": "Plantilla por defecto — copia exacta del blog.html actual",
       "activa": true,
-      "secciones": [
-        {
-          "id": "sec-nav-blog",
-          "type": "nav",
-          "data": {
-            "logoSrc": "/img/sisgra_blanco.png",
-            "instalacionesLabel": "Instalaciones",
-            "cableadoLabel": "Cableado Estructurado",
-            "cableadoHref": "/html/cableado_estructurado.html",
-            "fibraLabel": "Fibra Óptica",
-            "fibraHref": "/html/fibra_optica.html",
-            "seguridadLabel": "Seguridad Electrónica",
-            "seguridadHref": "/html/seguridad.html",
-            "blogLabel": "Blog",
-            "blogHref": "/html/blog.html",
-            "soporteLabel": "Soporte IT",
-            "soporteHref": "/html/soporte_it.html",
-            "desarrolloLabel": "Desarrollo de Software",
-            "desarrolloHref": "/html/desarrollo.html",
-            "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/548101220065",
-            "items": [
-              {
-                "tipo": "dropdown",
-                "titulo": "Instalaciones",
-                "children": [
-                  {
-                    "titulo": "Cableado Estructurado",
-                    "href": "/html/cableado_estructurado"
-                  },
-                  {
-                    "titulo": "Fibra Óptica",
-                    "href": "/html/fibra_optica"
-                  },
-                  {
-                    "titulo": "Seguridad Electrónica",
-                    "href": "/html/seguridad"
-                  }
-                ]
-              },
-              {
-                "tipo": "link",
-                "titulo": "Blog",
-                "href": "/html/blog",
-                "id_boton": "btn-blog"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Soporte IT",
-                "href": "/html/soporte_it",
-                "id_boton": "btn-soporte"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Desarrollo de Software",
-                "href": "/html/desarrollo",
-                "id_boton": "btn-desarrollo"
-              }
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-blog-list",
-          "type": "blog-list",
-          "data": {
-            "loadingMessage": "Cargando artículos…",
-            "emptyMessage": "No hay artículos publicados aún.",
-            "errorMessage": "No se pudieron cargar los artículos."
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-footer-blog",
-          "type": "footer-full",
-          "data": {},
-          "design": {}
-        }
+      "id_menu": [
+        2
+      ],
+      "id_modulos": [
+        1,
+        9,
+        3
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
       "editado_en": "2026-05-27T17:01:08.896Z",
@@ -289,107 +43,17 @@
       "fecha_fin": "2026-06-10T11:38:57.111Z"
     },
     {
-      "id_plantilla": "3",
+      "id_plantilla": 3,
       "tipo": "articulo",
       "nombre": "Artículo principal",
       "descripcion": "Plantilla por defecto — copia exacta del articulo.html actual",
       "activa": true,
-      "secciones": [
-        {
-          "id": "sec-nav-articulo",
-          "type": "nav",
-          "data": {
-            "logoSrc": "/img/sisgra_blanco.png",
-            "instalacionesLabel": "Instalaciones",
-            "cableadoLabel": "Cableado Estructurado",
-            "cableadoHref": "/html/cableado_estructurado.html",
-            "fibraLabel": "Fibra Óptica",
-            "fibraHref": "/html/fibra_optica.html",
-            "seguridadLabel": "Seguridad Electrónica",
-            "seguridadHref": "/html/seguridad.html",
-            "blogLabel": "Blog",
-            "blogHref": "/html/blog.html",
-            "soporteLabel": "Soporte IT",
-            "soporteHref": "/html/soporte_it.html",
-            "desarrolloLabel": "Desarrollo de Software",
-            "desarrolloHref": "/html/desarrollo.html",
-            "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/03418610863",
-            "items": [
-              {
-                "tipo": "dropdown",
-                "titulo": "Instalaciones",
-                "children": [
-                  {
-                    "titulo": "Cableado Estructurado",
-                    "href": "/html/cableado_estructurado"
-                  },
-                  {
-                    "titulo": "Fibra Óptica",
-                    "href": "/html/fibra_optica"
-                  },
-                  {
-                    "titulo": "Seguridad Electrónica",
-                    "href": "/html/seguridad"
-                  }
-                ]
-              },
-              {
-                "tipo": "link",
-                "titulo": "Blog",
-                "href": "/html/blog",
-                "id_boton": "btn-blog"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Soporte IT",
-                "href": "/html/soporte_it",
-                "id_boton": "btn-soporte"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Desarrollo de Software",
-                "href": "/html/desarrollo",
-                "id_boton": "btn-desarrollo"
-              }
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-articulo-header",
-          "type": "articulo-header",
-          "data": {
-            "backLabel": "← Volver al Blog",
-            "backHref": "/html/blog.html",
-            "badge": "Infraestructura",
-            "titulo": "Nuevos estándares de certificación Cat8 para plantas industriales",
-            "lead": "Análisis detallado sobre cómo la infraestructura física determina el rendimiento de los sistemas de datos en entornos de alta demanda."
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-articulo-body",
-          "type": "articulo-body",
-          "data": {
-            "featuredImageUrl": "/img/chatgptfoto.png",
-            "featuredImageAlt": "Infraestructura IT",
-            "contentHtml": "<h2>La evolución hacia la Categoría 8</h2>\n<p>En el panorama actual de la industria 4.0, la velocidad de transmisión de datos no es solo una ventaja competitiva, sino un requisito operativo. El cableado <strong>Categoría 8 (Cat8)</strong> representa el salto más significativo en infraestructura de cobre de la última década.</p>\n<p>A diferencia de sus predecesores, Cat8 permite frecuencias de hasta 2000 MHz y velocidades de 25Gbps a 40Gbps, lo que lo hace ideal para el backbone de centros de datos y plantas automatizadas en Rosario y la región.</p>\n<blockquote>\"La certificación no es un trámite, es el seguro de vida de su red de datos.\"</blockquote>\n<h3>Beneficios clave de la certificación profesional:</h3>\n<ul>\n  <li><strong>Reducción de Latencia:</strong> Minimiza la retransmisión de paquetes perdidos por interferencias.</li>\n  <li><strong>Escalabilidad:</strong> Prepara la planta para futuras actualizaciones de hardware sin cambiar el cableado.</li>\n  <li><strong>Cumplimiento de Normas:</strong> Garantiza que la instalación respeta los estándares internacionales TIA/EIA.</li>\n</ul>\n<p>En <strong>SISGRA</strong>, utilizamos equipos de medición Fluke de última generación para entregar reportes detallados de cada nodo instalado, asegurando que cada centímetro de su red rinda al 100% de su capacidad nominal.</p>",
-            "ctaTitle": "¿Necesita auditar su infraestructura actual?",
-            "ctaText": "Nuestros asesores técnicos pueden realizar un relevamiento de su planta y proponer mejoras de conectividad.",
-            "ctaBtnLabel": "Solicitar Asesoría Técnica",
-            "ctaBtnHref": "https://wa.me/03418610863",
-            "sidebarTitle": "SISGRA SRL",
-            "sidebarText": "Expertos en integración tecnológica desde 1999. Soluciones certificadas para empresas que no pueden detenerse."
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-footer-articulo",
-          "type": "footer-full",
-          "data": {},
-          "design": {}
-        }
+      "id_menu": [],
+      "id_modulos": [
+        1,
+        10,
+        11,
+        3
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
       "editado_en": "2026-06-01T17:50:27.387Z",
@@ -397,110 +61,18 @@
       "fecha_fin": "2026-06-10T11:38:57.111Z"
     },
     {
-      "id_plantilla": "4",
+      "id_plantilla": 4,
       "tipo": "cableado",
       "nombre": "Cableado principal",
       "descripcion": "Plantilla por defecto — copia exacta del cableado_estructurado.html actual",
       "activa": true,
-      "secciones": [
-        {
-          "id": "sec-nav-cableado",
-          "type": "nav",
-          "data": {
-            "logoSrc": "/img/sisgra_blanco.png",
-            "instalacionesLabel": "Instalaciones",
-            "cableadoLabel": "Cableado Estructurado",
-            "cableadoHref": "/html/cableado_estructurado.html",
-            "fibraLabel": "Fibra Óptica",
-            "fibraHref": "/html/fibra_optica.html",
-            "seguridadLabel": "Seguridad Electrónica",
-            "seguridadHref": "/html/seguridad.html",
-            "blogLabel": "Blog",
-            "blogHref": "/html/blog.html",
-            "soporteLabel": "Soporte IT",
-            "soporteHref": "/html/soporte_it.html",
-            "desarrolloLabel": "Desarrollo de Software",
-            "desarrolloHref": "/html/desarrollo.html",
-            "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/03418610863",
-            "items": [
-              {
-                "tipo": "dropdown",
-                "titulo": "Instalaciones",
-                "children": [
-                  {
-                    "titulo": "Cableado Estructurado",
-                    "href": "/html/cableado_estructurado"
-                  },
-                  {
-                    "titulo": "Fibra Óptica",
-                    "href": "/html/fibra_optica"
-                  },
-                  {
-                    "titulo": "Seguridad Electrónica",
-                    "href": "/html/seguridad"
-                  }
-                ]
-              },
-              {
-                "tipo": "link",
-                "titulo": "Blog",
-                "href": "/html/blog",
-                "id_boton": "btn-blog"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Soporte IT",
-                "href": "/html/soporte_it",
-                "id_boton": "btn-soporte"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Desarrollo de Software",
-                "href": "/html/desarrollo",
-                "id_boton": "btn-desarrollo"
-              }
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-cableado-hero-1",
-          "type": "cableado-hero",
-          "data": {
-            "badge": "Infraestructura Crítica",
-            "titulo1": "Cableado",
-            "accent": "Estructurado.",
-            "descripcion": "Implementamos sistemas de conectividad de alto rendimiento diseñados para soportar las demandas de datos del futuro. No solo conectamos cables; construimos el sistema nervioso de su empresa.",
-            "cards": [
-              {
-                "badge": "Cat 8",
-                "titulo": "Certificación Categoría 8",
-                "desc": "Garantizamos velocidades de hasta 40Gbps con certificaciones Fluke de última generación."
-              },
-              {
-                "badge": "TIA",
-                "titulo": "Normativa TIA/EIA 568",
-                "desc": "Planificación siguiendo estándares internacionales para garantizar escalabilidad definitiva."
-              }
-            ],
-            "panelHeader": "Especificaciones Técnicas",
-            "panelLabel": "Certificación",
-            "panelValue": "100% Norma",
-            "progressPct": 100,
-            "stat1Label": "Latencia",
-            "stat1Value": "< 1ms",
-            "stat2Label": "Ancho B.",
-            "stat2Value": "40 Gbps"
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-footer-cableado",
-          "type": "footer-full",
-          "data": {},
-          "design": {}
-        }
+      "id_menu": [
+        3
+      ],
+      "id_modulos": [
+        1,
+        12,
+        3
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
       "editado_en": "2026-06-01T17:50:28.665Z",
@@ -508,105 +80,18 @@
       "fecha_fin": "2026-06-10T11:38:57.111Z"
     },
     {
-      "id_plantilla": "5",
+      "id_plantilla": 5,
       "tipo": "fibra",
       "nombre": "Fibra Óptica principal",
       "descripcion": "Plantilla por defecto — copia exacta del fibra_optica.html actual",
       "activa": true,
-      "secciones": [
-        {
-          "id": "sec-nav-fibra",
-          "type": "nav",
-          "data": {
-            "logoSrc": "/img/sisgra_blanco.png",
-            "instalacionesLabel": "Instalaciones",
-            "cableadoLabel": "Cableado Estructurado",
-            "cableadoHref": "/html/cableado_estructurado.html",
-            "fibraLabel": "Fibra Óptica",
-            "fibraHref": "/html/fibra_optica.html",
-            "seguridadLabel": "Seguridad Electrónica",
-            "seguridadHref": "/html/seguridad.html",
-            "blogLabel": "Blog",
-            "blogHref": "/html/blog.html",
-            "soporteLabel": "Soporte IT",
-            "soporteHref": "/html/soporte_it.html",
-            "desarrolloLabel": "Desarrollo de Software",
-            "desarrolloHref": "/html/desarrollo.html",
-            "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/03418610863",
-            "items": [
-              {
-                "tipo": "dropdown",
-                "titulo": "Instalaciones",
-                "children": [
-                  {
-                    "titulo": "Cableado Estructurado",
-                    "href": "/html/cableado_estructurado"
-                  },
-                  {
-                    "titulo": "Fibra Óptica",
-                    "href": "/html/fibra_optica"
-                  },
-                  {
-                    "titulo": "Seguridad Electrónica",
-                    "href": "/html/seguridad"
-                  }
-                ]
-              },
-              {
-                "tipo": "link",
-                "titulo": "Blog",
-                "href": "/html/blog",
-                "id_boton": "btn-blog"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Soporte IT",
-                "href": "/html/soporte_it",
-                "id_boton": "btn-soporte"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Desarrollo de Software",
-                "href": "/html/desarrollo",
-                "id_boton": "btn-desarrollo"
-              }
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-fibra-hero",
-          "type": "fibra-hero",
-          "data": {
-            "imagenUrl": "https://images.unsplash.com/photo-1551703599-6b3e8379aa8c?q=80&w=2072&auto=format&fit=crop",
-            "badgeTitle": "LIGHT",
-            "badgeSub": "Speed Connectivity",
-            "sectionBadge": "Transmisión Fotónica",
-            "titulo1": "Fibra",
-            "accent": "Óptica Pro.",
-            "descripcion": "Llevamos la velocidad de la luz a su centro de datos. Nuestros enlaces de fibra óptica garantizan una inmunidad total a interferencias y un ancho de banda ilimitado.",
-            "features": [
-              {
-                "iconType": "location",
-                "titulo": "Enlaces Monomodo y Multimodo",
-                "desc": "Backbones industriales de alta densidad OM4/OM5."
-              },
-              {
-                "iconType": "lightning",
-                "titulo": "Fusión por Núcleo",
-                "desc": "Empalmes de alta precisión certificados."
-              }
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-footer-fibra",
-          "type": "footer-full",
-          "data": {},
-          "design": {}
-        }
+      "id_menu": [
+        4
+      ],
+      "id_modulos": [
+        1,
+        13,
+        3
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
       "editado_en": "2026-06-01T17:50:30.313Z",
@@ -614,211 +99,37 @@
       "fecha_fin": "2026-06-10T11:38:57.111Z"
     },
     {
-      "id_plantilla": "6",
+      "id_plantilla": 6,
       "tipo": "seguridad",
       "nombre": "Seguridad principal",
       "descripcion": "Plantilla por defecto — copia exacta del seguridad.html actual",
       "activa": true,
-      "secciones": [
-        {
-          "id": "sec-nav-seguridad",
-          "type": "nav",
-          "data": {
-            "logoSrc": "/img/sisgra_blanco.png",
-            "instalacionesLabel": "Instalaciones",
-            "cableadoLabel": "Cableado Estructurado",
-            "cableadoHref": "/html/cableado_estructurado.html",
-            "fibraLabel": "Fibra Óptica",
-            "fibraHref": "/html/fibra_optica.html",
-            "seguridadLabel": "Seguridad Electrónica",
-            "seguridadHref": "/html/seguridad.html",
-            "blogLabel": "Blog",
-            "blogHref": "/html/blog.html",
-            "soporteLabel": "Soporte IT",
-            "soporteHref": "/html/soporte_it.html",
-            "desarrolloLabel": "Desarrollo de Software",
-            "desarrolloHref": "/html/desarrollo.html",
-            "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/548101220065",
-            "items": [
-              {
-                "tipo": "dropdown",
-                "titulo": "Instalaciones",
-                "children": [
-                  {
-                    "titulo": "Cableado Estructurado",
-                    "href": "/html/cableado_estructurado"
-                  },
-                  {
-                    "titulo": "Fibra Óptica",
-                    "href": "/html/fibra_optica"
-                  },
-                  {
-                    "titulo": "Seguridad Electrónica",
-                    "href": "/html/seguridad"
-                  }
-                ]
-              },
-              {
-                "tipo": "link",
-                "titulo": "Blog",
-                "href": "/html/blog",
-                "id_boton": "btn-blog"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Soporte IT",
-                "href": "/html/soporte_it",
-                "id_boton": "btn-soporte"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Desarrollo de Software",
-                "href": "/html/desarrollo",
-                "id_boton": "btn-desarrollo"
-              }
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-seguridad-hero",
-          "type": "seguridad-hero",
-          "data": {
-            "badge": "Protección Perimetral",
-            "titulo1": "Seguridad",
-            "titulo2": "Electrónica.",
-            "descripcion": "Blindamos su infraestructura con tecnología de monitoreo en tiempo real e inteligencia artificial aplicada a la vigilancia.",
-            "features": [
-              {
-                "iconType": "camera",
-                "titulo": "Video Vigilancia IP (CCTV)",
-                "desc": "Sistemas 4K con análisis de video inteligente."
-              }
-            ],
-            "imagenUrl": "/img/seguridadelectronica.png",
-            "imgBadgeLabel": "Status",
-            "imgBadgeText": "SECURE AREA"
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-footer-seguridad",
-          "type": "footer-full",
-          "data": {},
-          "design": {}
-        }
+      "id_menu": [
+        5
+      ],
+      "id_modulos": [
+        1,
+        14,
+        3
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-27T16:59:48.496Z",
+      "editado_en": "2026-06-02T18:24:27.627Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
       "fecha_fin": "2026-06-10T11:38:57.111Z"
     },
     {
-      "id_plantilla": "7",
+      "id_plantilla": 7,
       "tipo": "soporte",
       "nombre": "Soporte IT principal",
       "descripcion": "Plantilla por defecto — copia exacta del soporte_it.html actual",
       "activa": true,
-      "secciones": [
-        {
-          "id": "sec-nav-soporte",
-          "type": "nav",
-          "data": {
-            "logoSrc": "/img/sisgra_blanco.png",
-            "instalacionesLabel": "Instalaciones",
-            "cableadoLabel": "Cableado Estructurado",
-            "cableadoHref": "/html/cableado_estructurado.html",
-            "fibraLabel": "Fibra Óptica",
-            "fibraHref": "/html/fibra_optica.html",
-            "seguridadLabel": "Seguridad Electrónica",
-            "seguridadHref": "/html/seguridad.html",
-            "blogLabel": "Blog",
-            "blogHref": "/html/blog.html",
-            "soporteLabel": "Soporte IT",
-            "soporteHref": "/html/soporte_it.html",
-            "desarrolloLabel": "Desarrollo de Software",
-            "desarrolloHref": "/html/desarrollo.html",
-            "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/03418610863",
-            "items": [
-              {
-                "tipo": "dropdown",
-                "titulo": "Instalaciones",
-                "children": [
-                  {
-                    "titulo": "Cableado Estructurado",
-                    "href": "/html/cableado_estructurado"
-                  },
-                  {
-                    "titulo": "Fibra Óptica",
-                    "href": "/html/fibra_optica"
-                  },
-                  {
-                    "titulo": "Seguridad Electrónica",
-                    "href": "/html/seguridad"
-                  }
-                ]
-              },
-              {
-                "tipo": "link",
-                "titulo": "Blog",
-                "href": "/html/blog",
-                "id_boton": "btn-blog"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Soporte IT",
-                "href": "/html/soporte_it",
-                "id_boton": "btn-soporte"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Desarrollo de Software",
-                "href": "/html/desarrollo",
-                "id_boton": "btn-desarrollo"
-              }
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-soporte-hero",
-          "type": "soporte-hero",
-          "data": {
-            "badge": "Continuidad Operativa Garantizada",
-            "titulo1": "Soporte",
-            "accent": "IT Integral.",
-            "descripcion": "Minimizamos el tiempo de inactividad de su empresa. Actuamos como su departamento de sistemas externo, brindando soluciones rápidas y escalables.",
-            "features": [
-              {
-                "iconType": "gear",
-                "titulo": "Mantenimiento Preventivo",
-                "desc": "Monitoreo constante de servidores y terminales."
-              },
-              {
-                "iconType": "shield",
-                "titulo": "Seguridad Proactiva",
-                "desc": "Protección de datos y backups automatizados."
-              }
-            ],
-            "dashLabel": "Monitoreo de las actividades",
-            "dashMainValue": "99.9%",
-            "dashStat1Label": "Tiempo de respuesta",
-            "dashStat1Value": "< 45 min",
-            "dashStat2Label": "Vida del Sistema",
-            "dashStat2Value": "OPTIMIZADO",
-            "dashStat2Highlight": true,
-            "btnRemote": "Acceder al Soporte Remoto Inmediato 🎧"
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-footer-soporte",
-          "type": "footer-full",
-          "data": {},
-          "design": {}
-        }
+      "id_menu": [
+        6
+      ],
+      "id_modulos": [
+        1,
+        15,
+        3
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
       "editado_en": "2026-06-01T17:50:32.457Z",
@@ -826,116 +137,18 @@
       "fecha_fin": "2026-06-10T11:38:57.111Z"
     },
     {
-      "id_plantilla": "8",
+      "id_plantilla": 8,
       "tipo": "desarrollo",
       "nombre": "Desarrollo principal",
       "descripcion": "Plantilla por defecto — copia exacta del desarrollo.html actual",
       "activa": true,
-      "secciones": [
-        {
-          "id": "sec-nav-desarrollo",
-          "type": "nav",
-          "data": {
-            "logoSrc": "/img/sisgra_blanco.png",
-            "instalacionesLabel": "Instalaciones",
-            "cableadoLabel": "Cableado Estructurado",
-            "cableadoHref": "/html/cableado_estructurado.html",
-            "fibraLabel": "Fibra Óptica",
-            "fibraHref": "/html/fibra_optica.html",
-            "seguridadLabel": "Seguridad Electrónica",
-            "seguridadHref": "/html/seguridad.html",
-            "blogLabel": "Blog",
-            "blogHref": "/html/blog.html",
-            "soporteLabel": "Soporte IT",
-            "soporteHref": "/html/soporte_it.html",
-            "desarrolloLabel": "Desarrollo de Software",
-            "desarrolloHref": "/html/desarrollo.html",
-            "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/548101220065",
-            "items": [
-              {
-                "tipo": "dropdown",
-                "titulo": "Instalaciones",
-                "children": [
-                  {
-                    "titulo": "Cableado Estructurado",
-                    "href": "/html/cableado_estructurado"
-                  },
-                  {
-                    "titulo": "Fibra Óptica",
-                    "href": "/html/fibra_optica"
-                  },
-                  {
-                    "titulo": "Seguridad Electrónica",
-                    "href": "/html/seguridad"
-                  }
-                ]
-              },
-              {
-                "tipo": "link",
-                "titulo": "Blog",
-                "href": "/html/blog",
-                "id_boton": "btn-blog"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Soporte IT",
-                "href": "/html/soporte_it",
-                "id_boton": "btn-soporte"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Desarrollo de Software",
-                "href": "/html/desarrollo",
-                "id_boton": "btn-desarrollo"
-              }
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-desarrollo-hero",
-          "type": "desarrollo-hero",
-          "data": {
-            "badge": "Intelligence Labs",
-            "titulo1": "Desarrollo de",
-            "accent": "Software.",
-            "descripcion": "Transformamos la complejidad operativa en interfaces simplificadas. Desarrollamos código robusto, escalable y diseñado específicamente para los desafíos logísticos de la industria moderna.",
-            "solutions": [
-              {
-                "iconType": "chart",
-                "titulo": "Software Logístico a Medida",
-                "desc": "Optimización de flujos de inventario, trazabilidad y gestión de depósitos inteligentes."
-              },
-              {
-                "iconType": "database",
-                "titulo": "ERP / CRM",
-                "desc": "Sistemas centralizados para el control total de operaciones comerciales."
-              },
-              {
-                "iconType": "gear",
-                "titulo": "IoT & Automatización",
-                "desc": "Integración entre hardware y software inteligente basado en datos."
-              }
-            ],
-            "btnCta": "Consultar Desarrollo",
-            "btnCtaHref": "#",
-            "editorLabel": "SISGRA_CORE_V2.0 / LOGISTICS_MODULE",
-            "codeRows": [
-              "class SecuritySystem {",
-              "public function connectDevices() {",
-              "return SUCCESS;",
-              "}"
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-footer-desarrollo",
-          "type": "footer-full",
-          "data": {},
-          "design": {}
-        }
+      "id_menu": [
+        7
+      ],
+      "id_modulos": [
+        1,
+        16,
+        3
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
       "editado_en": "2026-06-01T17:50:34.264Z",
@@ -943,103 +156,21 @@
       "fecha_fin": "2026-06-10T11:38:57.111Z"
     },
     {
-      "id_plantilla": "9",
+      "id_plantilla": 9,
       "tipo": "cliente",
       "nombre": "Clientes",
       "descripcion": "Plantilla base para el perfil de cada cliente (accedido desde el carrusel).",
       "activa": true,
-      "secciones": [
-        {
-          "id": "sec-nav-cliente",
-          "type": "nav",
-          "data": {
-            "items": [
-              {
-                "tipo": "dropdown",
-                "titulo": "Instalaciones",
-                "children": [
-                  {
-                    "titulo": "Cableado Estructurado",
-                    "href": "/html/cableado_estructurado"
-                  },
-                  {
-                    "titulo": "Fibra Óptica",
-                    "href": "/html/fibra_optica"
-                  },
-                  {
-                    "titulo": "Seguridad Electrónica",
-                    "href": "/html/seguridad"
-                  }
-                ]
-              },
-              {
-                "tipo": "link",
-                "titulo": "Blog",
-                "href": "/html/blog",
-                "id_boton": "btn-blog"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Soporte IT",
-                "href": "/html/soporte_it",
-                "id_boton": "btn-soporte"
-              },
-              {
-                "tipo": "link",
-                "titulo": "Desarrollo de Software",
-                "href": "/html/desarrollo",
-                "id_boton": "btn-desarrollo"
-              }
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-cliente-header",
-          "type": "cliente-header",
-          "data": {
-            "backLabel": "← Volver al Inicio",
-            "backHref": "/",
-            "empresaLogo": "",
-            "empresaNombre": "Nombre de la empresa",
-            "titulo": "Caso de éxito",
-            "lead": "Descripción del proyecto o caso de éxito.",
-            "sector": "",
-            "ubicacion": "",
-            "anio": ""
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-cliente-body",
-          "type": "cliente-body",
-          "data": {
-            "featuredImageUrl": "",
-            "featuredImageAlt": "",
-            "contentHtml": "<h2>El desafío</h2><p>Describí el contexto inicial del cliente y los objetivos del proyecto.</p><h2>La solución</h2><p>Contá qué implementó SISGRA y cómo se ejecutó.</p>",
-            "fichaTitle": "Ficha del proyecto",
-            "empresa": "Nombre de la empresa",
-            "sector": "",
-            "ubicacion": "",
-            "anio": "",
-            "servicios": "",
-            "ctaTitle": "¿Tenés un proyecto similar?",
-            "ctaText": "Conversemos sobre cómo SISGRA puede ayudar a tu empresa.",
-            "ctaBtnLabel": "Contactar a SISGRA",
-            "ctaBtnHref": "https://wa.me/548101220065"
-          },
-          "design": {}
-        },
-        {
-          "id": "sec-footer-cliente",
-          "type": "footer-full",
-          "data": {},
-          "design": {}
-        }
+      "id_menu": [],
+      "id_modulos": [
+        1,
+        17,
+        18,
+        3
       ],
       "creado_en": "2026-05-28T00:00:00.000Z",
-      "editado_en": "2026-05-28T18:21:40.450Z",
-      "fecha_fin": "2026-06-04T18:21:29.982Z"
+      "editado_en": "2026-06-02T18:49:27.502Z",
+      "fecha_fin": "2026-06-11T18:21:29.982Z"
     }
   ]
 }

@@ -1683,11 +1683,13 @@ ${blCss ? `<style>${blCss}</style>` : ''}
 
 Object.values(SECTIONS).forEach(sec => {
   sec.defaultDesign = sec.defaultDesign || {};
-  Object.assign(sec.defaultDesign, { marginTop: '', marginBottom: '', display: '' });
+  Object.assign(sec.defaultDesign, { maxWidth: '', scale: '', marginTop: '', marginBottom: '', display: '' });
   (sec.designFields = sec.designFields || []).push(
-    { name: 'marginTop',    label: 'Margen superior',   type: 'text', placeholder: 'ej: 0 ó 2rem' },
-    { name: 'marginBottom', label: 'Margen inferior',   type: 'text', placeholder: 'ej: 0 ó 2rem' },
-    { name: 'display',      label: 'Display CSS',       type: 'text', placeholder: 'ej: none, flex, block' },
+    { name: 'maxWidth',     label: 'Ancho máximo (tamaño)', type: 'text', placeholder: 'ej: 1200px ó 80%' },
+    { name: 'scale',        label: 'Escala',                type: 'text', placeholder: 'ej: 1 · 0.9 · 1.1' },
+    { name: 'marginTop',    label: 'Margen superior',       type: 'text', placeholder: 'ej: 0 ó 2rem' },
+    { name: 'marginBottom', label: 'Margen inferior',       type: 'text', placeholder: 'ej: 0 ó 2rem' },
+    { name: 'display',      label: 'Display CSS',           type: 'text', placeholder: 'ej: none, flex, block' },
   );
 });
 
@@ -1695,25 +1697,59 @@ Object.values(SECTIONS).forEach(sec => {
 //  HELPERS
 // ═══════════════════════════════════════════════════════════════════
 
-export function renderSection(sec) {
-  const def = SECTIONS[sec.type];
-  if (!def) return `<div style="padding:2rem;background:#fee;color:#900;text-align:center;">Sección desconocida: ${esc(sec.type)}</div>`;
-  const html = def.render(sec.data || {}, sec.design || {});
-  const d = sec.design || {};
-  if (d.marginTop || d.marginBottom || d.display) {
-    const s = [
-      d.marginTop    ? `margin-top:${d.marginTop}`       : '',
-      d.marginBottom ? `margin-bottom:${d.marginBottom}` : '',
-      d.display      ? `display:${d.display}`            : '',
-    ].filter(Boolean).join(';');
-    return `<div style="${s}">${html}</div>`;
-  }
-  return html;
+// Envuelve el HTML de un módulo en un <div> con márgenes/display si el design lo pide.
+function wrapDesign(html, design) {
+  const d = design || {};
+  const s = [
+    d.marginTop    ? `margin-top:${d.marginTop}`       : '',
+    d.marginBottom ? `margin-bottom:${d.marginBottom}` : '',
+    d.display      ? `display:${d.display}`            : '',
+    d.maxWidth     ? `max-width:${d.maxWidth};margin-left:auto;margin-right:auto` : '',
+    d.scale        ? `transform:scale(${d.scale});transform-origin:top center`   : '',
+  ].filter(Boolean).join(';');
+  return s ? `<div style="${s}">${html}</div>` : html;
 }
 
-export function renderPlantilla(plantilla) {
-  if (!plantilla?.secciones?.length) return '<div style="padding:4rem;text-align:center;color:#94a3b8;">Esta plantilla aún no tiene secciones.</div>';
-  return plantilla.secciones.map(renderSection).join('');
+// Render de un módulo v2: { tipo, data, design }. Tolera el viejo `type` (v1).
+export function renderModulo(mod) {
+  const tipo = mod.tipo || mod.type;
+  const def = SECTIONS[tipo];
+  if (!def) return `<div style="padding:2rem;background:#fee;color:#900;text-align:center;">Módulo desconocido: ${esc(tipo)}</div>`;
+  return wrapDesign(def.render(mod.data || {}, mod.design || {}), mod.design);
+}
+
+// Compat: render de una "sección" v1 ({ type, data, design }). Lo usa el editor actual.
+export function renderSection(sec) {
+  return renderModulo({ tipo: sec.type, data: sec.data, design: sec.design });
+}
+
+// Indexa el catálogo de módulos por id_modulo (acepta array o { modulos: [...] }).
+function indexarModulos(modulos) {
+  const arr = Array.isArray(modulos) ? modulos : (modulos?.modulos || []);
+  const map = new Map();
+  for (const m of arr) map.set(m.id_modulo, m);
+  return map;
+}
+
+// Resuelve plantilla.id_modulos contra el catálogo → array ordenado de módulos,
+// CLONADOS para poder inyectarles datos dinámicos por instancia (cliente/artículo)
+// sin mutar el catálogo. El orden y los repetidos de id_modulos se respetan.
+export function resolverModulos(plantilla, modulos) {
+  const byId = indexarModulos(modulos);
+  return (plantilla?.id_modulos || [])
+    .map(id => byId.get(id))
+    .filter(Boolean)
+    .map(m => JSON.parse(JSON.stringify(m)));
+}
+
+export function renderModulos(mods) {
+  if (!mods?.length) return '<div style="padding:4rem;text-align:center;color:#94a3b8;">Esta plantilla aún no tiene módulos.</div>';
+  return mods.map(renderModulo).join('');
+}
+
+// Render completo de una plantilla v2: resuelve por id_modulos y arma el HTML.
+export function renderPlantilla(plantilla, modulos) {
+  return renderModulos(resolverModulos(plantilla, modulos));
 }
 
 export function uid(prefix = 'sec') {

@@ -246,3 +246,17 @@
 @media (max-width: 1024px) {
     .cl-ficha { position: static; }
 }
+
+/* ── RESPONSIVE móvil ── */
+@media (max-width: 640px) {
+    .cl-grid { padding: 2.5rem 0; gap: 2.5rem; }
+    .cl-lead { font-size: 1.05rem; }
+    .cl-content { font-size: .95rem; }
+    .cl-featured { max-height: 240px; margin-bottom: 2rem; }
+    .cl-cta { padding: 1.5rem; margin-top: 2rem; }
+    .cl-cta-btn { display: block; text-align: center; }
+    .cl-ficha { padding: 1.5rem; }
+    .cl-logo-wrap { min-width: 120px; min-height: 88px; padding: 1rem 1.25rem; }
+    .cl-logo { max-height: 56px; }
+    .cl-richtext p:has(> img + img) img { max-width: 100%; flex-basis: 100%; }
+}

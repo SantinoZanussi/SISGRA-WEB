@@ -1,4 +1,4 @@
-import { SECTIONS, TIPOS_HTML, renderSection, createSection } from '../sections.js';
+import { SECTIONS, TIPOS_HTML, renderModulo } from '../sections.js';
 import { TIPO_CSS, TYPE_TO_PAGE, cssFilesFor } from '../css-pages.js';
 
 const API = `http://${window.location.hostname}:3000/api`;
@@ -8,23 +8,60 @@ const ICON_CATALOG = ['location', 'lightning', 'shield', 'check', 'camera', 'gea
 
 const e3 = {
   plantillas: [],
-  activeTpl: null,
-  selectedSecId: null,
+  activeTpl: null,        // { id_plantilla, tipo, nombre, id_menu, id_modulos:[num], ... }
+  modulos: [],            // catálogo plano (working copy) — se persiste con PUT /data/modulos
+  navbar: [],             // botones del navbar (para renderizar el nav en el canvas)
+  selectedIdx: null,      // índice del módulo seleccionado dentro de id_modulos
   dirty: false,
   propsTab: 'data',
   currentTipo: null,
+  search: { query: '', selected: [] },   // buscador de chips: selected=[{kind,id_modulo?,tipo,label,color}]
 };
 
-// Cache de módulos+variantes para el tray del editor. Se recarga al abrir el editor.
-let e3Modulos = {};
-async function loadE3Modulos() {
+// nav/footer = se referencian compartidos; el resto se clona al insertar (modelo híbrido).
+const GLOBAL_TIPOS = new Set(['nav', 'footer', 'footer-full']);
+
+// Catálogo plano de módulos (v2) + navbar. Se recarga al abrir el editor.
+async function loadE3Catalog() {
   try {
-    const res = await api('GET', '/modulos');
-    e3Modulos = res.modulos || {};
+    const [mr, nr] = await Promise.all([ api('GET', '/modulos'), api('GET', '/data/navbar') ]);
+    e3.modulos = Array.isArray(mr.modulos) ? mr.modulos : [];
+    e3.navbar  = nr.botones || [];
   } catch (e) {
-    console.warn('[e3] No se pudieron cargar variantes:', e.message);
-    e3Modulos = {};
+    console.warn('[e3] No se pudo cargar el catálogo:', e.message);
+    e3.modulos = []; e3.navbar = [];
   }
+}
+
+const modById = id => e3.modulos.find(m => m.id_modulo === id);
+
+function nextModId() {
+  const nums = e3.modulos.map(m => Number(m.id_modulo)).filter(n => !isNaN(n));
+  return (nums.length ? Math.max(...nums) : 0) + 1;
+}
+
+// Items del nav (dropdowns + links) desde navbar.json — igual que el runtime.
+function buildNavItems(botones) {
+  const activos = (botones || []).filter(b => b.activo !== false && b.href !== '/');
+  const grupos = {}; const sueltos = [];
+  activos.forEach(b => { if (b.grupo) (grupos[b.grupo] = grupos[b.grupo] || []).push(b); else sueltos.push(b); });
+  const items = [];
+  Object.entries(grupos).forEach(([grupo, hijos]) => items.push({
+    tipo: 'dropdown', titulo: grupo,
+    children: hijos.sort((a,b)=>(a.orden||0)-(b.orden||0)).map(b => ({ titulo: b.titulo, href: b.href || '#' })),
+  }));
+  sueltos.sort((a,b)=>(a.orden||0)-(b.orden||0)).forEach(b => items.push({ tipo: 'link', titulo: b.titulo, href: b.href || '#' }));
+  return items;
+}
+
+// Resuelve id_modulos → instancias de módulo (con items de nav inyectados para el render).
+function resolvedMods() {
+  const navItems = buildNavItems(e3.navbar);
+  return (e3.activeTpl?.id_modulos || []).map(id => {
+    const m = modById(id);
+    if (!m) return null;
+    return m.tipo === 'nav' ? { ...m, data: { ...m.data, items: navItems } } : m;
+  });
 }
 
 const escAttr = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
@@ -174,6 +211,7 @@ function renderOverview() {
 }
 
 async function renombrarPlantilla(id, btn) {
+  id = Number(id);
   // Encontrar el span del nombre en la misma fila
   const nameSpan = btn.closest('div').querySelector('.tpl-list-name-text');
   if (!nameSpan) return;
@@ -224,6 +262,7 @@ async function renombrarPlantilla(id, btn) {
 }
 
 async function extenderVencimiento(id) {
+  id = Number(id);
   try {
     const { plantilla } = await api('POST', `/plantillas/${id}/extender`);
     const p = e3.plantillas.find(x => x.id_plantilla === id);
@@ -288,7 +327,7 @@ async function crearPlantilla() {
   if (!nombre) return notif('El nombre es requerido', 'error');
   if (!tipo) return notif('Seleccioná el HTML destino', 'error');
   try {
-    const { plantilla } = await api('POST', '/plantillas', { nombre, tipo, descripcion, secciones: [] });
+    const { plantilla } = await api('POST', '/plantillas', { nombre, tipo, descripcion });
     e3.plantillas.push(plantilla);
     document.getElementById('modal-nueva-plantilla').classList.remove('open');
     renderOverview(); renderSidebarList();
@@ -298,6 +337,7 @@ async function crearPlantilla() {
 }
 
 async function activarPlantilla(id) {
+  id = Number(id);
   try {
     const { plantilla } = await api('POST', `/plantillas/${id}/activar`);
     e3.plantillas.forEach(p => {
@@ -322,6 +362,7 @@ async function activarPlantilla(id) {
 }
 
 async function eliminarPlantilla(id) {
+  id = Number(id);
   const p = e3.plantillas.find(x => x.id_plantilla === id);
   if (!p) return;
   const otras = e3.plantillas.filter(x => x.tipo === p.tipo && x.id_plantilla !== id);
@@ -340,7 +381,7 @@ async function eliminarPlantilla(id) {
       e3.plantillas.forEach(x => { if (x.tipo === r.tipoAffected) x.activa = (x.id_plantilla === r.promoted.id_plantilla); });
     }
     if (e3.activeTpl?.id_plantilla === id) {
-      e3.activeTpl = null; e3.selectedSecId = null; e3.dirty = false;
+      e3.activeTpl = null; e3.selectedIdx = null; e3.dirty = false;
       document.querySelectorAll('.panel').forEach(pn => pn.classList.remove('active'));
       document.getElementById('panel-plantillas').classList.add('active');
       document.getElementById('topbar-title').textContent = 'Plantillas';
@@ -360,11 +401,12 @@ async function openEditor(id) {
   try {
     const { plantilla } = await api('GET', `/plantillas/${id}`);
     e3.activeTpl = plantilla;
+    e3.activeTpl.id_modulos = Array.isArray(plantilla.id_modulos) ? plantilla.id_modulos : [];
     e3.currentTipo = plantilla.tipo;
-    e3.selectedSecId = null;
+    e3.selectedIdx = null;
     e3.dirty = false;
-    _e3DndBound = false;   // reset DnD binding for the new iframe
-    await loadE3Modulos();
+    e3.search = { query: '', selected: [] };
+    await loadE3Catalog();
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-tpl-editor').classList.add('active');
     document.getElementById('topbar-title').textContent = `Editor — ${plantilla.nombre}`;
@@ -375,7 +417,7 @@ async function openEditor(id) {
 
 function backToOverview() {
   if (e3.dirty && !confirm('Hay cambios sin guardar. ¿Salir igual?')) return;
-  e3.activeTpl = null; e3.selectedSecId = null;
+  e3.activeTpl = null; e3.selectedIdx = null;
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-plantillas').classList.add('active');
   document.getElementById('topbar-title').textContent = 'Plantillas';
@@ -400,11 +442,35 @@ function renderEditorShell() {
         <button class="btn-save" id="e3-guardar">Guardar plantilla</button>
       </div>
     </div>
+    <style>
+      .e3-chipsearch{padding:.75rem;border-bottom:1px solid var(--slate-200);position:relative;}
+      .e3-chipbox{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;border:1px solid var(--slate-300);border-radius:.4rem;padding:.35rem;background:#fff;min-height:2.2rem;}
+      .e3-chip{display:inline-flex;align-items:center;gap:.3rem;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .5rem;border-radius:1rem;white-space:nowrap;}
+      .e3-chip button{background:rgba(255,255,255,.3);border:none;color:#fff;border-radius:50%;width:1rem;height:1rem;line-height:1;cursor:pointer;font-size:.7rem;padding:0;}
+      .e3-search-input{flex:1;min-width:90px;border:none;outline:none;font-size:.75rem;font-family:inherit;padding:.2rem;background:transparent;}
+      .e3-insert{width:100%;margin-top:.5rem;}
+      .e3-insert:disabled{opacity:.5;cursor:not-allowed;}
+      .e3-results{position:absolute;left:.75rem;right:.75rem;top:calc(100% - .35rem);background:#fff;border:1px solid var(--slate-200);border-radius:.4rem;box-shadow:0 8px 24px rgba(0,0,0,.14);max-height:280px;overflow:auto;z-index:50;}
+      .e3-result{padding:.5rem .6rem;cursor:pointer;display:flex;flex-direction:column;gap:.1rem;border-bottom:1px solid var(--slate-100);}
+      .e3-result:hover{background:var(--slate-50);}
+      .e3-result-name{font-size:.75rem;font-weight:700;color:var(--slate-800);}
+      .e3-result-sub{font-size:.6rem;color:var(--slate-400);letter-spacing:.04em;text-transform:uppercase;}
+      .e3-props-tabs{display:flex;gap:.25rem;}
+      .e3-props-tabs button{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .55rem;border:1px solid var(--slate-200);background:#fff;color:var(--slate-500);cursor:pointer;border-radius:.3rem;}
+      .e3-props-tabs button.active{background:var(--sisgra-blue);color:#fff;border-color:var(--sisgra-blue);}
+    </style>
     <div class="editor-shell">
       <div class="section-tray">
-        <div class="tray-header">Módulos · ${escAttr(tpl.tipo)}</div>
-        <input class="tray-search" id="e3-search" placeholder="Buscar módulo..."/>
-        <div class="tray-body" id="e3-tray-body"></div>
+        <div class="tray-header">Insertar módulos · ${escAttr(tpl.tipo)}</div>
+        <div class="e3-chipsearch">
+          <div class="e3-chipbox" id="e3-chipbox"><input class="e3-search-input" id="e3-search-input" placeholder="Buscar módulo (ej: noticias)…" autocomplete="off"/></div>
+          <button class="btn-save e3-insert" id="e3-insert" disabled><i class="fa-solid fa-plus"></i> Insertar seleccionados</button>
+          <div class="e3-results" id="e3-results" style="display:none;"></div>
+        </div>
+        <div class="tray-body" style="padding:.6rem .75rem;font-size:.62rem;color:var(--slate-400);line-height:1.5;">
+          Buscá un módulo, seleccioná uno o varios (quedan como <b>chips</b>) y dale <b>Insertar</b>.<br>
+          <span style="color:#7c3aed;font-weight:700;">Globales</span> (nav/footer) se comparten; el resto se clona para editarlo sin afectar otras páginas.
+        </div>
       </div>
       <div class="page-canvas-wrap">
         <div class="canvas-ruler"><span style="font-size:.5rem;font-weight:700;color:var(--slate-400);letter-spacing:.2em;text-transform:uppercase;">Vista previa — ${escAttr(tpl.tipo)}.html</span></div>
@@ -413,8 +479,14 @@ function renderEditorShell() {
         </div>
       </div>
       <div class="props-panel">
-        <div class="props-header"><span id="e3-props-type">Propiedades</span></div>
-        <div class="props-body" id="e3-props-body"><div class="props-empty">Click sobre una sección del canvas para editarla.</div></div>
+        <div class="props-header" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;">
+          <span id="e3-props-type">Propiedades</span>
+          <div class="e3-props-tabs">
+            <button data-e3-tab="data" class="${e3.propsTab==='data'?'active':''}">Contenido</button>
+            <button data-e3-tab="design" class="${e3.propsTab==='design'?'active':''}">Diseño</button>
+          </div>
+        </div>
+        <div class="props-body" id="e3-props-body"><div class="props-empty">Click sobre un módulo del canvas para editarlo.</div></div>
       </div>
     </div>`;
 
@@ -424,71 +496,155 @@ function renderEditorShell() {
     await activarPlantilla(tpl.id_plantilla);
     renderEditorShell();
   });
-  document.getElementById('e3-search').addEventListener('input', ev => {
-    const q = ev.target.value.toLowerCase();
-    document.querySelectorAll('#e3-tray-body .tray-chip').forEach(c => {
-      const n = c.querySelector('.tray-chip-name')?.textContent.toLowerCase() || '';
-      const d = c.querySelector('.tray-chip-desc')?.textContent.toLowerCase() || '';
-      c.style.display = (n + d).includes(q) ? '' : 'none';
-    });
-  });
+  document.getElementById('e3-insert').addEventListener('click', insertSelected);
+  bindChipSearch();
   document.querySelectorAll('[data-e3-tab]').forEach(t => t.addEventListener('click', () => {
     e3.propsTab = t.dataset.e3Tab;
     document.querySelectorAll('[data-e3-tab]').forEach(x => x.classList.toggle('active', x === t));
     renderProps();
   }));
 
-  renderTray();
+  renderChips();
   initIframe(() => {
     try { renderCanvas(); } catch (e) { console.error('[e3] renderCanvas error:', e); }
-    bindCanvasDnd();
   });
   renderProps();
 }
 
-function renderTray() {
-  const body = document.getElementById('e3-tray-body');
-  const mods = modulesForTipo(e3.currentTipo);
-  if (mods.length === 0) {
-    body.innerHTML = '<div style="padding:1rem;color:var(--slate-400);font-size:.7rem;text-align:center;">No hay módulos para este tipo.</div>';
-    return;
-  }
-  // Un chip por variante. Si un módulo no tiene variantes cargadas, cae a un chip base con defaults.
-  const html = mods.flatMap(([type, def]) => {
-    const variantes = e3Modulos[type]?.variantes || [];
-    if (!variantes.length) {
-      return [`
-        <div class="tray-chip" draggable="true" data-e3-type="${type}" data-e3-variant="">
-          <div class="tray-chip-thumb"></div>
-          <div class="tray-chip-info">
-            <div class="tray-chip-name">${escAttr(def.label)}</div>
-            <div class="tray-chip-desc">${escAttr(def.description || '')}</div>
-          </div>
-        </div>`];
+// ─── BUSCADOR DE CHIPS ──────────────────────────────────────────────
+function bindChipSearch() {
+  const input = document.getElementById('e3-search-input');
+  if (!input) return;
+  input.addEventListener('input', () => { e3.search.query = input.value; renderResults(); });
+  input.addEventListener('keydown', ev => {
+    if (ev.key === 'Backspace' && !input.value && e3.search.selected.length) {
+      e3.search.selected.pop(); renderChips();
+    } else if (ev.key === 'Enter') {
+      ev.preventDefault();
+      const res = searchResults(e3.search.query);
+      if (res.length) selectResult(res[0]);
+    } else if (ev.key === 'Escape') {
+      e3.search.query = ''; input.value = ''; renderResults();
     }
-    return variantes.map(v => `
-      <div class="tray-chip" draggable="true" data-e3-type="${type}" data-e3-variant="${escAttr(v.id)}">
-        <div class="tray-chip-thumb"></div>
-        <div class="tray-chip-info">
-          <div class="tray-chip-name">${escAttr(v.nombre || def.label)}</div>
-          <div class="tray-chip-desc">${escAttr(def.label)}</div>
-        </div>
-      </div>`);
   });
-  body.innerHTML = html.join('');
-  body.querySelectorAll('.tray-chip').forEach(chip => {
-    chip.addEventListener('dragstart', ev => {
-      const type = chip.dataset.e3Type;
-      const variant = chip.dataset.e3Variant || '';
-      ev.dataTransfer.setData('text/e3-sec-type', type);
-      ev.dataTransfer.setData('text/e3-variant', variant);
-      ev.dataTransfer.setData('text/plain', type);
-      ev.dataTransfer.effectAllowed = 'copy';
-      chip.classList.add('dragging');
-    });
-    chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
-    chip.addEventListener('dblclick', () => addSection(chip.dataset.e3Type, undefined, chip.dataset.e3Variant || null));
+  document.addEventListener('click', ev => {
+    if (!ev.target.closest('.e3-chipsearch')) {
+      const b = document.getElementById('e3-results'); if (b) b.style.display = 'none';
+    }
   });
+}
+
+// Resultados = módulos existentes del catálogo + tipos de SECTIONS (para crear nuevos).
+function searchResults(query) {
+  const q = (query || '').trim().toLowerCase();
+  if (!q) return [];
+  const res = [];
+  for (const m of e3.modulos) {
+    const hay = `${m.nombre} ${m.tipo} ${SECTIONS[m.tipo]?.label || ''}`.toLowerCase();
+    if (hay.includes(q)) res.push({ kind: 'modulo', id_modulo: m.id_modulo, tipo: m.tipo, label: m.nombre, sub: SECTIONS[m.tipo]?.label || m.tipo });
+  }
+  for (const [tipo, def] of Object.entries(SECTIONS)) {
+    if (`${def.label} ${tipo}`.toLowerCase().includes(q)) {
+      res.push({ kind: 'tipo', tipo, label: def.label, sub: 'crear módulo nuevo' });
+    }
+  }
+  return res.slice(0, 40);
+}
+
+function chipColor(sel) {
+  if (sel.kind === 'tipo') return '#16a34a';
+  return GLOBAL_TIPOS.has(sel.tipo) ? '#7c3aed' : '#2563eb';
+}
+
+function renderResults() {
+  const box = document.getElementById('e3-results');
+  if (!box) return;
+  const res = searchResults(e3.search.query);
+  if (!res.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  box.style.display = '';
+  box.innerHTML = res.map((r, i) => `
+    <div class="e3-result" data-res="${i}">
+      <span class="e3-result-name">${escAttr(r.label)}</span>
+      <span class="e3-result-sub">${escAttr(r.sub)}${r.kind === 'modulo' ? ` · #${r.id_modulo}${GLOBAL_TIPOS.has(r.tipo) ? ' · global' : ''}` : ''}</span>
+    </div>`).join('');
+  box.querySelectorAll('[data-res]').forEach(el => el.addEventListener('click', () => selectResult(res[+el.dataset.res])));
+}
+
+function selectResult(r) {
+  e3.search.selected.push({ ...r, color: chipColor(r) });
+  e3.search.query = '';
+  const input = document.getElementById('e3-search-input');
+  if (input) input.value = '';
+  renderChips();
+  renderResults();
+  input?.focus();
+}
+
+function renderChips() {
+  const wrap = document.getElementById('e3-chipbox');
+  const input = document.getElementById('e3-search-input');
+  if (!wrap || !input) return;
+  wrap.querySelectorAll('.e3-chip').forEach(c => c.remove());
+  e3.search.selected.forEach((s, i) => {
+    const chip = document.createElement('span');
+    chip.className = 'e3-chip';
+    chip.style.background = s.color;
+    chip.innerHTML = `${escAttr(s.label)} <button title="Quitar">×</button>`;
+    chip.querySelector('button').addEventListener('click', () => { e3.search.selected.splice(i, 1); renderChips(); });
+    wrap.insertBefore(chip, input);
+  });
+  input.placeholder = e3.search.selected.length ? 'Agregar otro…' : 'Buscar módulo (ej: noticias)…';
+  const insertBtn = document.getElementById('e3-insert');
+  if (insertBtn) insertBtn.disabled = e3.search.selected.length === 0;
+}
+
+// Clona un módulo de contenido → nuevo id_modulo en el catálogo (working copy).
+function cloneModule(src) {
+  const c = JSON.parse(JSON.stringify(src));
+  c.id_modulo = nextModId();
+  c.creado_en = new Date().toISOString();
+  c.editado_en = new Date().toISOString();
+  e3.modulos.push(c);
+  return c.id_modulo;
+}
+
+// Crea un módulo nuevo desde un tipo de SECTIONS (defaults).
+function newModuleFromType(tipo) {
+  const def = SECTIONS[tipo];
+  const m = {
+    id_modulo: nextModId(),
+    tipo,
+    nombre: `${def?.label || tipo} — ${e3.activeTpl?.nombre || 'nuevo'}`,
+    data:   JSON.parse(JSON.stringify(def?.defaultData   || {})),
+    design: JSON.parse(JSON.stringify(def?.defaultDesign || {})),
+    alerta: false,
+    creado_en: new Date().toISOString(),
+    editado_en: new Date().toISOString(),
+  };
+  e3.modulos.push(m);
+  return m.id_modulo;
+}
+
+// Inserta todos los chips seleccionados en la plantilla (modelo híbrido).
+function insertSelected() {
+  if (!e3.search.selected.length) return;
+  const ids = [];
+  for (const sel of e3.search.selected) {
+    if (sel.kind === 'tipo') {
+      ids.push(newModuleFromType(sel.tipo));
+    } else {
+      const src = modById(sel.id_modulo);
+      if (!src) continue;
+      ids.push(GLOBAL_TIPOS.has(src.tipo) ? src.id_modulo : cloneModule(src));
+    }
+  }
+  e3.activeTpl.id_modulos.push(...ids);
+  e3.search.selected = [];
+  e3.selectedIdx = e3.activeTpl.id_modulos.length - 1;
+  renderChips();
+  const box = document.getElementById('e3-results'); if (box) box.style.display = 'none';
+  markDirty(); renderCanvas(); renderProps();
+  notif(`✓ ${ids.length} módulo${ids.length !== 1 ? 's' : ''} insertado${ids.length !== 1 ? 's' : ''}`);
 }
 
 // ─── Iframe con CSS específico por tipo ─────────────────────────────
@@ -502,7 +658,7 @@ function ensureCanvasCss(doc) {
   const have = new Set(
     Array.from(doc.querySelectorAll('link[rel="stylesheet"]')).map(l => l.getAttribute('href'))
   );
-  cssFilesFor(e3.currentTipo, e3.activeTpl?.secciones || []).forEach(href => {
+  cssFilesFor(e3.currentTipo, resolvedMods().filter(Boolean)).forEach(href => {
     if (have.has(href)) return;
     const l = doc.createElement('link');
     l.rel = 'stylesheet';
@@ -514,7 +670,7 @@ function ensureCanvasCss(doc) {
 function initIframe(cb) {
   const iframe = document.getElementById('e3-canvas');
   if (!iframe) return;
-  const cssFiles = cssFilesFor(e3.currentTipo, e3.activeTpl?.secciones || []);
+  const cssFiles = cssFilesFor(e3.currentTipo, resolvedMods().filter(Boolean));
   // OJO: usamos `<bo${''}dy>` en vez de `<body>` para evitar que Live Server inyecte
   // su <script> de auto-reload acá adentro (rompería el template literal del padre).
   const B = 'bo'+'dy';
@@ -532,8 +688,8 @@ ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
   .e3-sec-wrap:hover .e3-sec-ctrls,.e3-sec-wrap.e3-selected .e3-sec-ctrls{opacity:1;}
   .e3-sec-ctrls button{background:#fff;border:1px solid #cbd5e1;padding:.3rem .5rem;font-size:.75rem;line-height:1;color:#0A1D37;cursor:pointer;font-family:inherit;}
   .e3-sec-ctrls .e3-danger{color:#dc2626;}
-  .e3-drop{height:6px;background:#2563eb;margin:0;display:none;}
-  .e3-drop.e3-active{display:block;}
+  .e3-sec-badge{position:absolute;top:8px;left:8px;z-index:9998;background:rgba(15,23,42,.85);color:#fff;font:700 .6rem/1 Inter,system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;padding:.25rem .5rem;border-radius:.25rem;opacity:0;transition:opacity .15s;pointer-events:none;}
+  .e3-sec-wrap:hover .e3-sec-badge,.e3-sec-wrap.e3-selected .e3-sec-badge{opacity:1;}
   .e3-empty{padding:6rem 2rem;text-align:center;color:#94a3b8;border:2px dashed #cbd5e1;margin:1rem;font-family:Inter,system-ui,sans-serif;}
 </style>
 </head><${B}></${B}></html>`;
@@ -550,38 +706,47 @@ function renderCanvas() {
   if (!iframe || !iframe.contentDocument) return;
   const doc = iframe.contentDocument;
   ensureCanvasCss(doc);
-  const secs = e3.activeTpl?.secciones || [];
-  if (secs.length === 0) {
-    doc.body.innerHTML = `<div class="e3-empty" data-e3-emptydrop style="min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:border-color .15s,background .15s;">
+  const ids = e3.activeTpl?.id_modulos || [];
+  if (ids.length === 0) {
+    doc.body.innerHTML = `<div class="e3-empty" style="min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
       <div style="font-size:2.5rem;margin-bottom:.75rem;opacity:.25;line-height:1;">⊕</div>
-      Arrastrá un módulo desde la izquierda<br>
-      <small style="font-size:.65rem;display:block;margin-top:.4rem;opacity:.7;">o doble-click sobre un módulo para agregarlo</small>
+      Buscá un módulo a la izquierda e insertálo<br>
+      <small style="font-size:.65rem;display:block;margin-top:.4rem;opacity:.7;">cada módulo es 100% editable (contenido, tamaño y escala)</small>
     </div>`;
-  } else {
-    doc.body.innerHTML = secs.map((sec, i) => `
-<div class="e3-drop" data-dropidx="${i}"></div>
-<div class="e3-sec-wrap ${e3.selectedSecId === sec.id ? 'e3-selected' : ''}" data-e3-sec="${sec.id}">
-  <div class="e3-sec-ctrls">
-    <button data-e3-act="up"><i class="fa-solid fa-chevron-up"></i></button>
-    <button data-e3-act="down"><i class="fa-solid fa-chevron-down"></i></button>
-    <button data-e3-act="del" class="e3-danger"><i class="fa-solid fa-trash"></i></button>
-  </div>
-  ${renderSection(sec)}
-</div>`).join('') + `<div class="e3-drop" data-dropidx="${secs.length}"></div>`;
+    return;
   }
+  const navItems = buildNavItems(e3.navbar);
+  doc.body.innerHTML = ids.map((id, i) => {
+    const m = modById(id);
+    const inner = m
+      ? renderModulo(m.tipo === 'nav' ? { ...m, data: { ...m.data, items: navItems } } : m)
+      : `<div style="padding:2rem;background:#fee;color:#900;text-align:center;">Módulo #${id} no está en el catálogo</div>`;
+    const tipoLbl = m ? (SECTIONS[m.tipo]?.label || m.tipo) : '—';
+    const global = m && GLOBAL_TIPOS.has(m.tipo);
+    return `
+<div class="e3-sec-wrap ${e3.selectedIdx === i ? 'e3-selected' : ''}" data-e3-idx="${i}">
+  <div class="e3-sec-badge">#${id} · ${escAttr(tipoLbl)}${global ? ' · global' : ''}</div>
+  <div class="e3-sec-ctrls">
+    <button data-e3-act="up" title="Subir"><i class="fa-solid fa-chevron-up"></i></button>
+    <button data-e3-act="down" title="Bajar"><i class="fa-solid fa-chevron-down"></i></button>
+    <button data-e3-act="del" class="e3-danger" title="Quitar"><i class="fa-solid fa-trash"></i></button>
+  </div>
+  ${inner}
+</div>`;
+  }).join('');
   doc.querySelectorAll('.e3-sec-wrap').forEach(w => {
     w.addEventListener('click', ev => {
       if (ev.target.closest('.e3-sec-ctrls')) return;
-      e3.selectedSecId = w.dataset.e3Sec;
+      e3.selectedIdx = parseInt(w.dataset.e3Idx, 10);
       renderCanvas(); renderProps();
     });
     w.querySelectorAll('button[data-e3-act]').forEach(b => {
       b.addEventListener('click', ev => {
         ev.stopPropagation();
-        const id = w.dataset.e3Sec, act = b.dataset.e3Act;
-        if (act === 'up')   moveSection(id, -1);
-        if (act === 'down') moveSection(id, 1);
-        if (act === 'del')  deleteSection(id);
+        const idx = parseInt(w.dataset.e3Idx, 10), act = b.dataset.e3Act;
+        if (act === 'up')   moveModule(idx, -1);
+        if (act === 'down') moveModule(idx, 1);
+        if (act === 'del')  deleteModule(idx);
       });
     });
   });
@@ -589,97 +754,21 @@ function renderCanvas() {
   doc.querySelectorAll('form').forEach(f => f.addEventListener('submit', ev => ev.preventDefault()));
 }
 
-let _e3DndBound = false;
-function bindCanvasDnd() {
-  if (_e3DndBound) return;
-  const iframe = document.getElementById('e3-canvas');
-  if (!iframe?.contentDocument) return;
-  _e3DndBound = true;
-  const doc = iframe.contentDocument;
-
-  function acceptDrag(ev) {
-    const types = Array.from(ev.dataTransfer?.types || []);
-    return types.includes('text/e3-sec-type') || types.includes('text/plain');
-  }
-
-  doc.addEventListener('dragenter', ev => {
-    if (!acceptDrag(ev)) return;
-    ev.preventDefault();
-    ev.dataTransfer.dropEffect = 'copy';
-    const empty = doc.querySelector('.e3-empty');
-    if (empty) empty.style.borderColor = '#2563eb';
-  });
-  doc.addEventListener('dragleave', ev => {
-    if (!ev.relatedTarget || !doc.contains(ev.relatedTarget)) {
-      const empty = doc.querySelector('.e3-empty');
-      if (empty) empty.style.borderColor = '';
-    }
-  });
-  doc.addEventListener('dragover', ev => {
-    if (!acceptDrag(ev)) return;
-    ev.preventDefault();
-    ev.dataTransfer.dropEffect = 'copy';
-    const markers = [...doc.querySelectorAll('.e3-drop')];
-    if (markers.length) {
-      let closest = null, best = Infinity;
-      for (const m of markers) {
-        const r = m.getBoundingClientRect();
-        const d = Math.abs((r.top + r.bottom) / 2 - ev.clientY);
-        if (d < best) { best = d; closest = m; }
-      }
-      markers.forEach(m => m.classList.toggle('e3-active', m === closest));
-    }
-  });
-  doc.addEventListener('drop', ev => {
-    const type = ev.dataTransfer.getData('text/e3-sec-type') || ev.dataTransfer.getData('text/plain');
-    if (!type) return;
-    const variantId = ev.dataTransfer.getData('text/e3-variant') || null;
-    ev.preventDefault(); ev.stopPropagation();
-    const empty = doc.querySelector('.e3-empty');
-    if (empty) empty.style.borderColor = '';
-    const active = doc.querySelector('.e3-drop.e3-active');
-    const idx = active ? parseInt(active.dataset.dropidx, 10) : (e3.activeTpl?.secciones || []).length;
-    doc.querySelectorAll('.e3-drop').forEach(m => m.classList.remove('e3-active'));
-    addSection(type, idx, variantId);
-  });
+function moveModule(idx, delta) {
+  const arr = e3.activeTpl.id_modulos;
+  const j = idx + delta;
+  if (j < 0 || j >= arr.length) return;
+  [arr[idx], arr[j]] = [arr[j], arr[idx]];
+  if (e3.selectedIdx === idx) e3.selectedIdx = j;
+  else if (e3.selectedIdx === j) e3.selectedIdx = idx;
+  markDirty(); renderCanvas(); renderProps();
 }
 
-function addSection(type, atIdx, variantId) {
-  const def = SECTIONS[type];
-  if (!def) return;
-  const sec = createSection(type);
-  if (!sec) return;
-  if (variantId) {
-    const v = (e3Modulos[type]?.variantes || []).find(x => x.id === variantId);
-    if (v) {
-      sec.data   = { ...sec.data,   ...(v.data   || {}) };
-      sec.design = { ...sec.design, ...(v.design || {}) };
-      sec.variantId = v.id;
-      if (v.alerta === true) sec.alerta = true;
-    }
-  }
-  const secs = e3.activeTpl.secciones = e3.activeTpl.secciones || [];
-  if (typeof atIdx === 'number') secs.splice(atIdx, 0, sec);
-  else secs.push(sec);
-  e3.selectedSecId = sec.id;
-  markDirty();
-  renderCanvas(); renderProps();
-}
-
-function moveSection(id, delta) {
-  const secs = e3.activeTpl.secciones;
-  const i = secs.findIndex(s => s.id === id);
-  if (i < 0) return;
-  const j = i + delta;
-  if (j < 0 || j >= secs.length) return;
-  [secs[i], secs[j]] = [secs[j], secs[i]];
-  markDirty(); renderCanvas();
-}
-
-function deleteSection(id) {
-  if (!confirm('¿Eliminar esta sección?')) return;
-  e3.activeTpl.secciones = e3.activeTpl.secciones.filter(s => s.id !== id);
-  if (e3.selectedSecId === id) e3.selectedSecId = null;
+function deleteModule(idx) {
+  if (!confirm('¿Quitar este módulo de la plantilla?')) return;
+  e3.activeTpl.id_modulos.splice(idx, 1);
+  if (e3.selectedIdx === idx) e3.selectedIdx = null;
+  else if (e3.selectedIdx > idx) e3.selectedIdx--;
   markDirty(); renderCanvas(); renderProps();
 }
 
@@ -691,13 +780,16 @@ function renderProps() {
   const body = document.getElementById('e3-props-body');
   if (!body) return;
   const typeEl = document.getElementById('e3-props-type');
-  const sec = (e3.activeTpl?.secciones || []).find(s => s.id === e3.selectedSecId);
-  if (!sec) { body.innerHTML = '<div class="props-empty">Click sobre una sección del canvas para editarla.</div>'; if (typeEl) typeEl.textContent = 'Propiedades'; return; }
-  const def = SECTIONS[sec.type];
-  if (!def) { body.innerHTML = `<div class="props-empty">Tipo desconocido: ${sec.type}</div>`; return; }
-  if (typeEl) typeEl.textContent = def.label;
+  const id = e3.activeTpl?.id_modulos?.[e3.selectedIdx];
+  const sec = (id === undefined) ? null : modById(id);
+  if (!sec) { body.innerHTML = '<div class="props-empty">Click sobre un módulo del canvas para editarlo.</div>'; if (typeEl) typeEl.textContent = 'Propiedades'; return; }
+  const def = SECTIONS[sec.tipo];
+  if (!def) { body.innerHTML = `<div class="props-empty">Tipo desconocido: ${sec.tipo}</div>`; return; }
+  if (typeEl) typeEl.textContent = `${def.label} · #${sec.id_modulo}`;
+  const compartido = GLOBAL_TIPOS.has(sec.tipo);
+  const aviso = compartido ? `<div style="background:#f3e8ff;border:1px solid #d8b4fe;color:#6b21a8;font-size:.62rem;padding:.5rem .6rem;margin-bottom:.6rem;line-height:1.5;border-radius:.3rem;">Módulo <b>global compartido</b>: los cambios impactan en todas las páginas que lo usan.</div>` : '';
   const fields = e3.propsTab === 'data' ? def.dataFields : def.designFields;
-  body.innerHTML = alertaFieldHTML(sec) + (fields || []).map(f => fieldHTML(f, sec[e3.propsTab]?.[f.name], e3.propsTab)).join('');
+  body.innerHTML = aviso + alertaFieldHTML(sec) + (fields || []).map(f => fieldHTML(f, sec[e3.propsTab]?.[f.name], e3.propsTab)).join('');
   bindFieldEvents(sec);
   bindAlertaField(sec);
 }
@@ -892,7 +984,7 @@ function bindFieldEvents(sec) {
     // For links: in footer-full it's "servicios". This is a known limitation — for now we use the field type.
     // Better: pass the field name. For now, find a key in sec.data whose value matches val.
     // Simpler approach: look up by which dataField uses this type.
-    const def = SECTIONS[sec.type];
+    const def = SECTIONS[sec.tipo];
     const ownerField = def?.dataFields?.find(df => {
       if (kind === 'cards')          return df.type === 'cards' || df.type === 'spec-cards';
       if (kind === 'logos')          return df.type === 'logos';
@@ -955,18 +1047,24 @@ function bindFieldEvents(sec) {
 async function guardarPlantilla() {
   if (!e3.activeTpl) return;
   try {
+    // 1) Persistir el catálogo de módulos (clones nuevos + ediciones).
+    await api('PUT', '/data/modulos', { modulos: e3.modulos });
+    // 2) Persistir la plantilla (solo punteros).
     const { plantilla } = await api('PATCH', `/plantillas/${e3.activeTpl.id_plantilla}`, {
       nombre: e3.activeTpl.nombre,
       descripcion: e3.activeTpl.descripcion,
-      secciones: e3.activeTpl.secciones,
+      id_menu: e3.activeTpl.id_menu,
+      id_modulos: e3.activeTpl.id_modulos,
     });
-    e3.activeTpl = plantilla; clearDirty();
+    e3.activeTpl = plantilla;
+    e3.activeTpl.id_modulos = Array.isArray(plantilla.id_modulos) ? plantilla.id_modulos : [];
+    clearDirty();
     const idx = e3.plantillas.findIndex(p => p.id_plantilla === plantilla.id_plantilla);
     if (idx >= 0) e3.plantillas[idx] = plantilla;
     renderSidebarList();
     notif(plantilla.activa
-      ? '✓ Guardado — cambios en vivo en /' + plantilla.tipo + '.html'
-      : '✓ Borrador guardado — activalo para verlo en /' + plantilla.tipo + '.html');
+      ? '✓ Guardado — cambios en vivo en /' + plantilla.tipo
+      : '✓ Borrador guardado — activalo para verlo en vivo');
   } catch (e) { notif('Error: ' + e.message, 'error'); }
 }
 
@@ -1059,25 +1157,16 @@ if (!tryInit()) {
 }
 
 /* ═══════════════════════════════════════════════════════
-   MÓDULOS — catálogo 3-views: tipos → variantes → editor
+   MÓDULOS — catálogo plano v2: lista → editor de módulo
    ═══════════════════════════════════════════════════════ */
-const MOD_GROUPS = [
-  { label: 'Globales',         types: ['nav','footer','footer-full','cta','spacer'] },
-  { label: 'Inicio',           types: ['hero','hero-centered','clientes','blog','services','about'] },
-  { label: 'Cableado',         types: ['cableado-hero'] },
-  { label: 'Fibra Óptica',     types: ['fibra-hero'] },
-  { label: 'Seguridad',        types: ['seguridad-hero'] },
-  { label: 'Soporte IT',       types: ['soporte-hero'] },
-  { label: 'Desarrollo',       types: ['desarrollo-hero'] },
-  { label: 'Blog / Artículos', types: ['blog-list','articulo-header','articulo-body'] },
-  { label: 'Clientes',         types: ['cliente-header','cliente-body'] },
-];
 const SIMPLE_FIELD_TYPES = ['text','textarea','number','color','toggle'];
+const GLOBAL_TIPOS_MOD = new Set(['nav','footer','footer-full']);
 
-let _modData       = {};   // { [type]: { variantes: [...] } }
-let _curModType    = null;
-let _curVariantId  = null;
-let _curModData    = { nombre: '', alerta: false, data: {}, design: {} };
+let _mods       = [];      // catálogo plano [{ id_modulo, tipo, nombre, data, design, alerta }]
+let _modUsos    = {};      // id_modulo → cantidad de plantillas que lo usan
+let _curModId   = null;
+let _curModType = null;
+let _curModData = { nombre: '', alerta: false, data: {}, design: {} };
 
 function _showView(id) {
   ['modulos-catalog-view','modulos-variants-view','modulos-editor-view'].forEach(v => {
@@ -1093,115 +1182,88 @@ function _showView(id) {
 
 window.loadModulos = async function() {
   try {
-    const res = await window.__svc.apiGet('/modulos');
-    _modData = res.modulos || {};
+    const [mres, pres] = await Promise.all([
+      window.__svc.apiGet('/modulos'),
+      window.__svc.apiGet('/plantillas').catch(() => ({ plantillas: [] })),
+    ]);
+    _mods = Array.isArray(mres.modulos) ? mres.modulos : [];
+    _modUsos = {};
+    (pres.plantillas || []).forEach(p => (p.id_modulos || []).forEach(id => { _modUsos[id] = (_modUsos[id] || 0) + 1; }));
     renderModCatalog();
   } catch(e) {
     window.__svc.showNotif('Error cargando módulos: ' + e.message, 'error');
   }
 };
 
-/* ── Vista 1: Catálogo ── */
+/* ── Vista 1: catálogo plano (un card por módulo, agrupado por tipo) ── */
 function renderModCatalog() {
   _showView('modulos-catalog-view');
   const grid = document.getElementById('modulos-grid');
   if (!grid) return;
-  grid.innerHTML = MOD_GROUPS.flatMap(group => {
-    const cards = group.types.filter(t => SECTIONS[t]).map(t => {
-      const sec = SECTIONS[t];
-      const count = (_modData[t]?.variantes || []).length;
-      const hasDesign = (sec.designFields || []).length > 0;
+  if (!_mods.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;padding:2rem;text-align:center;color:#94a3b8;font-size:.8rem;">No hay módulos todavía.</div>`;
+    return;
+  }
+  const byTipo = {};
+  _mods.forEach(m => (byTipo[m.tipo] = byTipo[m.tipo] || []).push(m));
+  grid.innerHTML = Object.entries(byTipo).flatMap(([tipo, mods]) => {
+    const label = SECTIONS[tipo]?.label || tipo;
+    const cards = mods.map(m => {
+      const usos = _modUsos[m.id_modulo] || 0;
+      const global = GLOBAL_TIPOS_MOD.has(m.tipo);
       return `<div class="section-card" style="margin:0;">
         <div class="section-card-body" style="padding:1rem;">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.75rem;">
-            <div>
-              <span style="font-size:1.4rem;line-height:1;display:block;margin-bottom:.35rem;"></span>
-              <div style="font-size:.78rem;font-weight:700;color:#1e293b;margin-bottom:.2rem;">${sec.label}</div>
-              <div style="font-size:.68rem;color:#64748b;line-height:1.4;">${sec.description || ''}</div>
+            <div style="min-width:0;">
+              <div style="font-size:.78rem;font-weight:700;color:#1e293b;margin-bottom:.2rem;overflow:hidden;text-overflow:ellipsis;">${escAttr(m.nombre || '(sin nombre)')}</div>
+              <div style="font-size:.62rem;color:#94a3b8;font-family:monospace;">#${m.id_modulo} · ${escAttr(label)}</div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem;flex-shrink:0;">
-              ${count > 0 ? `<span style="font-size:.5rem;background:#dbeafe;color:#1d4ed8;padding:.15rem .4rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;border-radius:2px;">${count} variante${count !== 1 ? 's' : ''}</span>` : ''}
-              ${hasDesign ? `<span style="font-size:.5rem;background:#f0fdf4;color:#166534;padding:.15rem .4rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;border-radius:2px;">DISEÑO</span>` : ''}
+              ${global ? `<span style="font-size:.5rem;background:#f3e8ff;color:#6b21a8;padding:.15rem .4rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:2px;">global</span>` : ''}
+              <span style="font-size:.5rem;background:${usos?'#dbeafe':'#f1f5f9'};color:${usos?'#1d4ed8':'#94a3b8'};padding:.15rem .4rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;border-radius:2px;">${usos} uso${usos!==1?'s':''}</span>
             </div>
           </div>
-          <button class="btn-edit-small" style="width:100%;" onclick="openModVariants('${t}')">Ver variantes</button>
+          <div style="display:flex;gap:.4rem;">
+            <button class="btn-edit-small" style="flex:1;" onclick="openModEditor(${m.id_modulo})">Editar</button>
+            <button class="btn-edit-small" style="background:#f1f5f9;color:#334155;" onclick="duplicarModulo(${m.id_modulo})" title="Duplicar"><i class="fa-solid fa-clone"></i></button>
+            <button class="btn-edit-small" style="background:#fee2e2;color:#991b1b;" onclick="eliminarModulo(${m.id_modulo})" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+          </div>
         </div>
       </div>`;
     });
-    if (!cards.length) return [];
     return [
-      `<div style="grid-column:1/-1;padding-top:.25rem;"><span style="font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#94a3b8;">${group.label}</span></div>`,
+      `<div style="grid-column:1/-1;padding-top:.25rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;">
+        <span style="font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#94a3b8;">${escAttr(label)} · ${mods.length}</span>
+        <button class="btn-edit-small" onclick="nuevoModulo('${tipo}')"><i class="fa-solid fa-plus"></i> Nuevo</button>
+      </div>`,
       ...cards,
     ];
   }).join('');
 }
 
-/* ── Vista 2: Lista de variantes ── */
-window.openModVariants = function(type) {
-  const sec = SECTIONS[type];
-  if (!sec) return;
-  _curModType = type;
-  _showView('modulos-variants-view');
-  const titleEl = document.getElementById('modulos-variants-title');
-  const descEl  = document.getElementById('modulos-variants-desc');
-  if (titleEl) titleEl.innerHTML = `${sec.icon || ''} ${sec.label}`;
-  if (descEl)  descEl.textContent  = sec.description || '';
-  renderVariantsList();
-};
-
-function renderVariantsList() {
-  const tbody = document.getElementById('modulos-variants-tbody');
-  if (!tbody) return;
-  const variantes = _modData[_curModType]?.variantes || [];
-  if (!variantes.length) {
-    tbody.innerHTML = `<tr><td colspan="2" style="text-align:center;padding:2rem;color:var(--slate-400);font-size:.75rem;">Sin variantes. Creá una nueva.</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = variantes.map((v, idx) => {
-    const isFirst = idx === 0;
-    const canDelete = variantes.length > 1;
-    return `<tr>
-      <td style="font-size:.78rem;font-weight:600;color:var(--slate-800);">
-        ${v.nombre || v.id}
-        ${isFirst ? `<span style="font-size:.5rem;background:#f1f5f9;color:#64748b;padding:.1rem .35rem;margin-left:.4rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-radius:2px;">DEFAULT</span>` : ''}
-      </td>
-      <td style="text-align:right;padding-right:1rem;">
-        <div style="display:flex;gap:.4rem;justify-content:flex-end;">
-          <button class="btn-edit-small" onclick="openModEditor('${_curModType}','${v.id}')">Editar</button>
-          <button class="btn-edit-small" style="background:#f1f5f9;color:#334155;" onclick="duplicarVariante('${_curModType}','${v.id}')">Duplicar</button>
-          ${canDelete ? `<button class="btn-edit-small" style="background:#fee2e2;color:#991b1b;" onclick="eliminarVariante('${_curModType}','${v.id}')">Eliminar</button>` : ''}
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-}
-
-/* ── Vista 3: Editor de variante ── */
-window.openModEditor = function(type, variantId) {
-  const sec = SECTIONS[type];
-  if (!sec) return;
-  _curModType   = type;
-  _curVariantId = variantId;
-
-  const variantes = _modData[type]?.variantes || [];
-  const variant   = variantes.find(v => v.id === variantId) || variantes[0];
-  if (!variant) return;
-
+/* ── Vista 2: editor de un módulo del catálogo ── */
+window.openModEditor = function(id) {
+  const m = _mods.find(x => x.id_modulo === Number(id));
+  if (!m) return;
+  const sec = SECTIONS[m.tipo];
+  if (!sec) { window.__svc.showNotif('Tipo de módulo desconocido: ' + m.tipo, 'error'); return; }
+  _curModId   = m.id_modulo;
+  _curModType = m.tipo;
   _curModData = {
-    nombre: variant.nombre || '',
-    alerta: variant.alerta === true,
-    data:   { ...sec.defaultData,   ...(variant.data   || {}) },
-    design: { ...sec.defaultDesign, ...(variant.design || {}) },
+    nombre: m.nombre || '',
+    alerta: m.alerta === true,
+    data:   { ...sec.defaultData,   ...(m.data   || {}) },
+    design: { ...sec.defaultDesign, ...(m.design || {}) },
   };
 
   const titleEl = document.getElementById('modulos-editor-title');
   const nameEl  = document.getElementById('modulos-editor-variant-name');
-  if (titleEl) titleEl.innerHTML = `${sec.icon || ''} ${sec.label}`;
-  if (nameEl)  nameEl.textContent  = variant.nombre || '';
+  if (titleEl) titleEl.innerHTML = `${sec.icon || ''} ${sec.label} · #${m.id_modulo}`;
+  if (nameEl)  nameEl.textContent  = m.nombre || '';
 
   const nameInput = document.getElementById('modulos-variant-name-input');
   if (nameInput) {
-    nameInput.value = variant.nombre || '';
+    nameInput.value = m.nombre || '';
     nameInput.oninput = () => { _curModData.nombre = nameInput.value; };
   }
 
@@ -1217,9 +1279,10 @@ window.openModEditor = function(type, variantId) {
   const designCard = document.getElementById('modulos-editor-design-card');
   if (designCard) designCard.style.display = (sec.designFields || []).length ? '' : 'none';
 
-  renderModContentCard(type);
+  renderModContentCard(m.tipo);
 
   _showView('modulos-editor-view');
+  previewCurrentVariant({ scroll: false });   // preview en vivo abierto desde el inicio
 };
 
 /* ── Gestión de contenido global embebida (blog posts / clientes) ──
@@ -1325,6 +1388,7 @@ function renderModFieldGroup(group, fields, containerId) {
         const txt = container.querySelector(`[data-mf="${field}-txt"]`);
         if (txt) txt.value = val;
       }
+      scheduleLivePreview();
     });
     if (inp.dataset.mf.endsWith('-txt')) {
       inp.addEventListener('input', () => {
@@ -1335,13 +1399,23 @@ function renderModFieldGroup(group, fields, containerId) {
           _curModData[inp.dataset.mg] = _curModData[inp.dataset.mg] || {};
           _curModData[inp.dataset.mg][realField] = inp.value;
         }
+        scheduleLivePreview();
       });
     }
   });
 }
 
-/* ── Preview de variante ── */
-function previewCurrentVariant() {
+/* ── Preview en vivo (debounced): actualiza si el preview ya está abierto ── */
+let _previewTimer = null;
+function scheduleLivePreview() {
+  const card = document.getElementById('modulos-preview-card');
+  if (!card || card.style.display === 'none') return;
+  clearTimeout(_previewTimer);
+  _previewTimer = setTimeout(() => previewCurrentVariant({ scroll: false }), 200);
+}
+
+/* ── Preview del módulo ── */
+function previewCurrentVariant(opts = {}) {
   if (!_curModType) return;
   const sec = SECTIONS[_curModType];
   if (!sec) return;
@@ -1375,42 +1449,63 @@ function previewCurrentVariant() {
     } catch(e) { /* cross-origin sandbox */ }
   };
 
-  // Scroll preview into view
-  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Scroll preview into view (solo en apertura manual, no en updates en vivo)
+  if (opts.scroll !== false) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/* ── Duplicar variante ── */
-window.duplicarVariante = async function(type, variantId) {
-  const variantes = _modData[type]?.variantes || [];
-  const origin = variantes.find(v => v.id === variantId);
-  if (!origin) return;
-  const nombre = `${origin.nombre} (copia)`;
+/* ── Duplicar módulo ── */
+window.duplicarModulo = async function(id) {
+  const m = _mods.find(x => x.id_modulo === Number(id));
+  if (!m) return;
   try {
-    const res = await window.__svc.apiPost(`/modulos/${type}/variantes`, {
-      nombre,
-      data:   JSON.parse(JSON.stringify(origin.data || {})),
-      design: JSON.parse(JSON.stringify(origin.design || {})),
+    const res = await window.__svc.apiPost('/modulos', {
+      tipo:   m.tipo,
+      nombre: `${m.nombre} (copia)`,
+      data:   JSON.parse(JSON.stringify(m.data   || {})),
+      design: JSON.parse(JSON.stringify(m.design || {})),
+      alerta: m.alerta === true,
     });
-    if (!_modData[type]) _modData[type] = { variantes: [] };
-    _modData[type].variantes.push(res.variante);
-    renderVariantsList();
-    window.__svc.showNotif('Variante duplicada', 'success');
+    _mods.push(res.modulo);
+    renderModCatalog();
+    window.__svc.showNotif('Módulo duplicado', 'success');
   } catch(e) {
     window.__svc.showNotif('Error: ' + e.message, 'error');
   }
 };
 
-/* ── Eliminar variante ── */
-window.eliminarVariante = async function(type, variantId) {
-  const variantes = _modData[type]?.variantes || [];
-  const v = variantes.find(x => x.id === variantId);
-  if (!v) return;
-  if (!confirm(`¿Eliminar la variante "${v.nombre}"?`)) return;
+/* ── Eliminar módulo (guarda si está referenciado) ── */
+window.eliminarModulo = async function(id) {
+  const m = _mods.find(x => x.id_modulo === Number(id));
+  if (!m) return;
+  const usos = _modUsos[m.id_modulo] || 0;
+  if (usos > 0) { window.__svc.showNotif(`No se puede eliminar: lo usan ${usos} plantilla(s). Quitalo de ellas primero.`, 'error'); return; }
+  if (!confirm(`¿Eliminar el módulo "${m.nombre}" (#${m.id_modulo})?`)) return;
   try {
-    await window.__svc.apiDelete(`/modulos/${type}/variantes/${variantId}`);
-    _modData[type].variantes = _modData[type].variantes.filter(x => x.id !== variantId);
-    renderVariantsList();
-    window.__svc.showNotif('Variante eliminada', 'success');
+    await window.__svc.apiDelete(`/modulos/${m.id_modulo}`);
+    _mods = _mods.filter(x => x.id_modulo !== m.id_modulo);
+    renderModCatalog();
+    window.__svc.showNotif('Módulo eliminado', 'success');
+  } catch(e) {
+    window.__svc.showNotif('Error: ' + e.message, 'error');
+  }
+};
+
+/* ── Crear módulo nuevo de un tipo ── */
+window.nuevoModulo = async function(tipo) {
+  const sec = SECTIONS[tipo];
+  if (!sec) return;
+  const nombre = prompt(`Nombre del nuevo módulo (${sec.label}):`, `${sec.label} — nuevo`);
+  if (!nombre?.trim()) return;
+  try {
+    const res = await window.__svc.apiPost('/modulos', {
+      tipo,
+      nombre: nombre.trim(),
+      data:   JSON.parse(JSON.stringify(sec.defaultData   || {})),
+      design: JSON.parse(JSON.stringify(sec.defaultDesign || {})),
+    });
+    _mods.push(res.modulo);
+    window.__svc.showNotif('Módulo creado', 'success');
+    openModEditor(res.modulo.id_modulo);
   } catch(e) {
     window.__svc.showNotif('Error: ' + e.message, 'error');
   }
@@ -1425,54 +1520,26 @@ document.getElementById('modulos-preview-close-btn')?.addEventListener('click', 
   if (card) card.style.display = 'none';
 });
 
-/* ── Botón: volver al catálogo ── */
+/* ── Botón: volver al catálogo (desde editor o vista vieja) ── */
 document.getElementById('modulos-variants-back-btn')?.addEventListener('click', renderModCatalog);
+document.getElementById('modulos-back-btn')?.addEventListener('click', renderModCatalog);
 
-/* ── Botón: volver a variantes ── */
-document.getElementById('modulos-back-btn')?.addEventListener('click', () => openModVariants(_curModType));
-
-/* ── Botón: nueva variante ── */
-document.getElementById('modulos-add-variant-btn')?.addEventListener('click', async () => {
-  if (!_curModType) return;
-  const sec = SECTIONS[_curModType];
-  const nombre = prompt('Nombre para la nueva variante:');
-  if (!nombre?.trim()) return;
-  try {
-    const res = await window.__svc.apiPost(`/modulos/${_curModType}/variantes`, {
-      nombre: nombre.trim(),
-      data:   JSON.parse(JSON.stringify(sec?.defaultData   || {})),
-      design: JSON.parse(JSON.stringify(sec?.defaultDesign || {})),
-    });
-    if (!_modData[_curModType]) _modData[_curModType] = { variantes: [] };
-    _modData[_curModType].variantes.push(res.variante);
-    renderVariantsList();
-    window.__svc.showNotif('Variante creada', 'success');
-    // Open editor for the new variant directly
-    openModEditor(_curModType, res.variante.id);
-  } catch(e) {
-    window.__svc.showNotif('Error: ' + e.message, 'error');
-  }
-});
-
-/* ── Botón: guardar variante ── */
+/* ── Botón: guardar módulo ── */
 document.getElementById('modulos-save-btn')?.addEventListener('click', async () => {
-  if (!_curModType || !_curVariantId) return;
+  if (!_curModId) return;
   const nombre = document.getElementById('modulos-variant-name-input')?.value?.trim() || _curModData.nombre;
   try {
-    const res = await window.__svc.apiPut(`/modulos/${_curModType}/variantes/${_curVariantId}`, {
+    const res = await window.__svc.apiPut(`/modulos/${_curModId}`, {
       nombre,
       alerta: _curModData.alerta,
       data:   _curModData.data,
       design: _curModData.design,
     });
-    // Update local cache
-    const variantes = _modData[_curModType]?.variantes || [];
-    const idx = variantes.findIndex(v => v.id === _curVariantId);
-    if (idx !== -1) _modData[_curModType].variantes[idx] = res.variante;
+    const idx = _mods.findIndex(m => m.id_modulo === _curModId);
+    if (idx !== -1) _mods[idx] = res.modulo;
     const nameEl = document.getElementById('modulos-editor-variant-name');
     if (nameEl) nameEl.textContent = nombre;
-    window.__svc.showNotif('Variante guardada', 'success');
-    // Auto-show preview after save
+    window.__svc.showNotif('Módulo guardado', 'success');
     previewCurrentVariant();
   } catch(e) {
     window.__svc.showNotif('Error: ' + e.message, 'error');

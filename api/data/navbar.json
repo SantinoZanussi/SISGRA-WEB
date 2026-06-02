@@ -1,65 +1,58 @@
 {
   "botones": [
     {
-      "id_boton": "btn-index",
+      "id_menu": 1,
       "titulo": "Inicio",
-      "modulo": "home",
       "href": "/",
-      "id_plantilla": null,
+      "grupo": null,
       "orden": 1,
       "activo": true
     },
     {
-      "id_boton": "btn-blog",
+      "id_menu": 2,
       "titulo": "Blog",
-      "modulo": "blog",
       "href": "/html/blog",
-      "id_plantilla": null,
+      "grupo": null,
       "orden": 2,
       "activo": true
     },
     {
-      "id_boton": "btn-cableado",
+      "id_menu": 3,
       "titulo": "Cableado Estructurado",
-      "modulo": "cableado",
       "href": "/html/cableado_estructurado",
-      "id_plantilla": null,
+      "grupo": null,
       "orden": 3,
       "activo": true
     },
     {
-      "id_boton": "btn-fibra",
+      "id_menu": 4,
       "titulo": "Fibra Óptica",
-      "modulo": "fibra",
       "href": "/html/fibra_optica",
-      "id_plantilla": null,
+      "grupo": null,
       "orden": 4,
       "activo": true
     },
     {
-      "id_boton": "btn-seguridad",
+      "id_menu": 5,
       "titulo": "Seguridad Electrónica",
-      "modulo": "seguridad",
       "href": "/html/seguridad",
-      "id_plantilla": null,
+      "grupo": null,
       "orden": 5,
       "activo": true
     },
     {
-      "id_boton": "btn-soporte",
+      "id_menu": 6,
       "titulo": "Soporte IT",
-      "modulo": "soporte",
       "href": "/html/soporte_it",
-      "id_plantilla": null,
+      "grupo": null,
       "orden": 6,
       "activo": true
     },
     {
-      "id_boton": "btn-desarrollo",
+      "id_menu": 7,
       "titulo": "Desarrollo de Software",
-      "modulo": "desarrollo",
       "href": "/html/desarrollo",
-      "id_plantilla": null,
+      "grupo": null,
       "orden": 7,
       "activo": true
     }

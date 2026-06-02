@@ -111,7 +111,7 @@
           </span>
         </div>
         <div class="topbar-actions">
-          <button type="button" class="btn-secondary btn-hide-mobile" onclick="window.open('/index.html','_blank')">Vista previa</button>
+          <button type="button" class="btn-secondary btn-hide-mobile" onclick="window.open('/index.html','_blank')">Abrir el Inicio</button>
           <button class="btn-save" id="btn-guardar">Guardar cambios</button>
         </div>
       </div>
@@ -168,7 +168,7 @@
           <div id="modulos-catalog-view">
             <div class="page-header">
               <div class="page-title">Catálogo de Módulos</div>
-              <div class="page-desc">Seleccioná un módulo para ver y gestionar sus variantes de diseño.</div>
+              <div class="page-desc">Cada módulo es una pieza reutilizable. Editá su contenido y diseño; los cambios impactan en las plantillas que lo usan.</div>
             </div>
             <div id="modulos-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;"></div>
           </div>
@@ -206,8 +206,8 @@
                 <button class="btn-save" id="modulos-save-btn">Guardar</button>
               </div>
             </div>
-            <div style="display:flex;flex-direction:column;max-width:640px;gap:1rem;">
-              <!-- Nombre de la variante -->
+            <div style="display:grid;gap:1rem;align-items:start;">
+"              <!-- Nombre de la variante -->             
               <div class="section-card">
                 <div class="section-card-body" style="padding:1rem;">
                   <label class="form-label">Nombre de la variante</label>
@@ -244,7 +244,7 @@
                 <div class="section-card-body" id="modulos-editor-design-fields" style="padding:1rem;display:flex;flex-direction:column;gap:.875rem;"></div>
               </div>
               <!-- Preview (visible después de guardar o al hacer click en Preview) -->
-              <div class="section-card" id="modulos-preview-card" style="display:none;">
+              <div class="section-card" id="modulos-preview-card" style="display:none;grid-column:1/-1;">
                 <div class="section-card-header" style="display:flex;align-items:center;justify-content:space-between;">
                   <span class="section-card-title">Preview</span>
                   <button class="btn-secondary" id="modulos-preview-close-btn" style="padding:.25rem .625rem;font-size:.7rem;"><i class="fa-solid fa-xmark"></i> Cerrar</button>
@@ -377,6 +377,12 @@
           <select class="form-select" id="c-estado-perfil">
             <option value="borrador">Borrador (no visible)</option>
             <option value="publicado">Publicado</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Mostrar en carrusel</label>
+          <select class="form-select" id="c-activo">
+            <option value="si">Sí (activo)</option>
+            <option value="no">No (oculto)</option>
           </select>
         </div>
       </div>

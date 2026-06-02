@@ -6,6 +6,7 @@ const DATA_DIR    = path.join(__dirname, '..', 'data');
 const CONFIG_FILE = path.join(DATA_DIR, 'alertas_config.json');
 const LOG_FILE    = path.join(DATA_DIR, 'alertas_log.json');
 const PLT_FILE    = path.join(DATA_DIR, 'plantillas.json');
+const MOD_FILE    = path.join(DATA_DIR, 'modulos.json');
 
 const ID_VENCIMIENTO = 1;
 const CATALOGO_ALERTAS = {
@@ -114,29 +115,38 @@ function leerPlantillas() {
   catch { return { plantillas: [] }; }
 }
 
+function leerModulos() {
+  if (!fs.existsSync(MOD_FILE)) return [];
+  try { return JSON.parse(fs.readFileSync(MOD_FILE, 'utf-8')).modulos || []; }
+  catch { return []; }
+}
+
 function estaVencida(p) {
   return p.activa && p.fecha_fin && Date.now() > new Date(p.fecha_fin).getTime();
 }
 
 function detectarVencimientos() {
   const { plantillas } = leerPlantillas();
+  const byId = new Map(leerModulos().map(m => [m.id_modulo, m]));
   const log = leerLog();
   const vencidos = [];
   let logChanged = false;
 
   for (const p of plantillas) {
     if (!estaVencida(p)) continue;
-    for (const sec of (p.secciones || []).filter(s => s.alerta === true)) {
-      const key = `venc|${p.id_plantilla}|${sec.id}|${p.fecha_fin}`;
-      const alerta = `${CATALOGO_ALERTAS[ID_VENCIMIENTO]}: módulo "${sec.type || 'módulo'}" de la plantilla "${p.nombre}" (${p.tipo}) venció el ${p.fecha_fin}`;
+    // Resolver los módulos de la plantilla y quedarse con los marcados con alerta.
+    const mods = (p.id_modulos || []).map(id => byId.get(id)).filter(Boolean);
+    for (const m of mods.filter(mod => mod.alerta === true)) {
+      const key = `venc|${p.id_plantilla}|${m.id_modulo}|${p.fecha_fin}`;
+      const alerta = `${CATALOGO_ALERTAS[ID_VENCIMIENTO]}: módulo "${m.nombre || m.tipo}" de la plantilla "${p.nombre}" (${p.tipo}) venció el ${p.fecha_fin}`;
       vencidos.push({
         id_alerta: ID_VENCIMIENTO,
         alerta,
         id_plantilla:     p.id_plantilla,
         nombre_plantilla: p.nombre,
         tipo_plantilla:   p.tipo,
-        id_seccion:       sec.id,
-        tipo_seccion:     sec.type || null,
+        id_modulo:        m.id_modulo,
+        tipo_modulo:      m.tipo || null,
         fecha_fin:        p.fecha_fin,
       });
 
@@ -148,7 +158,7 @@ function detectarVencimientos() {
           alerta,
           date_time_hour: new Date().toISOString(),
           estado: 'detectado',
-          meta: { id_plantilla: p.id_plantilla, id_seccion: sec.id, tipo_seccion: sec.type, fecha_fin: p.fecha_fin },
+          meta: { id_plantilla: p.id_plantilla, id_modulo: m.id_modulo, tipo_modulo: m.tipo, fecha_fin: p.fecha_fin },
         });
         logChanged = true;
       }

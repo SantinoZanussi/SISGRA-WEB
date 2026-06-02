@@ -1620,6 +1620,7 @@ function openNewCliente(){
   ['c-name','c-img','c-titulo-proyecto','c-subtitulo','c-sector','c-ubicacion','c-anio','c-servicios','c-imagen-dest']
     .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
   const ep=document.getElementById('c-estado-perfil'); if(ep) ep.value='borrador';
+  const ca=document.getElementById('c-activo'); if(ca) ca.value='si';
   const cc=document.getElementById('c-content-cliente'); if(cc) cc.innerHTML='';
   updateImgPreview('c-img','c-img-preview');
   updateImgPreview('c-imagen-dest','c-imagen-dest-preview');
@@ -1636,6 +1637,7 @@ window.editCliente = function(id){
   document.getElementById('c-name').value            = c.nombre||'';
   document.getElementById('c-img').value             = c.imagen||'';
   document.getElementById('c-estado-perfil').value   = c.estado_perfil||'borrador';
+  document.getElementById('c-activo').value          = c.activo!==false ? 'si' : 'no';
   document.getElementById('c-titulo-proyecto').value = c.titulo_proyecto||'';
   document.getElementById('c-subtitulo').value       = c.subtitulo||'';
   document.getElementById('c-sector').value          = c.sector||'';
@@ -1653,6 +1655,7 @@ async function saveCliente(){
   const name         = document.getElementById('c-name')?.value.trim();
   const img          = document.getElementById('c-img')?.value.trim();
   const estadoPerfil = document.getElementById('c-estado-perfil')?.value || 'borrador';
+  const activo       = document.getElementById('c-activo')?.value !== 'no';
   const tituloProy   = document.getElementById('c-titulo-proyecto')?.value.trim() || '';
   const subtitulo    = document.getElementById('c-subtitulo')?.value.trim() || '';
   const sector       = document.getElementById('c-sector')?.value.trim() || '';
@@ -1666,7 +1669,7 @@ async function saveCliente(){
   if(state.editingClienteId){
     const list = (state.clientes?.clientes||[]).map(c =>
       c.id===state.editingClienteId ? {
-        ...c, nombre:name, imagen:img||c.imagen,
+        ...c, nombre:name, imagen:img||c.imagen, activo,
         estado_perfil:estadoPerfil, titulo_proyecto:tituloProy,
         subtitulo, sector, ubicacion, anio, servicios, imagen_destacada:imagenDest, contenido,
       } : c
@@ -1674,7 +1677,7 @@ async function saveCliente(){
     updated = { ...(state.clientes||{}), clientes:list };
   } else {
     const newCliente = {
-      id:'c'+Date.now(), nombre:name, imagen:img||'', url:'', activo:true,
+      id:'c'+Date.now(), nombre:name, imagen:img||'', url:'', activo,
       estado_perfil:estadoPerfil, titulo_proyecto:tituloProy,
       subtitulo, sector, ubicacion, anio, servicios, imagen_destacada:imagenDest, contenido,
     };
@@ -1737,8 +1740,6 @@ async function loadNavbarItems() {
   }
 }
 
-const NAV_SISTEMA = ['btn-index','btn-blog','btn-cableado','btn-fibra','btn-seguridad','btn-soporte','btn-desarrollo'];
-
 function renderNavbarTable() {
   const tbody = document.getElementById('navbar-tbody');
   if (!tbody) return;
@@ -1747,24 +1748,29 @@ function renderNavbarTable() {
     return;
   }
   tbody.innerHTML = navbarItems
-    .sort((a, b) => a.orden - b.orden)
+    .slice()
+    .sort((a, b) => (a.orden || 0) - (b.orden || 0))
     .map(b => {
+      const esHome = b.href === '/';
       const plantillaCell = b.plantilla
-        ? `<span style="font-size:.75rem;color:#475569;">${b.titulo} - ID: ${b.plantilla.id}</span>`
-        : `<span style="font-size:.75rem;color:#94a3b8;">Sin plantilla</span>`;
+        ? `<span style="font-size:.75rem;color:#475569;">${b.plantilla.nombre} <span style="color:#94a3b8;">#${b.plantilla.id}</span></span>`
+        : `<span style="font-size:.75rem;color:#94a3b8;">${b.href || 'Sin plantilla'}</span>`;
       const estado = b.activo !== false
         ? '<span class="badge-active">Activo</span>'
         : '<span class="badge-inactive">Inactivo</span>';
       let acciones;
-      if (b.id_boton === 'btn-index') {
+      if (esHome) {
         acciones = `<span style="font-size:.7rem;color:#475569;font-style:italic;">🔒 bloqueado</span>`;
       } else {
-        const editBtn = `<button class="btn-edit-small" onclick="editarNavItem('${b.id_boton}')">Editar</button>`;
-        const delBtn = `<button class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="eliminarNavItem('${b.id_boton}')">Eliminar</button>`;
+        const editBtn = `<button class="btn-edit-small" onclick="editarNavItem(${b.id_menu})">Editar</button>`;
+        const delBtn = `<button class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="eliminarNavItem(${b.id_menu})">Eliminar</button>`;
         acciones = editBtn + ' ' + delBtn;
       }
+      const grupoTag = b.grupo
+        ? ` <span style="font-size:.5rem;background:#e0e7ff;color:#4338ca;padding:.1rem .35rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border-radius:2px;">${b.grupo}</span>`
+        : '';
       return `<tr>
-        <td>${b.titulo}</td>
+        <td>${b.titulo}${grupoTag}</td>
         <td>${b.orden}</td>
         <td>${plantillaCell}</td>
         <td>${estado}</td>
@@ -1773,23 +1779,23 @@ function renderNavbarTable() {
     }).join('');
 }
 
-window.eliminarNavItem = function(id_boton) {
-  const b = navbarItems.find(x => x.id_boton === id_boton);
+window.eliminarNavItem = function(id_menu) {
+  const b = navbarItems.find(x => x.id_menu === Number(id_menu));
   if (!b) return;
-  if (b.id_plantilla) {
+  if (b.esCustom) {
     document.getElementById('nav-delete-warning-name').textContent = `"${b.titulo}"`;
-    document.getElementById('nav-delete-confirm-btn').onclick = () => doEliminarNavItem(id_boton);
+    document.getElementById('nav-delete-confirm-btn').onclick = () => doEliminarNavItem(b.id_menu);
     window.__svc.openModal('modal-confirm-nav-delete');
   } else {
     if (!confirm(`¿Eliminar "${b.titulo}" del navbar?`)) return;
-    doEliminarNavItem(id_boton);
+    doEliminarNavItem(b.id_menu);
   }
 };
 
-async function doEliminarNavItem(id_boton) {
+async function doEliminarNavItem(id_menu) {
   window.__svc.closeModal('modal-confirm-nav-delete');
   try {
-    await window.__svc.apiDelete(`/nav/botones/${id_boton}`);
+    await window.__svc.apiDelete(`/nav/botones/${id_menu}`);
     window.__svc.showNotif('Ítem eliminado', 'success');
     loadNavbarItems();
   } catch(e) {
@@ -1797,18 +1803,17 @@ async function doEliminarNavItem(id_boton) {
   }
 }
 
-window.editarNavItem = function(id_boton) {
-  const b = navbarItems.find(x => x.id_boton === id_boton);
+window.editarNavItem = function(id_menu) {
+  const b = navbarItems.find(x => x.id_menu === Number(id_menu));
   if (!b) return;
-  document.getElementById('nav-edit-id').value = id_boton;
+  document.getElementById('nav-edit-id').value = b.id_menu;
   document.getElementById('nav-edit-titulo').value = b.titulo || '';
-  document.getElementById('nav-edit-href').value = b.href || '';
   document.getElementById('nav-edit-orden').value = b.orden || '';
   document.getElementById('nav-edit-activo').value = b.activo !== false ? 'visible' : 'oculto';
-  // If custom HTML page, show href as read-only info
+  // Recrear el campo URL en cada apertura (evita referencias nulas si antes quedó read-only).
   const hrefField = document.getElementById('nav-edit-href-field');
-  if (b.id_plantilla) {
-    hrefField.innerHTML = `<label class="form-label">URL de destino</label><div style="font-size:.78rem;color:#94a3b8;padding:.5rem 0;">Página HTML propia — la URL se gestiona desde Plantillas.</div>`;
+  if (b.esCustom) {
+    hrefField.innerHTML = `<label class="form-label">URL de destino</label><div style="font-size:.78rem;color:#94a3b8;padding:.5rem 0;">Página HTML propia (<code>${b.href || ''}</code>) — su contenido se edita desde Plantillas.</div>`;
   } else {
     hrefField.innerHTML = `<label class="form-label">URL de destino</label><input class="form-input" id="nav-edit-href" placeholder="ej. /html/servicios o https://…" value="${(b.href||'').replace(/"/g,'&quot;')}">`;
   }

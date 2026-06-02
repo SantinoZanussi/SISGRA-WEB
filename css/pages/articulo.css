@@ -184,3 +184,29 @@ blockquote {
     font-size: 0.75rem;
     color: #999;
 }
+
+/* El CTA es un <a> (inline): inline-block evita que la caja se rompa al envolver el texto. */
+.article-cta .btn-hero-primary {
+    display: inline-block;
+    max-width: 100%;
+    line-height: 1.4;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+    .article-header { padding: 7rem 0 3rem; }
+    .article-meta { gap: 1rem; flex-wrap: wrap; }
+    .article-lead { font-size: 1.05rem; }
+    .article-grid { gap: 2.5rem; padding: 3rem 0; }
+    .featured-image { height: 220px; margin-bottom: 2rem; }
+    .article-body { font-size: .95rem; }
+    .article-cta { padding: 1.5rem; margin-top: 2.5rem; }
+    .article-cta .btn-hero-primary {
+        padding: .85rem 1.25rem;
+        letter-spacing: .12em;
+        white-space: normal;
+        text-align: center;
+        width: 100%;
+    }
+    .sidebar-box { padding: 1.5rem; }
+}

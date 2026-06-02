@@ -48,8 +48,9 @@ export function cssFilesFor(tipo, sections) {
   const base = TIPO_CSS[tipo] || INTERNAL_DEFAULT_CSS;
   const files = [...base];
   (sections || []).forEach(s => {
-    if (GLOBAL_MODULE_TYPES.has(s.type)) return;
-    const pg = TYPE_TO_PAGE[s.type];
+    const t = s.type || s.tipo;   // v1 usa `type`, v2 (módulos) usa `tipo`
+    if (GLOBAL_MODULE_TYPES.has(t)) return;
+    const pg = TYPE_TO_PAGE[t];
     if (!pg) return;
     (TIPO_CSS[pg] || []).forEach(f => {
       if (f.includes('/css/pages/') && !files.includes(f)) files.push(f);

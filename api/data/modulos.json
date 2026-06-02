@@ -1,1072 +1,515 @@
 {
-  "modulos": {
-    "hero": {
-      "variantes": [
-        {
-          "id": "hero-v1",
-          "nombre": "Hero — SISGRA Oscuro",
-          "data": {
-            "badge": "INFRAESTRUCTURA DE ELITE",
-            "titulo1": "Conectamos el futuro",
-            "titulo2": "de su empresa.",
-            "descripcion": "Diseñamos e implementamos infraestructura tecnológica para las empresas líderes de Argentina. 25 años de trayectoria y más de 500 clientes nos respaldan.",
-            "boton_primario": "Ver Soluciones",
-            "boton_secundario": "Conocer más",
-            "stat1_numero": "+25",
-            "stat1_label": "AÑOS DE EXPERIENCIA",
-            "stat2_numero": "+500",
-            "stat2_label": "Clientes satisfechos"
-          },
-          "design": {}
-        },
-        {
-          "id": "hero-v2",
-          "nombre": "Hero — Fondo Blanco",
-          "data": {
-            "badge": "INFRAESTRUCTURA DE ELITE",
-            "titulo1": "Conectamos el futuro",
-            "titulo2": "de su empresa.",
-            "descripcion": "Diseñamos e implementamos infraestructura tecnológica para las empresas líderes de Argentina. 25 años de trayectoria y más de 500 clientes nos respaldan.",
-            "boton_primario": "Ver Soluciones",
-            "boton_secundario": "Conocer más",
-            "stat1_numero": "+25",
-            "stat1_label": "AÑOS DE EXPERIENCIA",
-            "stat2_numero": "+500",
-            "stat2_label": "Clientes satisfechos"
-          },
-          "design": {
-            "bg": "#ffffff",
-            "titleColor": "#0f172a",
-            "accentColor": "#2563eb",
-            "btnBg": "#2563eb"
-          }
-        },
-        {
-          "id": "hero-v3",
-          "nombre": "Hero — Noche Azul",
-          "data": {
-            "badge": "INFRAESTRUCTURA DE ELITE",
-            "titulo1": "Conectamos el futuro",
-            "titulo2": "de su empresa.",
-            "descripcion": "Diseñamos e implementamos infraestructura tecnológica para las empresas líderes de Argentina. 25 años de trayectoria y más de 500 clientes nos respaldan.",
-            "boton_primario": "Ver Soluciones",
-            "boton_secundario": "Conocer más",
-            "stat1_numero": "+25",
-            "stat1_label": "AÑOS DE EXPERIENCIA",
-            "stat2_numero": "+500",
-            "stat2_label": "Clientes satisfechos"
-          },
-          "design": {
-            "bg": "#0f172a",
-            "titleColor": "#f1f5f9",
-            "accentColor": "#60a5fa",
-            "btnBg": "#3b82f6"
-          }
-        }
-      ]
-    },
-    "hero-centered": {
-      "variantes": [
-        {
-          "id": "hero-centered-v1",
-          "nombre": "Hero Centrado — SISGRA",
-          "data": {
-            "p2_eyebrow": "25 años de confianza",
-            "p2_titulo": "Infraestructura que no falla.",
-            "p2_subtitulo": "Conectamos el futuro de tu empresa.",
-            "p2_descripcion": "Diseñamos, instalamos y mantenemos la infraestructura tecnológica que impulsa a las empresas líderes.",
-            "p2_boton_primario": "Solicitar presupuesto",
-            "p2_boton_secundario": "Ver proyectos",
-            "p2_tag1": "Certificación Cat8",
-            "p2_tag2": "Fibra Óptica",
-            "p2_tag3": "Soporte 24/7",
-            "p2_metric1_num": "+500",
-            "p2_metric1_label": "Clientes activos",
-            "p2_metric2_num": "99.9%",
-            "p2_metric2_label": "Disponibilidad",
-            "p2_metric3_num": "25+",
-            "p2_metric3_label": "Años de experiencia"
-          },
-          "design": {}
-        },
-        {
-          "id": "hero-centered-v2",
-          "nombre": "Hero Centrado — Claro",
-          "data": {
-            "p2_eyebrow": "25 años de confianza",
-            "p2_titulo": "Infraestructura que no falla.",
-            "p2_subtitulo": "Conectamos el futuro de tu empresa.",
-            "p2_descripcion": "Diseñamos, instalamos y mantenemos la infraestructura tecnológica que impulsa a las empresas líderes.",
-            "p2_boton_primario": "Solicitar presupuesto",
-            "p2_boton_secundario": "Ver proyectos",
-            "p2_tag1": "Certificación Cat8",
-            "p2_tag2": "Fibra Óptica",
-            "p2_tag3": "Soporte 24/7",
-            "p2_metric1_num": "+500",
-            "p2_metric1_label": "Clientes activos",
-            "p2_metric2_num": "99.9%",
-            "p2_metric2_label": "Disponibilidad",
-            "p2_metric3_num": "25+",
-            "p2_metric3_label": "Años de experiencia"
-          },
-          "design": {
-            "bg": "#f8fafc",
-            "titleColor": "#0f172a",
-            "accentColor": "#1d4ed8",
-            "btnBg": "#1d4ed8"
-          }
-        },
-        {
-          "id": "hero-centered-v3",
-          "nombre": "Hero Centrado — Marino",
-          "data": {
-            "p2_eyebrow": "25 años de confianza",
-            "p2_titulo": "Infraestructura que no falla.",
-            "p2_subtitulo": "Conectamos el futuro de tu empresa.",
-            "p2_descripcion": "Diseñamos, instalamos y mantenemos la infraestructura tecnológica que impulsa a las empresas líderes.",
-            "p2_boton_primario": "Solicitar presupuesto",
-            "p2_boton_secundario": "Ver proyectos",
-            "p2_tag1": "Certificación Cat8",
-            "p2_tag2": "Fibra Óptica",
-            "p2_tag3": "Soporte 24/7",
-            "p2_metric1_num": "+500",
-            "p2_metric1_label": "Clientes activos",
-            "p2_metric2_num": "99.9%",
-            "p2_metric2_label": "Disponibilidad",
-            "p2_metric3_num": "25+",
-            "p2_metric3_label": "Años de experiencia"
-          },
-          "design": {
-            "bg": "#1e3a8a",
-            "titleColor": "#eff6ff",
-            "accentColor": "#bfdbfe",
-            "btnBg": "#2563eb"
-          }
-        }
-      ]
-    },
-    "clientes": {
-      "variantes": [
-        {
-          "id": "clientes-v1",
-          "nombre": "Clientes — Default",
-          "data": {
-            "titulo_seccion": "NUESTROS CLIENTES",
-            "carrusel_activo": true,
-            "auto_scroll": true,
-            "clientes": [
+  "modulos": [
+    {
+      "id_modulo": 1,
+      "tipo": "nav",
+      "nombre": "Navbar — global",
+      "data": {
+        "logoSrc": "/img/sisgra_blanco.png",
+        "logoSrcHref": "/",
+        "instalacionesLabel": "Instalaciones",
+        "cableadoLabel": "Cableado Estructurado",
+        "cableadoHref": "/html/cableado_estructurado.html",
+        "fibraLabel": "Fibra Óptica",
+        "fibraHref": "/html/fibra_optica.html",
+        "seguridadLabel": "Seguridad Electrónica",
+        "seguridadHref": "/html/seguridad.html",
+        "blogLabel": "Blog",
+        "blogHref": "/html/blog.html",
+        "soporteLabel": "Soporte IT",
+        "soporteHref": "/html/soporte_it.html",
+        "desarrolloLabel": "Desarrollo de Software",
+        "desarrolloHref": "/html/desarrollo.html",
+        "ctaLabel": "Contáctese",
+        "ctaHref": "https://wa.me/548101220065",
+        "items": [
+          {
+            "tipo": "dropdown",
+            "titulo": "Instalaciones",
+            "children": [
               {
-                "nombre": "San Cristóbal",
-                "imagen": "/img/sancristobal.png",
-                "activo": true
+                "titulo": "Cableado Estructurado",
+                "href": "/html/cableado_estructurado"
               },
               {
-                "nombre": "Syngenta",
-                "imagen": "/img/syngenta.png",
-                "activo": true
+                "titulo": "Fibra Óptica",
+                "href": "/html/fibra_optica"
+              },
+              {
+                "titulo": "Seguridad Electrónica",
+                "href": "/html/seguridad"
               }
             ]
           },
-          "design": {}
-        }
-      ]
-    },
-    "blog": {
-      "variantes": [
-        {
-          "id": "blog-v1",
-          "nombre": "Blog — Default",
-          "data": {
-            "titulo_seccion": "Novedades & Blog",
-            "posts": [
-              {
-                "titulo": "Certificación Cat 8: el estándar que toda empresa necesita",
-                "extracto": "Conocé por qué la Categoría 8 es la elección inteligente para infraestructuras de alta demanda de datos.",
-                "categoria": "Novedades",
-                "imagen": ""
-              },
-              {
-                "titulo": "Cómo reducir el tiempo de inactividad con soporte IT proactivo",
-                "extracto": "Estrategias comprobadas para mantener tu infraestructura funcionando con 99.9% de disponibilidad.",
-                "categoria": "Soporte IT",
-                "imagen": ""
-              },
-              {
-                "titulo": "Fibra Óptica FTTH: conectividad sin límites para tu empresa",
-                "extracto": "Ventajas de implementar fibra óptica en instalaciones corporativas de gran escala en Argentina.",
-                "categoria": "Instalaciones",
-                "imagen": ""
-              }
-            ]
+          {
+            "tipo": "link",
+            "titulo": "Blog",
+            "href": "/html/blog",
+            "id_boton": "btn-blog"
           },
-          "design": {}
-        }
-      ]
-    },
-    "services": {
-      "variantes": [
-        {
-          "id": "services-v1",
-          "nombre": "Servicios — Default",
-          "data": {
-            "titulo_seccion": "Portafolio de Soluciones",
-            "eyebrow": "Lo que hacemos",
-            "cards": [
-              {
-                "id": "instalaciones",
-                "titulo": "Instalaciones",
-                "descripcion": "Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas TIA/EIA para entornos corporativos exigentes.",
-                "enlace": "/html/cableado_estructurado/"
-              },
-              {
-                "id": "soporte",
-                "titulo": "Soporte IT",
-                "descripcion": "Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.",
-                "enlace": "/html/soporte_it/"
-              },
-              {
-                "id": "software",
-                "titulo": "Desarrollo de Software",
-                "descripcion": "Soluciones digitales a medida: sistemas de gestión logística, control de inventario y procesos empresariales integrados.",
-                "enlace": "/html/desarrollo/"
-              }
-            ]
+          {
+            "tipo": "link",
+            "titulo": "Soporte IT",
+            "href": "/html/soporte_it",
+            "id_boton": "btn-soporte"
           },
-          "design": {}
-        },
-        {
-          "id": "services-v2",
-          "nombre": "Servicios — Gris Claro",
-          "data": {
-            "titulo_seccion": "Portafolio de Soluciones",
-            "eyebrow": "Lo que hacemos",
-            "cards": [
-              {
-                "id": "instalaciones",
-                "titulo": "Instalaciones",
-                "descripcion": "Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas TIA/EIA para entornos corporativos exigentes.",
-                "enlace": "./html/cableado_estructurado.html"
-              },
-              {
-                "id": "soporte",
-                "titulo": "Soporte IT",
-                "descripcion": "Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.",
-                "enlace": "./html/soporte_it.html"
-              },
-              {
-                "id": "software",
-                "titulo": "Desarrollo de Software",
-                "descripcion": "Soluciones digitales a medida: sistemas de gestión logística, control de inventario y procesos empresariales integrados.",
-                "enlace": "./html/desarrollo.html"
-              }
-            ]
-          },
-          "design": {
-            "bg": "#f1f5f9",
-            "sectionColor": "#0f172a",
-            "cardBg": "#ffffff",
-            "cardTitleColor": "#0f172a",
-            "cardLinkColor": "#2563eb"
+          {
+            "tipo": "link",
+            "titulo": "Desarrollo de Software",
+            "href": "/html/desarrollo",
+            "id_boton": "btn-desarrollo"
           }
-        },
-        {
-          "id": "services-v3",
-          "nombre": "Servicios — Oscuro",
-          "data": {
-            "titulo_seccion": "Portafolio de Soluciones",
-            "eyebrow": "Lo que hacemos",
-            "cards": [
-              {
-                "id": "instalaciones",
-                "titulo": "Instalaciones",
-                "descripcion": "Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas TIA/EIA para entornos corporativos exigentes.",
-                "enlace": "./html/cableado_estructurado.html"
-              },
-              {
-                "id": "soporte",
-                "titulo": "Soporte IT",
-                "descripcion": "Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.",
-                "enlace": "./html/soporte_it.html"
-              },
-              {
-                "id": "software",
-                "titulo": "Desarrollo de Software",
-                "descripcion": "Soluciones digitales a medida: sistemas de gestión logística, control de inventario y procesos empresariales integrados.",
-                "enlace": "./html/desarrollo.html"
-              }
-            ]
-          },
-          "design": {
-            "bg": "#0f172a",
-            "sectionColor": "#f1f5f9",
-            "cardBg": "#1e293b",
-            "cardTitleColor": "#f1f5f9",
-            "cardLinkColor": "#60a5fa"
-          }
-        }
-      ]
+        ]
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-06-01T17:53:46.115Z"
     },
-    "about": {
-      "variantes": [
-        {
-          "id": "about-v1",
-          "nombre": "Nosotros — Default",
-          "data": {
-            "eyebrow": "Excelencia Corporativa",
-            "titulo": "Liderando la industria\ndesde el año 1999.",
-            "descripcion": "En SISGRA, entendemos que la infraestructura crítica no permite errores. Cada proyecto atraviesa un riguroso proceso de planificación, ejecución certificada y soporte post-instalación que garantiza resultados duraderos para su organización.",
-            "imagen": "/img/img1.png"
-          },
-          "design": {}
-        },
-        {
-          "id": "about-v2",
-          "nombre": "Nosotros — Fondo Claro",
-          "data": {
-            "eyebrow": "Excelencia Corporativa",
-            "titulo": "Liderando la industria\ndesde el año 1999.",
-            "descripcion": "En SISGRA, entendemos que la infraestructura crítica no permite errores. Cada proyecto atraviesa un riguroso proceso de planificación, ejecución certificada y soporte post-instalación que garantiza resultados duraderos para su organización.",
-            "imagen": "/img/img1.png"
-          },
-          "design": {
-            "bg": "#f8fafc",
-            "eyebrowColor": "#2563eb",
-            "titleColor": "#0f172a",
-            "textColor": "#475569"
-          }
-        },
-        {
-          "id": "about-v3",
-          "nombre": "Nosotros — Oscuro",
-          "data": {
-            "eyebrow": "Excelencia Corporativa",
-            "titulo": "Liderando la industria\ndesde el año 1999.",
-            "descripcion": "En SISGRA, entendemos que la infraestructura crítica no permite errores. Cada proyecto atraviesa un riguroso proceso de planificación, ejecución certificada y soporte post-instalación que garantiza resultados duraderos para su organización.",
-            "imagen": "/img/img1.png"
-          },
-          "design": {
-            "bg": "#0f172a",
-            "eyebrowColor": "#60a5fa",
-            "titleColor": "#f1f5f9",
-            "textColor": "#94a3b8",
-            "paddingY": "",
-            "titleSize": ""
-          },
-          "editada_en": "2026-05-27T16:51:34.009Z"
-        }
-      ]
+    {
+      "id_modulo": 2,
+      "tipo": "footer",
+      "nombre": "Footer (Inicio) — global",
+      "data": {
+        "formTitulo": "Solicite un presupuesto",
+        "formDesc": "Cuéntenos sobre su organización. Un asesor se comunicará para recomendarle la mejor solución.",
+        "whatsapp": "548101220065",
+        "whatsappText": "Consultar por WhatsApp",
+        "formLabel": "Complete el formulario",
+        "btnEnviar": "Enviar consulta",
+        "brandImg": "/img/sisgra_blanco.png",
+        "copyright": "© 2026 SISGRA S.R.L. — Todos los derechos reservados"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-06-01T17:53:46.115Z"
     },
-    "cta": {
-      "variantes": [
-        {
-          "id": "cta-v1",
-          "nombre": "CTA — Azul Marino",
-          "data": {
-            "title": "¿Listo para transformar su infraestructura?",
-            "desc": "Hablemos sin compromiso. Analizamos su proyecto y le ofrecemos la mejor solución.",
-            "btn": "Solicitar Presupuesto",
-            "href": "https://wa.me/548101220065"
-          },
-          "design": {
-            "bg": "#0A1D37",
-            "btnBg": "#2563eb"
-          }
-        },
-        {
-          "id": "cta-v2",
-          "nombre": "CTA — Azul Vivo",
-          "data": {
-            "title": "¿Necesita una solución de conectividad certificada?",
-            "desc": "Nuestros ingenieros lo asesorarán sin costo. Respuesta en menos de 24 horas.",
-            "btn": "Hablar con un Experto",
-            "href": "https://wa.me/548101220065"
-          },
-          "design": {
-            "bg": "#1e3a8a",
-            "btnBg": "#3b82f6"
-          }
-        },
-        {
-          "id": "cta-v3",
-          "nombre": "CTA — Verde Esmeralda",
-          "data": {
-            "title": "Optimizamos su infraestructura IT hoy mismo",
-            "desc": "Soporte inmediato, sin contratos a largo plazo. Pruebe nuestro servicio sin compromiso.",
-            "btn": "Contactar Soporte",
-            "href": "https://wa.me/548101220065"
-          },
-          "design": {
-            "bg": "#064e3b",
-            "btnBg": "#10b981"
-          }
-        }
-      ]
+    {
+      "id_modulo": 3,
+      "tipo": "footer-full",
+      "nombre": "Footer completo — global",
+      "data": {},
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-05-27T17:01:08.896Z"
     },
-    "spacer": {
-      "variantes": [
-        {
-          "id": "spacer-v1",
-          "nombre": "Espaciador — Blanco",
-          "data": {
-            "height": 60
+    {
+      "id_modulo": 4,
+      "tipo": "hero",
+      "nombre": "Hero lateral — Inicio principal",
+      "data": {
+        "badge": "INFRAESTRUCTURA DE ELITE",
+        "titulo1": "HOLA",
+        "titulo2": "MARCE",
+        "descripcion": "Descripción del hero. Editá este texto haciendo clic directamente sobre él.",
+        "boton_primario": "Ver Soluciones",
+        "boton_secundario": "Conocer más",
+        "stat1_numero": "+25",
+        "stat1_label": "AÑOS DE EXPERIENCIA",
+        "stat2_numero": "+500",
+        "stat2_label": "Clientes activos"
+      },
+      "design": {
+        "bg": "",
+        "titleColor": "",
+        "accentColor": "",
+        "btnBg": "",
+        "paddingY": "",
+        "titleSize": "",
+        "descSize": "",
+        "btnRadius": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-06-02T18:46:19.127Z"
+    },
+    {
+      "id_modulo": 5,
+      "tipo": "clientes",
+      "nombre": "Clientes — Inicio principal",
+      "data": {
+        "titulo_seccion": "NUESTROS CLIENTES",
+        "carrusel_activo": true,
+        "auto_scroll": true,
+        "clientes": [
+          {
+            "nombre": "San Cristóbal",
+            "imagen": "/img/sancristobal.png",
+            "activo": true
           },
-          "design": {
-            "bg": "#ffffff"
+          {
+            "nombre": "Syngenta",
+            "imagen": "/img/syngenta.png",
+            "activo": true
           }
-        },
-        {
-          "id": "spacer-v2",
-          "nombre": "Espaciador — Gris",
-          "data": {
-            "height": 60
+        ]
+      },
+      "design": {
+        "bg": "",
+        "paddingY": "",
+        "titleColor": "",
+        "titleSize": "",
+        "trackBg": "",
+        "cellBg": "",
+        "cellFilter": "",
+        "trackHeight": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-06-02T18:41:48.731Z"
+    },
+    {
+      "id_modulo": 6,
+      "tipo": "blog",
+      "nombre": "Blog / Noticias — Inicio principal",
+      "data": {
+        "titulo_seccion": "Novedades & Blog",
+        "posts": [
+          {
+            "titulo": "SISGRA cumple 25 años",
+            "extracto": "Un cuarto de siglo conectando empresas con la mejor infraestructura.",
+            "categoria": "Novedades",
+            "imagen": ""
           },
-          "design": {
-            "bg": "#f1f5f9"
+          {
+            "titulo": "Nuevas certificaciones Cat8",
+            "extracto": "Ampliamos nuestras capacidades de certificación en cableado de alta velocidad.",
+            "categoria": "Servicios",
+            "imagen": ""
+          },
+          {
+            "titulo": "Casos de éxito 2026",
+            "extracto": "Conocé los proyectos más destacados del año.",
+            "categoria": "Casos",
+            "imagen": ""
           }
-        },
-        {
-          "id": "spacer-v3",
-          "nombre": "Espaciador — Oscuro",
-          "data": {
-            "height": 60
+        ]
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-06-01T17:53:46.115Z"
+    },
+    {
+      "id_modulo": 7,
+      "tipo": "services",
+      "nombre": "Servicios — Inicio principal",
+      "data": {
+        "titulo_seccion": "Portafolio de Soluciones",
+        "eyebrow": "Lo que hacemos",
+        "cards": [
+          {
+            "id": "instalaciones",
+            "titulo": "Instalaciones",
+            "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
+            "enlace": "./html/cableado_estructurado.html",
+            "link": ""
           },
-          "design": {
-            "bg": "#0f172a"
+          {
+            "id": "soporte",
+            "titulo": "Soporte IT",
+            "descripcion": "Mantenimiento integral de infraestructura y asistencia técnica corporativa especializada.",
+            "enlace": "./html/soporte_it.html"
+          },
+          {
+            "id": "software",
+            "titulo": "Software",
+            "descripcion": "Soluciones a medida para optimizar procesos logísticos y gestión de datos empresariales.",
+            "enlace": "./html/desarrollo.html"
           }
-        }
-      ]
+        ]
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-06-01T17:53:46.115Z"
     },
-    "cableado-hero": {
-      "variantes": [
-        {
-          "id": "cableado-hero-v1",
-          "nombre": "Cableado — Default",
-          "data": {
-            "badge": "Infraestructura Crítica",
-            "titulo1": "Cableado",
-            "accent": "Estructurado.",
-            "descripcion": "Implementamos sistemas de conectividad de alto rendimiento diseñados para soportar las demandas de datos del futuro.",
-            "cards": [
-              {
-                "badge": "Cat 8",
-                "titulo": "Certificación Categoría 8",
-                "desc": "Garantizamos velocidades de hasta 40Gbps con certificaciones Fluke de última generación."
-              },
-              {
-                "badge": "TIA",
-                "titulo": "Normativa TIA/EIA 568",
-                "desc": "Planificación siguiendo estándares internacionales para garantizar escalabilidad definitiva."
-              }
-            ],
-            "panelHeader": "Especificaciones Técnicas",
-            "panelLabel": "Certificación",
-            "panelValue": "100% Norma",
-            "progressPct": 100,
-            "stat1Label": "Latencia",
-            "stat1Value": "< 1ms",
-            "stat2Label": "Ancho B.",
-            "stat2Value": "40 Gbps"
+    {
+      "id_modulo": 8,
+      "tipo": "about",
+      "nombre": "Nosotros — Inicio principal",
+      "data": {
+        "eyebrow": "Excelencia Corporativa",
+        "titulo": "Liderando la industria\ndesde el año 1999.",
+        "descripcion": "En SISGRA, entendemos que la infraestructura crítica no permite errores. Nos dedicamos a integrar soluciones que garantizan la continuidad operativa y la escalabilidad técnica de su negocio.",
+        "imagen": "/img/img1.png"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-06-01T17:53:46.115Z"
+    },
+    {
+      "id_modulo": 9,
+      "tipo": "blog-list",
+      "nombre": "Lista de artículos — Blog principal",
+      "data": {
+        "loadingMessage": "Cargando artículos…",
+        "emptyMessage": "No hay artículos publicados aún.",
+        "errorMessage": "No se pudieron cargar los artículos."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-05-27T17:01:08.896Z"
+    },
+    {
+      "id_modulo": 10,
+      "tipo": "articulo-header",
+      "nombre": "Header de artículo — Artículo principal",
+      "data": {
+        "backLabel": "← Volver al Blog",
+        "backHref": "/html/blog/",
+        "badge": "Infraestructura",
+        "titulo": "Nuevos estándares de certificación Cat8 para plantas industriales",
+        "lead": "Análisis detallado sobre cómo la infraestructura física determina el rendimiento de los sistemas de datos en entornos de alta demanda."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-06-01T17:50:27.387Z"
+    },
+    {
+      "id_modulo": 11,
+      "tipo": "articulo-body",
+      "nombre": "Cuerpo de artículo — Artículo principal",
+      "data": {
+        "featuredImageUrl": "/img/chatgptfoto.png",
+        "featuredImageAlt": "Infraestructura IT",
+        "contentHtml": "<h2>La evolución hacia la Categoría 8</h2>\n<p>En el panorama actual de la industria 4.0, la velocidad de transmisión de datos no es solo una ventaja competitiva, sino un requisito operativo. El cableado <strong>Categoría 8 (Cat8)</strong> representa el salto más significativo en infraestructura de cobre de la última década.</p>\n<p>A diferencia de sus predecesores, Cat8 permite frecuencias de hasta 2000 MHz y velocidades de 25Gbps a 40Gbps, lo que lo hace ideal para el backbone de centros de datos y plantas automatizadas en Rosario y la región.</p>\n<blockquote>\"La certificación no es un trámite, es el seguro de vida de su red de datos.\"</blockquote>\n<h3>Beneficios clave de la certificación profesional:</h3>\n<ul>\n  <li><strong>Reducción de Latencia:</strong> Minimiza la retransmisión de paquetes perdidos por interferencias.</li>\n  <li><strong>Escalabilidad:</strong> Prepara la planta para futuras actualizaciones de hardware sin cambiar el cableado.</li>\n  <li><strong>Cumplimiento de Normas:</strong> Garantiza que la instalación respeta los estándares internacionales TIA/EIA.</li>\n</ul>\n<p>En <strong>SISGRA</strong>, utilizamos equipos de medición Fluke de última generación para entregar reportes detallados de cada nodo instalado, asegurando que cada centímetro de su red rinda al 100% de su capacidad nominal.</p>",
+        "ctaTitle": "¿Necesita auditar su infraestructura actual?",
+        "ctaText": "Nuestros asesores técnicos pueden realizar un relevamiento de su planta y proponer mejoras de conectividad.",
+        "ctaBtnLabel": "Solicitar Asesoría Técnica",
+        "ctaBtnHref": "https://wa.me/03418610863",
+        "sidebarTitle": "SISGRA SRL",
+        "sidebarText": "Expertos en integración tecnológica desde 1999. Soluciones certificadas para empresas que no pueden detenerse."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-06-01T17:50:27.387Z"
+    },
+    {
+      "id_modulo": 12,
+      "tipo": "cableado-hero",
+      "nombre": "Hero Cableado — Cableado principal",
+      "data": {
+        "badge": "Infraestructura Crítica",
+        "titulo1": "Cableado",
+        "accent": "Estructurado.",
+        "descripcion": "Implementamos sistemas de conectividad de alto rendimiento diseñados para soportar las demandas de datos del futuro. No solo conectamos cables; construimos el sistema nervioso de su empresa.",
+        "cards": [
+          {
+            "badge": "Cat 8",
+            "titulo": "Certificación Categoría 8",
+            "desc": "Garantizamos velocidades de hasta 40Gbps con certificaciones Fluke de última generación."
           },
-          "design": {}
-        },
-        {
-          "id": "cableado-hero-v2",
-          "nombre": "Cableado — Fondo Claro",
-          "data": {
-            "badge": "Infraestructura Crítica",
-            "titulo1": "Cableado",
-            "accent": "Estructurado.",
-            "descripcion": "Implementamos sistemas de conectividad de alto rendimiento diseñados para soportar las demandas de datos del futuro.",
-            "cards": [
-              {
-                "badge": "Cat 8",
-                "titulo": "Certificación Categoría 8",
-                "desc": "Garantizamos velocidades de hasta 40Gbps con certificaciones Fluke de última generación."
-              },
-              {
-                "badge": "TIA",
-                "titulo": "Normativa TIA/EIA 568",
-                "desc": "Planificación siguiendo estándares internacionales para garantizar escalabilidad definitiva."
-              }
-            ],
-            "panelHeader": "Especificaciones Técnicas",
-            "panelLabel": "Certificación",
-            "panelValue": "100% Norma",
-            "progressPct": 100,
-            "stat1Label": "Latencia",
-            "stat1Value": "< 1ms",
-            "stat2Label": "Ancho B.",
-            "stat2Value": "40 Gbps"
-          },
-          "design": {
-            "bg": "#f8fafc",
-            "titleColor": "#0f172a",
-            "accentColor": "#2563eb"
+          {
+            "badge": "TIA",
+            "titulo": "Normativa TIA/EIA 568",
+            "desc": "Planificación siguiendo estándares internacionales para garantizar escalabilidad definitiva."
           }
-        },
-        {
-          "id": "cableado-hero-v3",
-          "nombre": "Cableado — Noche Azul",
-          "data": {
-            "badge": "Infraestructura Crítica",
-            "titulo1": "Cableado",
-            "accent": "Estructurado.",
-            "descripcion": "Implementamos sistemas de conectividad de alto rendimiento diseñados para soportar las demandas de datos del futuro.",
-            "cards": [
-              {
-                "badge": "Cat 8",
-                "titulo": "Certificación Categoría 8",
-                "desc": "Garantizamos velocidades de hasta 40Gbps con certificaciones Fluke de última generación."
-              },
-              {
-                "badge": "TIA",
-                "titulo": "Normativa TIA/EIA 568",
-                "desc": "Planificación siguiendo estándares internacionales para garantizar escalabilidad definitiva."
-              }
-            ],
-            "panelHeader": "Especificaciones Técnicas",
-            "panelLabel": "Certificación",
-            "panelValue": "100% Norma",
-            "progressPct": 100,
-            "stat1Label": "Latencia",
-            "stat1Value": "< 1ms",
-            "stat2Label": "Ancho B.",
-            "stat2Value": "40 Gbps"
-          },
-          "design": {
-            "bg": "#0f172a",
-            "titleColor": "#f1f5f9",
-            "accentColor": "#60a5fa",
-            "paddingY": "",
-            "titleSize": ""
-          },
-          "editada_en": "2026-05-27T16:51:01.371Z"
-        }
-      ]
+        ],
+        "panelHeader": "Especificaciones Técnicas",
+        "panelLabel": "Certificación",
+        "panelValue": "100% Norma",
+        "progressPct": 100,
+        "stat1Label": "Latencia",
+        "stat1Value": "< 1ms",
+        "stat2Label": "Ancho B.",
+        "stat2Value": "40 Gbps"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-06-01T17:50:28.665Z"
     },
-    "fibra-hero": {
-      "variantes": [
-        {
-          "id": "fibra-hero-v1",
-          "nombre": "Fibra — Default",
-          "data": {
-            "imagenUrl": "https://images.unsplash.com/photo-1551703599-6b3e8379aa8c?q=80&w=2072&auto=format&fit=crop",
-            "badgeTitle": "LIGHT",
-            "badgeSub": "Speed Connectivity",
-            "sectionBadge": "Transmisión Fotónica",
-            "titulo1": "Fibra",
-            "accent": "Óptica Pro.",
-            "descripcion": "Llevamos la velocidad de la luz a su centro de datos. Nuestros enlaces de fibra óptica garantizan una inmunidad total a interferencias y un ancho de banda ilimitado.",
-            "features": [
-              {
-                "iconType": "location",
-                "titulo": "Enlaces Monomodo y Multimodo",
-                "desc": "Backbones industriales de alta densidad OM4/OM5."
-              },
-              {
-                "iconType": "lightning",
-                "titulo": "Fusión por Núcleo",
-                "desc": "Empalmes de alta precisión certificados."
-              }
-            ]
+    {
+      "id_modulo": 13,
+      "tipo": "fibra-hero",
+      "nombre": "Hero Fibra Óptica — Fibra Óptica principal",
+      "data": {
+        "imagenUrl": "https://images.unsplash.com/photo-1551703599-6b3e8379aa8c?q=80&w=2072&auto=format&fit=crop",
+        "badgeTitle": "LIGHT",
+        "badgeSub": "Speed Connectivity",
+        "sectionBadge": "Transmisión Fotónica",
+        "titulo1": "Fibra",
+        "accent": "Óptica Pro.",
+        "descripcion": "Llevamos la velocidad de la luz a su centro de datos. Nuestros enlaces de fibra óptica garantizan una inmunidad total a interferencias y un ancho de banda ilimitado.",
+        "features": [
+          {
+            "iconType": "location",
+            "titulo": "Enlaces Monomodo y Multimodo",
+            "desc": "Backbones industriales de alta densidad OM4/OM5."
           },
-          "design": {}
-        },
-        {
-          "id": "fibra-hero-v2",
-          "nombre": "Fibra — Noche Azul",
-          "data": {
-            "imagenUrl": "https://images.unsplash.com/photo-1551703599-6b3e8379aa8c?q=80&w=2072&auto=format&fit=crop",
-            "badgeTitle": "LIGHT",
-            "badgeSub": "Speed Connectivity",
-            "sectionBadge": "Transmisión Fotónica",
-            "titulo1": "Fibra",
-            "accent": "Óptica Pro.",
-            "descripcion": "Llevamos la velocidad de la luz a su centro de datos. Nuestros enlaces de fibra óptica garantizan una inmunidad total a interferencias y un ancho de banda ilimitado.",
-            "features": [
-              {
-                "iconType": "location",
-                "titulo": "Enlaces Monomodo y Multimodo",
-                "desc": "Backbones industriales de alta densidad OM4/OM5."
-              },
-              {
-                "iconType": "lightning",
-                "titulo": "Fusión por Núcleo",
-                "desc": "Empalmes de alta precisión certificados."
-              }
-            ]
-          },
-          "design": {
-            "bg": "#0f172a",
-            "titleColor": "#f1f5f9",
-            "accentColor": "#60a5fa"
+          {
+            "iconType": "lightning",
+            "titulo": "Fusión por Núcleo",
+            "desc": "Empalmes de alta precisión certificados."
           }
-        },
-        {
-          "id": "fibra-hero-v3",
-          "nombre": "Fibra — Cyan Tech",
-          "data": {
-            "imagenUrl": "https://images.unsplash.com/photo-1551703599-6b3e8379aa8c?q=80&w=2072&auto=format&fit=crop",
-            "badgeTitle": "LIGHT",
-            "badgeSub": "Speed Connectivity",
-            "sectionBadge": "Transmisión Fotónica",
-            "titulo1": "Fibra",
-            "accent": "Óptica Pro.",
-            "descripcion": "Llevamos la velocidad de la luz a su centro de datos. Nuestros enlaces de fibra óptica garantizan una inmunidad total a interferencias y un ancho de banda ilimitado.",
-            "features": [
-              {
-                "iconType": "location",
-                "titulo": "Enlaces Monomodo y Multimodo",
-                "desc": "Backbones industriales de alta densidad OM4/OM5."
-              },
-              {
-                "iconType": "lightning",
-                "titulo": "Fusión por Núcleo",
-                "desc": "Empalmes de alta precisión certificados."
-              }
-            ]
-          },
-          "design": {
-            "bg": "#0c4a6e",
-            "titleColor": "#e0f2fe",
-            "accentColor": "#38bdf8"
+        ]
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-06-01T17:50:30.313Z"
+    },
+    {
+      "id_modulo": 14,
+      "tipo": "seguridad-hero",
+      "nombre": "Hero Seguridad — Seguridad principal",
+      "data": {
+        "badge": "Protección Perimetral",
+        "titulo1": "Seguridad",
+        "titulo2": "Electrónica.",
+        "descripcion": "Blindamos su infraestructura con tecnología de monitoreo en tiempo real e inteligencia artificial aplicada a la vigilancia.",
+        "features": [
+          {
+            "iconType": "camera",
+            "titulo": "Video Vigilancia IP (CCTV)",
+            "desc": "Sistemas 4K con análisis de video inteligente."
           }
-        }
-      ]
+        ],
+        "imagenUrl": "/img/seguridadelectronica.png",
+        "imgBadgeLabel": "Status",
+        "imgBadgeText": "SECURE AREA"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-05-27T16:59:48.496Z"
     },
-    "seguridad-hero": {
-      "variantes": [
-        {
-          "id": "seguridad-hero-v1",
-          "nombre": "Seguridad — Default",
-          "data": {
-            "badge": "Protección Perimetral",
-            "titulo1": "Seguridad",
-            "titulo2": "Electrónica.",
-            "descripcion": "Blindamos su infraestructura con tecnología de monitoreo en tiempo real e inteligencia artificial aplicada a la vigilancia.",
-            "features": [
-              {
-                "iconType": "camera",
-                "titulo": "Video Vigilancia IP (CCTV)",
-                "desc": "Sistemas 4K con análisis de video inteligente."
-              }
-            ],
-            "imagenUrl": "/img/seguridadelectronica.png",
-            "imgBadgeLabel": "Status",
-            "imgBadgeText": "SECURE AREA"
+    {
+      "id_modulo": 15,
+      "tipo": "soporte-hero",
+      "nombre": "Hero Soporte IT — Soporte IT principal",
+      "data": {
+        "badge": "Continuidad Operativa Garantizada",
+        "titulo1": "Soporte",
+        "accent": "IT Integral.",
+        "descripcion": "Minimizamos el tiempo de inactividad de su empresa. Actuamos como su departamento de sistemas externo, brindando soluciones rápidas y escalables.",
+        "features": [
+          {
+            "iconType": "gear",
+            "titulo": "Mantenimiento Preventivo",
+            "desc": "Monitoreo constante de servidores y terminales."
           },
-          "design": {}
-        },
-        {
-          "id": "seguridad-hero-v2",
-          "nombre": "Seguridad — Oscuro Rojo",
-          "data": {
-            "badge": "Protección Perimetral",
-            "titulo1": "Seguridad",
-            "titulo2": "Electrónica.",
-            "descripcion": "Blindamos su infraestructura con tecnología de monitoreo en tiempo real e inteligencia artificial aplicada a la vigilancia.",
-            "features": [
-              {
-                "iconType": "camera",
-                "titulo": "Video Vigilancia IP (CCTV)",
-                "desc": "Sistemas 4K con análisis de video inteligente."
-              }
-            ],
-            "imagenUrl": "/img/seguridadelectronica.png",
-            "imgBadgeLabel": "Status",
-            "imgBadgeText": "SECURE AREA"
-          },
-          "design": {
-            "bg": "#0f172a",
-            "titleColor": "#f8fafc",
-            "accentColor": "#f87171"
+          {
+            "iconType": "shield",
+            "titulo": "Seguridad Proactiva",
+            "desc": "Protección de datos y backups automatizados."
           }
-        },
-        {
-          "id": "seguridad-hero-v3",
-          "nombre": "Seguridad — Claro",
-          "data": {
-            "badge": "Protección Perimetral",
-            "titulo1": "Seguridad",
-            "titulo2": "Electrónica.",
-            "descripcion": "Blindamos su infraestructura con tecnología de monitoreo en tiempo real e inteligencia artificial aplicada a la vigilancia.",
-            "features": [
-              {
-                "iconType": "camera",
-                "titulo": "Video Vigilancia IP (CCTV)",
-                "desc": "Sistemas 4K con análisis de video inteligente."
-              }
-            ],
-            "imagenUrl": "/img/seguridadelectronica.png",
-            "imgBadgeLabel": "Status",
-            "imgBadgeText": "SECURE AREA"
+        ],
+        "dashLabel": "Monitoreo de las actividades",
+        "dashMainValue": "99.9%",
+        "dashStat1Label": "Tiempo de respuesta",
+        "dashStat1Value": "< 45 min",
+        "dashStat2Label": "Vida del Sistema",
+        "dashStat2Value": "OPTIMIZADO",
+        "dashStat2Highlight": true,
+        "btnRemote": "Acceder al Soporte Remoto Inmediato 🎧"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-06-01T17:50:32.457Z"
+    },
+    {
+      "id_modulo": 16,
+      "tipo": "desarrollo-hero",
+      "nombre": "Hero Desarrollo — Desarrollo principal",
+      "data": {
+        "badge": "Intelligence Labs",
+        "titulo1": "Desarrollo de",
+        "accent": "Software.",
+        "descripcion": "Transformamos la complejidad operativa en interfaces simplificadas. Desarrollamos código robusto, escalable y diseñado específicamente para los desafíos logísticos de la industria moderna.",
+        "solutions": [
+          {
+            "iconType": "chart",
+            "titulo": "Software Logístico a Medida",
+            "desc": "Optimización de flujos de inventario, trazabilidad y gestión de depósitos inteligentes."
           },
-          "design": {
-            "bg": "#f8fafc",
-            "titleColor": "#0f172a",
-            "accentColor": "#2563eb"
+          {
+            "iconType": "database",
+            "titulo": "ERP / CRM",
+            "desc": "Sistemas centralizados para el control total de operaciones comerciales."
+          },
+          {
+            "iconType": "gear",
+            "titulo": "IoT & Automatización",
+            "desc": "Integración entre hardware y software inteligente basado en datos."
           }
-        }
-      ]
+        ],
+        "btnCta": "Consultar Desarrollo",
+        "btnCtaHref": "#",
+        "editorLabel": "SISGRA_CORE_V2.0 / LOGISTICS_MODULE",
+        "codeRows": [
+          "class SecuritySystem {",
+          "public function connectDevices() {",
+          "return SUCCESS;",
+          "}"
+        ]
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-24T00:00:00.000Z",
+      "editado_en": "2026-06-01T17:50:34.264Z"
     },
-    "soporte-hero": {
-      "variantes": [
-        {
-          "id": "soporte-hero-v1",
-          "nombre": "Soporte — Default",
-          "data": {
-            "badge": "Continuidad Operativa Garantizada",
-            "titulo1": "Soporte",
-            "accent": "IT Integral.",
-            "descripcion": "Minimizamos el tiempo de inactividad de su empresa. Actuamos como su departamento de sistemas externo, brindando soluciones rápidas y escalables.",
-            "features": [
-              {
-                "iconType": "gear",
-                "titulo": "Mantenimiento Preventivo",
-                "desc": "Monitoreo constante de servidores y terminales."
-              },
-              {
-                "iconType": "shield",
-                "titulo": "Seguridad Proactiva",
-                "desc": "Protección de datos y backups automatizados."
-              }
-            ],
-            "dashLabel": "Monitoreo de las actividades",
-            "dashMainValue": "99.9%",
-            "dashStat1Label": "Tiempo de respuesta",
-            "dashStat1Value": "< 45 min",
-            "dashStat2Label": "Vida del Sistema",
-            "dashStat2Value": "OPTIMIZADO",
-            "dashStat2Highlight": true,
-            "btnRemote": "Acceder al Soporte Remoto Inmediato"
-          },
-          "design": {}
-        },
-        {
-          "id": "soporte-hero-v2",
-          "nombre": "Soporte — Noche Azul",
-          "data": {
-            "badge": "Continuidad Operativa Garantizada",
-            "titulo1": "Soporte",
-            "accent": "IT Integral.",
-            "descripcion": "Minimizamos el tiempo de inactividad de su empresa. Actuamos como su departamento de sistemas externo, brindando soluciones rápidas y escalables.",
-            "features": [
-              {
-                "iconType": "gear",
-                "titulo": "Mantenimiento Preventivo",
-                "desc": "Monitoreo constante de servidores y terminales."
-              },
-              {
-                "iconType": "shield",
-                "titulo": "Seguridad Proactiva",
-                "desc": "Protección de datos y backups automatizados."
-              }
-            ],
-            "dashLabel": "Monitoreo de las actividades",
-            "dashMainValue": "99.9%",
-            "dashStat1Label": "Tiempo de respuesta",
-            "dashStat1Value": "< 45 min",
-            "dashStat2Label": "Vida del Sistema",
-            "dashStat2Value": "OPTIMIZADO",
-            "dashStat2Highlight": true,
-            "btnRemote": "Acceder al Soporte Remoto Inmediato"
-          },
-          "design": {
-            "bg": "#0f172a",
-            "titleColor": "#f1f5f9",
-            "accentColor": "#60a5fa"
-          }
-        },
-        {
-          "id": "soporte-hero-v3",
-          "nombre": "Soporte — Verde Tech",
-          "data": {
-            "badge": "Continuidad Operativa Garantizada",
-            "titulo1": "Soporte",
-            "accent": "IT Integral.",
-            "descripcion": "Minimizamos el tiempo de inactividad de su empresa. Actuamos como su departamento de sistemas externo, brindando soluciones rápidas y escalables.",
-            "features": [
-              {
-                "iconType": "gear",
-                "titulo": "Mantenimiento Preventivo",
-                "desc": "Monitoreo constante de servidores y terminales."
-              },
-              {
-                "iconType": "shield",
-                "titulo": "Seguridad Proactiva",
-                "desc": "Protección de datos y backups automatizados."
-              }
-            ],
-            "dashLabel": "Monitoreo de las actividades",
-            "dashMainValue": "99.9%",
-            "dashStat1Label": "Tiempo de respuesta",
-            "dashStat1Value": "< 45 min",
-            "dashStat2Label": "Vida del Sistema",
-            "dashStat2Value": "OPTIMIZADO",
-            "dashStat2Highlight": true,
-            "btnRemote": "Acceder al Soporte Remoto Inmediato"
-          },
-          "design": {
-            "bg": "#052e16",
-            "titleColor": "#f0fdf4",
-            "accentColor": "#4ade80"
-          }
-        }
-      ]
+    {
+      "id_modulo": 17,
+      "tipo": "cliente-header",
+      "nombre": "Header de cliente — Clientes",
+      "data": {
+        "backLabel": "← Volver al Inicio",
+        "backHref": "/",
+        "empresaLogo": "",
+        "empresaNombre": "Nombre de la empresa",
+        "titulo": "Caso de éxito",
+        "lead": "Descripción del proyecto o caso de éxito.",
+        "sector": "",
+        "ubicacion": "",
+        "anio": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-28T00:00:00.000Z",
+      "editado_en": "2026-05-28T18:21:40.450Z"
     },
-    "desarrollo-hero": {
-      "variantes": [
-        {
-          "id": "desarrollo-hero-v1",
-          "nombre": "Desarrollo — Default",
-          "data": {
-            "badge": "Intelligence Labs",
-            "titulo1": "Desarrollo de",
-            "accent": "Software.",
-            "descripcion": "Transformamos la complejidad operativa en interfaces simplificadas. Desarrollamos código robusto, escalable y diseñado para los desafíos logísticos de la industria moderna.",
-            "solutions": [
-              {
-                "iconType": "chart",
-                "titulo": "Software Logístico a Medida",
-                "desc": "Optimización de flujos de inventario, trazabilidad y gestión de depósitos inteligentes."
-              },
-              {
-                "iconType": "database",
-                "titulo": "ERP / CRM",
-                "desc": "Sistemas centralizados para el control total de operaciones comerciales."
-              },
-              {
-                "iconType": "gear",
-                "titulo": "IoT & Automatización",
-                "desc": "Integración entre hardware y software inteligente basado en datos."
-              }
-            ],
-            "btnCta": "Consultar Desarrollo",
-            "btnCtaHref": "#",
-            "editorLabel": "SISGRA_CORE_V2.0 / LOGISTICS_MODULE",
-            "codeRows": [
-              "class SecuritySystem {",
-              "public function connectDevices() {",
-              "return SUCCESS;",
-              "}"
-            ]
-          },
-          "design": {}
-        },
-        {
-          "id": "desarrollo-hero-v2",
-          "nombre": "Desarrollo — Noche Azul",
-          "data": {
-            "badge": "Intelligence Labs",
-            "titulo1": "Desarrollo de",
-            "accent": "Software.",
-            "descripcion": "Transformamos la complejidad operativa en interfaces simplificadas. Desarrollamos código robusto, escalable y diseñado para los desafíos logísticos de la industria moderna.",
-            "solutions": [
-              {
-                "iconType": "chart",
-                "titulo": "Software Logístico a Medida",
-                "desc": "Optimización de flujos de inventario, trazabilidad y gestión de depósitos inteligentes."
-              },
-              {
-                "iconType": "database",
-                "titulo": "ERP / CRM",
-                "desc": "Sistemas centralizados para el control total de operaciones comerciales."
-              },
-              {
-                "iconType": "gear",
-                "titulo": "IoT & Automatización",
-                "desc": "Integración entre hardware y software inteligente basado en datos."
-              }
-            ],
-            "btnCta": "Consultar Desarrollo",
-            "btnCtaHref": "#",
-            "editorLabel": "SISGRA_CORE_V2.0 / LOGISTICS_MODULE",
-            "codeRows": [
-              "class SecuritySystem {",
-              "public function connectDevices() {",
-              "return SUCCESS;",
-              "}"
-            ]
-          },
-          "design": {
-            "bg": "#0f172a",
-            "titleColor": "#f1f5f9",
-            "accentColor": "#60a5fa"
-          }
-        },
-        {
-          "id": "desarrollo-hero-v3",
-          "nombre": "Desarrollo — Violeta Tech",
-          "data": {
-            "badge": "Intelligence Labs",
-            "titulo1": "Desarrollo de",
-            "accent": "Software.",
-            "descripcion": "Transformamos la complejidad operativa en interfaces simplificadas. Desarrollamos código robusto, escalable y diseñado para los desafíos logísticos de la industria moderna.",
-            "solutions": [
-              {
-                "iconType": "chart",
-                "titulo": "Software Logístico a Medida",
-                "desc": "Optimización de flujos de inventario, trazabilidad y gestión de depósitos inteligentes."
-              },
-              {
-                "iconType": "database",
-                "titulo": "ERP / CRM",
-                "desc": "Sistemas centralizados para el control total de operaciones comerciales."
-              },
-              {
-                "iconType": "gear",
-                "titulo": "IoT & Automatización",
-                "desc": "Integración entre hardware y software inteligente basado en datos."
-              }
-            ],
-            "btnCta": "Consultar Desarrollo",
-            "btnCtaHref": "#",
-            "editorLabel": "SISGRA_CORE_V2.0 / LOGISTICS_MODULE",
-            "codeRows": [
-              "class SecuritySystem {",
-              "public function connectDevices() {",
-              "return SUCCESS;",
-              "}"
-            ]
-          },
-          "design": {
-            "bg": "#1e1b4b",
-            "titleColor": "#ede9fe",
-            "accentColor": "#a78bfa"
-          }
-        }
-      ]
-    },
-    "nav": {
-      "variantes": [
-        {
-          "id": "nav-v1",
-          "nombre": "Navbar — Default",
-          "data": {
-            "logoSrc": "/img/sisgra_azul.png",
-            "logoSrcHref": "",
-            "instalacionesLabel": "Instalaciones",
-            "cableadoLabel": "Cableado Estructurado",
-            "cableadoHref": "/html/cableado_estructurado.html",
-            "fibraLabel": "Fibra Óptica",
-            "fibraHref": "/html/fibra_optica.html",
-            "seguridadLabel": "Seguridad Electrónica",
-            "seguridadHref": "/html/seguridad.html",
-            "blogLabel": "Blog",
-            "blogHref": "/html/blog.html",
-            "soporteLabel": "Soporte IT",
-            "soporteHref": "/html/soporte_it.html",
-            "desarrolloLabel": "Desarrollo de Software",
-            "desarrolloHref": "/html/desarrollo.html",
-            "ctaLabel": "Contáctese",
-            "ctaHref": "https://wa.me/548101220065"
-          },
-          "design": {
-            "bg": "",
-            "linkColor": "",
-            "dropdownBg": "",
-            "dropdownLinkColor": "",
-            "ctaBg": "",
-            "ctaColor": "",
-            "mobileBg": "",
-            "mobileLinkColor": "",
-            "marginTop": "",
-            "marginBottom": "",
-            "display": ""
-          },
-          "alerta": false,
-          "editada_en": "2026-05-28T18:13:42.012Z"
-        }
-      ]
-    },
-    "footer": {
-      "variantes": [
-        {
-          "id": "footer-v1",
-          "nombre": "Footer — Default",
-          "data": {},
-          "design": {}
-        }
-      ]
-    },
-    "footer-full": {
-      "variantes": [
-        {
-          "id": "footer-full-v1",
-          "nombre": "Footer Completo — Default",
-          "data": {},
-          "design": {}
-        }
-      ]
-    },
-    "blog-list": {
-      "variantes": [
-        {
-          "id": "blog-list-v1",
-          "nombre": "Lista de Artículos — Default",
-          "data": {},
-          "design": {}
-        }
-      ]
-    },
-    "articulo-header": {
-      "variantes": [
-        {
-          "id": "articulo-header-v1",
-          "nombre": "Header Artículo — Default",
-          "data": {},
-          "design": {}
-        }
-      ]
-    },
-    "articulo-body": {
-      "variantes": [
-        {
-          "id": "articulo-body-v1",
-          "nombre": "Cuerpo Artículo — Default",
-          "data": {},
-          "design": {}
-        },
-        {
-          "id": "articulo-body-brunbydl",
-          "nombre": "Cuerpo Artículo — 2",
-          "alerta": false,
-          "data": {
-            "featuredImageUrl": "",
-            "featuredImageAlt": "Infraestructura IT",
-            "contentHtml": "<h2>La evolución hacia la Categoría 8</h2>\n<p>En el panorama actual de la industria 4.0, la velocidad de transmisión de datos no es solo una ventaja competitiva, sino un requisito operativo. El cableado <strong>Categoría 8 (Cat8)</strong> representa el salto más significativo en infraestructura de cobre de la última década.</p>\n<p>A diferencia de sus predecesores, Cat8 permite frecuencias de hasta 2000 MHz y velocidades de 25Gbps a 40Gbps, lo que lo hace ideal para el backbone de centros de datos y plantas automatizadas en Rosario y la región.</p>\n<blockquote>\"La certificación no es un trámite, es el seguro de vida de su red de datos.\"</blockquote>\n<h3>Beneficios clave de la certificación profesional:</h3>\n<ul>\n  <li><strong>Reducción de Latencia:</strong> Minimiza la retransmisión de paquetes perdidos por interferencias.</li>\n  <li><strong>Escalabilidad:</strong> Prepara la planta para futuras actualizaciones de hardware sin cambiar el cableado.</li>\n  <li><strong>Cumplimiento de Normas:</strong> Garantiza que la instalación respeta los estándares internacionales TIA/EIA.</li>\n</ul>\n<p>En <strong>SISGRA</strong>, utilizamos equipos de medición Fluke de última generación para entregar reportes detallados de cada nodo instalado, asegurando que cada centímetro de su red rinda al 100% de su capacidad nominal.</p>",
-            "ctaTitle": "¿Necesita auditar su infraestructura actual?",
-            "ctaText": "Nuestros asesores técnicos pueden realizar un relevamiento de su planta y proponer mejoras de conectividad.",
-            "ctaBtnLabel": "Solicitar Asesoría Técnica",
-            "ctaBtnHref": "https://wa.me/03418610863",
-            "sidebarTitle": "SISGRA SRL",
-            "sidebarText": "Expertos en integración tecnológica desde 1999. Soluciones certificadas para empresas que no pueden detenerse."
-          },
-          "design": {},
-          "creada_en": "2026-05-28T16:30:11.708Z",
-          "editada_en": "2026-05-28T16:30:39.827Z"
-        }
-      ]
-    },
-    "cliente-header": {
-      "variantes": [
-        {
-          "id": "cliente-header-v1",
-          "nombre": "Header Cliente — Default",
-          "data": {},
-          "design": {}
-        }
-      ]
-    },
-    "cliente-body": {
-      "variantes": [
-        {
-          "id": "cliente-body-v1",
-          "nombre": "Cuerpo Cliente — Default",
-          "data": {},
-          "design": {}
-        }
-      ]
+    {
+      "id_modulo": 18,
+      "tipo": "cliente-body",
+      "nombre": "Cuerpo de cliente — Clientes",
+      "data": {
+        "featuredImageUrl": "",
+        "featuredImageAlt": "",
+        "contentHtml": "<h2>El desafío</h2><p>Describí el contexto inicial del cliente y los objetivos del proyecto.</p><h2>La solución</h2><p>Contá qué implementó SISGRA y cómo se ejecutó.</p>",
+        "fichaTitle": "Ficha del proyecto",
+        "empresa": "Nombre de la empresa",
+        "sector": "",
+        "ubicacion": "",
+        "anio": "",
+        "servicios": "",
+        "ctaTitle": "¿Tenés un proyecto similar?",
+        "ctaText": "Conversemos sobre cómo SISGRA puede ayudar a tu empresa.",
+        "ctaBtnLabel": "Contactar a SISGRA",
+        "ctaBtnHref": "https://wa.me/548101220065"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-05-28T00:00:00.000Z",
+      "editado_en": "2026-05-28T18:21:40.450Z"
     }
-  }
+  ]
 }

@@ -60,7 +60,7 @@ exports.activaPorTipo = (req, res) => {
 
 // GET /api/plantillas/:id
 exports.obtener = (req, res) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);   // id_plantilla es numérico en v2
   const { plantillas } = read();
   const tpl = plantillas.find(p => p.id_plantilla === id);
   if (!tpl) return res.status(404).json({ error: 'Plantilla no encontrada' });
@@ -69,7 +69,7 @@ exports.obtener = (req, res) => {
 
 // POST /api/plantillas   [auth]
 exports.crear = (req, res) => {
-  const { tipo, nombre, descripcion, secciones } = req.body || {};
+  const { tipo, nombre, descripcion, id_menu, id_modulos } = req.body || {};
   if (!tipo) return res.status(400).json({ error: 'El campo "tipo" es obligatorio' });
   if (!isTipoValido(tipo)) {
     return res.status(400).json({ error: `Tipo inválido. Valores base: ${TIPOS_BASE.join(', ')} (o btn-*)` });
@@ -81,12 +81,13 @@ exports.crear = (req, res) => {
   const data = read();
   const now = new Date().toISOString();
   const nueva = {
-    id_plantilla: String(nextId(data.plantillas)),
+    id_plantilla: nextId(data.plantillas),
     tipo,
     nombre: nombre.trim(),
     descripcion: descripcion || '',
     activa: false,
-    secciones: Array.isArray(secciones) ? secciones : [],
+    id_menu:    Array.isArray(id_menu)    ? id_menu    : [],
+    id_modulos: Array.isArray(id_modulos) ? id_modulos : [],
     creado_en: now,
     editado_en: now,
   };
@@ -97,21 +98,22 @@ exports.crear = (req, res) => {
 
 // PATCH /api/plantillas/:id   [auth]
 exports.actualizar = (req, res) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);   // id_plantilla es numérico en v2
   const data = read();
   const idx = data.plantillas.findIndex(p => p.id_plantilla === id);
   if (idx === -1) return res.status(404).json({ error: 'Plantilla no encontrada' });
 
-  const { tipo, nombre, descripcion, secciones } = req.body || {};
+  const { tipo, nombre, descripcion, id_menu, id_modulos } = req.body || {};
   if (tipo !== undefined && !isTipoValido(tipo)) {
     return res.status(400).json({ error: `Tipo inválido. Valores base: ${TIPOS_BASE.join(', ')} (o btn-*)` });
   }
 
   const tpl = data.plantillas[idx];
-  if (tipo !== undefined)        tpl.tipo = tipo;
-  if (nombre !== undefined)      tpl.nombre = String(nombre).trim();
-  if (descripcion !== undefined) tpl.descripcion = descripcion;
-  if (Array.isArray(secciones))  tpl.secciones = secciones;
+  if (tipo !== undefined)         tpl.tipo = tipo;
+  if (nombre !== undefined)       tpl.nombre = String(nombre).trim();
+  if (descripcion !== undefined)  tpl.descripcion = descripcion;
+  if (Array.isArray(id_menu))     tpl.id_menu = id_menu;
+  if (Array.isArray(id_modulos))  tpl.id_modulos = id_modulos;
   tpl.editado_en = new Date().toISOString();
 
   save(data);
@@ -122,7 +124,7 @@ exports.actualizar = (req, res) => {
 // Marca esta plantilla como activa; desactiva las demás del mismo tipo.
 // Setea fecha_inicio (ahora) y fecha_fin (ahora + 7 días) en la activada.
 exports.activar = (req, res) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);   // id_plantilla es numérico en v2
   const data = read();
   const tpl = data.plantillas.find(p => p.id_plantilla === id);
   if (!tpl) return res.status(404).json({ error: 'Plantilla no encontrada' });
@@ -144,7 +146,7 @@ exports.activar = (req, res) => {
 // POST /api/plantillas/:id/extender   [auth]
 // Extiende fecha_fin 7 días desde fecha_fin actual (o desde ahora si ya venció).
 exports.extender = (req, res) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);   // id_plantilla es numérico en v2
   const data = read();
   const tpl = data.plantillas.find(p => p.id_plantilla === id);
   if (!tpl) return res.status(404).json({ error: 'Plantilla no encontrada' });
@@ -164,7 +166,7 @@ exports.extender = (req, res) => {
 //   - busca otra plantilla del mismo tipo y la activa automáticamente
 //   - si no hay otra, RECHAZA el borrado (no se puede dejar un HTML sin plantilla activa)
 exports.eliminar = (req, res) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);   // id_plantilla es numérico en v2
   const data = read();
   const tpl = data.plantillas.find(p => p.id_plantilla === id);
   if (!tpl) return res.status(404).json({ error: 'Plantilla no encontrada' });

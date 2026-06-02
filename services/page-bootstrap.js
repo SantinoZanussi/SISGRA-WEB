@@ -8,7 +8,7 @@
 //     bootstrapPage('index', 'plantilla-root');
 //   </script>
 
-import { renderPlantilla } from './sections.js';
+import { resolverModulos, renderModulos } from './sections.js';
 import { cssFilesFor } from './css-pages.js';
 
 const API_BASE = `http://${window.location.hostname}:3000/api`;
@@ -31,18 +31,42 @@ function ensureFontAwesome() {
   document.head.appendChild(l);
 }
 
-function ensurePageCss(plantilla) {
-  if (!plantilla) return;
+function ensurePageCss(tipo, mods) {
   const have = new Set(
     Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(l => l.getAttribute('href'))
   );
-  cssFilesFor(plantilla.tipo, plantilla.secciones || []).forEach(href => {
+  cssFilesFor(tipo, mods || []).forEach(href => {
     if (have.has(href)) return;
     const l = document.createElement('link');
     l.rel = 'stylesheet';
     l.href = href;
     document.head.appendChild(l);
   });
+}
+
+// Construye los items del nav (dropdowns + links) desde navbar.json. Reemplaza
+// el armado embebido en cada plantilla (el viejo syncNavEnPlantillas del backend).
+// Se omite el item "home" (href "/") porque el logo ya enlaza al inicio.
+function buildNavItems(botones) {
+  const activos = (botones || []).filter(b => b.activo !== false && b.href !== '/');
+  const grupos = {};   // grupo → children[]
+  const sueltos = [];
+  activos.forEach(b => {
+    if (b.grupo) (grupos[b.grupo] = grupos[b.grupo] || []).push(b);
+    else sueltos.push(b);
+  });
+  const items = [];
+  Object.entries(grupos).forEach(([grupo, hijos]) => {
+    items.push({
+      tipo: 'dropdown',
+      titulo: grupo,
+      children: hijos.sort((a, b) => (a.orden || 0) - (b.orden || 0))
+                     .map(b => ({ titulo: b.titulo, href: b.href || '#' })),
+    });
+  });
+  sueltos.sort((a, b) => (a.orden || 0) - (b.orden || 0))
+         .forEach(b => items.push({ tipo: 'link', titulo: b.titulo, href: b.href || '#' }));
+  return items;
 }
 
 export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) {
@@ -52,10 +76,17 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
     return;
   }
   ensureFontAwesome();
+
+  async function loadAndRender() {
   try {
     // cache:'no-store' + cache-buster ?t= → fuerza fetch fresh siempre.
     // Sin esto el browser cachea la plantilla y los cambios del editor no se ven hasta refresh duro.
-    const r = await fetch(`${API_BASE}/plantillas/activa/${tipo}?t=${Date.now()}`, { cache: 'no-store' });
+    const bust = `t=${Date.now()}`;
+    const [r, modR, navR] = await Promise.all([
+      fetch(`${API_BASE}/plantillas/activa/${tipo}?${bust}`, { cache: 'no-store' }),
+      fetch(`${API_BASE}/data/modulos?${bust}`,              { cache: 'no-store' }),
+      fetch(`${API_BASE}/data/navbar?${bust}`,               { cache: 'no-store' }),
+    ]);
     if (!r.ok) {
       root.innerHTML = `<div style="padding:6rem 2rem;text-align:center;color:#94a3b8;font-family:'Inter',system-ui,sans-serif;">
         Esta página aún no tiene una plantilla activa.<br/>
@@ -64,6 +95,17 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
       return;
     }
     const { plantilla } = await r.json();
+    const modulos = modR.ok ? (await modR.json()).modulos  || [] : [];
+    const navbar  = navR.ok ? (await navR.json()).botones  || [] : [];
+
+    // Resolver los módulos por id_modulos (clonados) e inyectar los items del nav
+    // desde navbar.json. `secciones` es el array de módulos resueltos; se le agrega
+    // el alias `.type` para que el código de inyección dinámica de abajo siga igual.
+    let secciones = resolverModulos(plantilla, modulos);
+    secciones.forEach(m => {
+      m.type = m.tipo;
+      if (m.tipo === 'nav') m.data = { ...m.data, items: buildNavItems(navbar) };
+    });
 
     // ── Para cliente.html: si se pasa clienteId, inyectar datos del cliente ──
     if (opts.clienteId) {
@@ -77,7 +119,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
             return;
           }
           if (cliente.nombre) document.title = `${cliente.nombre} — SISGRA`;
-          plantilla.secciones = plantilla.secciones.map(sec => {
+          secciones = secciones.map(sec => {
             // Header dedicado de cliente (cliente-header) o el viejo articulo-header
             if (sec.type === 'cliente-header') {
               return { ...sec, data: {
@@ -148,7 +190,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
             const post = (blogData.posts || []).find(p => p.id === postId);
             if (post) {
               if (post.titulo) document.title = `${post.titulo} — SISGRA`;
-              plantilla.secciones = plantilla.secciones.map(sec => {
+              secciones = secciones.map(sec => {
                 if (sec.type === 'articulo-header') {
                   return { ...sec, data: {
                     ...sec.data,
@@ -180,8 +222,8 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
       }
     }
 
-    ensurePageCss(plantilla);
-    root.innerHTML = renderPlantilla(plantilla);
+    ensurePageCss(tipo, secciones);
+    root.innerHTML = renderModulos(secciones);
     // Post-render: conectar funcionalidad que estaba en el HTML estático
     bindMobileDrawer();
     bindContactForm();
@@ -193,6 +235,27 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
     root.innerHTML = `<div style="padding:4rem;text-align:center;color:#900;font-family:sans-serif;">
       Error cargando la plantilla: ${e.message}
     </div>`;
+  }
+  }   // ← fin de loadAndRender
+
+  await loadAndRender();
+
+  // Re-render al volver a enfocar la pestaña: refleja los cambios guardados desde
+  // el admin SIN recargar la página (evita la pantalla en blanco que deja el
+  // live-reload del dev server al recargar pestañas en segundo plano).
+  if (!window.__sisgraVisBound) {
+    window.__sisgraVisBound = true;
+    let lastRender = Date.now();
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'visible') return;
+      if (Date.now() - lastRender < 1200) return;
+      // No re-renderizar si el usuario está escribiendo en un formulario (no perder lo tipeado).
+      const ae = document.activeElement;
+      if (root.contains(ae) && /^(INPUT|TEXTAREA)$/.test(ae.tagName || '')) return;
+      if ([...root.querySelectorAll('input,textarea')].some(el => el.value && el.value.trim())) return;
+      lastRender = Date.now();
+      loadAndRender();
+    });
   }
 }
 
