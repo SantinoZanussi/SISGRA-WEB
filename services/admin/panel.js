@@ -1439,6 +1439,7 @@ async function saveCurrentPanel(){
  
 function renderBlogList(){
   const list = document.getElementById('blog-list');
+  if(!list) return;
   const posts = state.blog?.posts || [];
   list.innerHTML = posts.map(p=>`
     <div class="blog-item">
@@ -1469,6 +1470,8 @@ function openNewPost(){
   updateImgPreview('b-img','b-img-preview');
   openModal('modal-blog');
 }
+window.openNewPost = openNewPost;
+window.renderBlogList = renderBlogList;
 window.editPost = function(id){
   const p = (state.blog?.posts||[]).find(x=>x.id===id); if(!p) return;
   state.editingPostId = id;
@@ -1608,6 +1611,21 @@ function renderClientesList(){
     </tr>`;
   }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--slate-400);padding:1rem;font-size:.75rem;">Sin clientes</td></tr>';
 }
+window.renderClientesList = renderClientesList;
+
+function openNewCliente(){
+  state.editingClienteId = null;
+  const mt = document.getElementById('modal-cliente')?.querySelector('.modal-title');
+  if(mt) mt.textContent = 'Agregar Cliente';
+  ['c-name','c-img','c-titulo-proyecto','c-subtitulo','c-sector','c-ubicacion','c-anio','c-servicios','c-imagen-dest']
+    .forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  const ep=document.getElementById('c-estado-perfil'); if(ep) ep.value='borrador';
+  const cc=document.getElementById('c-content-cliente'); if(cc) cc.innerHTML='';
+  updateImgPreview('c-img','c-img-preview');
+  updateImgPreview('c-imagen-dest','c-imagen-dest-preview');
+  openModal('modal-cliente');
+}
+window.openNewCliente = openNewCliente;
 
 window.editCliente = function(id){
   const c = (state.clientes?.clientes||[]).find(x=>x.id===id);
@@ -1889,7 +1907,7 @@ function initApp(){
   document.getElementById('btn-nueva-plantilla-main')?.addEventListener('click', ()=>openModal('modal-nueva-plantilla'));
   document.getElementById('crear-plantilla-btn')?.addEventListener('click', handleCreateTemplate);
  
-  document.getElementById('dash-nuevo-cliente')?.addEventListener('click',()=>{ showPanel('clientes'); openModal('modal-cliente'); });
+  document.getElementById('dash-nuevo-cliente')?.addEventListener('click',()=>{ showPanel('modulos'); openNewCliente(); });
   document.getElementById('dash-editar-home')?.addEventListener('click',()=>{
     if(!state.currentTplId) state.currentTplId = state.templates[0]?.id;
     renderSidebarTemplates();
@@ -2041,25 +2059,7 @@ function initApp(){
     }
   });
 
-  document.getElementById('abrir-modal-cliente')?.addEventListener('click',()=>{
-    state.editingClienteId = null;
-    const mt = document.getElementById('modal-cliente')?.querySelector('.modal-title');
-    if(mt) mt.textContent = 'Agregar Cliente';
-    document.getElementById('c-name').value='';
-    document.getElementById('c-img').value='';
-    document.getElementById('c-estado-perfil').value='borrador';
-    document.getElementById('c-titulo-proyecto').value='';
-    document.getElementById('c-subtitulo').value='';
-    document.getElementById('c-sector').value='';
-    document.getElementById('c-ubicacion').value='';
-    document.getElementById('c-anio').value='';
-    document.getElementById('c-servicios').value='';
-    document.getElementById('c-imagen-dest').value='';
-    document.getElementById('c-content-cliente').innerHTML='';
-    updateImgPreview('c-img','c-img-preview');
-    updateImgPreview('c-imagen-dest','c-imagen-dest-preview');
-    openModal('modal-cliente');
-  });
+  document.getElementById('abrir-modal-cliente')?.addEventListener('click', openNewCliente);
   bindImgPreview('b-img','b-img-preview');
   bindImgPreview('c-img','c-img-preview');
   bindImgPreview('c-imagen-dest','c-imagen-dest-preview');
@@ -2068,7 +2068,7 @@ function initApp(){
   attachImgPicker('c-imagen-dest','c-imagen-dest-preview');
   document.getElementById('guardar-cliente-btn')?.addEventListener('click', saveCliente);
   document.getElementById('abrir-modal-blog')?.addEventListener('click',openNewPost);
-  document.getElementById('dash-nuevo-post')?.addEventListener('click',()=>{ showPanel('blog'); openNewPost(); });
+  document.getElementById('dash-nuevo-post')?.addEventListener('click',()=>{ showPanel('modulos'); openNewPost(); });
   document.getElementById('guardar-blog')?.addEventListener('click',saveBlogPost);
 
   // Restaurar panel activo tras recarga (Live Server / hot-reload)

@@ -1217,8 +1217,51 @@ window.openModEditor = function(type, variantId) {
   const designCard = document.getElementById('modulos-editor-design-card');
   if (designCard) designCard.style.display = (sec.designFields || []).length ? '' : 'none';
 
+  renderModContentCard(type);
+
   _showView('modulos-editor-view');
 };
+
+/* ── Gestión de contenido global embebida (blog posts / clientes) ──
+   Para los módulos `blog` y `clientes`, el contenido real (artículos / logos)
+   vive en blog.json / clientes.json y se hidrata en vivo en el sitio, por lo
+   que editarlo acá se aplica automáticamente a TODAS las variantes del módulo.
+   Reutilizamos las funciones de gestión definidas en panel.js. */
+const MOD_CONTENT_CONFIG = {
+  blog: {
+    title: 'Artículos del blog',
+    addLabel: '<i class="fa-solid fa-plus"></i> Nuevo artículo',
+    bodyHTML: '<div class="blog-grid" id="blog-list"></div>',
+    render: () => window.renderBlogList?.(),
+    add:    () => window.openNewPost?.(),
+  },
+  clientes: {
+    title: 'Logos / Clientes',
+    addLabel: '<i class="fa-solid fa-plus"></i> Agregar',
+    bodyHTML: `<div class="data-table-scroll" style="padding:0;">
+      <table class="data-table">
+        <thead><tr><th>Nombre</th><th>Logo</th><th>Carrusel</th><th>Perfil</th><th>Acciones</th></tr></thead>
+        <tbody id="clientes-tbody"></tbody>
+      </table>
+    </div>`,
+    render: () => window.renderClientesList?.(),
+    add:    () => window.openNewCliente?.(),
+  },
+};
+
+function renderModContentCard(type) {
+  const card = document.getElementById('modulos-editor-content-card');
+  if (!card) return;
+  const cfg = MOD_CONTENT_CONFIG[type];
+  if (!cfg) { card.style.display = 'none'; return; }
+  card.style.display = '';
+  const titleEl = document.getElementById('modulos-content-title');
+  if (titleEl) titleEl.textContent = cfg.title;
+  const body = document.getElementById('modulos-content-body');
+  if (body) { body.innerHTML = cfg.bodyHTML; cfg.render(); }
+  const addBtn = document.getElementById('modulos-content-add-btn');
+  if (addBtn) { addBtn.innerHTML = cfg.addLabel; addBtn.onclick = cfg.add; }
+}
 
 function renderModFieldGroup(group, fields, containerId) {
   const container = document.getElementById(containerId);

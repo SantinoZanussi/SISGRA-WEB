@@ -53,14 +53,6 @@
         <i class="fa-solid fa-bars"></i>
         Ítems del Navbar
       </div>
-      <div class="sidebar-item" data-panel="clientes">
-        <i class="fa-solid fa-building"></i>
-        Clientes
-      </div>
-      <div class="sidebar-item" data-panel="blog">
-        <i class="fa-solid fa-newspaper"></i>
-        Blog / Noticias
-      </div>
       <div class="sidebar-item" data-panel="assets">
         <i class="fa-solid fa-images"></i>
         Imágenes
@@ -237,6 +229,15 @@
                 <div class="section-card-header"><span class="section-card-title">Contenido</span></div>
                 <div class="section-card-body" id="modulos-editor-data-fields" style="padding:1rem;display:flex;flex-direction:column;gap:.875rem;max-height:50vh;overflow-y:auto;"></div>
               </div>
+              <!-- Gestión de contenido global (blog / clientes) — se aplica a todas las variantes -->
+              <div class="section-card" id="modulos-editor-content-card" style="display:none;">
+                <div class="section-card-header" style="display:flex;align-items:center;justify-content:space-between;">
+                  <span class="section-card-title" id="modulos-content-title">Contenido</span>
+                  <button class="btn-add" id="modulos-content-add-btn"><i class="fa-solid fa-plus"></i> Agregar</button>
+                </div>
+                <div style="font-size:.7rem;color:#94a3b8;padding:.6rem 1rem 0;line-height:1.5;">Este contenido es compartido: los cambios se aplican automáticamente a todas las variantes de este módulo.</div>
+                <div class="section-card-body" id="modulos-content-body" style="padding:1rem;"></div>
+              </div>
               <!-- Campos de diseño (visible solo si el tipo tiene designFields) -->
               <div class="section-card" id="modulos-editor-design-card" style="display:none;">
                 <div class="section-card-header"><span class="section-card-title">Diseño</span></div>
@@ -278,29 +279,6 @@
           </div>
         </div>
 
-        <!-- CLIENTES -->
-        <div class="panel" id="panel-clientes">
-          <div class="page-header"><div class="page-title">Clientes</div><div class="page-desc">Logos del carrusel.</div></div>
-          <div class="section-card">
-            <div class="section-card-header"><span class="section-card-title">Logos actuales</span><button class="btn-add" id="abrir-modal-cliente"><i class="fa-solid fa-plus"></i> Agregar</button></div>
-            <div class="section-card-body data-table-scroll" style="padding:0;">
-              <table class="data-table">
-                <thead><tr><th>Nombre</th><th>Logo</th><th>Carrusel</th><th>Perfil</th><th>Acciones</th></tr></thead>
-                <tbody id="clientes-tbody"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
- 
-        <!-- BLOG -->
-        <div class="panel" id="panel-blog">
-          <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;">
-            <div><div class="page-title">Blog / Noticias</div><div class="page-desc">Artículos del blog corporativo.</div></div>
-            <button class="btn-add" id="abrir-modal-blog"><i class="fa-solid fa-plus"></i> Nuevo artículo</button>
-          </div>
-          <div class="blog-grid" id="blog-list"></div>
-        </div>
- 
         <!-- IMÁGENES / ASSETS -->
         <div class="panel" id="panel-assets">
           <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;">
