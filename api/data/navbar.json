@@ -55,6 +55,14 @@
       "grupo": null,
       "orden": 7,
       "activo": true
+    },
+    {
+      "id_menu": 8,
+      "titulo": "asdasd",
+      "href": "/html/btn-8",
+      "grupo": null,
+      "orden": 8,
+      "activo": true
     }
   ]
 }

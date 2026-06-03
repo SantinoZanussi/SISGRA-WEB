@@ -69,7 +69,7 @@
         <span>Plantillas</span>
         <button class="btn-icon" id="btn-nueva-plantilla" title="Nueva plantilla"><i class="fa-solid fa-plus"></i></button>
       </div>
-      <div class="sidebar-item" data-panel="plantillas" id="sidebar-go-plantillas" style="font-size:.65rem;font-weight:600;color:rgba(255,255,255,.6);">
+      <div class="sidebar-item" data-panel="plantillas" id="sidebar-go-plantillas">
         <i class="fa-solid fa-layer-group"></i>
         Ver todas las plantillas
       </div>
@@ -90,9 +90,9 @@
           <div class="sidebar-avatar">AD</div>
           <div>
             <div class="sidebar-user-name">Administrador</div>
-            <div class="sidebar-user-role">Conectado</div>
+            <div class="sidebar-user-role"><span class="sidebar-tpl-dot-logout"></span>Conectado</div>
           </div>
-          <button class="sidebar-logout" id="logout-btn" title="Cerrar sesión"><i class="fa-solid fa-right-from-bracket"></i></button>
+          <button class="sidebar-logout" id="logout-btn" title="Cerrar sesión"><i class="fa-solid fa-right-from-bracket fa-xl"></i></button>
         </div>
       </div>
     </aside>
@@ -170,7 +170,7 @@
               <div class="page-title">Catálogo de Módulos</div>
               <div class="page-desc">Cada módulo es una pieza reutilizable. Editá su contenido y diseño; los cambios impactan en las plantillas que lo usan.</div>
             </div>
-            <div id="modulos-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;"></div>
+            <div id="modulos-grid"></div>
           </div>
 
           <!-- Vista 2: variantes de un tipo -->
@@ -550,6 +550,12 @@
       <div id="nav-custom-info" style="display:none;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:.5rem;padding:.875rem;font-size:.78rem;color:#a5b4fc;line-height:1.6;">
         Se crea una <b>plantilla nueva en blanco</b> (sin archivo HTML aparte). La editás desde el panel de <b>Plantillas</b>, igual que todas las demás.
       </div>
+      <div>
+        <label class="form-label">Grupo (opcional)</label>
+        <select class="form-input form-select" id="nav-grupo-select"></select>
+        <input class="form-input" id="nav-grupo-nuevo" placeholder="Nombre del grupo nuevo" style="display:none;margin-top:.5rem;">
+        <div class="form-hint">Los ítems con el mismo grupo se muestran juntos en un desplegable del menú. Dejalo en "Sin grupo" para un ítem suelto.</div>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-secondary" data-close="modal-navbar">Cancelar</button>
@@ -571,9 +577,37 @@
         <label class="form-label">Título <span style="color:#f87171">*</span></label>
         <input class="form-input" id="nav-edit-titulo">
       </div>
-      <div id="nav-edit-href-field">
-        <label class="form-label">URL de destino</label>
+      <div>
+        <label class="form-label">Destino</label>
+        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.375rem;">
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;">
+            <input type="radio" name="nav-edit-tipo-red" value="link" id="nav-edit-red-link"> Vincular a una plantilla existente
+          </label>
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;">
+            <input type="radio" name="nav-edit-tipo-red" value="custom" id="nav-edit-red-custom"> Página propia (HTML propio)
+          </label>
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;">
+            <input type="radio" name="nav-edit-tipo-red" value="url" id="nav-edit-red-url"> URL externa
+          </label>
+        </div>
+      </div>
+      <div id="nav-edit-plantilla-field">
+        <label class="form-label">Plantilla a vincular <span style="color:#f87171">*</span></label>
+        <select class="form-input form-select" id="nav-edit-plantilla-select"></select>
+        <div class="form-hint">El ítem del menú llevará a la página de esta plantilla — sin escribir rutas.</div>
+      </div>
+      <div id="nav-edit-href-field" style="display:none;">
+        <label class="form-label">URL externa <span style="color:#f87171">*</span></label>
         <input class="form-input" id="nav-edit-href" placeholder="ej. /html/servicios o https://…">
+      </div>
+      <div id="nav-edit-custom-info" style="display:none;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:.5rem;padding:.875rem;font-size:.78rem;color:#a5b4fc;line-height:1.6;">
+        Página con <b>HTML propio</b>. Si todavía no tiene su plantilla, se crea una <b>en blanco</b> automáticamente al guardar. La editás desde el panel de <b>Plantillas</b>.
+      </div>
+      <div>
+        <label class="form-label">Grupo (opcional)</label>
+        <select class="form-input form-select" id="nav-edit-grupo-select"></select>
+        <input class="form-input" id="nav-edit-grupo-nuevo" placeholder="Nombre del grupo nuevo" style="display:none;margin-top:.5rem;">
+        <div class="form-hint">Los ítems con el mismo grupo se muestran juntos en un desplegable del menú.</div>
       </div>
       <div>
         <label class="form-label">Orden</label>

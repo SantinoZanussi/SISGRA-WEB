@@ -510,6 +510,297 @@
       "alerta": false,
       "creado_en": "2026-05-28T00:00:00.000Z",
       "editado_en": "2026-05-28T18:21:40.450Z"
+    },
+    {
+      "id_modulo": 19,
+      "tipo": "services",
+      "nombre": "Servicios — Tipo 2",
+      "data": {
+        "titulo_seccion": "Portafolio de Soluciones",
+        "eyebrow": "Lo que hacemos",
+        "cards": [
+          {
+            "id": "instalaciones",
+            "titulo": "Instalaciones",
+            "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
+            "enlace": "./html/cableado_estructurado.html",
+            "link": ""
+          },
+          {
+            "id": "soporte",
+            "titulo": "Soporte IT",
+            "descripcion": "Mantenimiento integral de infraestructura y asistencia técnica corporativa especializada.",
+            "enlace": "./html/soporte_it.html"
+          },
+          {
+            "id": "software",
+            "titulo": "Software",
+            "descripcion": "Soluciones a medida para optimizar procesos logísticos y gestión de datos empresariales.",
+            "enlace": "./html/desarrollo.html"
+          }
+        ]
+      },
+      "design": {
+        "bg": "",
+        "sectionColor": "",
+        "cardBg": "",
+        "cardTitleColor": "",
+        "cardLinkColor": "",
+        "paddingY": "",
+        "titleSize": "",
+        "cardRadius": "",
+        "cardPadding": "",
+        "gap": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-03T17:13:58.429Z",
+      "editado_en": "2026-06-03T18:08:30.238Z"
+    },
+    {
+      "id_modulo": 20,
+      "tipo": "desarrollo-hero",
+      "nombre": "Hero Desarrollo — Tipo 2",
+      "data": {
+        "badge": "Intelligence Labs",
+        "titulo1": "El mundo del",
+        "accent": "Software.",
+        "descripcion": "Todas las locuras que hacemos en un solo lado",
+        "solutions": [
+          {
+            "iconType": "camera",
+            "titulo": "Software Logístico a Medida",
+            "desc": "Optimización de flujos de inventario, trazabilidad y gestión de depósitos inteligentes."
+          },
+          {
+            "iconType": "database",
+            "titulo": "ERP / CRM",
+            "desc": "Sistemas centralizados para el control total de operaciones comerciales."
+          },
+          {
+            "iconType": "gear",
+            "titulo": "IoT & Automatización",
+            "desc": "Integración entre hardware y software inteligente basado en datos."
+          }
+        ],
+        "btnCta": "Consultar Desarrollo",
+        "btnCtaHref": "#",
+        "editorLabel": "SISGRA INC.",
+        "codeRows": [
+          "print(\"Hola mundo.\");"
+        ]
+      },
+      "design": {
+        "bg": "",
+        "titleColor": "",
+        "accentColor": "",
+        "paddingY": "",
+        "titleSize": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-03T17:14:16.908Z",
+      "editado_en": "2026-06-03T18:09:29.649Z"
+    },
+    {
+      "id_modulo": 21,
+      "tipo": "desarrollo-hero",
+      "nombre": "Hero Desarrollo — Tipo 3",
+      "data": {
+        "badge": "Intelligence Labs",
+        "titulo1": "Desarrollo de",
+        "accent": "Software.",
+        "descripcion": "Transformamos la complejidad operativa en interfaces simplificadas. Desarrollamos código robusto, escalable y diseñado específicamente para los desafíos logísticos de la industria moderna.",
+        "solutions": [
+          {
+            "iconType": "chart",
+            "titulo": "Software Logístico a Medida",
+            "desc": "Optimización de flujos de inventario, trazabilidad y gestión de depósitos inteligentes."
+          },
+          {
+            "iconType": "database",
+            "titulo": "ERP / CRM",
+            "desc": "Sistemas centralizados para el control total de operaciones comerciales."
+          },
+          {
+            "iconType": "gear",
+            "titulo": "IoT & Automatización",
+            "desc": "Integración entre hardware y software inteligente basado en datos."
+          }
+        ],
+        "btnCta": "Consultar Desarrollo",
+        "btnCtaHref": "#",
+        "editorLabel": "SISGRA_CORE_V2.0 / LOGISTICS_MODULE",
+        "codeRows": [
+          "class SecuritySystem {",
+          "public function connectDevices() {",
+          "return SUCCESS;",
+          "}"
+        ]
+      },
+      "design": {
+        "bg": "",
+        "titleColor": "",
+        "accentColor": "",
+        "paddingY": "",
+        "titleSize": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-03T17:20:26.564Z",
+      "editado_en": "2026-06-03T18:09:43.723Z"
+    },
+    {
+      "id_modulo": 22,
+      "tipo": "clientes",
+      "nombre": "Clientes — Tipo 2",
+      "data": {
+        "titulo_seccion": "NUESTROS CLIENTES",
+        "carrusel_activo": true,
+        "auto_scroll": true,
+        "clientes": [
+          {
+            "nombre": "San Cristóbal",
+            "imagen": "/img/sancristobal.png",
+            "activo": true
+          },
+          {
+            "nombre": "Syngenta",
+            "imagen": "/img/syngenta.png",
+            "activo": true
+          }
+        ]
+      },
+      "design": {
+        "bg": "",
+        "paddingY": "",
+        "titleColor": "",
+        "titleSize": "",
+        "trackBg": "",
+        "cellBg": "",
+        "cellFilter": "",
+        "trackHeight": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-03T17:20:48.684Z",
+      "editado_en": "2026-06-03T18:07:35.135Z"
+    },
+    {
+      "id_modulo": 23,
+      "tipo": "services",
+      "nombre": "Servicios — Tipo 3",
+      "data": {
+        "titulo_seccion": "Portafolio de Soluciones",
+        "eyebrow": "Lo que hacemos",
+        "cards": [
+          {
+            "id": "instalaciones",
+            "titulo": "Instalaciones",
+            "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
+            "enlace": "./html/cableado_estructurado.html",
+            "link": ""
+          },
+          {
+            "id": "soporte",
+            "titulo": "Soporte IT",
+            "descripcion": "Mantenimiento integral de infraestructura y asistencia técnica corporativa especializada.",
+            "enlace": "./html/soporte_it.html"
+          },
+          {
+            "id": "software",
+            "titulo": "Software",
+            "descripcion": "Soluciones a medida para optimizar procesos logísticos y gestión de datos empresariales.",
+            "enlace": "./html/desarrollo.html"
+          }
+        ]
+      },
+      "design": {
+        "bg": "",
+        "sectionColor": "",
+        "cardBg": "",
+        "cardTitleColor": "",
+        "cardLinkColor": "",
+        "paddingY": "",
+        "titleSize": "",
+        "cardRadius": "",
+        "cardPadding": "",
+        "gap": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-03T17:42:21.258Z",
+      "editado_en": "2026-06-03T18:08:57.889Z"
+    },
+    {
+      "id_modulo": 24,
+      "tipo": "blog",
+      "nombre": "Blog / Noticias — Tipo 2",
+      "data": {
+        "titulo_seccion": "Novedades & Blog",
+        "posts": [
+          {
+            "titulo": "SISGRA cumple 25 años",
+            "extracto": "Un cuarto de siglo conectando empresas con la mejor infraestructura.",
+            "categoria": "Novedades",
+            "imagen": ""
+          },
+          {
+            "titulo": "Nuevas certificaciones Cat8",
+            "extracto": "Ampliamos nuestras capacidades de certificación en cableado de alta velocidad.",
+            "categoria": "Servicios",
+            "imagen": ""
+          },
+          {
+            "titulo": "Casos de éxito 2026",
+            "extracto": "Conocé los proyectos más destacados del año.",
+            "categoria": "Casos",
+            "imagen": ""
+          }
+        ]
+      },
+      "design": {
+        "bg": "",
+        "paddingY": "",
+        "titleColor": "",
+        "titleSize": "",
+        "cardBg": "",
+        "cardBorderColor": "",
+        "cardRadius": "",
+        "cardTitleColor": "",
+        "cardTextColor": "",
+        "tagBg": "",
+        "tagColor": "",
+        "linkColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-03T17:42:21.258Z",
+      "editado_en": "2026-06-03T18:07:18.462Z"
     }
   ]
 }

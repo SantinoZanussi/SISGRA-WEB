@@ -52,7 +52,7 @@
       "nombre": "prueba",
       "imagen": "/img/chatgptfoto.png",
       "url": "",
-      "activo": true,
+      "activo": false,
       "estado_perfil": "borrador",
       "titulo_proyecto": "",
       "subtitulo": "",

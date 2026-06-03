@@ -4,9 +4,8 @@ const c = require('../controllers/alertasController');
 const { authMiddleware } = require('../middleware/auth');
 
 router.get('/catalogo',   c.catalogo);
-router.get('/config',     authMiddleware, c.obtenerConfig);
 router.get('/log',        authMiddleware, c.listarLog);
-router.post('/disparar',  authMiddleware, c.disparar);
+// La API PRES consulta acá (POST) si hay plantillas/módulos vencidos.
 router.post('/check',     c.check);
 
 module.exports = router;

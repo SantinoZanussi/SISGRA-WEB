@@ -174,8 +174,14 @@ function populateTipoSelect() {
 // ─── Load + render dashboard ────────────────────────────────────────
 async function loadPlantillas() {
   try {
-    const { plantillas } = await api('GET', '/plantillas');
+    // También bajamos el navbar para poder rotular cada página personalizada
+    // con el nombre de su ítem del menú (en vez de "Páginas personalizadas").
+    const [{ plantillas }, nav] = await Promise.all([
+      api('GET', '/plantillas'),
+      api('GET', '/data/navbar').catch(() => ({ botones: [] })),
+    ]);
     e3.plantillas = plantillas || [];
+    e3.navbar = nav.botones || [];
     renderOverview();
     renderSidebarList();
   } catch (e) { notif('Error cargando plantillas: ' + e.message, 'error'); }
@@ -228,50 +234,68 @@ function refreshDashVencidas() {
 function renderOverview() {
   const list = document.getElementById('tpl-overview-list');
   if (!list) return;
-  list.innerHTML = TIPOS_HTML.map(t => {
-    const pls = e3.plantillas.filter(p => p.tipo === t.value);
+  // Card de una plantilla (reutilizada por los grupos del sistema y los custom).
+  const cardHtml = (p) => {
+    const vencida = isVencida(p);
+    const dias    = diasRestantes(p);
+    const cls     = expiryClass(p);
+    let expiryHtml = '';
+    if (p.activa && p.fecha_fin) {
+      const label = vencida
+        ? `Venció el ${fmtFecha(p.fecha_fin)}`
+        : `Vence ${dias === 0 ? 'hoy' : dias === 1 ? 'mañana' : `en ${dias} días`} · ${fmtFecha(p.fecha_fin)}`;
+      expiryHtml = `<span class="tpl-expiry-date ${cls}" style="font-size:.62rem;font-family:'IBM Plex Mono',monospace;">${label}</span>`;
+    }
+    const statusLabel = vencida ? 'Vencida' : p.activa ? 'Activa' : 'Borrador';
+    const statusCls   = vencida ? 'tpl-status-vencida' : p.activa ? 'tpl-status-active' : 'tpl-status-draft';
     return `
-      <div style="margin-bottom:1.25rem;">
-        <div style="display:flex;align-items:center;gap:.75rem;padding:.4rem 0 .5rem;border-bottom:1px solid var(--slate-100);margin-bottom:.5rem;">
-          <span style="font-size:.625rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--sisgra-blue);">${t.label}</span>
-          <span style="font-size:.6rem;color:var(--slate-400);font-family:monospace;">${t.file}</span>
+      <div class="tpl-list-item ${p.activa ? 'active-tpl' : ''} ${vencida ? 'vencida-tpl' : ''}" style="margin-bottom:.4rem;cursor:default;flex-wrap:wrap;gap:.5rem;">
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;">
+            <span class="tpl-list-name-text" style="font-weight:700;color:var(--slate-800);font-size:.8125rem;">${escAttr(p.nombre)}</span>
+            ${vencida ? '<span class="tpl-badge-vencida">[ VENCIDA ]</span>' : ''}
+            <button class="tpl-rename-btn" data-e3-rename="${p.id_plantilla}" title="Renombrar plantilla">✏</button>
+          </div>
+          ${p.descripcion ? `<div style="font-size:.6875rem;color:var(--slate-500);">${escAttr(p.descripcion)}</div>` : ''}
+          <div style="font-size:.6rem;color:var(--slate-400);font-family:'IBM Plex Mono',monospace;margin-top:.1rem;">ID: ${escAttr(p.id_plantilla)}</div>
+          ${expiryHtml}
         </div>
-        ${pls.length === 0
-          ? `<div style="padding:.85rem;color:var(--slate-400);font-size:.7rem;text-align:center;background:var(--slate-50);">Sin plantillas todavía.</div>`
-          : pls.map(p => {
-              const vencida = isVencida(p);
-              const dias    = diasRestantes(p);
-              const cls     = expiryClass(p);
-              let expiryHtml = '';
-              if (p.activa && p.fecha_fin) {
-                const label = vencida
-                  ? `Venció el ${fmtFecha(p.fecha_fin)}`
-                  : `Vence ${dias === 0 ? 'hoy' : dias === 1 ? 'mañana' : `en ${dias} días`} · ${fmtFecha(p.fecha_fin)}`;
-                expiryHtml = `<span class="tpl-expiry-date ${cls}" style="font-size:.62rem;font-family:'IBM Plex Mono',monospace;">${label}</span>`;
-              }
-              const statusLabel = vencida ? 'Vencida' : p.activa ? 'Activa' : 'Borrador';
-              const statusCls   = vencida ? 'tpl-status-vencida' : p.activa ? 'tpl-status-active' : 'tpl-status-draft';
-              return `
-              <div class="tpl-list-item ${p.activa ? 'active-tpl' : ''} ${vencida ? 'vencida-tpl' : ''}" style="margin-bottom:.4rem;cursor:default;flex-wrap:wrap;gap:.5rem;">
-                <div style="flex:1;min-width:0;">
-                  <div style="display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;">
-                    <span class="tpl-list-name-text" style="font-weight:700;color:var(--slate-800);font-size:.8125rem;">${escAttr(p.nombre)}</span>
-                    ${vencida ? '<span class="tpl-badge-vencida">[ VENCIDA ]</span>' : ''}
-                    <button class="tpl-rename-btn" data-e3-rename="${p.id_plantilla}" title="Renombrar plantilla">✏</button>
-                  </div>
-                  ${p.descripcion ? `<div style="font-size:.6875rem;color:var(--slate-500);">${escAttr(p.descripcion)}</div>` : ''}
-                  <div style="font-size:.6rem;color:var(--slate-400);font-family:'IBM Plex Mono',monospace;margin-top:.1rem;">ID: ${escAttr(p.id_plantilla)}</div>
-                  ${expiryHtml}
-                </div>
-                <span class="tpl-list-status ${statusCls}">${statusLabel}</span>
-                <button class="btn-edit-small" data-e3-edit="${p.id_plantilla}">Editar</button>
-                ${p.activa ? `<button class="btn-edit-small" data-e3-extender="${p.id_plantilla}" style="color:#2563eb;border-color:#93c5fd;" title="Extiende el vencimiento 7 días más">+ Extender</button>` : `<button class="btn-edit-small" data-e3-activar="${p.id_plantilla}">Activar</button>`}
-                ${p.activa && (vencida || !p.fecha_fin) ? `<button class="btn-edit-small" data-e3-activar="${p.id_plantilla}" style="${vencida ? 'background:#fee2e2;color:#991b1b;border-color:#fca5a5;' : ''}">↺ Renovar</button>` : ''}
-                <button class="btn-edit-small" style="color:#dc2626;border-color:#fca5a5;" data-e3-eliminar="${p.id_plantilla}">Eliminar</button>
-              </div>`;
-            }).join('')}
+        <span class="tpl-list-status ${statusCls}">${statusLabel}</span>
+        <button class="btn-edit-small" data-e3-edit="${p.id_plantilla}">Editar</button>
+        ${p.activa ? `<button class="btn-edit-small" data-e3-extender="${p.id_plantilla}" style="color:#2563eb;border-color:#93c5fd;" title="Extiende el vencimiento 7 días más">+ Extender</button>` : `<button class="btn-edit-small" data-e3-activar="${p.id_plantilla}">Activar</button>`}
+        ${p.activa && (vencida || !p.fecha_fin) ? `<button class="btn-edit-small" data-e3-activar="${p.id_plantilla}" style="${vencida ? 'background:#fee2e2;color:#991b1b;border-color:#fca5a5;' : ''}">↺ Renovar</button>` : ''}
+        <button class="btn-edit-small" style="color:#dc2626;border-color:#fca5a5;" data-e3-eliminar="${p.id_plantilla}">Eliminar</button>
       </div>`;
-  }).join('');
+  };
+
+  // Header de un grupo + sus cards (o un mensaje de vacío).
+  const grupoHtml = (label, file, pls, vacioMsg) => `
+    <div style="margin-bottom:1.25rem;">
+      <div style="display:flex;align-items:center;gap:.75rem;padding:.4rem 0 .5rem;border-bottom:1px solid var(--slate-100);margin-bottom:.5rem;">
+        <span style="font-size:.625rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--sisgra-blue);">${label}</span>
+        <span style="font-size:.6rem;color:var(--slate-400);font-family:monospace;">${file}</span>
+      </div>
+      ${pls.length === 0
+        ? (vacioMsg ? `<div style="padding:.85rem;color:var(--slate-400);font-size:.7rem;text-align:center;background:var(--slate-50);">${vacioMsg}</div>` : '')
+        : pls.map(cardHtml).join('')}
+    </div>`;
+
+  // Grupos del sistema (tipos fijos)…
+  let html = TIPOS_HTML.map(t =>
+    grupoHtml(t.label, t.file, e3.plantillas.filter(p => p.tipo === t.value), 'Sin plantillas todavía.')
+  ).join('');
+  // …y una sección por página personalizada (btn-*), rotulada con el nombre
+  //    de su ítem del navbar (no con un genérico "Páginas personalizadas").
+  const customTipos = [...new Set(
+    e3.plantillas.filter(p => !TIPOS_HTML.some(t => t.value === p.tipo)).map(p => p.tipo)
+  )];
+  customTipos.forEach(tipo => {
+    const pls  = e3.plantillas.filter(p => p.tipo === tipo);
+    const item = (e3.navbar || []).find(b => pls.some(p => (p.id_menu || []).includes(b.id_menu)));
+    const titulo = item ? item.titulo : (pls[0]?.nombre || tipo);
+    html += grupoHtml(titulo, `html/${tipo}/index.html`, pls, '');
+  });
+  list.innerHTML = html;
 
   list.querySelectorAll('[data-e3-newtipo]').forEach(b => b.addEventListener('click', () => openNuevaModal(b.dataset.e3Newtipo)));
   list.querySelectorAll('[data-e3-edit]').forEach(b => b.addEventListener('click', () => openEditor(b.dataset.e3Edit)));
@@ -358,17 +382,16 @@ function renderSidebarList() {
         : dias === 0 ? 'Vence hoy'
         : dias === 1 ? 'Vence mañana'
         : `Vence ${fmtFecha(p.fecha_fin)}`;
-      expiryLine = `<div class="sidebar-tpl-expiry ${cls}" style="padding-left:2rem;">${label}</div>`;
+      expiryLine = `<div class="sidebar-tpl-expiry ${cls}">${label}</div>`;
     }
     return `
     <div>
       <div class="sidebar-tpl-item ${e3.activeTpl?.id_plantilla === p.id_plantilla ? 'active' : ''} ${vencida ? 'sidebar-item-vencida' : ''}" data-e3-tpl="${p.id_plantilla}" title="${escAttr(p.nombre)} (${p.tipo})" style="${vencida ? 'border-left-color:#f87171;' : ''}">
         <span class="sidebar-tpl-dot" style="${vencida ? 'background:#f87171;' : ''}"></span>
         <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escAttr(p.nombre)}</span>
+        ${expiryLine}
         ${vencida ? '<span class="sidebar-vencida-badge">VENC.</span>' : p.activa ? '<span style="font-size:.5rem;font-weight:900;letter-spacing:.1em;color:#86efac;">LIVE</span>' : ''}
-        <button data-e3-sb-del="${p.id_plantilla}" title="Eliminar" style="background:transparent;border:1px solid rgba(220,38,38,.4);color:rgba(252,165,165,.85);width:1.1rem;height:1.1rem;display:flex;align-items:center;justify-content:center;font-size:.7rem;line-height:1;padding:0;flex-shrink:0;margin-left:.3rem;"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      ${expiryLine}
+        </div>
     </div>`;
   }).join('') || '<div style="padding:.5rem 1.5rem;font-size:.65rem;color:rgba(255,255,255,.3);">Sin plantillas</div>';
   el.querySelectorAll('[data-e3-tpl]').forEach(item => {
@@ -484,6 +507,9 @@ async function openEditor(id) {
     await loadE3Catalog();
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-tpl-editor').classList.add('active');
+    // Editando una plantilla → "Ver todas las plantillas" no debe quedar activo
+    // (si no, se resaltaban los dos en el sidebar).
+    document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
     document.getElementById('topbar-title').textContent = `Editor — ${plantilla.nombre}`;
     renderSidebarList();
     renderEditorShell();
@@ -576,7 +602,7 @@ function renderEditorShell() {
         </div>
       </div>
       <div class="props-panel">
-        <div class="props-header" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;">
+        <div class="props-header" style="display:flex;align-items:center;justify-content:center;gap:.3rem;">
           <span id="e3-props-type">Propiedades</span>
           <div class="e3-props-tabs">
             <button data-e3-tab="data" class="${e3.propsTab==='data'?'active':''}">Contenido</button>
@@ -1353,6 +1379,9 @@ async function guardarPlantilla() {
 
 // ─── Quick access (dashboard card + sidebar link) ───────────────────
 function goToPlantillas() {
+  // Salimos del editor → ninguna plantilla queda "abierta", así el sidebar no
+  // resalta una plantilla además de "Ver todas las plantillas" (eran 2 activos).
+  e3.activeTpl = null;
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-plantillas').classList.add('active');
   document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
@@ -1487,43 +1516,39 @@ function renderModCatalog() {
   const grid = document.getElementById('modulos-grid');
   if (!grid) return;
   if (!_mods.length) {
-    grid.innerHTML = `<div style="grid-column:1/-1;padding:2rem;text-align:center;color:#94a3b8;font-size:.8rem;">No hay módulos todavía.</div>`;
+    grid.innerHTML = `<div class="mod-cat-empty">No hay módulos todavía.</div>`;
     return;
   }
   const byTipo = {};
   _mods.forEach(m => (byTipo[m.tipo] = byTipo[m.tipo] || []).push(m));
-  grid.innerHTML = Object.entries(byTipo).flatMap(([tipo, mods]) => {
-    const label = SECTIONS[tipo]?.label || tipo;
+
+  // Una sección por tipo: header (ícono + label + contador + "Nuevo") y grilla de cards.
+  grid.innerHTML = Object.entries(byTipo).map(([tipo, mods]) => {
+    const label  = SECTIONS[tipo]?.label || tipo;
+    const icon   = SECTIONS[tipo]?.icon || '';
+    const global = GLOBAL_TIPOS_MOD.has(tipo);
     const cards = mods.map(m => {
       const usos = _modUsos[m.id_modulo] || 0;
-      const global = GLOBAL_TIPOS_MOD.has(m.tipo);
-      return `<div class="section-card" style="margin:0;">
-        <div class="section-card-body" style="padding:1rem;">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;margin-bottom:.75rem;">
-            <div style="min-width:0;">
-              <div style="font-size:.78rem;font-weight:700;color:#1e293b;margin-bottom:.2rem;overflow:hidden;text-overflow:ellipsis;">${escAttr(m.nombre || '(sin nombre)')}</div>
-              <div style="font-size:.62rem;color:#94a3b8;font-family:monospace;">#${m.id_modulo} · ${escAttr(label)}</div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem;flex-shrink:0;">
-              ${global ? `<span style="font-size:.5rem;background:#f3e8ff;color:#6b21a8;padding:.15rem .4rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border-radius:2px;">global</span>` : ''}
-              <span style="font-size:.5rem;background:${usos?'#dbeafe':'#f1f5f9'};color:${usos?'#1d4ed8':'#94a3b8'};padding:.15rem .4rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;border-radius:2px;">${usos} uso${usos!==1?'s':''}</span>
-            </div>
-          </div>
-          <div style="display:flex;gap:.4rem;">
-            <button class="btn-edit-small" style="flex:1;" onclick="openModEditor(${m.id_modulo})">Editar</button>
-            <button class="btn-edit-small" style="background:#f1f5f9;color:#334155;" onclick="duplicarModulo(${m.id_modulo})" title="Duplicar"><i class="fa-solid fa-clone"></i></button>
-            <button class="btn-edit-small" style="background:#fee2e2;color:#991b1b;" onclick="eliminarModulo(${m.id_modulo})" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
-          </div>
+      return `<div class="mod-card">
+        <div class="mod-card-top">
+          <span class="mod-card-id">#${m.id_modulo}</span>
+          <span class="mod-usos ${usos ? 'on' : ''}">${usos} uso${usos!==1?'s':''}</span>
+        </div>
+        <div class="mod-card-name" title="${escAttr(m.nombre || '')}">${escAttr(m.nombre || '(sin nombre)')}</div>
+        <div class="mod-card-actions">
+          <button class="btn-edit-small mod-card-edit" onclick="openModEditor(${m.id_modulo})">Editar</button>
+          <button class="btn-edit-small mod-icon-btn" style="background:#f1f5f9;color:#334155;" onclick="duplicarModulo(${m.id_modulo})" title="Duplicar"><i class="fa-solid fa-clone"></i></button>
+          <button class="btn-edit-small mod-icon-btn" style="background:#fee2e2;color:#991b1b;" onclick="eliminarModulo(${m.id_modulo})" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
         </div>
       </div>`;
-    });
-    return [
-      `<div style="grid-column:1/-1;padding-top:.25rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;">
-        <span style="font-size:.58rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#94a3b8;">${escAttr(label)} · ${mods.length}</span>
-        <button class="btn-edit-small" onclick="nuevoModulo('${tipo}')"><i class="fa-solid fa-plus"></i> Nuevo</button>
-      </div>`,
-      ...cards,
-    ];
+    }).join('');
+    return `<section class="mod-group">
+      <div class="mod-group-head">
+        <div class="mod-group-title">${icon}<span>${escAttr(label)}</span><span class="mod-group-count">${mods.length}</span>${global ? '<span class="mod-global-badge">global</span>' : ''}</div>
+        <button class="btn-add mod-group-new" onclick="nuevoModulo('${tipo}')"><i class="fa-solid fa-plus"></i> Nuevo</button>
+      </div>
+      <div class="mod-group-grid">${cards}</div>
+    </section>`;
   }).join('');
 }
 

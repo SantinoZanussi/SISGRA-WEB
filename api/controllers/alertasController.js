@@ -3,7 +3,6 @@ const path = require('path');
 const { generateId } = require('../utils/id');
 
 const DATA_DIR    = path.join(__dirname, '..', 'data');
-const CONFIG_FILE = path.join(DATA_DIR, 'alertas_config.json');
 const LOG_FILE    = path.join(DATA_DIR, 'alertas_log.json');
 const PLT_FILE    = path.join(DATA_DIR, 'plantillas.json');
 const MOD_FILE    = path.join(DATA_DIR, 'modulos.json');
@@ -12,19 +11,6 @@ const ID_VENCIMIENTO = 1;
 const CATALOGO_ALERTAS = {
   1: 'Vencimiento de módulo',
 };
-
-const DEFAULT_CONFIG = { webhook_url: '', intervalo_check_ms: 3600000, habilitado: true };
-
-function leerConfig() {
-  let cfg = { ...DEFAULT_CONFIG };
-  if (fs.existsSync(CONFIG_FILE)) {
-    try { cfg = { ...cfg, ...JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf-8')) }; }
-    catch { /* usa defaults */ }
-  }
-  // La env var pisa el archivo (sirve para producción sin commitear la URL)
-  if (process.env.ALERTAS_WEBHOOK_URL) cfg.webhook_url = process.env.ALERTAS_WEBHOOK_URL;
-  return cfg;
-}
 
 function leerLog() {
   if (!fs.existsSync(LOG_FILE)) return { alertas: [] };
@@ -36,78 +22,11 @@ function guardarLog(data) {
   fs.writeFileSync(LOG_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
-// arma el JSON { id_alerta, alerta, date_time_hour }
-// registra el intento en el log (estado "sin_url") para no perder el evento.
-// `key` permite deduplicar disparos; `meta` guarda contexto extra en el log.
-async function dispararAlerta({ id_alerta, alerta, key = null, meta = {} }) {
-  const cfg = leerConfig();
-  const date_time_hour = new Date().toISOString();
-  const payload = { id_alerta, alerta, date_time_hour };
-
-  let estado = 'sin_url';
-  let http_status = null;
-  let error = null;
-
-  if (cfg.webhook_url) {
-    try {
-      const r = await fetch(cfg.webhook_url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      http_status = r.status;
-      estado = r.ok ? 'enviado' : 'error';
-      if (!r.ok) error = `HTTP ${r.status}`;
-    } catch (e) {
-      estado = 'error';
-      error = e.message;
-    }
-  }
-
-  const registro = {
-    id: generateId('alert'),
-    key,
-    id_alerta,
-    alerta,
-    date_time_hour,
-    destino: cfg.webhook_url || null,
-    estado,
-    http_status,
-    error,
-    meta,
-  };
-
-  const log = leerLog();
-  log.alertas.push(registro);
-  guardarLog(log);
-
-  if (estado === 'enviado') console.log(`[alertas] ✓ enviada id_alerta=${id_alerta} → ${cfg.webhook_url}`);
-  else console.warn(`[alertas] id_alerta=${id_alerta} estado=${estado}${error ? ' · ' + error : ''}`);
-
-  return registro;
-}
-
-// POST /api/alertas/disparar [auth] Body: { id_alerta, alerta? }
-exports.disparar = async (req, res) => {
-  const { id_alerta, alerta } = req.body || {};
-  if (id_alerta === undefined || id_alerta === null) {
-    return res.status(400).json({ error: 'Se requiere id_alerta' });
-  }
-  const texto = alerta || CATALOGO_ALERTAS[id_alerta] || `Alerta ${id_alerta}`;
-  const registro = await dispararAlerta({ id_alerta, alerta: texto });
-  res.status(201).json({ ok: true, alerta: registro });
-};
-
-// GET /api/alertas/catalogo (público)
+// GET /api/alertas/catalogo (público) — tipos de alerta disponibles
 exports.catalogo = (_req, res) => res.json({ catalogo: CATALOGO_ALERTAS });
 
-// GET /api/alertas/log [auth]
+// GET /api/alertas/log [auth] — historial de vencimientos detectados
 exports.listarLog = (_req, res) => res.json(leerLog());
-
-// GET /api/alertas/config [auth]
-exports.obtenerConfig = (_req, res) => {
-  res.json({ config: leerConfig(), env_override: !!process.env.ALERTAS_WEBHOOK_URL });
-};
 
 function leerPlantillas() {
   if (!fs.existsSync(PLT_FILE)) return { plantillas: [] };
@@ -139,15 +58,12 @@ function detectarVencimientos() {
     for (const m of mods.filter(mod => mod.alerta === true)) {
       const key = `venc|${p.id_plantilla}|${m.id_modulo}|${p.fecha_fin}`;
       const alerta = `${CATALOGO_ALERTAS[ID_VENCIMIENTO]}: módulo "${m.nombre || m.tipo}" de la plantilla "${p.nombre}" (${p.tipo}) venció el ${p.fecha_fin}`;
+      // Respuesta acotada a lo que consume la API PRES: solo plantilla + vencimiento.
       vencidos.push({
-        id_alerta: ID_VENCIMIENTO,
-        alerta,
         id_plantilla:     p.id_plantilla,
         nombre_plantilla: p.nombre,
-        tipo_plantilla:   p.tipo,
-        id_modulo:        m.id_modulo,
-        tipo_modulo:      m.tipo || null,
         fecha_fin:        p.fecha_fin,
+        alerta,
       });
 
       if (!log.alertas.some(a => a.key === key)) {

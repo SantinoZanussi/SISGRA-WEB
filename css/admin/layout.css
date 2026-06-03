@@ -9,8 +9,8 @@
 /* ── SIDEBAR ── */
 .sidebar{width:var(--sidebar-w);background:var(--sisgra-blue);display:flex;flex-direction:column;flex-shrink:0;border-right:1px solid rgba(255,255,255,.07);overflow-y:auto;}
 .sidebar-brand{padding:1.25rem 1.25rem .75rem;border-bottom:1px solid rgba(255,255,255,.07);}
-.sidebar-section-label{font-size:.5rem;font-weight:900;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.25);padding:.75rem 1.25rem .4rem;}
-.sidebar-item{display:flex;align-items:center;gap:.75rem;padding:.6rem 1.25rem;font-size:.75rem;font-weight:600;letter-spacing:.03em;color:rgba(255,255,255,.5);transition:color .15s,background .15s;cursor:pointer;border-left:2px solid transparent;}
+.sidebar-section-label{font-size:.5rem;font-weight:900;letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,3.5);padding:.75rem 1.25rem .4rem;}
+.sidebar-item{display:flex;align-items:center;gap:.75rem;padding:.6rem 1.25rem;font-size:.75rem;font-weight:600;letter-spacing:.03em;color:rgba(255,255,255,.7);transition:color .15s,background .15s;cursor:pointer;border-left:2px solid transparent;}
 .sidebar-item svg{width:1rem;height:1rem;flex-shrink:0;opacity:.7;}
 .sidebar-item i{width:1rem;font-size:.95rem;text-align:center;flex-shrink:0;opacity:.7;}
 .sidebar-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.04);}
@@ -19,24 +19,25 @@
 
 /* Templates sub-items — IMPROVED */
 .sidebar-tpl-group{display:flex;flex-direction:column;}
-.sidebar-tpl-item{display:flex;align-items:center;gap:.6rem;padding:.55rem 1rem .55rem 1.5rem;font-size:.6875rem;font-weight:600;color:rgba(255,255,255,.4);cursor:pointer;transition:all .15s;border-left:2px solid transparent;position:relative;}
+.sidebar-tpl-item{display:flex;align-items:center;gap:.6rem;padding:.55rem 1rem .55rem 1.5rem;font-size:.6875rem;font-weight:600;color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s;border-left:2px solid transparent;position:relative;}
 .sidebar-tpl-item:hover{color:rgba(255,255,255,.75);background:rgba(255,255,255,.04);}
 .sidebar-tpl-item.active{color:var(--white);background:rgba(59,130,246,.18);border-left-color:var(--blue-400);}
 .sidebar-tpl-item.active .sidebar-tpl-dot{background:var(--blue-400);box-shadow:0 0 6px rgba(96,165,250,.7);}
-.sidebar-tpl-dot{width:.45rem;height:.45rem;border-radius:50%;background:rgba(255,255,255,.2);flex-shrink:0;transition:all .15s;}
+.sidebar-tpl-dot{width:.5rem;height:.5rem;border-radius:50%;background:rgba(255,255,255,.2);flex-shrink:0;transition:all .15s;}
+.sidebar-tpl-dot-logout{width:.45rem;height:.45rem;border-radius:50%;background:#86efac;flex-shrink:0;transition:all .15s;box-shadow: 0 0 6px rgba(96,165,250,.7);}
 /* Active-on-site badge pill */
 .tpl-live-pill{font-size:.45rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;background:var(--green-500);color:#fff;padding:.15rem .4rem;border-radius:2px;margin-left:auto;flex-shrink:0;}
 
 .sidebar-footer{margin-top:auto;padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,.07);}
 .sidebar-user{display:flex;align-items:center;gap:.75rem;}
 .sidebar-avatar{width:2rem;height:2rem;border-radius:2px;background:var(--blue-600);display:flex;align-items:center;justify-content:center;font-size:.625rem;font-weight:900;color:var(--white);}
-.sidebar-user-name{font-size:.75rem;font-weight:700;color:rgba(255,255,255,.8);}
-.sidebar-user-role{font-size:.5625rem;color:rgba(255,255,255,.3);letter-spacing:.05em;}
+.sidebar-user-name{font-size:.75rem;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:3px;}
+.sidebar-user-role{font-size:.65rem;color:#86efac;letter-spacing:.05em;display:flex;align-items:center;gap:.4rem;}
 .sidebar-logout{margin-left:auto;font-size:.625rem;color:rgba(255,255,255,.3);cursor:pointer;transition:color .2s;border:none;background:none;padding:.25rem;}
 .sidebar-logout:hover{color:var(--red-400);}
 
 /* Sidebar: expiry indicators / badges (asociados al sidebar template list) */
-.sidebar-tpl-expiry{font-size:.52rem;font-family:'IBM Plex Mono',monospace;color:rgba(255,255,255,.28);flex-shrink:0;}
+.sidebar-tpl-expiry{font-size:.52rem;font-family:'IBM Plex Mono',monospace;color:rgba(255,255,255,.28);}
 .sidebar-tpl-expiry.soon{color:#fbbf24;}
 .sidebar-tpl-expiry.expired{color:#f87171;font-weight:700;}
 .sidebar-vencida-badge{font-size:.42rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;background:rgba(248,113,113,.2);color:#fca5a5;padding:.1rem .3rem;flex-shrink:0;}
