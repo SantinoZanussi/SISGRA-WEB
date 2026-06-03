@@ -160,7 +160,16 @@
       "Bash(node --check api/routes/modulosRoutes.js)",
       "Bash(node --input-type=module --check)",
       "PowerShell($p = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue; if \\($p\\) { \"in use by PID \" + $p.OwningProcess } else { \"free\" })",
-      "PowerShell($cl = \\(Get-CimInstance Win32_Process -Filter \"ProcessId = 13504\"\\).CommandLine; $cl; if \\($cl -match 'server\\\\.js'\\) { Stop-Process -Id 13504 -Force; Start-Sleep -Milliseconds 500; \"killed\" })"
+      "PowerShell($cl = \\(Get-CimInstance Win32_Process -Filter \"ProcessId = 13504\"\\).CommandLine; $cl; if \\($cl -match 'server\\\\.js'\\) { Stop-Process -Id 13504 -Force; Start-Sleep -Milliseconds 500; \"killed\" })",
+      "Bash(curl -s -m 4 http://localhost:3000/api/plantillas/activa/index -o /dev/null -w \"HTTP %{http_code}\\\\n\")",
+      "Bash(node api/server.js)",
+      "Bash(curl -s --retry 15 --retry-connrefused --retry-delay 1 -m 5 http://localhost:3000/api/plantillas/1)",
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>{const p=JSON.parse\\(s\\).plantilla;console.log\\('id_modulos:',JSON.stringify\\(p.id_modulos\\)\\);console.log\\('contenedores:',JSON.stringify\\(p.contenedores\\)\\);}\\)\")",
+      "Bash(curl -s -m 5 http://localhost:3000/api/plantillas/1)",
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>{const p=JSON.parse\\(s\\).plantilla;console.log\\('contenedores:',JSON.stringify\\(p.contenedores\\)\\);console.log\\('id_modulos  :',JSON.stringify\\(p.id_modulos\\)\\);}\\)\")",
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>{const p=JSON.parse\\(s\\).plantilla;console.log\\('contenedores:',JSON.stringify\\(p.contenedores\\)\\);}\\)\")",
+      "Bash(curl -s -m 5 -X POST http://localhost:3000/api/auth/login -H \"Content-Type: application/json\" -d '{\"usuario\":\"admin\",\"password\":\"admin\"}')",
+      "Bash(node -e \"let s='';process.stdin.on\\('data',d=>s+=d\\).on\\('end',\\(\\)=>{const ps=JSON.parse\\(s\\).plantillas.filter\\(p=>/^btn-/.test\\(p.tipo\\)\\);console.log\\('btn count:',ps.length\\);}\\)\")"
     ]
   }
 }

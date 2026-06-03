@@ -20,7 +20,7 @@
       "id_menu": 3,
       "titulo": "Cableado Estructurado",
       "href": "/html/cableado_estructurado",
-      "grupo": null,
+      "grupo": "Instalaciones",
       "orden": 3,
       "activo": true
     },
@@ -28,7 +28,7 @@
       "id_menu": 4,
       "titulo": "Fibra Óptica",
       "href": "/html/fibra_optica",
-      "grupo": null,
+      "grupo": "Instalaciones",
       "orden": 4,
       "activo": true
     },
@@ -36,7 +36,7 @@
       "id_menu": 5,
       "titulo": "Seguridad Electrónica",
       "href": "/html/seguridad",
-      "grupo": null,
+      "grupo": "Instalaciones",
       "orden": 5,
       "activo": true
     },

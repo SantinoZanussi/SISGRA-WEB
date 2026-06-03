@@ -45,6 +45,39 @@ app.use("/api/alertas", alertasRoutes);
 const assetRoutes = require("./routes/assetRoutes");
 app.use("/api/assets", assetRoutes);
 
+// Shell genérico para páginas de plantilla "custom" (sin archivo .html físico).
+// /p/:slug hidrata la plantilla cuyo tipo === slug usando page-bootstrap, igual
+// que las páginas del sistema pero servido desde un único shell compartido.
+app.get('/p/:slug', (req, res) => {
+  const slug = String(req.params.slug || '');
+  if (!/^[a-zA-Z0-9_-]+$/.test(slug)) {
+    return res.status(404).sendFile(path.join(PROJECT_ROOT, '404.html'));
+  }
+  res.type('html').send(`<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="meta-title">SISGRA S.R.L.</title>
+  <meta name="description" id="meta-desc" content="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="icon" href="/img/sdesigra.png">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+<div id="plantilla-root">
+  <div style="padding:6rem 2rem;text-align:center;color:#94a3b8;font-family:'Inter',system-ui,sans-serif;letter-spacing:.15em;text-transform:uppercase;font-size:.75rem;">Cargando…</div>
+</div>
+<script type="module">
+  import { bootstrapPage } from '/services/page-bootstrap.js';
+  bootstrapPage('${slug}', 'plantilla-root');
+</script>
+</body>
+</html>`);
+});
+
 app.use(express.static(PROJECT_ROOT, {
   index: 'index.html',
   extensions: ['html'],

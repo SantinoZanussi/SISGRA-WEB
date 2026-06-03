@@ -1747,6 +1747,48 @@ export function renderModulos(mods) {
   return mods.map(renderModulo).join('');
 }
 
+// ── Contenedores (filas de módulos) ─────────────────────────────────
+// Un contenedor es una fila con 1 a 3 módulos lado a lado. La plantilla guarda
+// `contenedores: [[id,id],[id],...]`. Acá reagrupamos la lista YA resuelta y
+// mutada (nav/cliente/artículo) en sus filas, casando por id_modulo y
+// consumiendo en orden — así toleramos módulos faltantes o ids repetidos.
+export function agruparEnContenedores(secciones, contenedores) {
+  if (!Array.isArray(contenedores) || !contenedores.length) {
+    // Sin contenedores (datos viejos): cada módulo en su propia fila 1x1.
+    return (secciones || []).map(s => [s]);
+  }
+  const pool = (secciones || []).slice();
+  const grupos = [];
+  for (const cont of contenedores) {
+    const grupo = [];
+    for (const id of (cont || [])) {
+      const idx = pool.findIndex(s => s && s.id_modulo === id);
+      if (idx !== -1) { grupo.push(pool[idx]); pool.splice(idx, 1); }
+    }
+    if (grupo.length) grupos.push(grupo);
+  }
+  // Defensa: módulos que quedaron sin contenedor → filas 1x1 al final.
+  pool.forEach(s => grupos.push([s]));
+  return grupos;
+}
+
+// Render de un contenedor: 1 módulo = ancho completo (idéntico a antes);
+// 2 o 3 módulos = grid de columnas iguales (.cont-row colapsa a 1 col en mobile).
+function renderContenedor(grupo) {
+  if (!grupo.length) return '';
+  if (grupo.length === 1) return renderModulo(grupo[0]);
+  const n = Math.min(grupo.length, 3);
+  const celdas = grupo.map(m => `<div class="cont-cell">${renderModulo(m)}</div>`).join('');
+  return `<div class="cont-row cont-row-${n}" style="grid-template-columns:repeat(${n},minmax(0,1fr));">${celdas}</div>`;
+}
+
+// Render de una plantilla respetando sus contenedores. `secciones` es la lista
+// plana ya resuelta; `contenedores` define el agrupado en filas.
+export function renderModulosAgrupados(secciones, contenedores) {
+  if (!secciones?.length) return '<div style="padding:4rem;text-align:center;color:#94a3b8;">Esta plantilla aún no tiene módulos.</div>';
+  return agruparEnContenedores(secciones, contenedores).map(renderContenedor).join('');
+}
+
 // Render completo de una plantilla v2: resuelve por id_modulos y arma el HTML.
 export function renderPlantilla(plantilla, modulos) {
   return renderModulos(resolverModulos(plantilla, modulos));

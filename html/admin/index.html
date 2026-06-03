@@ -525,22 +525,30 @@
         <input class="form-input" id="nav-titulo" placeholder="ej. Nuestros Servicios">
       </div>
       <div>
-        <label class="form-label">Tipo de redirección</label>
-        <div style="display:flex;gap:1.5rem;margin-top:.375rem;">
+        <label class="form-label">Destino</label>
+        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.375rem;">
           <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;">
-            <input type="radio" name="nav-tipo-red" value="url" id="nav-red-url" checked> URL externa / interna
+            <input type="radio" name="nav-tipo-red" value="link" id="nav-red-link" checked> Vincular a una plantilla existente
           </label>
           <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;">
-            <input type="radio" name="nav-tipo-red" value="custom" id="nav-red-custom"> HTML propio (página nueva)
+            <input type="radio" name="nav-tipo-red" value="custom" id="nav-red-custom"> Crear página nueva (en blanco)
+          </label>
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;">
+            <input type="radio" name="nav-tipo-red" value="url" id="nav-red-url"> URL externa
           </label>
         </div>
       </div>
-      <div id="nav-href-field">
-        <label class="form-label">URL de destino <span style="color:#f87171">*</span></label>
-        <input class="form-input" id="nav-href" placeholder="ej. /html/servicios o https://…">
+      <div id="nav-plantilla-field">
+        <label class="form-label">Plantilla a vincular <span style="color:#f87171">*</span></label>
+        <select class="form-input form-select" id="nav-plantilla-select"></select>
+        <div class="form-hint">El ítem del menú llevará a la página de esta plantilla — sin escribir rutas.</div>
+      </div>
+      <div id="nav-href-field" style="display:none;">
+        <label class="form-label">URL externa <span style="color:#f87171">*</span></label>
+        <input class="form-input" id="nav-href" placeholder="ej. https://wa.me/549…">
       </div>
       <div id="nav-custom-info" style="display:none;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:.5rem;padding:.875rem;font-size:.78rem;color:#a5b4fc;line-height:1.6;">
-        Se creará automáticamente una nueva página HTML con nav y footer. Podrás editarla desde el panel de Plantillas.
+        Se crea una <b>plantilla nueva en blanco</b> (sin archivo HTML aparte). La editás desde el panel de <b>Plantillas</b>, igual que todas las demás.
       </div>
     </div>
     <div class="modal-footer">

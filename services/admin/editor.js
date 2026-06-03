@@ -8,15 +8,86 @@ const ICON_CATALOG = ['location', 'lightning', 'shield', 'check', 'camera', 'gea
 
 const e3 = {
   plantillas: [],
-  activeTpl: null,        // { id_plantilla, tipo, nombre, id_menu, id_modulos:[num], ... }
+  activeTpl: null,        // { id_plantilla, tipo, nombre, id_menu, id_modulos:[num], contenedores, ... }
   modulos: [],            // catálogo plano (working copy) — se persiste con PUT /data/modulos
   navbar: [],             // botones del navbar (para renderizar el nav en el canvas)
-  selectedIdx: null,      // índice del módulo seleccionado dentro de id_modulos
+  // Modelo de trabajo de contenedores (filas de 1 a 3 módulos lado a lado):
+  //   conts = [{ cap:Number(1-3), modulos:[id,...] }]
+  // Se serializa a plantilla.contenedores = [[id,...],...] al guardar.
+  conts: [],
+  sel: null,              // módulo seleccionado: { ci, mi } (contenedor, índice dentro)
+  activeCont: null,       // ci del contenedor destino para insertar módulos
   dirty: false,
   propsTab: 'data',
   currentTipo: null,
   search: { query: '', selected: [] },   // buscador de chips: selected=[{kind,id_modulo?,tipo,label,color}]
 };
+
+const CONT_MAX = 3;   // máximo de módulos por contenedor (fila)
+
+// ─── Contenedores: conversión working-model ↔ persistido ────────────
+// plantilla.contenedores ([[id,..],..]) → working conts ([{cap,modulos}]).
+// Migra datos viejos (sin contenedores) a 1 contenedor 1x1 por módulo.
+function contsFromPlantilla(tpl) {
+  const raw = (Array.isArray(tpl.contenedores) && tpl.contenedores.length)
+    ? tpl.contenedores
+    : (tpl.id_modulos || []).map(id => [id]);
+  return raw.map(m => {
+    const modulos = (Array.isArray(m) ? m : []).filter(id => id != null);
+    return { cap: Math.max(1, Math.min(CONT_MAX, modulos.length || 1)), modulos };
+  });
+}
+// working conts → contenedores persistibles (recorta a la capacidad).
+function contsToContenedores() {
+  return e3.conts.map(c => c.modulos.slice(0, c.cap));
+}
+// lista plana de ids (orden de fila e índice) — canónica para id_modulos.
+function allModIds() {
+  return contsToContenedores().reduce((acc, m) => acc.concat(m), []);
+}
+// Mantiene activeTpl.{contenedores,id_modulos} en sync con el working model,
+// por si algún código viejo aún los lee.
+function syncActiveTpl() {
+  if (!e3.activeTpl) return;
+  e3.activeTpl.contenedores = contsToContenedores();
+  e3.activeTpl.id_modulos   = allModIds();
+}
+
+// Un contenedor está INCOMPLETO si tiene menos módulos que su capacidad. Regla:
+// cada contenedor debe llenarse exacto a su capacidad (un 2×1 lleva 2 módulos sí
+// o sí). Devuelve el índice del primer contenedor incompleto, o -1 si están todos
+// completos. Mientras haya uno incompleto NO se puede crear otro ni guardar.
+function pendingContIndex() {
+  return e3.conts.findIndex(c => c.modulos.length < c.cap);
+}
+
+// Refresca el estado de los controles del tray según haya o no un contenedor
+// incompleto (bloquea "Nuevo contenedor", habilita "Insertar" solo si hay destino,
+// y muestra el aviso de cuántos módulos faltan).
+function refreshContControls() {
+  const pending = pendingContIndex();
+  e3.activeCont = pending;   // el destino de inserción siempre es el incompleto
+
+  const newBtn = document.getElementById('e3-newcont');
+  if (newBtn) {
+    newBtn.disabled = pending !== -1;
+    newBtn.title = pending !== -1 ? 'Completá el contenedor actual antes de crear otro' : 'Crear un contenedor (1 a 3 módulos en fila)';
+  }
+  const insBtn = document.getElementById('e3-insert');
+  if (insBtn) insBtn.disabled = e3.search.selected.length === 0 || pending === -1;
+
+  const hint = document.getElementById('e3-cont-hint');
+  if (hint) {
+    if (pending !== -1) {
+      const c = e3.conts[pending];
+      const faltan = c.cap - c.modulos.length;
+      hint.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Contenedor <b>${c.cap}×1</b> incompleto: falta${faltan !== 1 ? 'n' : ''} <b>${faltan}</b> módulo${faltan !== 1 ? 's' : ''}. Insertálo${faltan !== 1 ? 's' : ''} para continuar.`;
+      hint.style.display = '';
+    } else {
+      hint.style.display = 'none';
+    }
+  }
+}
 
 // nav/footer = se referencian compartidos; el resto se clona al insertar (modelo híbrido).
 const GLOBAL_TIPOS = new Set(['nav', 'footer', 'footer-full']);
@@ -54,14 +125,15 @@ function buildNavItems(botones) {
   return items;
 }
 
-// Resuelve id_modulos → instancias de módulo (con items de nav inyectados para el render).
+// Resuelve los módulos de todos los contenedores → instancias (con items de nav
+// inyectados). Lo usa cssFilesFor para saber qué CSS cargar en el iframe.
 function resolvedMods() {
   const navItems = buildNavItems(e3.navbar);
-  return (e3.activeTpl?.id_modulos || []).map(id => {
+  return allModIds().map(id => {
     const m = modById(id);
     if (!m) return null;
     return m.tipo === 'nav' ? { ...m, data: { ...m.data, items: navItems } } : m;
-  });
+  }).filter(Boolean);
 }
 
 const escAttr = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
@@ -381,7 +453,7 @@ async function eliminarPlantilla(id) {
       e3.plantillas.forEach(x => { if (x.tipo === r.tipoAffected) x.activa = (x.id_plantilla === r.promoted.id_plantilla); });
     }
     if (e3.activeTpl?.id_plantilla === id) {
-      e3.activeTpl = null; e3.selectedIdx = null; e3.dirty = false;
+      e3.activeTpl = null; e3.conts = []; e3.sel = null; e3.activeCont = null; e3.dirty = false;
       document.querySelectorAll('.panel').forEach(pn => pn.classList.remove('active'));
       document.getElementById('panel-plantillas').classList.add('active');
       document.getElementById('topbar-title').textContent = 'Plantillas';
@@ -401,9 +473,12 @@ async function openEditor(id) {
   try {
     const { plantilla } = await api('GET', `/plantillas/${id}`);
     e3.activeTpl = plantilla;
-    e3.activeTpl.id_modulos = Array.isArray(plantilla.id_modulos) ? plantilla.id_modulos : [];
+    e3.conts = contsFromPlantilla(plantilla);
+    e3.activeTpl.id_modulos   = allModIds();
+    e3.activeTpl.contenedores = contsToContenedores();
     e3.currentTipo = plantilla.tipo;
-    e3.selectedIdx = null;
+    e3.sel = null;
+    e3.activeCont = e3.conts.length ? e3.conts.length - 1 : null;
     e3.dirty = false;
     e3.search = { query: '', selected: [] };
     await loadE3Catalog();
@@ -417,7 +492,7 @@ async function openEditor(id) {
 
 function backToOverview() {
   if (e3.dirty && !confirm('Hay cambios sin guardar. ¿Salir igual?')) return;
-  e3.activeTpl = null; e3.selectedIdx = null;
+  e3.activeTpl = null; e3.conts = []; e3.sel = null; e3.activeCont = null;
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-plantillas').classList.add('active');
   document.getElementById('topbar-title').textContent = 'Plantillas';
@@ -443,39 +518,61 @@ function renderEditorShell() {
       </div>
     </div>
     <style>
-      .e3-chipsearch{padding:.75rem;border-bottom:1px solid var(--slate-200);position:relative;}
-      .e3-chipbox{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;border:1px solid var(--slate-300);border-radius:.4rem;padding:.35rem;background:#fff;min-height:2.2rem;}
+      /* Barra horizontal de inserción (arriba del canvas, ya no es tray vertical) */
+      /* El editor llena el alto disponible con flex (robusto al alto de la barra). */
+      #panel-tpl-editor{height:100%;}
+      #tpl-editor-inner{display:flex;flex-direction:column;height:100%;min-height:0;}
+      .editor-shell{flex:1;min-height:0;height:auto;}
+      .e3-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;padding:.55rem .9rem;background:var(--white);border:1px solid var(--slate-200);}
+      .e3-tb-label{font-size:.5rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--slate-500);white-space:nowrap;flex-shrink:0;}
+      .e3-newcont-wrap{position:relative;flex-shrink:0;}
+      .e3-newcont-btn{white-space:nowrap;}
+      .e3-newcont-btn:disabled{opacity:.45;cursor:not-allowed;}
+      .e3-chipsearch{flex:1;min-width:220px;position:relative;}
+      .e3-chipbox{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;border:1px solid var(--slate-300);border-radius:.4rem;padding:.3rem;background:#fff;min-height:2.2rem;}
       .e3-chip{display:inline-flex;align-items:center;gap:.3rem;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .5rem;border-radius:1rem;white-space:nowrap;}
       .e3-chip button{background:rgba(255,255,255,.3);border:none;color:#fff;border-radius:50%;width:1rem;height:1rem;line-height:1;cursor:pointer;font-size:.7rem;padding:0;}
       .e3-search-input{flex:1;min-width:90px;border:none;outline:none;font-size:.75rem;font-family:inherit;padding:.2rem;background:transparent;}
-      .e3-insert{width:100%;margin-top:.5rem;}
+      .e3-insert{flex-shrink:0;white-space:nowrap;}
       .e3-insert:disabled{opacity:.5;cursor:not-allowed;}
-      .e3-results{position:absolute;left:.75rem;right:.75rem;top:calc(100% - .35rem);background:#fff;border:1px solid var(--slate-200);border-radius:.4rem;box-shadow:0 8px 24px rgba(0,0,0,.14);max-height:280px;overflow:auto;z-index:50;}
+      .e3-results{position:absolute;left:0;right:0;top:calc(100% + .3rem);background:#fff;border:1px solid var(--slate-200);border-radius:.4rem;box-shadow:0 8px 24px rgba(0,0,0,.14);max-height:300px;overflow:auto;z-index:60;}
       .e3-result{padding:.5rem .6rem;cursor:pointer;display:flex;flex-direction:column;gap:.1rem;border-bottom:1px solid var(--slate-100);}
       .e3-result:hover{background:var(--slate-50);}
       .e3-result-name{font-size:.75rem;font-weight:700;color:var(--slate-800);}
       .e3-result-sub{font-size:.6rem;color:var(--slate-400);letter-spacing:.04em;text-transform:uppercase;}
+      .e3-cont-hint{flex-basis:100%;font-size:.62rem;line-height:1.4;color:#9a3412;background:#fff7ed;border:1px solid #fed7aa;border-radius:.3rem;padding:.4rem .55rem;}
+      .e3-gridpick{position:absolute;left:0;top:calc(100% + .3rem);min-width:150px;z-index:70;background:#fff;border:1px solid var(--slate-200);box-shadow:0 8px 24px rgba(0,0,0,.16);border-radius:.4rem;padding:.6rem;}
+      .e3-gridpick-hint{font-size:.55rem;color:var(--slate-400);letter-spacing:.05em;text-transform:uppercase;font-weight:700;margin-bottom:.4rem;text-align:center;}
+      .e3-gridpick-cells{display:flex;gap:.3rem;justify-content:center;}
+      .e3-gridpick-cell{width:2rem;height:2rem;border:1px solid var(--slate-300);background:var(--slate-50);cursor:pointer;border-radius:.2rem;transition:background .1s,border-color .1s;}
+      .e3-gridpick-cell.on{background:#bfdbfe;border-color:#2563eb;}
+      .e3-gridpick-label{text-align:center;font-size:.7rem;font-weight:800;color:var(--sisgra-blue);margin-top:.45rem;font-family:'IBM Plex Mono',monospace;}
       .e3-props-tabs{display:flex;gap:.25rem;}
       .e3-props-tabs button{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .55rem;border:1px solid var(--slate-200);background:#fff;color:var(--slate-500);cursor:pointer;border-radius:.3rem;}
       .e3-props-tabs button.active{background:var(--sisgra-blue);color:#fff;border-color:var(--sisgra-blue);}
     </style>
-    <div class="editor-shell">
-      <div class="section-tray">
-        <div class="tray-header">Insertar módulos · ${escAttr(tpl.tipo)}</div>
-        <div class="e3-chipsearch">
-          <div class="e3-chipbox" id="e3-chipbox"><input class="e3-search-input" id="e3-search-input" placeholder="Buscar módulo (ej: noticias)…" autocomplete="off"/></div>
-          <button class="btn-save e3-insert" id="e3-insert" disabled><i class="fa-solid fa-plus"></i> Insertar seleccionados</button>
-          <div class="e3-results" id="e3-results" style="display:none;"></div>
-        </div>
-        <div class="tray-body" style="padding:.6rem .75rem;font-size:.62rem;color:var(--slate-400);line-height:1.5;">
-          Buscá un módulo, seleccioná uno o varios (quedan como <b>chips</b>) y dale <b>Insertar</b>.<br>
-          <span style="color:#7c3aed;font-weight:700;">Globales</span> (nav/footer) se comparten; el resto se clona para editarlo sin afectar otras páginas.
+    <div class="e3-toolbar">
+      <span class="e3-tb-label">Insertar · ${escAttr(tpl.tipo)}</span>
+      <div class="e3-newcont-wrap">
+        <button class="btn-edit-small e3-newcont-btn" id="e3-newcont"><i class="fa-solid fa-table-cells-large"></i> Nuevo contenedor</button>
+        <div class="e3-gridpick" id="e3-gridpick" style="display:none;">
+          <div class="e3-gridpick-hint">Módulos en fila</div>
+          <div class="e3-gridpick-cells" id="e3-gridpick-cells"></div>
+          <div class="e3-gridpick-label" id="e3-gridpick-label">1 × 1</div>
         </div>
       </div>
+      <div class="e3-chipsearch">
+        <div class="e3-chipbox" id="e3-chipbox"><input class="e3-search-input" id="e3-search-input" placeholder="Buscar módulo (ej: noticias)…" autocomplete="off"/></div>
+        <div class="e3-results" id="e3-results" style="display:none;"></div>
+      </div>
+      <button class="btn-save e3-insert" id="e3-insert" disabled><i class="fa-solid fa-plus"></i> Insertar seleccionados</button>
+      <div class="e3-cont-hint" id="e3-cont-hint" style="display:none;"></div>
+    </div>
+    <div class="editor-shell">
       <div class="page-canvas-wrap">
         <div class="canvas-ruler"><span style="font-size:.5rem;font-weight:700;color:var(--slate-400);letter-spacing:.2em;text-transform:uppercase;">Vista previa — ${escAttr(tpl.tipo)}.html</span></div>
-        <div style="flex:1;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:1.5rem;">
-          <iframe class="page-frame desktop" id="e3-canvas" style="border:none;background:#fff;min-height:600px;height:80vh;"></iframe>
+        <div style="flex:1;min-height:0;overflow:auto;display:flex;align-items:stretch;justify-content:center;padding:1rem 1.5rem;">
+          <iframe class="page-frame desktop" id="e3-canvas" style="border:none;background:#fff;height:100%;min-height:420px;"></iframe>
         </div>
       </div>
       <div class="props-panel">
@@ -498,6 +595,7 @@ function renderEditorShell() {
   });
   document.getElementById('e3-insert').addEventListener('click', insertSelected);
   bindChipSearch();
+  bindGridPicker();
   document.querySelectorAll('[data-e3-tab]').forEach(t => t.addEventListener('click', () => {
     e3.propsTab = t.dataset.e3Tab;
     document.querySelectorAll('[data-e3-tab]').forEach(x => x.classList.toggle('active', x === t));
@@ -571,6 +669,19 @@ function renderResults() {
 }
 
 function selectResult(r) {
+  // Solo se pueden seleccionar tantos módulos como falten para completar el
+  // contenedor incompleto (regla #1: cantidad exacta = capacidad del contenedor).
+  const pending = pendingContIndex();
+  if (pending === -1) {
+    notif('Creá un contenedor primero para insertar módulos', 'error');
+    return;
+  }
+  const c = e3.conts[pending];
+  const restante = c.cap - c.modulos.length - e3.search.selected.length;
+  if (restante <= 0) {
+    notif(`El contenedor ${c.cap}×1 admite exactamente ${c.cap} módulo${c.cap !== 1 ? 's' : ''}`, 'error');
+    return;
+  }
   e3.search.selected.push({ ...r, color: chipColor(r) });
   e3.search.query = '';
   const input = document.getElementById('e3-search-input');
@@ -594,8 +705,7 @@ function renderChips() {
     wrap.insertBefore(chip, input);
   });
   input.placeholder = e3.search.selected.length ? 'Agregar otro…' : 'Buscar módulo (ej: noticias)…';
-  const insertBtn = document.getElementById('e3-insert');
-  if (insertBtn) insertBtn.disabled = e3.search.selected.length === 0;
+  refreshContControls();
 }
 
 // Clona un módulo de contenido → nuevo id_modulo en el catálogo (working copy).
@@ -625,9 +735,14 @@ function newModuleFromType(tipo) {
   return m.id_modulo;
 }
 
-// Inserta todos los chips seleccionados en la plantilla (modelo híbrido).
+// Inserta los chips seleccionados DENTRO del contenedor incompleto (regla #2).
+// No crea contenedores nuevos: si algo no entra, se rechaza con aviso.
 function insertSelected() {
   if (!e3.search.selected.length) return;
+  if (pendingContIndex() === -1) {
+    notif('Creá un contenedor primero (no hay ninguno esperando módulos)', 'error');
+    return;
+  }
   const ids = [];
   for (const sel of e3.search.selected) {
     if (sel.kind === 'tipo') {
@@ -638,13 +753,80 @@ function insertSelected() {
       ids.push(GLOBAL_TIPOS.has(src.tipo) ? src.id_modulo : cloneModule(src));
     }
   }
-  e3.activeTpl.id_modulos.push(...ids);
+  const { placed, rejected } = placeModuleIds(ids);
   e3.search.selected = [];
-  e3.selectedIdx = e3.activeTpl.id_modulos.length - 1;
   renderChips();
   const box = document.getElementById('e3-results'); if (box) box.style.display = 'none';
   markDirty(); renderCanvas(); renderProps();
-  notif(`✓ ${ids.length} módulo${ids.length !== 1 ? 's' : ''} insertado${ids.length !== 1 ? 's' : ''}`);
+  const base = `✓ ${placed} módulo${placed !== 1 ? 's' : ''} insertado${placed !== 1 ? 's' : ''}`;
+  notif(rejected ? `${base} · ${rejected} no entró: el contenedor ya está completo` : base, rejected ? 'error' : 'success');
+}
+
+// Llena los contenedores incompletos en orden (hasta su capacidad exacta, regla #1).
+// NO crea contenedores nuevos: devuelve { placed, rejected } (rejected = sin lugar).
+function placeModuleIds(ids) {
+  const queue = ids.slice();
+  let placed = 0;
+  for (let ci = 0; ci < e3.conts.length && queue.length; ci++) {
+    const cont = e3.conts[ci];
+    while (cont.modulos.length < cont.cap && queue.length) {
+      cont.modulos.push(queue.shift());
+      e3.sel = { ci, mi: cont.modulos.length - 1 };
+      placed++;
+    }
+  }
+  return { placed, rejected: queue.length };
+}
+
+// Crea un contenedor vacío de `cap` columnas (1 a 3) y lo deja activo para insertar.
+// Bloqueado si ya hay un contenedor incompleto (regla #3).
+function crearContenedor(cap) {
+  if (pendingContIndex() !== -1) {
+    notif('Completá el contenedor actual antes de crear otro', 'error');
+    return;
+  }
+  const n = Math.max(1, Math.min(CONT_MAX, cap | 0));
+  e3.conts.push({ cap: n, modulos: [] });
+  e3.activeCont = e3.conts.length - 1;
+  e3.sel = null;
+  markDirty(); renderCanvas(); renderProps();
+  notif(`✓ Contenedor ${n}×1 creado — insertá ${n} módulo${n > 1 ? 's' : ''} adentro para continuar`);
+  document.getElementById('e3-search-input')?.focus();
+}
+
+// ─── Grid picker tipo Docs (1 a 3 módulos en fila) ──────────────────
+function bindGridPicker() {
+  const btn = document.getElementById('e3-newcont');
+  const pop = document.getElementById('e3-gridpick');
+  const cellsWrap = document.getElementById('e3-gridpick-cells');
+  const label = document.getElementById('e3-gridpick-label');
+  if (!btn || !pop || !cellsWrap) return;
+
+  cellsWrap.innerHTML = Array.from({ length: CONT_MAX }, (_, i) =>
+    `<div class="e3-gridpick-cell" data-k="${i + 1}"></div>`).join('');
+  const cells = [...cellsWrap.querySelectorAll('.e3-gridpick-cell')];
+  const paint = k => {
+    cells.forEach((c, i) => c.classList.toggle('on', i < k));
+    if (label) label.textContent = `${k} × 1`;
+  };
+  paint(1);
+
+  btn.addEventListener('click', ev => {
+    ev.stopPropagation();
+    pop.style.display = (pop.style.display === 'none') ? '' : 'none';
+    paint(1);
+  });
+  cells.forEach(c => {
+    c.addEventListener('mouseenter', () => paint(+c.dataset.k));
+    c.addEventListener('click', ev => {
+      ev.stopPropagation();
+      crearContenedor(+c.dataset.k);
+      pop.style.display = 'none';
+    });
+  });
+  document.addEventListener('click', ev => {
+    if (!ev.target.closest('.e3-newcont-wrap')) pop.style.display = 'none';
+  });
 }
 
 // ─── Iframe con CSS específico por tipo ─────────────────────────────
@@ -681,7 +863,7 @@ function initIframe(cb) {
 ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
 <style>
   body{margin:0;background:#fff;min-height:100vh;}
-  .e3-sec-wrap{position:relative;outline:2px solid transparent;outline-offset:-2px;transition:outline-color .15s;}
+  .e3-sec-wrap{position:relative;outline:2px solid transparent;outline-offset:-2px;transition:outline-color .15s;min-height:40px;}
   .e3-sec-wrap:hover{outline-color:#cbd5e1;}
   .e3-sec-wrap.e3-selected{outline-color:#2563eb;}
   .e3-sec-ctrls{position:absolute;top:8px;right:8px;display:flex;gap:.25rem;z-index:9999;background:rgba(255,255,255,.96);padding:.25rem;box-shadow:0 4px 12px rgba(0,0,0,.18);opacity:0;transition:opacity .15s;}
@@ -691,6 +873,19 @@ ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
   .e3-sec-badge{position:absolute;top:8px;left:8px;z-index:9998;background:rgba(15,23,42,.85);color:#fff;font:700 .6rem/1 Inter,system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;padding:.25rem .5rem;border-radius:.25rem;opacity:0;transition:opacity .15s;pointer-events:none;}
   .e3-sec-wrap:hover .e3-sec-badge,.e3-sec-wrap.e3-selected .e3-sec-badge{opacity:1;}
   .e3-empty{padding:6rem 2rem;text-align:center;color:#94a3b8;border:2px dashed #cbd5e1;margin:1rem;font-family:Inter,system-ui,sans-serif;}
+  /* ── Contenedores (filas) en el canvas ── */
+  .e3-cont{position:relative;border:2px dashed #cbd5e1;margin:10px;transition:border-color .15s,box-shadow .15s;}
+  .e3-cont.e3-cont-active{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12);}
+  .e3-cont-bar{display:flex;align-items:center;justify-content:space-between;gap:.5rem;background:#f1f5f9;border-bottom:1px solid #e2e8f0;padding:.25rem .4rem;font-family:Inter,system-ui,sans-serif;}
+  .e3-cont-tag{font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#475569;cursor:pointer;display:flex;align-items:center;gap:.35rem;}
+  .e3-cont-active .e3-cont-tag{color:#2563eb;}
+  .e3-cont-ctrls{display:flex;gap:.2rem;}
+  .e3-cont-ctrls button{background:#fff;border:1px solid #cbd5e1;padding:.2rem .4rem;font-size:.65rem;line-height:1;color:#0A1D37;cursor:pointer;font-family:inherit;border-radius:2px;}
+  .e3-cont-ctrls .e3-danger{color:#dc2626;}
+  .e3-cont-grid{display:grid;align-items:stretch;}
+  .e3-slot{display:flex;align-items:center;justify-content:center;min-height:90px;border:2px dashed #d4dae3;margin:6px;background:repeating-linear-gradient(45deg,#fafbfc,#fafbfc 8px,#f1f5f9 8px,#f1f5f9 16px);cursor:pointer;transition:border-color .15s,background .15s;}
+  .e3-slot:hover{border-color:#60a5fa;}
+  .e3-slot-inner{font:700 .68rem/1.3 Inter,system-ui,sans-serif;color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:.4rem;}
 </style>
 </head><${B}></${B}></html>`;
   iframe._queue = iframe._queue || [];
@@ -706,47 +901,93 @@ function renderCanvas() {
   if (!iframe || !iframe.contentDocument) return;
   const doc = iframe.contentDocument;
   ensureCanvasCss(doc);
-  const ids = e3.activeTpl?.id_modulos || [];
-  if (ids.length === 0) {
+  refreshContControls();   // fija activeCont = contenedor incompleto y estado de botones
+  if (!e3.conts.length) {
     doc.body.innerHTML = `<div class="e3-empty" style="min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-      <div style="font-size:2.5rem;margin-bottom:.75rem;opacity:.25;line-height:1;">⊕</div>
-      Buscá un módulo a la izquierda e insertálo<br>
-      <small style="font-size:.65rem;display:block;margin-top:.4rem;opacity:.7;">cada módulo es 100% editable (contenido, tamaño y escala)</small>
+      <div style="font-size:2.5rem;margin-bottom:.75rem;opacity:.25;line-height:1;">⊞</div>
+      Creá un <b style="margin:0 .3rem;">contenedor</b> a la izquierda<br>
+      <small style="font-size:.65rem;display:block;margin-top:.4rem;opacity:.7;">elegí 1 a 3 módulos en fila, después insertá los módulos adentro</small>
     </div>`;
     return;
   }
   const navItems = buildNavItems(e3.navbar);
-  doc.body.innerHTML = ids.map((id, i) => {
-    const m = modById(id);
-    const inner = m
-      ? renderModulo(m.tipo === 'nav' ? { ...m, data: { ...m.data, items: navItems } } : m)
-      : `<div style="padding:2rem;background:#fee;color:#900;text-align:center;">Módulo #${id} no está en el catálogo</div>`;
-    const tipoLbl = m ? (SECTIONS[m.tipo]?.label || m.tipo) : '—';
-    const global = m && GLOBAL_TIPOS.has(m.tipo);
-    return `
-<div class="e3-sec-wrap ${e3.selectedIdx === i ? 'e3-selected' : ''}" data-e3-idx="${i}">
+  doc.body.innerHTML = e3.conts.map((cont, ci) => {
+    const cols = Math.min(Math.max(cont.cap, 1), CONT_MAX);
+    const slots = [];
+    for (let mi = 0; mi < cont.cap; mi++) {
+      const id = cont.modulos[mi];
+      if (id == null) {
+        slots.push(`<div class="e3-slot" data-ci="${ci}"><div class="e3-slot-inner"><i class="fa-solid fa-plus"></i> Insertar módulo</div></div>`);
+        continue;
+      }
+      const m = modById(id);
+      const inner = m
+        ? renderModulo(m.tipo === 'nav' ? { ...m, data: { ...m.data, items: navItems } } : m)
+        : `<div style="padding:2rem;background:#fee;color:#900;text-align:center;">Módulo #${id} no está en el catálogo</div>`;
+      const tipoLbl = m ? (SECTIONS[m.tipo]?.label || m.tipo) : '—';
+      const global = m && GLOBAL_TIPOS.has(m.tipo);
+      const isSel = e3.sel && e3.sel.ci === ci && e3.sel.mi === mi;
+      slots.push(`
+<div class="e3-sec-wrap ${isSel ? 'e3-selected' : ''}" data-ci="${ci}" data-mi="${mi}">
   <div class="e3-sec-badge">#${id} · ${escAttr(tipoLbl)}${global ? ' · global' : ''}</div>
   <div class="e3-sec-ctrls">
-    <button data-e3-act="up" title="Subir"><i class="fa-solid fa-chevron-up"></i></button>
-    <button data-e3-act="down" title="Bajar"><i class="fa-solid fa-chevron-down"></i></button>
-    <button data-e3-act="del" class="e3-danger" title="Quitar"><i class="fa-solid fa-trash"></i></button>
+    ${cont.cap > 1 ? `<button data-mact="left" title="Mover a la izquierda"><i class="fa-solid fa-chevron-left"></i></button>
+    <button data-mact="right" title="Mover a la derecha"><i class="fa-solid fa-chevron-right"></i></button>` : ''}
+    <button data-mact="del" class="e3-danger" title="Quitar del contenedor"><i class="fa-solid fa-trash"></i></button>
   </div>
   ${inner}
+</div>`);
+    }
+    const incompleto = cont.modulos.length < cont.cap;
+    const faltan = cont.cap - cont.modulos.length;
+    return `
+<div class="e3-cont ${incompleto ? 'e3-cont-active' : ''}" data-ci="${ci}">
+  <div class="e3-cont-bar" data-cont-bar="${ci}">
+    <span class="e3-cont-tag"><i class="fa-solid fa-table-cells-large"></i> Contenedor ${cont.cap}×1${incompleto ? ` · faltan ${faltan} módulo${faltan !== 1 ? 's' : ''}` : ''}</span>
+    <div class="e3-cont-ctrls">
+      <button data-cact="up" title="Subir contenedor"><i class="fa-solid fa-arrow-up"></i></button>
+      <button data-cact="down" title="Bajar contenedor"><i class="fa-solid fa-arrow-down"></i></button>
+      <button data-cact="del" class="e3-danger" title="Eliminar contenedor"><i class="fa-solid fa-trash"></i></button>
+    </div>
+  </div>
+  <div class="e3-cont-grid" style="grid-template-columns:repeat(${cols},minmax(0,1fr));">${slots.join('')}</div>
 </div>`;
   }).join('');
+
+  // Selección de módulo (para el panel de propiedades)
   doc.querySelectorAll('.e3-sec-wrap').forEach(w => {
+    const ci = +w.dataset.ci, mi = +w.dataset.mi;
     w.addEventListener('click', ev => {
       if (ev.target.closest('.e3-sec-ctrls')) return;
-      e3.selectedIdx = parseInt(w.dataset.e3Idx, 10);
+      e3.sel = { ci, mi };
       renderCanvas(); renderProps();
     });
-    w.querySelectorAll('button[data-e3-act]').forEach(b => {
+    w.querySelectorAll('button[data-mact]').forEach(b => {
       b.addEventListener('click', ev => {
         ev.stopPropagation();
-        const idx = parseInt(w.dataset.e3Idx, 10), act = b.dataset.e3Act;
-        if (act === 'up')   moveModule(idx, -1);
-        if (act === 'down') moveModule(idx, 1);
-        if (act === 'del')  deleteModule(idx);
+        const act = b.dataset.mact;
+        if (act === 'left')  moveModuleInCont(ci, mi, -1);
+        if (act === 'right') moveModuleInCont(ci, mi, 1);
+        if (act === 'del')   removeModuleFromCont(ci, mi);
+      });
+    });
+  });
+  // Slots vacíos → enfocan el buscador (el destino de inserción ya es este contenedor)
+  doc.querySelectorAll('.e3-slot').forEach(s => {
+    s.addEventListener('click', () => {
+      document.getElementById('e3-search-input')?.focus();
+    });
+  });
+  // Botones de la barra del contenedor → mover/eliminar
+  doc.querySelectorAll('[data-cont-bar]').forEach(bar => {
+    const ci = +bar.dataset.contBar;
+    bar.querySelectorAll('button[data-cact]').forEach(b => {
+      b.addEventListener('click', ev => {
+        ev.stopPropagation();
+        const act = b.dataset.cact;
+        if (act === 'up')   moveContenedor(ci, -1);
+        if (act === 'down') moveContenedor(ci, 1);
+        if (act === 'del')  deleteContenedor(ci);
       });
     });
   });
@@ -754,25 +995,55 @@ function renderCanvas() {
   doc.querySelectorAll('form').forEach(f => f.addEventListener('submit', ev => ev.preventDefault()));
 }
 
-function moveModule(idx, delta) {
-  const arr = e3.activeTpl.id_modulos;
-  const j = idx + delta;
+// Reordena un módulo dentro de su contenedor (fila).
+function moveModuleInCont(ci, mi, delta) {
+  const arr = e3.conts[ci]?.modulos;
+  if (!arr) return;
+  const j = mi + delta;
   if (j < 0 || j >= arr.length) return;
-  [arr[idx], arr[j]] = [arr[j], arr[idx]];
-  if (e3.selectedIdx === idx) e3.selectedIdx = j;
-  else if (e3.selectedIdx === j) e3.selectedIdx = idx;
+  [arr[mi], arr[j]] = [arr[j], arr[mi]];
+  if (e3.sel && e3.sel.ci === ci) {
+    if (e3.sel.mi === mi) e3.sel.mi = j;
+    else if (e3.sel.mi === j) e3.sel.mi = mi;
+  }
   markDirty(); renderCanvas(); renderProps();
 }
 
-function deleteModule(idx) {
-  if (!confirm('¿Quitar este módulo de la plantilla?')) return;
-  e3.activeTpl.id_modulos.splice(idx, 1);
-  if (e3.selectedIdx === idx) e3.selectedIdx = null;
-  else if (e3.selectedIdx > idx) e3.selectedIdx--;
+// Quita un módulo de su contenedor (el contenedor queda con un slot libre).
+function removeModuleFromCont(ci, mi) {
+  if (!confirm('¿Quitar este módulo del contenedor?')) return;
+  e3.conts[ci].modulos.splice(mi, 1);
+  if (e3.sel && e3.sel.ci === ci) {
+    if (e3.sel.mi === mi) e3.sel = null;
+    else if (e3.sel.mi > mi) e3.sel.mi--;
+  }
   markDirty(); renderCanvas(); renderProps();
 }
 
-function markDirty() { e3.dirty = true; document.getElementById('e3-dirty').style.display = 'inline'; }
+// Reordena un contenedor entero (sube/baja la fila).
+function moveContenedor(ci, delta) {
+  const j = ci + delta;
+  if (j < 0 || j >= e3.conts.length) return;
+  [e3.conts[ci], e3.conts[j]] = [e3.conts[j], e3.conts[ci]];
+  if (e3.activeCont === ci) e3.activeCont = j;
+  else if (e3.activeCont === j) e3.activeCont = ci;
+  if (e3.sel) { if (e3.sel.ci === ci) e3.sel.ci = j; else if (e3.sel.ci === j) e3.sel.ci = ci; }
+  markDirty(); renderCanvas(); renderProps();
+}
+
+// Elimina un contenedor y todos sus módulos.
+function deleteContenedor(ci) {
+  const c = e3.conts[ci];
+  if (!c) return;
+  if (c.modulos.length && !confirm(`¿Eliminar el contenedor y sus ${c.modulos.length} módulo(s)?`)) return;
+  e3.conts.splice(ci, 1);
+  if (e3.activeCont === ci) e3.activeCont = e3.conts.length ? Math.min(ci, e3.conts.length - 1) : null;
+  else if (e3.activeCont != null && e3.activeCont > ci) e3.activeCont--;
+  if (e3.sel) { if (e3.sel.ci === ci) e3.sel = null; else if (e3.sel.ci > ci) e3.sel.ci--; }
+  markDirty(); renderCanvas(); renderProps();
+}
+
+function markDirty() { e3.dirty = true; syncActiveTpl(); document.getElementById('e3-dirty').style.display = 'inline'; }
 function clearDirty() { e3.dirty = false; document.getElementById('e3-dirty').style.display = 'none'; }
 
 // ─── PROPS PANEL ────────────────────────────────────────────────────
@@ -780,8 +1051,8 @@ function renderProps() {
   const body = document.getElementById('e3-props-body');
   if (!body) return;
   const typeEl = document.getElementById('e3-props-type');
-  const id = e3.activeTpl?.id_modulos?.[e3.selectedIdx];
-  const sec = (id === undefined) ? null : modById(id);
+  const id = e3.sel ? e3.conts[e3.sel.ci]?.modulos?.[e3.sel.mi] : undefined;
+  const sec = (id == null) ? null : modById(id);
   if (!sec) { body.innerHTML = '<div class="props-empty">Click sobre un módulo del canvas para editarlo.</div>'; if (typeEl) typeEl.textContent = 'Propiedades'; return; }
   const def = SECTIONS[sec.tipo];
   if (!def) { body.innerHTML = `<div class="props-empty">Tipo desconocido: ${sec.tipo}</div>`; return; }
@@ -1046,18 +1317,30 @@ function bindFieldEvents(sec) {
 // ─── SAVE ──────────────────────────────────────────────────────────
 async function guardarPlantilla() {
   if (!e3.activeTpl) return;
+  const pend = pendingContIndex();
+  if (pend !== -1) {
+    const c = e3.conts[pend];
+    notif(`No se puede guardar: el contenedor ${c.cap}×1 está incompleto (faltan ${c.cap - c.modulos.length}). Completálo o eliminálo.`, 'error');
+    return;
+  }
   try {
     // 1) Persistir el catálogo de módulos (clones nuevos + ediciones).
     await api('PUT', '/data/modulos', { modulos: e3.modulos });
-    // 2) Persistir la plantilla (solo punteros).
+    // 2) Persistir la plantilla. `contenedores` es la fuente de verdad; mandamos
+    //    también id_modulos (aplanado) por compatibilidad — el backend los re-sincroniza.
     const { plantilla } = await api('PATCH', `/plantillas/${e3.activeTpl.id_plantilla}`, {
       nombre: e3.activeTpl.nombre,
       descripcion: e3.activeTpl.descripcion,
       id_menu: e3.activeTpl.id_menu,
-      id_modulos: e3.activeTpl.id_modulos,
+      contenedores: contsToContenedores(),
+      id_modulos: allModIds(),
     });
     e3.activeTpl = plantilla;
-    e3.activeTpl.id_modulos = Array.isArray(plantilla.id_modulos) ? plantilla.id_modulos : [];
+    e3.conts = contsFromPlantilla(plantilla);
+    e3.activeTpl.id_modulos   = allModIds();
+    e3.activeTpl.contenedores = contsToContenedores();
+    if (e3.activeCont != null && e3.activeCont >= e3.conts.length) e3.activeCont = e3.conts.length ? e3.conts.length - 1 : null;
+    e3.sel = null;
     clearDirty();
     const idx = e3.plantillas.findIndex(p => p.id_plantilla === plantilla.id_plantilla);
     if (idx >= 0) e3.plantillas[idx] = plantilla;
@@ -1140,6 +1423,9 @@ function initE3() {
   window.setActiveTpl = (id) => activarPlantilla(id);
   window.deleteTpl = (id) => eliminarPlantilla(id);
   window.saveTpl = () => guardarPlantilla();
+  // Permite a otros paneles (ej: navbar) refrescar la lista de plantillas tras
+  // crear una página personalizada, sin recargar toda la página.
+  window.reloadPlantillas = () => loadPlantillas();
 
   loadPlantillas();
 }

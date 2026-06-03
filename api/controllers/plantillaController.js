@@ -23,10 +23,40 @@ function isTipoValido(tipo) {
 // Mantener array exportado para compatibilidad
 const TIPOS_VALIDOS = TIPOS_BASE;
 
+// ─── Contenedores (filas de módulos) ───────────────────────────────
+// Modelo: plantilla.contenedores = [[id,id], [id], ...] — cada sub-array es
+// una fila; sus ids son los módulos que van adentro, en orden (1 a 3).
+// `id_modulos` se mantiene SIEMPRE como el aplanado de contenedores (lista
+// canónica plana) para no romper alertas, conteo de usos, nav ni el runtime.
+
+// Aplana contenedores → lista plana de ids (en orden de fila e índice).
+function flattenContenedores(conts) {
+  return [].concat(...conts.map(c => (Array.isArray(c) ? c.filter(n => Number.isFinite(n)) : [])));
+}
+
+// Coacciona a array-de-arrays-de-números. Devuelve null si no es un array.
+function sanitizeContenedores(conts) {
+  if (!Array.isArray(conts)) return null;
+  return conts.map(c => (Array.isArray(c) ? c.map(Number).filter(n => !isNaN(n)) : []));
+}
+
+// Garantiza que la plantilla tenga `contenedores` válido y `id_modulos` en sync.
+// Si no hay contenedores (datos viejos), migra: cada módulo a su propio 1x1.
+function normalizarPlantilla(p) {
+  let conts = sanitizeContenedores(p.contenedores);
+  if (!conts) conts = (Array.isArray(p.id_modulos) ? p.id_modulos : []).map(id => [Number(id)]);
+  p.contenedores = conts;
+  p.id_modulos   = flattenContenedores(conts);
+  return p;
+}
+
 function read() {
   if (!fs.existsSync(FILE)) return { plantillas: [] };
-  try { return JSON.parse(fs.readFileSync(FILE, 'utf-8')); }
-  catch { return { plantillas: [] }; }
+  try {
+    const data = JSON.parse(fs.readFileSync(FILE, 'utf-8'));
+    (data.plantillas || []).forEach(normalizarPlantilla);
+    return data;
+  } catch { return { plantillas: [] }; }
 }
 
 function save(data) {
@@ -69,7 +99,7 @@ exports.obtener = (req, res) => {
 
 // POST /api/plantillas   [auth]
 exports.crear = (req, res) => {
-  const { tipo, nombre, descripcion, id_menu, id_modulos } = req.body || {};
+  const { tipo, nombre, descripcion, id_menu, id_modulos, contenedores } = req.body || {};
   if (!tipo) return res.status(400).json({ error: 'El campo "tipo" es obligatorio' });
   if (!isTipoValido(tipo)) {
     return res.status(400).json({ error: `Tipo inválido. Valores base: ${TIPOS_BASE.join(', ')} (o btn-*)` });
@@ -80,17 +110,20 @@ exports.crear = (req, res) => {
 
   const data = read();
   const now = new Date().toISOString();
-  const nueva = {
+  // contenedores es la fuente de verdad; si llega solo id_modulos (legacy), se
+  // deriva 1 contenedor 1x1 por módulo. normalizarPlantilla deja todo en sync.
+  const nueva = normalizarPlantilla({
     id_plantilla: nextId(data.plantillas),
     tipo,
     nombre: nombre.trim(),
     descripcion: descripcion || '',
     activa: false,
-    id_menu:    Array.isArray(id_menu)    ? id_menu    : [],
-    id_modulos: Array.isArray(id_modulos) ? id_modulos : [],
+    id_menu:      Array.isArray(id_menu)    ? id_menu    : [],
+    id_modulos:   Array.isArray(id_modulos) ? id_modulos : [],
+    contenedores: Array.isArray(contenedores) ? contenedores : undefined,
     creado_en: now,
     editado_en: now,
-  };
+  });
   data.plantillas.push(nueva);
   save(data);
   res.status(201).json({ ok: true, plantilla: nueva });
@@ -103,7 +136,7 @@ exports.actualizar = (req, res) => {
   const idx = data.plantillas.findIndex(p => p.id_plantilla === id);
   if (idx === -1) return res.status(404).json({ error: 'Plantilla no encontrada' });
 
-  const { tipo, nombre, descripcion, id_menu, id_modulos } = req.body || {};
+  const { tipo, nombre, descripcion, id_menu, id_modulos, contenedores } = req.body || {};
   if (tipo !== undefined && !isTipoValido(tipo)) {
     return res.status(400).json({ error: `Tipo inválido. Valores base: ${TIPOS_BASE.join(', ')} (o btn-*)` });
   }
@@ -113,7 +146,11 @@ exports.actualizar = (req, res) => {
   if (nombre !== undefined)       tpl.nombre = String(nombre).trim();
   if (descripcion !== undefined)  tpl.descripcion = descripcion;
   if (Array.isArray(id_menu))     tpl.id_menu = id_menu;
-  if (Array.isArray(id_modulos))  tpl.id_modulos = id_modulos;
+  // contenedores manda; si solo llega id_modulos (legacy) se deriva 1x1 por módulo.
+  // En ambos casos normalizarPlantilla deja contenedores + id_modulos en sync.
+  if (Array.isArray(contenedores))   tpl.contenedores = contenedores;
+  else if (Array.isArray(id_modulos)) tpl.contenedores = id_modulos.map(id => [id]);
+  if (Array.isArray(contenedores) || Array.isArray(id_modulos)) normalizarPlantilla(tpl);
   tpl.editado_en = new Date().toISOString();
 
   save(data);

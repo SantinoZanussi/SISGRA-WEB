@@ -2010,36 +2010,71 @@ function initApp(){
  
   document.getElementById('btn-guardar')?.addEventListener('click',saveCurrentPanel);
  
+  // ── Modal Navbar: 3 modos (vincular plantilla / página nueva / URL externa) ──
+  function updateNavModalFields() {
+    const mode = document.querySelector('input[name="nav-tipo-red"]:checked')?.value || 'link';
+    const show = (id, on) => { const el = document.getElementById(id); if (el) el.style.display = on ? '' : 'none'; };
+    show('nav-plantilla-field', mode === 'link');
+    show('nav-href-field',      mode === 'url');
+    show('nav-custom-info',     mode === 'custom');
+  }
+  async function populateNavPlantillaSelect() {
+    const sel = document.getElementById('nav-plantilla-select');
+    if (!sel) return;
+    sel.innerHTML = '<option value="">Cargando…</option>';
+    try {
+      const { plantillas } = await window.__svc.apiGet('/plantillas');
+      const list = plantillas || [];
+      sel.innerHTML = list.length
+        ? list.map(p => `<option value="${p.id_plantilla}">${p.nombre} · ${p.tipo}</option>`).join('')
+        : '<option value="">No hay plantillas</option>';
+    } catch (e) {
+      sel.innerHTML = '<option value="">Error cargando plantillas</option>';
+    }
+  }
+
   document.getElementById('abrir-modal-navbar')?.addEventListener('click', () => {
     document.getElementById('nav-titulo').value = '';
     document.getElementById('nav-href').value = '';
-    document.getElementById('nav-red-url').checked = true;
-    document.getElementById('nav-href-field').style.display = '';
-    document.getElementById('nav-custom-info').style.display = 'none';
+    const linkRadio = document.getElementById('nav-red-link');
+    if (linkRadio) linkRadio.checked = true;
+    updateNavModalFields();
+    populateNavPlantillaSelect();
     window.__svc.openModal('modal-navbar');
   });
 
   document.querySelectorAll('input[name="nav-tipo-red"]').forEach(r => {
-    r.addEventListener('change', () => {
-      const isCustom = document.getElementById('nav-red-custom').checked;
-      document.getElementById('nav-href-field').style.display = isCustom ? 'none' : '';
-      document.getElementById('nav-custom-info').style.display = isCustom ? '' : 'none';
-    });
+    r.addEventListener('change', updateNavModalFields);
   });
 
   document.getElementById('guardar-nav-item-btn')?.addEventListener('click', async () => {
     const titulo = document.getElementById('nav-titulo').value.trim();
     if (!titulo) { window.__svc.showNotif('El título es obligatorio', 'error'); return; }
-    const isCustom = document.getElementById('nav-red-custom').checked;
-    const href = document.getElementById('nav-href').value.trim();
-    if (!isCustom && !href) { window.__svc.showNotif('La URL de destino es obligatoria', 'error'); return; }
-    const body = { titulo, tipoRedireccion: isCustom ? 'custom' : 'url' };
-    if (!isCustom) body.href = href;
+    const mode = document.querySelector('input[name="nav-tipo-red"]:checked')?.value || 'link';
+    const body = { titulo };
+    if (mode === 'link') {
+      const id_plantilla = Number(document.getElementById('nav-plantilla-select').value);
+      if (!id_plantilla) { window.__svc.showNotif('Elegí una plantilla de la lista', 'error'); return; }
+      body.id_plantilla = id_plantilla;
+    } else if (mode === 'custom') {
+      body.tipoRedireccion = 'custom';
+    } else {
+      const href = document.getElementById('nav-href').value.trim();
+      if (!href) { window.__svc.showNotif('La URL externa es obligatoria', 'error'); return; }
+      body.href = href;
+    }
     try {
       await window.__svc.apiPost('/nav/botones', body);
       window.__svc.closeModal('modal-navbar');
-      window.__svc.showNotif('Ítem agregado al navbar', 'success');
       loadNavbarItems();
+      if (mode === 'custom') {
+        // Página nueva = plantilla en blanco (sin archivo HTML). Refrescar la lista
+        // del editor para que aparezca al instante, sin recargar.
+        window.reloadPlantillas?.();
+        window.__svc.showNotif('✓ Página nueva creada — editala en Plantillas', 'success');
+      } else {
+        window.__svc.showNotif('Ítem agregado al navbar', 'success');
+      }
     } catch(e) {
       window.__svc.showNotif(e.message, 'error');
     }

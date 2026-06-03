@@ -10,6 +10,24 @@ const HTML_DIR = path.join(__dirname, '..', '..', 'html');
 const GLOBAL_NAV_ID    = 1;   // id_modulo del nav global
 const GLOBAL_FOOTER_ID = 3;   // id_modulo del footer-full global
 
+// URL pública de cada plantilla según su tipo. Los tipos del sistema tienen su
+// página física; las plantillas custom (btn-*) se sirven por el shell genérico
+// /p/:tipo (sin archivo .html propio).
+const TIPO_PATH = {
+  index:      '/',
+  blog:       '/html/blog',
+  articulo:   '/html/articulo',
+  cliente:    '/html/cliente',
+  cableado:   '/html/cableado_estructurado',
+  fibra:      '/html/fibra_optica',
+  seguridad:  '/html/seguridad',
+  soporte:    '/html/soporte_it',
+  desarrollo: '/html/desarrollo',
+};
+function plantillaHref(tipo) {
+  return TIPO_PATH[tipo] || `/p/${tipo}`;
+}
+
 // ── data helpers ────────────────────────────────────────────────────
 function readNav() {
   if (!fs.existsSync(NAV_FILE)) return { botones: [] };
@@ -52,15 +70,22 @@ exports.listarBotones = (_req, res) => {
 // POST /api/nav/botones  [auth]
 // Body: { titulo, tipoRedireccion ('url'|'custom'), href?, grupo?, orden?, activo? }
 exports.crearBoton = (req, res) => {
-  const { titulo, href, tipoRedireccion, grupo, orden, activo } = req.body || {};
+  const { titulo, href, tipoRedireccion, id_plantilla, grupo, orden, activo } = req.body || {};
   if (!titulo || !titulo.trim()) return res.status(400).json({ error: 'El campo "titulo" es obligatorio' });
 
   const data = readNav();
   const id_menu = nextMenuId(data.botones);
-  let botonHref = href || null;
+  let botonHref = null;
 
-  if (tipoRedireccion === 'custom') {
-    // ── Crear plantilla v2 (solo punteros) + archivo HTML ──
+  if (id_plantilla != null) {
+    // ── Vincular a una plantilla existente (sin escribir rutas a mano) ──
+    const pltData = readPlantillas();
+    const plt = pltData.plantillas.find(p => p.id_plantilla === Number(id_plantilla));
+    if (!plt) return res.status(404).json({ error: 'Plantilla no encontrada' });
+    botonHref = plantillaHref(plt.tipo);
+  } else if (tipoRedireccion === 'custom') {
+    // ── Crear plantilla v2 en blanco (shell). NO se escribe un .html físico:
+    //    la sirve el route genérico /p/:tipo y se edita como cualquier plantilla. ──
     const pltData = readPlantillas();
     const now  = new Date().toISOString();
     const tipo = `btn-${id_menu}`;
@@ -72,44 +97,17 @@ exports.crearBoton = (req, res) => {
       activa: true,
       id_menu: [id_menu],
       id_modulos: [GLOBAL_NAV_ID, GLOBAL_FOOTER_ID],
+      contenedores: [[GLOBAL_NAV_ID], [GLOBAL_FOOTER_ID]],
       creado_en: now,
       editado_en: now,
     };
     pltData.plantillas.push(nuevaPlt);
     savePlantillas(pltData);
-
-    botonHref = `/html/${tipo}`;
-
-    const htmlContent = `<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="meta-title">${titulo.trim()} — SISGRA S.R.L.</title>
-  <meta name="description" id="meta-desc" content="">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="icon" href="/img/sdesigra.png">
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/layout.css">
-  <link rel="stylesheet" href="/css/components.css">
-</head>
-<body>
-<div id="plantilla-root">
-  <div style="padding:6rem 2rem;text-align:center;color:#94a3b8;font-family:'Inter',system-ui,sans-serif;letter-spacing:.15em;text-transform:uppercase;font-size:.75rem;">Cargando…</div>
-</div>
-<script type="module">
-  import { bootstrapPage } from '/services/page-bootstrap.js';
-  bootstrapPage('${tipo}', 'plantilla-root');
-</script>
-</body>
-</html>`;
-    try {
-      fs.writeFileSync(path.join(HTML_DIR, `${tipo}.html`), htmlContent, 'utf-8');
-    } catch (e) {
-      console.warn('[navController] No se pudo crear el HTML:', e.message);
-    }
-  } else if (!botonHref) {
-    return res.status(400).json({ error: 'Se requiere "href" para ítems de tipo URL' });
+    botonHref = `/p/${tipo}`;
+  } else {
+    // ── URL externa libre ──
+    botonHref = href || null;
+    if (!botonHref) return res.status(400).json({ error: 'Se requiere "href" para ítems de tipo URL' });
   }
 
   const nuevo = {

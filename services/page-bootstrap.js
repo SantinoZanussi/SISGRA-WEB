@@ -8,7 +8,7 @@
 //     bootstrapPage('index', 'plantilla-root');
 //   </script>
 
-import { resolverModulos, renderModulos } from './sections.js';
+import { resolverModulos, renderModulosAgrupados } from './sections.js';
 import { cssFilesFor } from './css-pages.js';
 
 const API_BASE = `http://${window.location.hostname}:3000/api`;
@@ -223,7 +223,8 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
     }
 
     ensurePageCss(tipo, secciones);
-    root.innerHTML = renderModulos(secciones);
+    // Render respetando los contenedores (filas de 1 a 3 módulos) de la plantilla.
+    root.innerHTML = renderModulosAgrupados(secciones, plantilla.contenedores);
     // Post-render: conectar funcionalidad que estaba en el HTML estático
     bindMobileDrawer();
     bindContactForm();

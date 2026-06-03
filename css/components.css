@@ -137,4 +137,24 @@
     border: 0;
 }
 
+/* ── CONTENEDORES (filas de 1 a 3 módulos lado a lado) ── */
+/* El número de columnas lo pone el render con grid-template-columns inline.
+   Un módulo solo no usa .cont-row (va a ancho completo, idéntico a antes). */
+.cont-row {
+    display: grid;
+    gap: 0;
+    align-items: stretch;
+    width: 100%;
+}
+.cont-cell {
+    min-width: 0; /* evita overflow de hijos con contenido ancho */
+    overflow: hidden;
+}
+/* En mobile las filas colapsan a una sola columna (apiladas). */
+@media (max-width: 768px) {
+    .cont-row {
+        grid-template-columns: 1fr !important;
+    }
+}
+
 /* HOME */
