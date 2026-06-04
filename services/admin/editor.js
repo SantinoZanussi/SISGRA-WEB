@@ -1,4 +1,4 @@
-import { SECTIONS, TIPOS_HTML, renderModulo } from '../sections.js';
+import { SECTIONS, TIPOS_HTML, renderModulo, setEditMode, setFieldColors } from '../sections.js';
 import { TIPO_CSS, TYPE_TO_PAGE, cssFilesFor } from '../css-pages.js';
 
 const API = `http://${window.location.hostname}:3000/api`;
@@ -525,16 +525,17 @@ function renderEditorShell() {
   const tpl = e3.activeTpl;
   const inner = document.getElementById('tpl-editor-inner');
   inner.innerHTML = `
-    <div style="background:var(--white);border-bottom:1px solid var(--slate-200);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-shrink:0;">
-      <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
-        <button class="btn-edit-small" id="e3-back"><i class="fa-solid fa-arrow-left fa-lg"></i> Volver</button>
+      <div style="background:var(--white);border-bottom:1px solid var(--slate-200);padding:.75rem 1.5rem; display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-shrink:0;">
+        <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;">
+          <button class="btn-edit-small" id="e3-back"><i class="fa-solid fa-arrow-left fa-lg"></i> Volver</button>
+        </div>
+      <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
         <span style="font-size:.5rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;background:var(--sisgra-blue);color:#fff;padding:.2rem .6rem;">Plantilla</span>
-        <span style="font-size:1rem;font-weight:900;color:var(--sisgra-blue);letter-spacing:-.03em;font-style:italic;">${escAttr(tpl.nombre)}</span>
-        <span style="font-size:.55rem;font-weight:700;color:var(--slate-400);letter-spacing:.2em;text-transform:uppercase;">— ${escAttr(tpl.tipo)}</span>
-        <span style="font-size:.5rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:.2rem .6rem;${tpl.activa ? 'background:#dcfce7;color:#166534;' : 'background:#fef3c7;color:#92400e;'}">${tpl.activa ? 'Activa' : 'Borrador'}</span>
+        <span style="font-size:1.4rem;font-weight:900;color:var(--sisgra-blue);letter-spacing:-.03em;font-style:italic;">"${escAttr(tpl.nombre)}"</span>
+        <span style="font-size:.6rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:.2rem .6rem;${tpl.activa ? 'background:#dcfce7;color:#166534;' : 'background:#fef3c7;color:#92400e;'}">${tpl.activa ? 'Activa' : 'Borrador'}</span>
         <span id="e3-dirty" style="display:none;color:#dc2626;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">● Sin guardar</span>
       </div>
-      <div style="display:flex;align-items:center;gap:.5rem;">
+      <div style="display:flex;align-items:center;gap:1.25rem;">
         ${!tpl.activa ? '<button class="btn-edit-small" id="e3-activar">Activar</button>' : '<span style="color:#166534;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;">✓ En vivo</span>'}
         <button class="btn-save" id="e3-guardar">Guardar plantilla</button>
       </div>
@@ -573,20 +574,9 @@ function renderEditorShell() {
     </style>
     <div class="editor-shell">
       <div class="page-canvas-wrap">
-        <div class="canvas-ruler"><span style="font-size:.5rem;font-weight:700;color:var(--slate-400);letter-spacing:.2em;text-transform:uppercase;">Vista previa — ${escAttr(tpl.tipo)}.html</span></div>
         <div style="flex:1;min-height:0;overflow:auto;display:flex;align-items:stretch;justify-content:center;padding:1rem 2rem;">
           <iframe class="page-frame desktop" id="e3-canvas" style="border:none;background:#fff;height:100%;min-height:420px;"></iframe>
         </div>
-      </div>
-      <div class="props-panel">
-        <div class="props-header" style="display:flex;align-items:center;justify-content:center;gap:.3rem;">
-          <span id="e3-props-type">Propiedades</span>
-          <div class="e3-props-tabs">
-            <button data-e3-tab="data" class="${e3.propsTab==='data'?'active':''}">Contenido</button>
-            <button data-e3-tab="design" class="${e3.propsTab==='design'?'active':''}">Diseño</button>
-          </div>
-        </div>
-        <div class="props-body" id="e3-props-body"><div class="props-empty">Click sobre un módulo del canvas para editarlo.</div></div>
       </div>
     </div>
     <div class="e3-insert-pop" id="e3-insert-pop" style="display:none;">
@@ -906,29 +896,13 @@ function openInsertPopoverForPending() {
   openInsertPopover(slot);
 }
 
-// Posiciona el popover (position:fixed) justo debajo del slot clickeado, dentro del
-// iframe; mapea las coordenadas del iframe al viewport del padre y las recorta.
+// Posiciona el popover
 function positionInsertPopover(slotEl) {
   const pop = document.getElementById('e3-insert-pop');
-  const iframe = document.getElementById('e3-canvas');
-  if (!pop || !iframe) return;
-  const ifr = iframe.getBoundingClientRect();
-  const margin = 8;
-  let top, left;
-  if (slotEl) {
-    const r = slotEl.getBoundingClientRect();   // relativo al viewport del iframe
-    top = ifr.top + r.bottom + 6;
-    left = ifr.left + r.left;
-  } else {
-    top = ifr.top + 40; left = ifr.left + 40;
-  }
-  const pw = pop.offsetWidth || 360;
-  const ph = pop.offsetHeight || 200;
-  if (left + pw > window.innerWidth - margin) left = window.innerWidth - margin - pw;
-  if (left < margin) left = margin;
-  if (top + ph > window.innerHeight - margin) top = Math.max(margin, window.innerHeight - margin - ph);
-  pop.style.top = `${Math.round(top)}px`;
-  pop.style.left = `${Math.round(left)}px`;
+  if (!pop) return;
+  
+  pop.style.top = `60%`;
+  pop.style.left = `47%`;
 }
 
 // Cierra el popover y limpia el buscador (chips + query) para arrancar en limpio.
@@ -1585,11 +1559,49 @@ if (!tryInit()) {
 const SIMPLE_FIELD_TYPES = ['text','textarea','number','color','toggle'];
 const GLOBAL_TIPOS_MOD = new Set(['nav','footer','footer-full']);
 
-let _mods       = [];      // catálogo plano [{ id_modulo, tipo, nombre, data, design, alerta }]
+let _mods       = [];      // catálogo plano [{ id_modulo, tipo, nombre, id_pagina, data, design, alerta }]
 let _modUsos    = {};      // id_modulo → cantidad de plantillas que lo usan
+let _plantillas = [];      // lista de plantillas/páginas (para el desplegable "Página asignada")
 let _curModId   = null;
 let _curModType = null;
-let _curModData = { nombre: '', alerta: false, data: {}, design: {} };
+let _curModData = { nombre: '', alerta: false, id_pagina: null, data: {}, design: {} };
+
+/* Nombre legible de la página asignada a un módulo (o '' si no tiene). */
+function _paginaLabel(id_pagina) {
+  if (id_pagina === 'all') return 'Todas las páginas';
+  if (id_pagina == null || id_pagina === '') return '';
+  const p = _plantillas.find(x => x.id_plantilla === Number(id_pagina));
+  return p ? p.nombre : String(id_pagina);
+}
+
+/* Llena el <select> de "Página asignada".
+   Los módulos globales (nav / footer) aplican a TODO el sitio: el campo queda
+   fijo en "Todas las páginas". El resto elige una página puntual del catálogo. */
+function _renderPaginaSelect(selectedId) {
+  const sel  = document.getElementById('modulos-variant-pagina');
+  const hint = document.getElementById('modulos-variant-pagina-hint');
+  if (!sel) return;
+
+  if (GLOBAL_TIPOS_MOD.has(_curModType)) {
+    sel.innerHTML = '<option value="all">🌐 Todas las páginas (global)</option>';
+    sel.value = 'all';
+    sel.disabled = true;
+    sel.onchange = null;
+    _curModData.id_pagina = 'all';
+    if (hint) hint.textContent = 'Módulo global: se muestra en todas las páginas del sitio. No se asigna a una página específica.';
+    return;
+  }
+
+  sel.disabled = false;
+  const opts = ['<option value="">— Sin asignar —</option>'].concat(
+    _plantillas.map(p =>
+      `<option value="${p.id_plantilla}">${escAttr(p.nombre)} · ${escAttr(p.tipo)}</option>`)
+  );
+  sel.innerHTML = opts.join('');
+  sel.value = (selectedId == null || selectedId === '') ? '' : String(selectedId);
+  sel.onchange = () => { _curModData.id_pagina = sel.value === '' ? null : Number(sel.value); };
+  if (hint) hint.textContent = 'Indicá a qué página pertenece este módulo (ej: «Blog»). Es solo un identificador para organizar el catálogo; no cambia dónde se puede usar.';
+}
 
 function _showView(id) {
   ['modulos-catalog-view','modulos-variants-view','modulos-editor-view'].forEach(v => {
@@ -1610,8 +1622,9 @@ window.loadModulos = async function() {
       window.__svc.apiGet('/plantillas').catch(() => ({ plantillas: [] })),
     ]);
     _mods = Array.isArray(mres.modulos) ? mres.modulos : [];
+    _plantillas = Array.isArray(pres.plantillas) ? pres.plantillas : [];
     _modUsos = {};
-    (pres.plantillas || []).forEach(p => (p.id_modulos || []).forEach(id => { _modUsos[id] = (_modUsos[id] || 0) + 1; }));
+    _plantillas.forEach(p => (p.id_modulos || []).forEach(id => { _modUsos[id] = (_modUsos[id] || 0) + 1; }));
     renderModCatalog();
   } catch(e) {
     window.__svc.showNotif('Error cargando módulos: ' + e.message, 'error');
@@ -1636,13 +1649,17 @@ function renderModCatalog() {
     const icon   = SECTIONS[tipo]?.icon || '';
     const global = GLOBAL_TIPOS_MOD.has(tipo);
     const cards = mods.map(m => {
-      const usos = _modUsos[m.id_modulo] || 0;
+      const usos     = _modUsos[m.id_modulo] || 0;
+      const esGlobal = GLOBAL_TIPOS_MOD.has(m.tipo);
+      const pag      = esGlobal ? 'Todas las páginas' : _paginaLabel(m.id_pagina);
+      const pagIcon  = esGlobal ? 'fa-globe' : 'fa-file-lines';
       return `<div class="mod-card">
         <div class="mod-card-top">
           <span class="mod-card-id">#${m.id_modulo}</span>
           <span class="mod-usos ${usos ? 'on' : ''}">${usos} uso${usos!==1?'s':''}</span>
         </div>
         <div class="mod-card-name" title="${escAttr(m.nombre || '')}">${escAttr(m.nombre || '(sin nombre)')}</div>
+        ${pag ? `<div class="mod-card-pagina${esGlobal ? ' is-global' : ''}" title="Página asignada: ${escAttr(pag)}"><i class="fa-solid ${pagIcon}"></i> ${escAttr(pag)}</div>` : ''}
         <div class="mod-card-actions">
           <button class="btn-edit-small mod-card-edit" onclick="openModEditor(${m.id_modulo})">Editar</button>
           <button class="btn-edit-small mod-icon-btn" style="background:#f1f5f9;color:#334155;" onclick="duplicarModulo(${m.id_modulo})" title="Duplicar"><i class="fa-solid fa-clone"></i></button>
@@ -1671,6 +1688,7 @@ window.openModEditor = function(id) {
   _curModData = {
     nombre: m.nombre || '',
     alerta: m.alerta === true,
+    id_pagina: m.id_pagina ?? null,
     data:   { ...sec.defaultData,   ...(m.data   || {}) },
     design: { ...sec.defaultDesign, ...(m.design || {}) },
   };
@@ -1692,16 +1710,15 @@ window.openModEditor = function(id) {
     alertaInput.onchange = () => { _curModData.alerta = alertaInput.checked; };
   }
 
-  renderModFieldGroup('data',   sec.dataFields   || [], 'modulos-editor-data-fields');
-  renderModFieldGroup('design', sec.designFields || [], 'modulos-editor-design-fields');
+  _renderPaginaSelect(_curModData.id_pagina);
 
-  const designCard = document.getElementById('modulos-editor-design-card');
-  if (designCard) designCard.style.display = (sec.designFields || []).length ? '' : 'none';
+  // Solo los campos de CONTENIDO van en el editor. El DISEÑO (colores) y el
+  // PREVIEW viven ahora en el modal de edición visual (botón "Preview").
+  renderModFieldGroup('data', sec.dataFields || [], 'modulos-editor-data-fields');
 
   renderModContentCard(m.tipo);
 
   _showView('modulos-editor-view');
-  previewCurrentVariant({ scroll: false });   // preview en vivo abierto desde el inicio
 };
 
 /* ── Gestión de contenido global embebida (blog posts / clientes) ──
@@ -1755,41 +1772,48 @@ function renderModFieldGroup(group, fields, containerId) {
   const fieldHtml = editableFields.map(f => {
     const val = _curModData[group]?.[f.name] ?? '';
     const attrs = `data-mf="${f.name}" data-mg="${group}"`;
-    if (f.type === 'textarea') return `<div>
-      <label class="form-label">${f.label}</label>
-      <textarea class="form-input" rows="3" style="resize:vertical;" ${attrs}>${String(val).replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
+    if (f.type === 'textarea') return `<div class="mf-row">
+      <label class="mf-label">${f.label}</label>
+      <textarea class="form-input mf-input" rows="3" style="resize:vertical;" ${attrs}>${String(val).replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
     </div>`;
-    if (f.type === 'toggle') return `<div style="display:flex;align-items:center;gap:.75rem;">
-      <input type="checkbox" id="mf-${group}-${f.name}" ${attrs} ${val ? 'checked' : ''} style="width:1.1rem;height:1.1rem;flex-shrink:0;">
-      <label for="mf-${group}-${f.name}" class="form-label" style="margin:0;">${f.label}</label>
+    if (f.type === 'toggle') return `<div class="mf-row mf-row-toggle">
+      <input type="checkbox" id="mf-${group}-${f.name}" ${attrs} ${val ? 'checked' : ''} style="width:1.15rem;height:1.15rem;flex-shrink:0;cursor:pointer;">
+      <label for="mf-${group}-${f.name}" class="mf-label mf-label-inline">${f.label}</label>
     </div>`;
-    if (f.type === 'color') return `<div>
-      <label class="form-label">${f.label}</label>
-      <div style="display:flex;gap:.5rem;align-items:center;">
-        <input type="color" ${attrs} value="${String(val||'#000000')}" style="width:2.5rem;height:2rem;border:none;padding:0;cursor:pointer;flex-shrink:0;">
-        <input type="text" class="form-input" data-mf="${f.name}-txt" data-mg="${group}" value="${String(val||'').replace(/"/g,'&quot;')}" style="flex:1;" placeholder="#rrggbb">
+    if (f.type === 'color') return `<div class="mf-row">
+      <label class="mf-label">${f.label}</label>
+      <div class="mf-color-wrap">
+        <input type="color" ${attrs} value="${String(val||'#000000')}" class="mf-swatch">
+        <input type="text" class="form-input mf-input" data-mf="${f.name}-txt" data-mg="${group}" value="${String(val||'').replace(/"/g,'&quot;')}" style="flex:1;" placeholder="#rrggbb">
       </div>
     </div>`;
-    if (f.type === 'number') return `<div>
-      <label class="form-label">${f.label}</label>
-      <input type="number" class="form-input" ${attrs} value="${val}" ${f.min!=null?`min="${f.min}"`:''}  ${f.max!=null?`max="${f.max}"`:''}>
+    if (f.type === 'number') return `<div class="mf-row">
+      <label class="mf-label">${f.label}</label>
+      <input type="number" class="form-input mf-input" ${attrs} value="${val}" ${f.min!=null?`min="${f.min}"`:''}  ${f.max!=null?`max="${f.max}"`:''}>
     </div>`;
-    return `<div>
-      <label class="form-label">${f.label}</label>
-      <input type="text" class="form-input" ${attrs} value="${String(val).replace(/"/g,'&quot;')}"${f.placeholder ? ` placeholder="${String(f.placeholder).replace(/"/g,'&quot;')}"` : ''}>
+    return `<div class="mf-row">
+      <label class="mf-label">${f.label}</label>
+      <input type="text" class="form-input mf-input" ${attrs} value="${String(val).replace(/"/g,'&quot;')}"${f.placeholder ? ` placeholder="${String(f.placeholder).replace(/"/g,'&quot;')}"` : ''}>
     </div>`;
   }).join('');
 
-  const complexNote = complexFields.length
-    ? `<div style="background:#f1f5f9;border:1px solid #e2e8f0;border-radius:.375rem;padding:.75rem;font-size:.7rem;color:#64748b;line-height:1.6;">
-        <strong style="color:#475569;">Campos avanzados (editables en el editor de plantilla):</strong><br>
-        ${complexFields.map(f => f.label).join(' · ')}
+  // Para tipos con su propia gestión de contenido (blog/clientes) el aviso de
+  // campos complejos sobra (se editan en la tarjeta de contenido de abajo). Para
+  // el resto (ej: las cards de Servicios) apuntamos al Preview visual.
+  const hasContentCard = !!MOD_CONTENT_CONFIG[_curModType];
+  const complexNote = (complexFields.length && !hasContentCard)
+    ? `<div class="mf-advanced">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <div>
+          <strong>${complexFields.map(f => f.label).join(' · ')}</strong>
+          <span>Se editan visualmente desde <b>Preview</b>: tocá el lápiz ✎ al lado de cada elemento.</span>
+        </div>
       </div>`
     : '';
 
-  container.innerHTML = (editableFields.length || complexFields.length)
+  container.innerHTML = (editableFields.length || complexNote)
     ? fieldHtml + complexNote
-    : `<p style="font-size:.75rem;color:#94a3b8;padding:.5rem 0;">Sin campos editables en esta sección.</p>`;
+    : `<p class="mf-empty">No hay campos sueltos acá. Usá el <b>Preview</b> para editar el contenido visualmente.</p>`;
 
   // Live sync
   container.querySelectorAll('[data-mf]').forEach(inp => {
@@ -1824,52 +1848,184 @@ function renderModFieldGroup(group, fields, containerId) {
   });
 }
 
-/* ── Preview en vivo (debounced): actualiza si el preview ya está abierto ── */
-let _previewTimer = null;
-function scheduleLivePreview() {
-  const card = document.getElementById('modulos-preview-card');
-  if (!card || card.style.display === 'none') return;
-  clearTimeout(_previewTimer);
-  _previewTimer = setTimeout(() => previewCurrentVariant({ scroll: false }), 200);
+/* ═══════════════════════════════════════════════════════════════════
+   MODAL DE EDICIÓN VISUAL EN VIVO
+   Preview del módulo + lápiz al lado de cada texto editable (cuadro
+   flotante) + panel lateral de colores. El diseño (colores) y el preview
+   ya no van en el editor: viven acá.
+   ═══════════════════════════════════════════════════════════════════ */
+
+// Estilos inyectados DENTRO del iframe (aislados del panel admin).
+const ED_STYLE = `
+.ed-f{outline:1px dashed rgba(37,99,235,.55);outline-offset:2px;cursor:pointer;border-radius:2px;transition:background .1s;}
+.ed-f:hover{outline-style:solid;outline-color:#2563eb;background:rgba(37,99,235,.08);}
+.ed-pencil{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin:0 2px;border:none;border-radius:50%;background:#2563eb;color:#fff;font-size:10px;line-height:1;cursor:pointer;vertical-align:middle;padding:0;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.ed-pencil:hover{background:#1d4ed8;transform:scale(1.1);}
+.ed-box{position:absolute;z-index:99999;background:#fff;border:1px solid #cbd5e1;border-radius:8px;box-shadow:0 10px 34px rgba(0,0,0,.2);padding:10px;min-width:240px;max-width:340px;font-family:Inter,system-ui,sans-serif;}
+.ed-box-label{font-size:11px;font-weight:700;color:#475569;margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;}
+.ed-box input,.ed-box textarea{width:100%;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:6px;padding:7px 9px;font-size:13px;font-family:inherit;color:#0f172a;outline:none;}
+.ed-box input:focus,.ed-box textarea:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.15);}
+.ed-box textarea{min-height:92px;resize:vertical;}
+.ed-box-color{display:flex;align-items:center;gap:8px;margin-top:9px;}
+.ed-box-color label{font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.04em;}
+.ed-box-color input[type=color]{width:34px;height:26px;border:1px solid #cbd5e1;border-radius:6px;padding:0;cursor:pointer;background:#fff;}
+.ed-box-color .ed-color-clear{margin-left:auto;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;}
+.ed-box-color .ed-color-clear:hover{background:#e2e8f0;}
+.ed-box-done{margin-top:10px;width:100%;background:#2563eb;color:#fff;border:none;border-radius:6px;padding:7px;font-size:12px;font-weight:600;cursor:pointer;}
+.ed-box-done:hover{background:#1d4ed8;}`;
+
+// Script inyectado DENTRO del iframe: coloca un lápiz al lado de cada texto y
+// maneja el cuadro flotante (editar la palabra + cambiar su color).
+// Recibe del padre: __ft (tipos), __fd (valores), __fl (etiquetas), __fc (colores).
+function ED_SCRIPT() {
+  var FT = window.__ft || {}, FD = window.__fd || {}, FL = window.__fl || {}, FC = window.__fc || {};
+  var box = null;
+  function close() { if (box) { box.remove(); box = null; } }
+  function pretty(n) { return String(n).replace(/\./g, ' › ').replace(/_/g, ' '); }
+  function rgb2hex(rgb) {
+    var m = String(rgb || '').match(/\d+/g);
+    if (!m || m.length < 3) return '#000000';
+    return '#' + m.slice(0, 3).map(function (x) { return ('0' + parseInt(x, 10).toString(16)).slice(-2); }).join('');
+  }
+  function isLong(name) { return FT[name] === 'textarea' || /desc|extracto|contenido|lead|texto/i.test(name); }
+  function open(el) {
+    close();
+    var name = el.getAttribute('data-field');
+    box = document.createElement('div');
+    box.className = 'ed-box';
+
+    var label = document.createElement('div'); label.className = 'ed-box-label';
+    label.textContent = FL[name] || pretty(name);
+
+    var ctrl = document.createElement(isLong(name) ? 'textarea' : 'input');
+    ctrl.value = (FD[name] != null ? FD[name] : el.textContent);
+
+    // Fila de color
+    var crow = document.createElement('div'); crow.className = 'ed-box-color';
+    var clab = document.createElement('label'); clab.textContent = 'Color';
+    var cin = document.createElement('input'); cin.type = 'color';
+    cin.value = FC[name] || rgb2hex(getComputedStyle(el).color);
+    var cclr = document.createElement('button'); cclr.type = 'button'; cclr.className = 'ed-color-clear'; cclr.textContent = 'Quitar color';
+    crow.appendChild(clab); crow.appendChild(cin); crow.appendChild(cclr);
+
+    var done = document.createElement('button'); done.className = 'ed-box-done'; done.textContent = 'Listo';
+
+    box.appendChild(label); box.appendChild(ctrl); box.appendChild(crow); box.appendChild(done);
+    document.body.appendChild(box);
+
+    var r = el.getBoundingClientRect();
+    var sy = window.scrollY || window.pageYOffset || 0;
+    var sx = window.scrollX || window.pageXOffset || 0;
+    var bw = box.offsetWidth || 260;
+    box.style.top = (r.bottom + sy + 6) + 'px';
+    box.style.left = Math.max(8, Math.min(r.left + sx, (document.documentElement.clientWidth || 9999) - bw - 10)) + 'px';
+    ctrl.focus();
+
+    function applyText() {
+      el.textContent = ctrl.value;
+      FD[name] = ctrl.value;
+      try { parent.postMessage({ __ed: true, field: name, value: ctrl.value }, '*'); } catch (e) {}
+    }
+    function applyColor(c) {
+      el.style.color = c || '';
+      FC[name] = c;
+      try { parent.postMessage({ __ed: true, field: name, color: c || '' }, '*'); } catch (e) {}
+    }
+    ctrl.addEventListener('input', applyText);
+    ctrl.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !isLong(name)) { e.preventDefault(); close(); }
+      if (e.key === 'Escape') { close(); }
+    });
+    cin.addEventListener('input', function () { applyColor(cin.value); });
+    cclr.addEventListener('click', function (e) { e.preventDefault(); applyColor(''); });
+    done.addEventListener('click', function (e) { e.preventDefault(); close(); });
+  }
+  var nodes = document.querySelectorAll('[data-field]');
+  for (var i = 0; i < nodes.length; i++) {
+    (function (el) {
+      var p = document.createElement('button');
+      p.type = 'button'; p.className = 'ed-pencil'; p.innerHTML = '✎';
+      p.addEventListener('click', function (e) { e.stopPropagation(); e.preventDefault(); open(el); });
+      el.insertAdjacentElement('afterend', p);
+      el.addEventListener('click', function (e) { e.stopPropagation(); open(el); });
+    })(nodes[i]);
+  }
+  document.addEventListener('click', function (e) {
+    if (box && !box.contains(e.target) && !(e.target.classList && e.target.classList.contains('ed-pencil'))) close();
+  });
 }
 
-/* ── Preview del módulo ── */
-function previewCurrentVariant(opts = {}) {
-  if (!_curModType) return;
+// Construye el srcdoc del iframe (render + CSS del sitio + capa de edición).
+function _moduleSrcdoc({ editable }) {
   const sec = SECTIONS[_curModType];
-  if (!sec) return;
-
-  // Render section HTML with current data/design
+  if (!sec) return '';
+  if (editable) setEditMode(true);
+  setFieldColors(_curModData.data?.__colores || {});   // colores por palabra
   const html = sec.render(_curModData.data || {}, _curModData.design || {});
+  setFieldColors({});
+  if (editable) setEditMode(false);   // se apaga inmediato: el sitio público nunca lo ve
 
-  // Pick CSS files for this section type
   const pageType = TYPE_TO_PAGE[_curModType] || 'index';
   const cssFiles = TIPO_CSS[pageType] || TIPO_CSS.index;
   const origin   = window.location.origin;
   const links    = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">\n' + cssFiles.map(f => `<link rel="stylesheet" href="${origin}${f}">`).join('\n');
 
-  // Partir los tags para que Live Server no inyecte su script de hot-reload
-  // dentro del template literal (busca </'+'body> literalmente).
+  // Mapas para el editor inline (solo campos de texto simples).
+  let editStyle = '', editScript = '';
+  if (editable) {
+    const fields = (sec.dataFields || []).filter(f => f.type === 'text' || f.type === 'textarea');
+    const fTypes = {}, fData = {}, fLabels = {};
+    fields.forEach(f => { fTypes[f.name] = f.type; fData[f.name] = _curModData.data?.[f.name] ?? ''; fLabels[f.name] = f.label; });
+    const colores = _curModData.data?.__colores || {};
+    const j = o => JSON.stringify(o).replace(/</g, '\\u003c');
+    const S = 'scr' + 'ipt';
+    editStyle  = `<style>${ED_STYLE}</style>`;
+    editScript = `<${S}>window.__ft=${j(fTypes)};window.__fd=${j(fData)};window.__fl=${j(fLabels)};window.__fc=${j(colores)};(${ED_SCRIPT})();</${S}>`;
+  }
+
+  // Partir los tags para que Live Server no inyecte su hot-reload en el literal.
   const _B = 'bo'+'dy', _H = 'hea'+'d';
-  const srcdoc = `<!doctype html><html lang="es"><${_H}><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:ital,wght@0,400;0,500;0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">${links}<style>html,body{margin:0;padding:0;}body{overflow-x:hidden;}</style></${_H}><${_B}>${html}</${_B}></html>`;
+  return `<!doctype html><html lang="es"><${_H}><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:ital,wght@0,400;0,500;0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">${links}<style>html,body{margin:0;padding:0;}body{overflow-x:hidden;}</style>${editStyle}</${_H}><${_B}>${html}${editScript}</${_B}></html>`;
+}
 
-  const card   = document.getElementById('modulos-preview-card');
-  const iframe = document.getElementById('modulos-preview-iframe');
-  if (!card || !iframe) return;
+/* ── Preview en vivo (debounced): re-renderiza el iframe del modal si está abierto ── */
+let _previewTimer = null;
+function scheduleLivePreview() {
+  const modal = document.getElementById('mod-preview-modal');
+  if (!modal || modal.style.display === 'none') return;
+  clearTimeout(_previewTimer);
+  _previewTimer = setTimeout(() => {
+    const iframe = document.getElementById('mpm-iframe');
+    if (iframe) iframe.srcdoc = _moduleSrcdoc({ editable: true });
+  }, 200);
+}
 
-  iframe.srcdoc = srcdoc;
-  card.style.display = '';
+/* ── Abrir / cerrar el modal de edición visual ── */
+function openPreviewModal() {
+  if (!_curModType) return;
+  const sec = SECTIONS[_curModType];
+  if (!sec) return;
+  const modal  = document.getElementById('mod-preview-modal');
+  const iframe = document.getElementById('mpm-iframe');
+  if (!modal || !iframe) return;
 
-  // Auto-resize iframe to content height after load
-  iframe.onload = () => {
-    try {
-      const h = iframe.contentDocument?.documentElement?.scrollHeight;
-      if (h && h > 100) iframe.style.minHeight = h + 'px';
-    } catch(e) { /* cross-origin sandbox */ }
-  };
+  const titleEl = document.getElementById('mpm-title');
+  if (titleEl) titleEl.innerHTML = `${sec.icon || ''} ${escAttr(sec.label)} · #${_curModId}`;
 
-  // Scroll preview into view (solo en apertura manual, no en updates en vivo)
-  if (opts.scroll !== false) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Panel lateral de colores/diseño (reusa el render de campos → live-sync).
+  renderModFieldGroup('design', sec.designFields || [], 'mpm-design-fields');
+  const sideEmpty = !(sec.designFields || []).length;
+  const sideHead = modal.querySelector('.mpm-side-head');
+  if (sideHead) sideHead.style.display = sideEmpty ? 'none' : '';
+
+  iframe.srcdoc = _moduleSrcdoc({ editable: true });
+  modal.style.display = '';
+  document.body.style.overflow = 'hidden';
+}
+function closePreviewModal() {
+  const modal = document.getElementById('mod-preview-modal');
+  if (modal) modal.style.display = 'none';
+  document.body.style.overflow = '';
 }
 
 /* ── Duplicar módulo ── */
@@ -1878,11 +2034,12 @@ window.duplicarModulo = async function(id) {
   if (!m) return;
   try {
     const res = await window.__svc.apiPost('/modulos', {
-      tipo:   m.tipo,
-      nombre: `${m.nombre} (copia)`,
-      data:   JSON.parse(JSON.stringify(m.data   || {})),
-      design: JSON.parse(JSON.stringify(m.design || {})),
-      alerta: m.alerta === true,
+      tipo:      m.tipo,
+      nombre:    `${m.nombre} (copia)`,
+      id_pagina: m.id_pagina ?? null,
+      data:      JSON.parse(JSON.stringify(m.data   || {})),
+      design:    JSON.parse(JSON.stringify(m.design || {})),
+      alerta:    m.alerta === true,
     });
     _mods.push(res.modulo);
     renderModCatalog();
@@ -1930,37 +2087,70 @@ window.nuevoModulo = async function(tipo) {
   }
 };
 
-/* ── Botón: Preview ── */
-document.getElementById('modulos-preview-btn')?.addEventListener('click', previewCurrentVariant);
-
-/* ── Botón: cerrar Preview ── */
-document.getElementById('modulos-preview-close-btn')?.addEventListener('click', () => {
-  const card = document.getElementById('modulos-preview-card');
-  if (card) card.style.display = 'none';
-});
-
-/* ── Botón: volver al catálogo (desde editor o vista vieja) ── */
-document.getElementById('modulos-variants-back-btn')?.addEventListener('click', renderModCatalog);
-document.getElementById('modulos-back-btn')?.addEventListener('click', renderModCatalog);
-
-/* ── Botón: guardar módulo ── */
-document.getElementById('modulos-save-btn')?.addEventListener('click', async () => {
+/* ── Guardar el módulo en edición (lo usan el editor y el modal) ── */
+async function saveCurrentModule() {
   if (!_curModId) return;
   const nombre = document.getElementById('modulos-variant-name-input')?.value?.trim() || _curModData.nombre;
   try {
     const res = await window.__svc.apiPut(`/modulos/${_curModId}`, {
       nombre,
-      alerta: _curModData.alerta,
-      data:   _curModData.data,
-      design: _curModData.design,
+      alerta:    _curModData.alerta,
+      id_pagina: _curModData.id_pagina ?? null,
+      data:      _curModData.data,
+      design:    _curModData.design,
     });
     const idx = _mods.findIndex(m => m.id_modulo === _curModId);
     if (idx !== -1) _mods[idx] = res.modulo;
     const nameEl = document.getElementById('modulos-editor-variant-name');
     if (nameEl) nameEl.textContent = nombre;
     window.__svc.showNotif('Módulo guardado', 'success');
-    previewCurrentVariant();
-  } catch(e) {
+  } catch (e) {
     window.__svc.showNotif('Error: ' + e.message, 'error');
   }
+}
+
+/* ── Botón: abrir el modal de edición visual (Preview) ── */
+document.getElementById('modulos-preview-btn')?.addEventListener('click', openPreviewModal);
+
+/* ── Modal: cerrar ── */
+document.getElementById('mpm-close')?.addEventListener('click', closePreviewModal);
+document.getElementById('mpm-backdrop')?.addEventListener('click', closePreviewModal);
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  const modal = document.getElementById('mod-preview-modal');
+  if (modal && modal.style.display !== 'none') closePreviewModal();
 });
+
+/* ── Modal: guardar (deja el modal abierto) ── */
+document.getElementById('mpm-save')?.addEventListener('click', saveCurrentModule);
+
+// Asigna un valor por "path" con puntos/índices (ej: "cards.0.titulo").
+function _setByPath(obj, path, val) {
+  const parts = String(path).split('.');
+  let o = obj;
+  for (let i = 0; i < parts.length - 1; i++) {
+    const k = parts[i];
+    if (o[k] == null) o[k] = /^\d+$/.test(parts[i + 1]) ? [] : {};
+    o = o[k];
+  }
+  o[parts[parts.length - 1]] = val;
+}
+
+/* ── Ediciones inline (texto y color por palabra) que llegan del iframe ── */
+window.addEventListener('message', e => {
+  const d = e.data;
+  if (!d || d.__ed !== true || !d.field) return;
+  _curModData.data = _curModData.data || {};
+  if (d.value !== undefined) _setByPath(_curModData.data, d.field, d.value);
+  if (d.color !== undefined) {
+    const cols = _curModData.data.__colores = _curModData.data.__colores || {};
+    if (d.color) cols[d.field] = d.color; else delete cols[d.field];
+  }
+});
+
+/* ── Botón: volver al catálogo / Cancelar ── */
+document.getElementById('modulos-variants-back-btn')?.addEventListener('click', renderModCatalog);
+document.getElementById('modulos-back-btn')?.addEventListener('click', () => { closePreviewModal(); renderModCatalog(); });
+
+/* ── Botón: guardar módulo (editor) ── */
+document.getElementById('modulos-save-btn')?.addEventListener('click', saveCurrentModule);

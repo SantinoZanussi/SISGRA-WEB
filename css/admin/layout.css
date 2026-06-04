@@ -18,13 +18,14 @@
 .sidebar-item.active svg,.sidebar-item.active i{opacity:1;}
 
 /* Templates sub-items — IMPROVED */
-.sidebar-tpl-group{display:flex;flex-direction:column;}
+/* .sidebar-tpl-group{display:flex;flex-direction:column;}
 .sidebar-tpl-item{display:flex;align-items:center;gap:.6rem;padding:.55rem 1rem .55rem 1.5rem;font-size:.6875rem;font-weight:600;color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s;border-left:2px solid transparent;position:relative;}
 .sidebar-tpl-item:hover{color:rgba(255,255,255,.75);background:rgba(255,255,255,.04);}
 .sidebar-tpl-item.active{color:var(--white);background:rgba(59,130,246,.18);border-left-color:var(--blue-400);}
 .sidebar-tpl-item.active .sidebar-tpl-dot{background:var(--blue-400);box-shadow:0 0 6px rgba(96,165,250,.7);}
 .sidebar-tpl-dot{width:.5rem;height:.5rem;border-radius:50%;background:rgba(255,255,255,.2);flex-shrink:0;transition:all .15s;}
-.sidebar-tpl-dot-logout{width:.45rem;height:.45rem;border-radius:50%;background:#86efac;flex-shrink:0;transition:all .15s;box-shadow: 0 0 6px rgba(96,165,250,.7);}
+.sidebar-tpl-dot-logout{width:.45rem;height:.45rem;border-radius:50%;background:#86efac;flex-shrink:0;transition:all .15s;box-shadow: 0 0 6px rgba(96,165,250,.7);} */
+
 /* Active-on-site badge pill */
 .tpl-live-pill{font-size:.45rem;font-weight:900;letter-spacing:.15em;text-transform:uppercase;background:var(--green-500);color:#fff;padding:.15rem .4rem;border-radius:2px;margin-left:auto;flex-shrink:0;}
 

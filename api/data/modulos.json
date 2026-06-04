@@ -7,19 +7,6 @@
       "data": {
         "logoSrc": "/img/sisgra_blanco.png",
         "logoSrcHref": "/",
-        "instalacionesLabel": "Instalaciones",
-        "cableadoLabel": "Cableado Estructurado",
-        "cableadoHref": "/html/cableado_estructurado.html",
-        "fibraLabel": "Fibra Óptica",
-        "fibraHref": "/html/fibra_optica.html",
-        "seguridadLabel": "Seguridad Electrónica",
-        "seguridadHref": "/html/seguridad.html",
-        "blogLabel": "Blog",
-        "blogHref": "/html/blog.html",
-        "soporteLabel": "Soporte IT",
-        "soporteHref": "/html/soporte_it.html",
-        "desarrolloLabel": "Desarrollo de Software",
-        "desarrolloHref": "/html/desarrollo.html",
         "ctaLabel": "Contáctese",
         "ctaHref": "https://wa.me/548101220065",
         "items": [
@@ -59,12 +46,40 @@
             "href": "/html/desarrollo",
             "id_boton": "btn-desarrollo"
           }
-        ]
+        ],
+        "instalacionesLabel": "Instalaciones",
+        "cableadoLabel": "Cableado Estructurado",
+        "cableadoHref": "/html/cableado_estructurado.html",
+        "fibraLabel": "Fibra Óptica",
+        "fibraHref": "/html/fibra_optica.html",
+        "seguridadLabel": "Seguridad Electrónica",
+        "seguridadHref": "/html/seguridad.html",
+        "blogLabel": "Blog",
+        "blogHref": "/html/blog.html",
+        "soporteLabel": "Soporte IT",
+        "soporteHref": "/html/soporte_it.html",
+        "desarrolloLabel": "Desarrollo de Software",
+        "desarrolloHref": "/html/desarrollo.html"
       },
-      "design": {},
+      "design": {
+        "bg": "",
+        "linkColor": "",
+        "dropdownBg": "",
+        "dropdownLinkColor": "",
+        "ctaBg": "",
+        "ctaColor": "",
+        "mobileBg": "",
+        "mobileLinkColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-01T17:53:46.115Z"
+      "editado_en": "2026-06-04T16:50:42.578Z",
+      "id_pagina": 1
     },
     {
       "id_modulo": 2,
@@ -98,10 +113,10 @@
     {
       "id_modulo": 4,
       "tipo": "hero",
-      "nombre": "Hero lateral — Inicio principal",
+      "nombre": "Hero - Inicio principal",
       "data": {
         "badge": "INFRAESTRUCTURA DE ELITE",
-        "titulo1": "HOLA",
+        "titulo1": "chau",
         "titulo2": "MARCE",
         "descripcion": "Descripción del hero. Editá este texto haciendo clic directamente sobre él.",
         "boton_primario": "Ver Soluciones",
@@ -128,12 +143,13 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-02T18:46:19.127Z"
+      "editado_en": "2026-06-04T18:08:15.558Z",
+      "id_pagina": 1
     },
     {
       "id_modulo": 5,
       "tipo": "clientes",
-      "nombre": "Clientes — Inicio principal",
+      "nombre": "Clientes — Inicio",
       "data": {
         "titulo_seccion": "NUESTROS CLIENTES",
         "carrusel_activo": true,
@@ -168,12 +184,13 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-02T18:41:48.731Z"
+      "editado_en": "2026-06-04T18:08:44.201Z",
+      "id_pagina": 1
     },
     {
       "id_modulo": 6,
       "tipo": "blog",
-      "nombre": "Blog / Noticias — Inicio principal",
+      "nombre": "Blog / Noticias - Inicio",
       "data": {
         "titulo_seccion": "Novedades & Blog",
         "posts": [
@@ -197,15 +214,34 @@
           }
         ]
       },
-      "design": {},
+      "design": {
+        "bg": "",
+        "paddingY": "",
+        "titleColor": "",
+        "titleSize": "",
+        "cardBg": "",
+        "cardBorderColor": "",
+        "cardRadius": "",
+        "cardTitleColor": "",
+        "cardTextColor": "",
+        "tagBg": "",
+        "tagColor": "",
+        "linkColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-01T17:53:46.115Z"
+      "editado_en": "2026-06-04T18:11:11.076Z",
+      "id_pagina": 1
     },
     {
       "id_modulo": 7,
       "tipo": "services",
-      "nombre": "Servicios — Inicio principal",
+      "nombre": "Servicios - Inicio",
       "data": {
         "titulo_seccion": "Portafolio de Soluciones",
         "eyebrow": "Lo que hacemos",
@@ -231,39 +267,87 @@
           }
         ]
       },
-      "design": {},
+      "design": {
+        "bg": "",
+        "sectionColor": "",
+        "cardBg": "",
+        "cardTitleColor": "",
+        "cardLinkColor": "",
+        "paddingY": "",
+        "titleSize": "",
+        "cardRadius": "",
+        "cardPadding": "",
+        "gap": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-01T17:53:46.115Z"
+      "editado_en": "2026-06-04T18:16:41.606Z",
+      "id_pagina": 1
     },
     {
       "id_modulo": 8,
       "tipo": "about",
-      "nombre": "Nosotros — Inicio principal",
+      "nombre": "Nosotros",
       "data": {
         "eyebrow": "Excelencia Corporativa",
         "titulo": "Liderando la industria\ndesde el año 1999.",
         "descripcion": "En SISGRA, entendemos que la infraestructura crítica no permite errores. Nos dedicamos a integrar soluciones que garantizan la continuidad operativa y la escalabilidad técnica de su negocio.",
         "imagen": "/img/img1.png"
       },
-      "design": {},
+      "design": {
+        "bg": "",
+        "eyebrowColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "paddingY": "",
+        "titleSize": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-01T17:53:46.115Z"
+      "editado_en": "2026-06-04T18:17:17.550Z",
+      "id_pagina": null
     },
     {
       "id_modulo": 9,
       "tipo": "blog-list",
-      "nombre": "Lista de artículos — Blog principal",
+      "nombre": "Listado de artículos - Blog",
       "data": {
         "loadingMessage": "Cargando artículos…",
         "emptyMessage": "No hay artículos publicados aún.",
         "errorMessage": "No se pudieron cargar los artículos."
       },
-      "design": {},
+      "design": {
+        "bg": "",
+        "paddingTop": "",
+        "paddingBottom": "",
+        "textColor": "",
+        "cardBg": "",
+        "cardBorderColor": "",
+        "cardRadius": "",
+        "cardTitleColor": "",
+        "cardTagBg": "",
+        "cardTagColor": "",
+        "cardLinkColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-05-27T17:01:08.896Z"
+      "editado_en": "2026-06-04T18:17:58.381Z",
+      "id_pagina": null
     },
     {
       "id_modulo": 10,
@@ -514,7 +598,7 @@
     {
       "id_modulo": 19,
       "tipo": "services",
-      "nombre": "Servicios — Tipo 2",
+      "nombre": "Servicios - Tipo 2",
       "data": {
         "titulo_seccion": "Portafolio de Soluciones",
         "eyebrow": "Lo que hacemos",
@@ -559,7 +643,8 @@
       },
       "alerta": false,
       "creado_en": "2026-06-03T17:13:58.429Z",
-      "editado_en": "2026-06-03T18:08:30.238Z"
+      "editado_en": "2026-06-04T18:16:48.226Z",
+      "id_pagina": null
     },
     {
       "id_modulo": 20,
@@ -665,7 +750,7 @@
     {
       "id_modulo": 22,
       "tipo": "clientes",
-      "nombre": "Clientes — Tipo 2",
+      "nombre": "Clientes - Tipo 2",
       "data": {
         "titulo_seccion": "NUESTROS CLIENTES",
         "carrusel_activo": true,
@@ -681,15 +766,18 @@
             "imagen": "/img/syngenta.png",
             "activo": true
           }
-        ]
+        ],
+        "__colores": {
+          "titulo_seccion": "#5e55dd"
+        }
       },
       "design": {
-        "bg": "",
+        "bg": "#ffffff",
         "paddingY": "",
-        "titleColor": "",
+        "titleColor": "#343f50",
         "titleSize": "",
-        "trackBg": "",
-        "cellBg": "",
+        "trackBg": "#ffffff",
+        "cellBg": "#a1b5bf",
         "cellFilter": "",
         "trackHeight": "",
         "maxWidth": "",
@@ -700,12 +788,13 @@
       },
       "alerta": false,
       "creado_en": "2026-06-03T17:20:48.684Z",
-      "editado_en": "2026-06-03T18:07:35.135Z"
+      "editado_en": "2026-06-04T18:10:29.554Z",
+      "id_pagina": 1
     },
     {
       "id_modulo": 23,
       "tipo": "services",
-      "nombre": "Servicios — Tipo 3",
+      "nombre": "Servicios - Tipo 3",
       "data": {
         "titulo_seccion": "Portafolio de Soluciones",
         "eyebrow": "Lo que hacemos",
@@ -750,14 +839,15 @@
       },
       "alerta": false,
       "creado_en": "2026-06-03T17:42:21.258Z",
-      "editado_en": "2026-06-03T18:08:57.889Z"
+      "editado_en": "2026-06-04T18:16:58.647Z",
+      "id_pagina": null
     },
     {
       "id_modulo": 24,
       "tipo": "blog",
-      "nombre": "Blog / Noticias — Tipo 2",
+      "nombre": "Blog / Noticias - Tipo 2",
       "data": {
-        "titulo_seccion": "Novedades & Blog",
+        "titulo_seccion": "BLOG  &  NOTICIAS  DESTACADAS",
         "posts": [
           {
             "titulo": "SISGRA cumple 25 años",
@@ -780,9 +870,9 @@
         ]
       },
       "design": {
-        "bg": "",
+        "bg": "#f2f2f2",
         "paddingY": "",
-        "titleColor": "",
+        "titleColor": "#2d337b",
         "titleSize": "",
         "cardBg": "",
         "cardBorderColor": "",
@@ -800,7 +890,128 @@
       },
       "alerta": false,
       "creado_en": "2026-06-03T17:42:21.258Z",
-      "editado_en": "2026-06-03T18:07:18.462Z"
+      "editado_en": "2026-06-04T18:12:38.374Z",
+      "id_pagina": 1
+    },
+    {
+      "id_modulo": 25,
+      "tipo": "services",
+      "nombre": "Servicios - Inicio",
+      "data": {
+        "titulo_seccion": "Portafolio de Soluciones",
+        "eyebrow": "Lo que hacemos",
+        "cards": [
+          {
+            "id": "instalaciones",
+            "titulo": "Instalaciones",
+            "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
+            "enlace": "./html/cableado_estructurado.html",
+            "link": ""
+          },
+          {
+            "id": "soporte",
+            "titulo": "Soporte IT",
+            "descripcion": "Mantenimiento integral de infraestructura y asistencia técnica corporativa especializada.",
+            "enlace": "./html/soporte_it.html"
+          },
+          {
+            "id": "software",
+            "titulo": "Software",
+            "descripcion": "Soluciones a medida para optimizar procesos logísticos y gestión de datos empresariales.",
+            "enlace": "./html/desarrollo.html"
+          }
+        ]
+      },
+      "design": {
+        "bg": "",
+        "sectionColor": "",
+        "cardBg": "",
+        "cardTitleColor": "",
+        "cardLinkColor": "",
+        "paddingY": "",
+        "titleSize": "",
+        "cardRadius": "",
+        "cardPadding": "",
+        "gap": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-04T18:25:55.031Z",
+      "editado_en": "2026-06-04T18:25:55.032Z",
+      "id_pagina": 1
+    },
+    {
+      "id_modulo": 26,
+      "tipo": "clientes",
+      "nombre": "Clientes — Inicio",
+      "data": {
+        "titulo_seccion": "NUESTROS CLIENTES",
+        "carrusel_activo": true,
+        "auto_scroll": true,
+        "clientes": [
+          {
+            "nombre": "San Cristóbal",
+            "imagen": "/img/sancristobal.png",
+            "activo": true
+          },
+          {
+            "nombre": "Syngenta",
+            "imagen": "/img/syngenta.png",
+            "activo": true
+          }
+        ]
+      },
+      "design": {
+        "bg": "",
+        "paddingY": "",
+        "titleColor": "",
+        "titleSize": "",
+        "trackBg": "",
+        "cellBg": "",
+        "cellFilter": "",
+        "trackHeight": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-04T18:25:55.032Z",
+      "editado_en": "2026-06-04T18:25:55.032Z",
+      "id_pagina": 1
+    },
+    {
+      "id_modulo": 27,
+      "tipo": "about",
+      "nombre": "Nosotros",
+      "data": {
+        "eyebrow": "Excelencia Corporativa",
+        "titulo": "Liderando la industria\ndesde el año 1999.",
+        "descripcion": "En SISGRA, entendemos que la infraestructura crítica no permite errores. Nos dedicamos a integrar soluciones que garantizan la continuidad operativa y la escalabilidad técnica de su negocio.",
+        "imagen": "/img/img1.png"
+      },
+      "design": {
+        "bg": "",
+        "eyebrowColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "paddingY": "",
+        "titleSize": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-04T18:25:55.032Z",
+      "editado_en": "2026-06-04T18:25:55.032Z",
+      "id_pagina": null
     }
   ]
 }

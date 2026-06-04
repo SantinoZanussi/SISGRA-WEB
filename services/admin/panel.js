@@ -161,24 +161,24 @@ function showPanel(id){
 /* ══════════════════════════════════════════════
    SIDEBAR TEMPLATES
 ══════════════════════════════════════════════ */
-function renderSidebarTemplates(){
-  const el = document.getElementById('sidebar-tpl-list');
-  el.innerHTML = state.templates.map(t => `
-    <div class="sidebar-tpl-item ${t.id === state.currentTplId ? 'active' : ''}" data-tpl-id="${t.id}">
-      <span class="sidebar-tpl-dot"></span>
-      <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.name}</span>
-      ${t.status==='active' ? '<span class="tpl-live-pill">LIVE</span>' : ''}
-    </div>
-  `).join('');
+// function renderSidebarTemplates(){
+//   const el = document.getElementById('sidebar-tpl-list');
+//   el.innerHTML = state.templates.map(t => `
+//     <div class="sidebar-tpl-item ${t.id === state.currentTplId ? 'active' : ''}" data-tpl-id="${t.id}">
+//       <span class="sidebar-tpl-dot"></span>
+//       <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.name}</span>
+//       ${t.status==='active' ? '<span class="tpl-live-pill">LIVE</span>' : ''}
+//     </div>
+//   `).join('');
  
-  el.querySelectorAll('.sidebar-tpl-item').forEach(item => {
-    item.addEventListener('click', () => {
-      state.currentTplId = item.dataset.tplId;
-      renderSidebarTemplates();
-      openTemplateEditor(state.currentTplId);
-    });
-  });
-}
+//   el.querySelectorAll('.sidebar-tpl-item').forEach(item => {
+//     item.addEventListener('click', () => {
+//       state.currentTplId = item.dataset.tplId;
+//       renderSidebarTemplates();
+//       openTemplateEditor(state.currentTplId);
+//     });
+//   });
+// }
  
 /* ══════════════════════════════════════════════
    TEMPLATE OVERVIEW
@@ -993,17 +993,6 @@ function openTemplateEditor(tplId){
               <!-- Sections rendered here -->
             </div>
           </div>
-        </div>
-      </div>
- 
-      <!-- RIGHT: properties panel -->
-      <div class="props-panel">
-        <div class="props-header">
-          <span>Propiedades</span>
-          <span id="props-section-type" style="font-size:.45rem;color:var(--blue-400);letter-spacing:.15em;font-weight:700;"></span>
-        </div>
-        <div class="props-body" id="props-panel-body">
-          <div class="props-empty">Hacé clic en una sección del canvas para editar sus propiedades aquí</div>
         </div>
       </div>
     </div>
@@ -1952,7 +1941,7 @@ function initApp(){
     new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'}) + ' · ' +
     new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
  
-  renderSidebarTemplates();
+  //renderSidebarTemplates();
   renderTemplateOverview();
   Promise.all([
     apiGet('/data/blog').catch(()=>null),

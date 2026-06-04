@@ -28,6 +28,22 @@ const css = (props) => {
   return p.length ? ` style="${p.join(';')}"` : '';
 };
 
+// ── Modo edición visual + color por palabra ─────────────────────────
+// fld() envuelve cada texto editable. En modo edición agrega data-field para
+// que el modal le ponga un lápiz. Si el campo tiene un color asignado
+// (FIELD_COLORS, que viene de data.__colores), se aplica ese color por palabra
+// TAMBIÉN en el sitio público. Si un campo no tiene color y no es modo edición,
+// fld devuelve el texto plano → markup idéntico al original.
+let EDIT_MODE = false;
+let FIELD_COLORS = {};
+export function setEditMode(v) { EDIT_MODE = !!v; }
+export function setFieldColors(map) { FIELD_COLORS = map || {}; }
+const fld = (name, value) => {
+  const c = FIELD_COLORS[name];
+  if (EDIT_MODE) return `<span class="ed-f" data-field="${name}"${c ? ` style="color:${c}"` : ''}>${value}</span>`;
+  return c ? `<span data-fc="${name}" style="color:${c}">${value}</span>` : value;
+};
+
 // ═══════════════════════════════════════════════════════════════════
 export const SECTIONS = {
   nav: {
@@ -128,7 +144,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
         </div>
       </div>
       <div class="nav-contact-wrap">
-        <a href="${esc(d.ctaHref)}" class="btn-contact">${esc(d.ctaLabel)}</a>
+        <a href="${esc(d.ctaHref)}" class="btn-contact">${fld('ctaLabel', esc(d.ctaLabel))}</a>
       </div>
       <button class="nav-mobile-toggle" aria-label="Menú">
         <span></span><span></span><span></span>
@@ -137,7 +153,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   </div>
   <div class="nav-mobile-drawer">
     ${mobileLinksHtml}
-    <a href="${esc(d.ctaHref)}" class="nav-mobile-cta">${esc(d.ctaLabel)}</a>
+    <a href="${esc(d.ctaHref)}" class="nav-mobile-cta">${fld('ctaLabel', esc(d.ctaLabel))}</a>
   </div>
 </nav>`;
     },
@@ -194,24 +210,24 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   <div class="max-w-7xl hero-inner">
     <div class="hero-grid">
       <div>
-        <div class="hero-badge">${esc(h.badge)}</div>
+        <div class="hero-badge">${fld('badge', esc(h.badge))}</div>
         <h1 class="hero-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>
-          ${esc(h.titulo1)} <span${css({ color: s.accentColor })}><i>${esc(h.titulo2)}</i></span>
+          ${fld('titulo1', esc(h.titulo1))} <span${css({ color: s.accentColor })}><i>${fld('titulo2', esc(h.titulo2))}</i></span>
         </h1>
-        <p class="hero-desc"${css({ 'font-size': s.descSize })}>${esc(h.descripcion)}</p>
+        <p class="hero-desc"${css({ 'font-size': s.descSize })}>${fld('descripcion', esc(h.descripcion))}</p>
         <div class="hero-buttons">
-          <a href="#servicios"><button class="btn-hero-primary"${css({ background: s.btnBg, 'border-color': s.btnBg, 'border-radius': s.btnRadius })}>${esc(h.boton_primario)}</button></a>
-          <a href="#nosotros"><button class="btn-hero-secondary">${esc(h.boton_secundario)}</button></a>
+          <a href="#servicios"><button class="btn-hero-primary"${css({ background: s.btnBg, 'border-color': s.btnBg, 'border-radius': s.btnRadius })}>${fld('boton_primario', esc(h.boton_primario))}</button></a>
+          <a href="#nosotros"><button class="btn-hero-secondary">${fld('boton_secundario', esc(h.boton_secundario))}</button></a>
         </div>
       </div>
       <div class="hero-stats">
         <div class="stat-card-dark">
-          <div class="stat-number-white">${esc(h.stat1_numero)}</div>
-          <div class="stat-label-blue">${esc(h.stat1_label)}</div>
+          <div class="stat-number-white">${fld('stat1_numero', esc(h.stat1_numero))}</div>
+          <div class="stat-label-blue">${fld('stat1_label', esc(h.stat1_label))}</div>
         </div>
         <div class="stat-card-light">
-          <div class="stat-number-dark">${esc(h.stat2_numero)}</div>
-          <div class="stat-label-gray">${esc(h.stat2_label)}</div>
+          <div class="stat-number-dark">${fld('stat2_numero', esc(h.stat2_numero))}</div>
+          <div class="stat-label-gray">${fld('stat2_label', esc(h.stat2_label))}</div>
         </div>
       </div>
     </div>
@@ -272,30 +288,34 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     render: (data, design) => {
       const h = { ...SECTIONS['hero-centered'].defaultData, ...data };
       const s = { ...SECTIONS['hero-centered'].defaultDesign, ...design };
-      const tags = [h.p2_tag1, h.p2_tag2, h.p2_tag3].filter(Boolean);
+      const tags = [
+        { f: 'p2_tag1', v: h.p2_tag1 },
+        { f: 'p2_tag2', v: h.p2_tag2 },
+        { f: 'p2_tag3', v: h.p2_tag3 },
+      ].filter(t => t.v);
       const metrics = [
-        { num: h.p2_metric1_num, label: h.p2_metric1_label },
-        { num: h.p2_metric2_num, label: h.p2_metric2_label },
-        { num: h.p2_metric3_num, label: h.p2_metric3_label },
+        { nf: 'p2_metric1_num', num: h.p2_metric1_num, lf: 'p2_metric1_label', label: h.p2_metric1_label },
+        { nf: 'p2_metric2_num', num: h.p2_metric2_num, lf: 'p2_metric2_label', label: h.p2_metric2_label },
+        { nf: 'p2_metric3_num', num: h.p2_metric3_num, lf: 'p2_metric3_label', label: h.p2_metric3_label },
       ].filter(m => m.num);
       return `
 <header class="hero-p2"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="hero-p2-inner">
-    <div class="hero-p2-eyebrow"${css({ color: s.accentColor })}>${esc(h.p2_eyebrow)}</div>
-    <h1 class="hero-p2-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${esc(h.p2_titulo)}</h1>
-    <p class="hero-p2-subtitle">${esc(h.p2_subtitulo)}</p>
-    <p class="hero-p2-desc">${esc(h.p2_descripcion)}</p>
-    ${tags.length ? `<div class="hero-p2-tags">${tags.map(t => `<span class="hero-p2-tag">${esc(t)}</span>`).join('')}</div>` : ''}
+    <div class="hero-p2-eyebrow"${css({ color: s.accentColor })}>${fld('p2_eyebrow', esc(h.p2_eyebrow))}</div>
+    <h1 class="hero-p2-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${fld('p2_titulo', esc(h.p2_titulo))}</h1>
+    <p class="hero-p2-subtitle">${fld('p2_subtitulo', esc(h.p2_subtitulo))}</p>
+    <p class="hero-p2-desc">${fld('p2_descripcion', esc(h.p2_descripcion))}</p>
+    ${tags.length ? `<div class="hero-p2-tags">${tags.map(t => `<span class="hero-p2-tag">${fld(t.f, esc(t.v))}</span>`).join('')}</div>` : ''}
     <div class="hero-p2-buttons">
-      <a href="#servicios"><button class="btn-hero-primary"${css({ background: s.btnBg, 'border-color': s.btnBg, 'border-radius': s.btnRadius })}>${esc(h.p2_boton_primario)}</button></a>
-      <a href="#nosotros"><button class="btn-hero-secondary">${esc(h.p2_boton_secundario)}</button></a>
+      <a href="#servicios"><button class="btn-hero-primary"${css({ background: s.btnBg, 'border-color': s.btnBg, 'border-radius': s.btnRadius })}>${fld('p2_boton_primario', esc(h.p2_boton_primario))}</button></a>
+      <a href="#nosotros"><button class="btn-hero-secondary">${fld('p2_boton_secundario', esc(h.p2_boton_secundario))}</button></a>
     </div>
     ${metrics.length ? `
       <div class="hero-p2-metrics">
         ${metrics.map(m => `
           <div class="hero-p2-metric">
-            <span class="hero-p2-metric-num"${css({ color: s.accentColor })}>${esc(m.num)}</span>
-            <span class="hero-p2-metric-label">${esc(m.label)}</span>
+            <span class="hero-p2-metric-num"${css({ color: s.accentColor })}>${fld(m.nf, esc(m.num))}</span>
+            <span class="hero-p2-metric-label">${fld(m.lf, esc(m.label))}</span>
           </div>`).join('')}
       </div>` : ''}
   </div>
@@ -351,7 +371,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
 <section class="logos-section" id="section-clientes"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
     <div class="logos-header">
-      <h2 class="logos-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${esc(d.titulo_seccion)}</h2>
+      <h2 class="logos-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${fld('titulo_seccion', esc(d.titulo_seccion))}</h2>
     </div>
     <div class="logos-track-wrapper">
       <div class="logos-track ${d.auto_scroll !== false ? 'is-animating' : ''}" data-clientes-track data-auto-scroll="${d.auto_scroll !== false}"${css({ background: s.trackBg, height: s.trackHeight })}>${cells}</div>
@@ -417,7 +437,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
 <section class="blog-section"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
     <div class="blog-header">
-      <h2 class="blog-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${esc(d.titulo_seccion)}</h2>
+      <h2 class="blog-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${fld('titulo_seccion', esc(d.titulo_seccion))}</h2>
     </div>
     <div class="blog-grid" ${dataAttrs}>
       <div style="grid-column:1/-1;text-align:center;padding:3rem 0;color:#94a3b8;font-size:.875rem;">Cargando artículos…</div>
@@ -474,14 +494,14 @@ ${navCss ? `<style>${navCss}</style>` : ''}
 <section id="servicios" class="services-section"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
     <div class="services-header">
-      <h2 class="services-title"${css({ color: s.sectionColor, 'font-size': s.titleSize })}>${esc(d.titulo_seccion)}</h2>
+      <h2 class="services-title"${css({ color: s.sectionColor, 'font-size': s.titleSize })}>${fld('titulo_seccion', esc(d.titulo_seccion))}</h2>
     </div>
     <div class="cards-grid"${css({ gap: s.gap })}>
-      ${(d.cards||[]).map(c => `
+      ${(d.cards||[]).map((c, i) => `
         <div class="service-card"${css({ background: s.cardBg, 'border-radius': s.cardRadius, padding: s.cardPadding })}>
           <div class="card-icon">${SERVICE_ICONS[c.id] || ''}</div>
-          <h3 class="card-title"${css({ color: s.cardTitleColor })}>${esc(c.titulo)}</h3>
-          <p class="card-desc">${esc(c.descripcion)}</p>
+          <h3 class="card-title"${css({ color: s.cardTitleColor })}>${fld('cards.'+i+'.titulo', esc(c.titulo))}</h3>
+          <p class="card-desc">${fld('cards.'+i+'.descripcion', esc(c.descripcion))}</p>
           <a href="${esc(c.enlace||'#')}" class="card-link"${css({ color: s.cardLinkColor })}>Ver Detalles <i class="fa-solid fa-arrow-right fa-lg" aria-hidden="true"></i></a>
         </div>`).join('')}
     </div>
@@ -532,9 +552,9 @@ ${navCss ? `<style>${navCss}</style>` : ''}
         </div>
       </div>
       <div class="about-content">
-        <p class="about-eyebrow"${css({ color: s.eyebrowColor })}>${esc(d.eyebrow)}</p>
-        <h3 class="about-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${String(d.titulo||'').split('\n').map(esc).join('<br>')}</h3>
-        <p class="about-desc"${css({ color: s.textColor })}>${esc(d.descripcion)}</p>
+        <p class="about-eyebrow"${css({ color: s.eyebrowColor })}>${fld('eyebrow', esc(d.eyebrow))}</p>
+        <h3 class="about-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${fld('titulo', String(d.titulo||'').split('\n').map(esc).join('<br>'))}</h3>
+        <p class="about-desc"${css({ color: s.textColor })}>${fld('descripcion', esc(d.descripcion))}</p>
       </div>
     </div>
   </div>
@@ -578,10 +598,10 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       return `
 <section style="background:${s.bg};padding:${py};display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;">
   <div>
-    <h2 style="font-size:2rem;font-weight:900;color:#fff;letter-spacing:-.04em;font-style:italic;margin-bottom:.5rem;">${esc(d.title)}</h2>
-    <p style="color:rgba(255,255,255,.6);font-size:.9375rem;">${esc(d.desc)}</p>
+    <h2 style="font-size:2rem;font-weight:900;color:#fff;letter-spacing:-.04em;font-style:italic;margin-bottom:.5rem;">${fld('title', esc(d.title))}</h2>
+    <p style="color:rgba(255,255,255,.6);font-size:.9375rem;">${fld('desc', esc(d.desc))}</p>
   </div>
-  <a href="${esc(d.href)}" style="background:${s.btnBg};color:#fff;padding:.875rem 2rem;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;white-space:nowrap;flex-shrink:0;${s.btnRadius ? `border-radius:${s.btnRadius};` : ''}">${esc(d.btn)}</a>
+  <a href="${esc(d.href)}" style="background:${s.btnBg};color:#fff;padding:.875rem 2rem;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;white-space:nowrap;flex-shrink:0;${s.btnRadius ? `border-radius:${s.btnRadius};` : ''}">${fld('btn', esc(d.btn))}</a>
 </section>`;
     },
   },
@@ -658,18 +678,18 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     <div class="panel-left"${css({ background: s.panelLeftBg })}>
       <div>
         <p class="section-label">Contacto</p>
-        <h2${css({ color: s.titleColor })}>${esc(d.formTitulo)}</h2>
-        <p class="panel-desc"${css({ color: s.descColor })}>${esc(d.formDesc)}</p>
+        <h2${css({ color: s.titleColor })}>${fld('formTitulo', esc(d.formTitulo))}</h2>
+        <p class="panel-desc"${css({ color: s.descColor })}>${fld('formDesc', esc(d.formDesc))}</p>
       </div>
       <div class="action-buttons">
         <a href="https://wa.me/${esc(d.whatsapp)}" class="btn btn-whatsapp"${css({ background: s.btnWaBg, color: s.btnWaColor })}>
           <i class="fa-brands fa-whatsapp fa-xl" aria-hidden="true"></i>
-          ${esc(d.whatsappText)}
+          ${fld('whatsappText', esc(d.whatsappText))}
         </a>
       </div>
     </div>
     <div class="panel-right"${css({ background: s.panelRightBg })}>
-      <p class="form-title">${esc(d.formLabel)}</p>
+      <p class="form-title">${fld('formLabel', esc(d.formLabel))}</p>
       <div class="form-grid">
         <div class="field"><label>Nombre</label><input type="text" placeholder="Su nombre completo"/></div>
         <div class="field"><label>Empresa</label><input type="text" placeholder="Nombre de la organización"/></div>
@@ -677,7 +697,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
         <div class="field"><label>Email</label><input type="email" placeholder="nombre@empresa.com"/></div>
         <div class="field full"><label>Mensaje</label><textarea placeholder="Cuéntenos qué necesita resolver"></textarea></div>
       </div>
-      <button class="btn-submit"${css({ background: s.submitBg, color: s.submitColor })}>${esc(d.btnEnviar)}</button>
+      <button class="btn-submit"${css({ background: s.submitBg, color: s.submitColor })}>${fld('btnEnviar', esc(d.btnEnviar))}</button>
     </div>
   </div>
   <div class="footer-bottom"${css({ background: s.bottomBg })}>
@@ -691,7 +711,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       <a href="/html/blog"${css({ color: s.linkColor })}>Blog</a>
     </div>
   </div>
-  <div class="footer-copy"${css({ background: s.copyBg })}><span${css({ color: s.copyColor })}>${esc(d.copyright)}</span></div>
+  <div class="footer-copy"${css({ background: s.copyBg })}><span${css({ color: s.copyColor })}>${fld('copyright', esc(d.copyright))}</span></div>
 </footer>`;
     },
   },
@@ -753,35 +773,35 @@ ${navCss ? `<style>${navCss}</style>` : ''}
 <section id="cableado-estructurado" class="section-cableado"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="container-7xl">
     <div class="section-header">
-      <div class="badge-infra">${esc(d.badge)}</div>
+      <div class="badge-infra">${fld('badge', esc(d.badge))}</div>
       <h2 class="section-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>
-        ${esc(d.titulo1)} <br>
-        <span class="accent"${css({ color: s.accentColor })}>${esc(d.accent)}</span>
+        ${fld('titulo1', esc(d.titulo1))} <br>
+        <span class="accent"${css({ color: s.accentColor })}>${fld('accent', esc(d.accent))}</span>
       </h2>
       <div class="title-bar"></div>
     </div>
     <div class="cableado-grid">
       <div class="col-left">
-        <p>${esc(d.descripcion)}</p>
+        <p>${fld('descripcion', esc(d.descripcion))}</p>
         <div class="cards-stack">
-          ${(d.cards||[]).map(c => `
+          ${(d.cards||[]).map((c, i) => `
             <div class="spec-card">
-              <div class="spec-badge">${esc(c.badge)}</div>
+              <div class="spec-badge">${fld('cards.'+i+'.badge', esc(c.badge))}</div>
               <div>
-                <h4>${esc(c.titulo)}</h4>
-                <p>${esc(c.desc)}</p>
+                <h4>${fld('cards.'+i+'.titulo', esc(c.titulo))}</h4>
+                <p>${fld('cards.'+i+'.desc', esc(c.desc))}</p>
               </div>
             </div>`).join('')}
         </div>
       </div>
       <div class="col-right">
         <div class="dark-panel">
-          <div class="panel-header">${esc(d.panelHeader)}</div>
+          <div class="panel-header">${fld('panelHeader', esc(d.panelHeader))}</div>
           <div class="panel-body">
             <div class="panel-row">
               <div class="panel-row-top">
-                <span class="panel-label">${esc(d.panelLabel)}</span>
-                <span class="panel-value">${esc(d.panelValue)}</span>
+                <span class="panel-label">${fld('panelLabel', esc(d.panelLabel))}</span>
+                <span class="panel-value">${fld('panelValue', esc(d.panelValue))}</span>
               </div>
               <div class="progress-track">
                 <div class="progress-fill" style="width:${pct}%;"></div>
@@ -789,12 +809,12 @@ ${navCss ? `<style>${navCss}</style>` : ''}
             </div>
             <div class="panel-stats">
               <div>
-                <div class="stat-label">${esc(d.stat1Label)}</div>
-                <div class="stat-value">${d.stat1Value}</div>
+                <div class="stat-label">${fld('stat1Label', esc(d.stat1Label))}</div>
+                <div class="stat-value">${fld('stat1Value', esc(d.stat1Value))}</div>
               </div>
               <div>
-                <div class="stat-label">${esc(d.stat2Label)}</div>
-                <div class="stat-value">${d.stat2Value}</div>
+                <div class="stat-label">${fld('stat2Label', esc(d.stat2Label))}</div>
+                <div class="stat-value">${fld('stat2Value', esc(d.stat2Value))}</div>
               </div>
             </div>
           </div>
@@ -869,24 +889,24 @@ ${navCss ? `<style>${navCss}</style>` : ''}
           <div class="fibra-image-overlay"></div>
         </div>
         <div class="fibra-badge">
-          <div class="fibra-badge-title">${esc(d.badgeTitle)}</div>
-          <div class="fibra-badge-sub">${esc(d.badgeSub)}</div>
+          <div class="fibra-badge-title">${fld('badgeTitle', esc(d.badgeTitle))}</div>
+          <div class="fibra-badge-sub">${fld('badgeSub', esc(d.badgeSub))}</div>
         </div>
       </div>
       <div class="fibra-text">
-        <span class="section-badge">${esc(d.sectionBadge)}</span>
+        <span class="section-badge">${fld('sectionBadge', esc(d.sectionBadge))}</span>
         <h2 class="section-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>
-          ${esc(d.titulo1)} <br/>
-          <span class="accent"${css({ color: s.accentColor })}>${esc(d.accent)}</span>
+          ${fld('titulo1', esc(d.titulo1))} <br/>
+          <span class="accent"${css({ color: s.accentColor })}>${fld('accent', esc(d.accent))}</span>
         </h2>
-        <p class="section-description">${esc(d.descripcion)}</p>
+        <p class="section-description">${fld('descripcion', esc(d.descripcion))}</p>
         <ul class="feature-list">
-          ${(d.features||[]).map(f => `
+          ${(d.features||[]).map((f, i) => `
             <li class="feature-item">
               <div class="feature-icon">${icon(f.iconType)}</div>
               <div>
-                <h4 class="feature-title">${esc(f.titulo)}</h4>
-                <p class="feature-desc">${esc(f.desc)}</p>
+                <h4 class="feature-title">${fld('features.'+i+'.titulo', esc(f.titulo))}</h4>
+                <p class="feature-desc">${fld('features.'+i+'.desc', esc(f.desc))}</p>
               </div>
             </li>`).join('')}
         </ul>
@@ -955,19 +975,19 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   <div class="section-inner">
     <div class="section-flex">
       <div class="section-content">
-        <div class="badge">${esc(d.badge)}</div>
+        <div class="badge">${fld('badge', esc(d.badge))}</div>
         <h2 class="section-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>
-          <span><i>${esc(d.titulo1)}</i></span><br>
-          <span${css({ color: s.accentColor })}><i>${esc(d.titulo2)}</i></span>
+          <span><i>${fld('titulo1', esc(d.titulo1))}</i></span><br>
+          <span${css({ color: s.accentColor })}><i>${fld('titulo2', esc(d.titulo2))}</i></span>
         </h2>
-        <p class="section-desc">${esc(d.descripcion)}</p>
+        <p class="section-desc">${fld('descripcion', esc(d.descripcion))}</p>
         <div class="features-list">
-          ${(d.features||[]).map(f => `
+          ${(d.features||[]).map((f, i) => `
             <div class="feature-card">
               <div class="feature-icon">${icon(f.iconType)}</div>
               <div>
-                <h4 class="feature-title">${esc(f.titulo)}</h4>
-                <p class="feature-desc">${esc(f.desc)}</p>
+                <h4 class="feature-title">${fld('features.'+i+'.titulo', esc(f.titulo))}</h4>
+                <p class="feature-desc">${fld('features.'+i+'.desc', esc(f.desc))}</p>
               </div>
             </div>`).join('')}
         </div>
@@ -976,10 +996,10 @@ ${navCss ? `<style>${navCss}</style>` : ''}
         <div class="img-wrapper">
           <img src="${esc(d.imagenUrl)}" alt="Seguridad electrónica">
           <div class="img-badge">
-            <div class="img-badge-label">${esc(d.imgBadgeLabel)}</div>
+            <div class="img-badge-label">${fld('imgBadgeLabel', esc(d.imgBadgeLabel))}</div>
             <div class="img-badge-status">
               <div class="pulse-dot"></div>
-              <span class="img-badge-text">${esc(d.imgBadgeText)}</span>
+              <span class="img-badge-text">${fld('imgBadgeText', esc(d.imgBadgeText))}</span>
             </div>
           </div>
         </div>
@@ -1059,19 +1079,19 @@ ${navCss ? `<style>${navCss}</style>` : ''}
 <section id="soporte-it" class="hero-section"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="container hero-grid">
     <div class="hero-content">
-      <div class="badge">${esc(d.badge)}</div>
+      <div class="badge">${fld('badge', esc(d.badge))}</div>
       <h2 class="hero-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>
-        ${esc(d.titulo1)} <br/>
-        <span class="text-blue"${css({ color: s.accentColor })}>${esc(d.accent)}</span>
+        ${fld('titulo1', esc(d.titulo1))} <br/>
+        <span class="text-blue"${css({ color: s.accentColor })}>${fld('accent', esc(d.accent))}</span>
       </h2>
-      <p class="hero-description">${esc(d.descripcion)}</p>
+      <p class="hero-description">${fld('descripcion', esc(d.descripcion))}</p>
       <div class="features-list">
-        ${(d.features||[]).map(f => `
+        ${(d.features||[]).map((f, i) => `
           <div class="feature-card">
             <div class="feature-icon">${icon(f.iconType)}</div>
             <div>
-              <h4 class="feature-title">${esc(f.titulo)}</h4>
-              <p class="feature-text">${esc(f.desc)}</p>
+              <h4 class="feature-title">${fld('features.'+i+'.titulo', esc(f.titulo))}</h4>
+              <p class="feature-text">${fld('features.'+i+'.desc', esc(f.desc))}</p>
             </div>
           </div>`).join('')}
       </div>
@@ -1084,20 +1104,20 @@ ${navCss ? `<style>${navCss}</style>` : ''}
         </div>
         <div class="dash-body">
           <div class="dash-stat-group">
-            <span class="dash-label">${esc(d.dashLabel)}</span>
-            <div class="dash-main-value">${esc(d.dashMainValue)}</div>
+            <span class="dash-label">${fld('dashLabel', esc(d.dashLabel))}</span>
+            <div class="dash-main-value">${fld('dashMainValue', esc(d.dashMainValue))}</div>
           </div>
           <div class="dash-grid">
             <div>
-              <span class="dash-sublabel">${esc(d.dashStat1Label)}</span>
-              <div class="dash-subvalue">${esc(d.dashStat1Value)}</div>
+              <span class="dash-sublabel">${fld('dashStat1Label', esc(d.dashStat1Label))}</span>
+              <div class="dash-subvalue">${fld('dashStat1Value', esc(d.dashStat1Value))}</div>
             </div>
             <div>
-              <span class="dash-sublabel">${esc(d.dashStat2Label)}</span>
-              <div class="dash-subvalue ${d.dashStat2Highlight ? 'text-green' : ''}">${esc(d.dashStat2Value)}</div>
+              <span class="dash-sublabel">${fld('dashStat2Label', esc(d.dashStat2Label))}</span>
+              <div class="dash-subvalue ${d.dashStat2Highlight ? 'text-green' : ''}">${fld('dashStat2Value', esc(d.dashStat2Value))}</div>
             </div>
           </div>
-          <button class="btn-remote">${esc(String(d.btnRemote ?? '').replace(/\s*🎧\s*$/,''))} <i class="fa-solid fa-headset" aria-hidden="true"></i></button>
+          <button class="btn-remote">${fld('btnRemote', esc(String(d.btnRemote ?? '').replace(/\s*🎧\s*$/,'')))} <i class="fa-solid fa-headset" aria-hidden="true"></i></button>
         </div>
       </div>
       <div class="dash-decor"></div>
@@ -1177,23 +1197,23 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   <div class="software-container">
     <div class="software-inner">
       <div class="software-text">
-        <div class="badge">${esc(d.badge)}</div>
+        <div class="badge">${fld('badge', esc(d.badge))}</div>
         <h2 class="software-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>
-          ${esc(d.titulo1)} <br>
-          <span${css({ color: s.accentColor })}>${esc(d.accent)}</span>
+          ${fld('titulo1', esc(d.titulo1))} <br>
+          <span${css({ color: s.accentColor })}>${fld('accent', esc(d.accent))}</span>
         </h2>
-        <p class="software-desc">${esc(d.descripcion)}</p>
+        <p class="software-desc">${fld('descripcion', esc(d.descripcion))}</p>
         <div class="solutions-list">
-          ${(d.solutions||[]).map(s => `
+          ${(d.solutions||[]).map((s, i) => `
             <div class="solution-item">
               <div class="solution-icon">${icon(s.iconType)}</div>
               <div>
-                <h4 class="solution-title">${esc(s.titulo)}</h4>
-                <p class="solution-desc">${esc(s.desc)}</p>
+                <h4 class="solution-title">${fld('solutions.'+i+'.titulo', esc(s.titulo))}</h4>
+                <p class="solution-desc">${fld('solutions.'+i+'.desc', esc(s.desc))}</p>
               </div>
             </div>`).join('')}
         </div>
-        <a href="${esc(d.btnCtaHref)}" class="btn-cta">${esc(d.btnCta)}</a>
+        <a href="${esc(d.btnCtaHref)}" class="btn-cta">${fld('btnCta', esc(d.btnCta))}</a>
       </div>
       <div class="software-visual">
         <div class="code-editor">
@@ -1201,10 +1221,10 @@ ${navCss ? `<style>${navCss}</style>` : ''}
             <div class="dot dot-red"></div>
             <div class="dot dot-amber"></div>
             <div class="dot dot-green"></div>
-            <span class="editor-label">${esc(d.editorLabel)}</span>
+            <span class="editor-label">${fld('editorLabel', esc(d.editorLabel))}</span>
           </div>
           <div class="editor-body">
-            ${(d.codeRows||[]).map(r => `<div class="code-row">${esc(r)}</div>`).join('')}
+            ${(d.codeRows||[]).map((r, i) => `<div class="code-row">${fld('codeRows.'+i, esc(r))}</div>`).join('')}
           </div>
         </div>
       </div>
@@ -1266,7 +1286,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
 <section class="blog-container"${css({ background: s.bg, color: s.textColor })}>
   <div class="max-w-7xl"${css({ 'padding-top': s.paddingTop || '4rem', 'padding-bottom': s.paddingBottom })}>
     <div class="blog-rows-list" data-blog-list data-loading-msg="${esc(d.loadingMessage)}" data-empty-msg="${esc(d.emptyMessage)}" data-error-msg="${esc(d.errorMessage)}">
-      <div style="text-align:center;padding:3rem 0;color:#94a3b8;font-size:.875rem;">${esc(d.loadingMessage)}</div>
+      <div style="text-align:center;padding:3rem 0;color:#94a3b8;font-size:.875rem;">${fld('loadingMessage', esc(d.loadingMessage))}</div>
     </div>
   </div>
 </section>`;
@@ -1315,13 +1335,13 @@ ${blCss ? `<style>${blCss}</style>` : ''}
       return `
 <header class="article-header"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
-    <a href="${esc(d.backHref)}" class="back-link"${css({ color: s.backLinkColor })}><i class="fa-solid fa-arrow-left fa-lg" aria-hidden="true"></i> ${esc(stripArrow(d.backLabel))}</a>
+    <a href="${esc(d.backHref)}" class="back-link"${css({ color: s.backLinkColor })}><i class="fa-solid fa-arrow-left fa-lg" aria-hidden="true"></i> ${fld('backLabel', esc(stripArrow(d.backLabel)))}</a>
     <div class="article-meta">
-      <span class="badge-tech"${css({ background: s.badgeBg, color: s.badgeColor })}>${esc(d.badge)}</span>
+      <span class="badge-tech"${css({ background: s.badgeBg, color: s.badgeColor })}>${fld('badge', esc(d.badge))}</span>
       ${d.fecha ? `<span style="font-size:.75rem;opacity:.7;font-weight:600;">${esc(d.fecha)}</span>` : ''}
     </div>
-    <h1 class="article-main-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${esc(d.titulo)}</h1>
-    <p class="article-lead"${css({ color: s.leadColor, 'font-size': s.leadSize })}>${esc(d.lead)}</p>
+    <h1 class="article-main-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${fld('titulo', esc(d.titulo))}</h1>
+    <p class="article-lead"${css({ color: s.leadColor, 'font-size': s.leadSize })}>${fld('lead', esc(d.lead))}</p>
   </div>
 </header>`;
     },
@@ -1389,15 +1409,15 @@ ${blCss ? `<style>${blCss}</style>` : ''}
       ${d.featuredImageUrl ? `<img src="${esc(d.featuredImageUrl)}" alt="${esc(d.featuredImageAlt)}" class="featured-image"${css({ 'border-radius': s.imgRadius })}>` : ''}
       ${d.contentHtml || ''}
       <div class="article-cta"${css({ background: s.ctaBg })}>
-        <h3${css({ color: s.ctaTitleColor })}>${esc(d.ctaTitle)}</h3>
-        <p${css({ color: s.ctaTextColor })}>${esc(d.ctaText)}</p>
-        <a href="${esc(d.ctaBtnHref)}" class="btn-hero-primary"${css({ background: s.ctaBtnBg || 'var(--sisgra-blue)', color: s.ctaBtnColor || 'white' })}>${esc(d.ctaBtnLabel)}</a>
+        <h3${css({ color: s.ctaTitleColor })}>${fld('ctaTitle', esc(d.ctaTitle))}</h3>
+        <p${css({ color: s.ctaTextColor })}>${fld('ctaText', esc(d.ctaText))}</p>
+        <a href="${esc(d.ctaBtnHref)}" class="btn-hero-primary"${css({ background: s.ctaBtnBg || 'var(--sisgra-blue)', color: s.ctaBtnColor || 'white' })}>${fld('ctaBtnLabel', esc(d.ctaBtnLabel))}</a>
       </div>
     </div>
     <aside class="article-sidebar">
       <div class="sidebar-box dark"${css({ background: s.sidebarBg })}>
-        <h4${css({ color: s.sidebarTitleColor })}>${esc(d.sidebarTitle)}</h4>
-        <p${css({ color: s.sidebarTextColor })}>${esc(d.sidebarText)}</p>
+        <h4${css({ color: s.sidebarTitleColor })}>${fld('sidebarTitle', esc(d.sidebarTitle))}</h4>
+        <p${css({ color: s.sidebarTextColor })}>${fld('sidebarText', esc(d.sidebarText))}</p>
       </div>
     </aside>
   </div>
@@ -1452,18 +1472,22 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     render: (data, design) => {
       const d = { ...SECTIONS['cliente-header'].defaultData, ...data };
       const s = { ...SECTIONS['cliente-header'].defaultDesign, ...design };
-      const meta = [d.sector, d.ubicacion, d.anio].filter(Boolean)
-        .map(m => `<span class="cl-meta-item">${esc(m)}</span>`).join('<span class="cl-meta-sep">·</span>');
+      const meta = [
+        ['sector', d.sector],
+        ['ubicacion', d.ubicacion],
+        ['anio', d.anio],
+      ].filter(([, v]) => v)
+        .map(([f, v]) => `<span class="cl-meta-item">${fld(f, esc(v))}</span>`).join('<span class="cl-meta-sep">·</span>');
       return `
 <header class="cl-header"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
-    <a href="${esc(d.backHref)}" class="cl-back"${css({ color: s.backLinkColor })}><i class="fa-solid fa-arrow-left fa-lg" aria-hidden="true"></i> ${esc(stripArrow(d.backLabel))}</a>
+    <a href="${esc(d.backHref)}" class="cl-back"${css({ color: s.backLinkColor })}><i class="fa-solid fa-arrow-left fa-lg" aria-hidden="true"></i> ${fld('backLabel', esc(stripArrow(d.backLabel)))}</a>
     <div class="cl-header-inner">
       ${d.empresaLogo ? `<div class="cl-logo-wrap"><img src="${esc(d.empresaLogo)}" alt="${esc(d.empresaNombre)}" class="cl-logo"${css({ 'max-height': s.logoMaxHeight })}></div>` : ''}
       <div class="cl-header-text">
-        ${d.empresaNombre ? `<div class="cl-eyebrow"${css({ color: s.eyebrowColor })}>${esc(d.empresaNombre)}</div>` : ''}
-        <h1 class="cl-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${esc(d.titulo)}</h1>
-        ${d.lead ? `<p class="cl-lead"${css({ color: s.leadColor })}>${esc(d.lead)}</p>` : ''}
+        ${d.empresaNombre ? `<div class="cl-eyebrow"${css({ color: s.eyebrowColor })}>${fld('empresaNombre', esc(d.empresaNombre))}</div>` : ''}
+        <h1 class="cl-title"${css({ color: s.titleColor, 'font-size': s.titleSize })}>${fld('titulo', esc(d.titulo))}</h1>
+        ${d.lead ? `<p class="cl-lead"${css({ color: s.leadColor })}>${fld('lead', esc(d.lead))}</p>` : ''}
         ${meta ? `<div class="cl-meta"${css({ color: s.metaColor })}>${meta}</div>` : ''}
       </div>
     </div>
@@ -1531,13 +1555,13 @@ ${blCss ? `<style>${blCss}</style>` : ''}
       const s = { ...SECTIONS['cliente-body'].defaultDesign, ...design };
       // contentHtml es HTML enriquecido (incluye imágenes) — se renderiza sin escapar
       const fichaRows = [
-        ['Empresa',   d.empresa],
-        ['Sector',    d.sector],
-        ['Ubicación', d.ubicacion],
-        ['Año',       d.anio],
-        ['Servicios', d.servicios],
-      ].filter(([, v]) => v).map(([k, v]) =>
-        `<div class="cl-ficha-row"><dt class="cl-ficha-label"${css({ color: s.fichaLabelColor })}>${esc(k)}</dt><dd class="cl-ficha-value"${css({ color: s.fichaValueColor })}>${esc(v)}</dd></div>`
+        ['Empresa',   'empresa',   d.empresa],
+        ['Sector',    'sector',    d.sector],
+        ['Ubicación', 'ubicacion', d.ubicacion],
+        ['Año',       'anio',      d.anio],
+        ['Servicios', 'servicios', d.servicios],
+      ].filter(([, , v]) => v).map(([k, f, v]) =>
+        `<div class="cl-ficha-row"><dt class="cl-ficha-label"${css({ color: s.fichaLabelColor })}>${esc(k)}</dt><dd class="cl-ficha-value"${css({ color: s.fichaValueColor })}>${fld(f, esc(v))}</dd></div>`
       ).join('');
       return `
 <main class="cl-body"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
@@ -1546,14 +1570,14 @@ ${blCss ? `<style>${blCss}</style>` : ''}
       ${d.featuredImageUrl ? `<img src="${esc(d.featuredImageUrl)}" alt="${esc(d.featuredImageAlt)}" class="cl-featured"${css({ 'border-radius': s.imgRadius })}>` : ''}
       <div class="cl-richtext">${d.contentHtml || ''}</div>
       <div class="cl-cta"${css({ background: s.ctaBg })}>
-        <h3${css({ color: s.ctaTitleColor })}>${esc(d.ctaTitle)}</h3>
-        <p${css({ color: s.ctaTextColor })}>${esc(d.ctaText)}</p>
-        <a href="${esc(d.ctaBtnHref)}" class="cl-cta-btn"${css({ background: s.ctaBtnBg, color: s.ctaBtnColor })}>${esc(d.ctaBtnLabel)}</a>
+        <h3${css({ color: s.ctaTitleColor })}>${fld('ctaTitle', esc(d.ctaTitle))}</h3>
+        <p${css({ color: s.ctaTextColor })}>${fld('ctaText', esc(d.ctaText))}</p>
+        <a href="${esc(d.ctaBtnHref)}" class="cl-cta-btn"${css({ background: s.ctaBtnBg, color: s.ctaBtnColor })}>${fld('ctaBtnLabel', esc(d.ctaBtnLabel))}</a>
       </div>
     </div>
     <aside class="cl-sidebar">
       <div class="cl-ficha"${css({ background: s.fichaBg })}>
-        <h4 class="cl-ficha-title"${css({ color: s.fichaTitleColor })}>${esc(d.fichaTitle)}</h4>
+        <h4 class="cl-ficha-title"${css({ color: s.fichaTitleColor })}>${fld('fichaTitle', esc(d.fichaTitle))}</h4>
         <dl class="cl-ficha-list">${fichaRows}</dl>
       </div>
     </aside>
@@ -1629,29 +1653,29 @@ ${blCss ? `<style>${blCss}</style>` : ''}
       return `
 <footer${css({ background: s.bg, color: s.textColor })}>
   <div class="wordmark-band"${css({ background: s.wordmarkBg })}>
-    <h1${css({ color: s.wordmarkColor })}>${esc(d.wordmark)}</h1>
+    <h1${css({ color: s.wordmarkColor })}>${fld('wordmark', esc(d.wordmark))}</h1>
   </div>
   <div class="footer-grid"${css({ background: s.gridBg })}>
     <div class="footer-col">
-      <div class="col-label"${css({ color: s.colLabelColor })}>${esc(d.col1Label)}</div>
+      <div class="col-label"${css({ color: s.colLabelColor })}>${fld('col1Label', esc(d.col1Label))}</div>
       <ul class="services-list">
-        ${(d.servicios||[]).map(sv => `<li><a href="${esc(sv.href)}"${css({ color: s.linkColor })}>${esc(sv.label)}</a></li>`).join('')}
+        ${(d.servicios||[]).map((sv, i) => `<li><a href="${esc(sv.href)}"${css({ color: s.linkColor })}>${fld('servicios.'+i+'.label', esc(sv.label))}</a></li>`).join('')}
       </ul>
     </div>
     <div class="footer-col">
-      <div class="col-label"${css({ color: s.colLabelColor })}>${esc(d.col2Label)}</div>
+      <div class="col-label"${css({ color: s.colLabelColor })}>${fld('col2Label', esc(d.col2Label))}</div>
       <div class="contact-stack">
         <div class="contact-item">
           <div class="ci-type">${esc(ofi.tipo||'Oficina')}</div>
-          <div class="ci-value"${css({ color: s.textColor })}>${ofi.valor||''}</div>
+          <div class="ci-value"${css({ color: s.textColor })}>${fld('contactoOficina.valor', ofi.valor||'')}</div>
         </div>
         <div class="contact-item">
           <div class="ci-type">${esc(tel.tipo||'Teléfono')}</div>
-          <div class="ci-value"><a href="${esc(tel.href||'#')}"${css({ color: s.linkColor })}>${esc(tel.valor||'')}</a></div>
+          <div class="ci-value"><a href="${esc(tel.href||'#')}"${css({ color: s.linkColor })}>${fld('contactoTelefono.valor', esc(tel.valor||''))}</a></div>
         </div>
         <div class="contact-item">
           <div class="ci-type">${esc(mail.tipo||'Email')}</div>
-          <div class="ci-value"><a href="${esc(mail.href||'#')}"${css({ color: s.linkColor })}>${esc(mail.valor||'')}</a></div>
+          <div class="ci-value"><a href="${esc(mail.href||'#')}"${css({ color: s.linkColor })}>${fld('contactoEmail.valor', esc(mail.valor||''))}</a></div>
         </div>
         <div class="contact-item">
           <div class="ci-type">Redes</div>
@@ -1664,12 +1688,12 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     <div class="footer-col map-col" style="padding:0;">
       <div class="map-wrapper">
         <iframe src="${esc(d.mapaSrc)}" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Ubicación SISGRA"></iframe>
-        <div class="map-overlay-label">${esc(d.mapaLabel)}</div>
+        <div class="map-overlay-label">${fld('mapaLabel', esc(d.mapaLabel))}</div>
       </div>
     </div>
   </div>
   <div class="footer-bottom"${css({ background: s.bottomBg })}>
-    <p class="copy"${css({ color: s.copyColor })}>${d.copyright}</p>
+    <p class="copy"${css({ color: s.copyColor })}>${fld('copyright', d.copyright)}</p>
   </div>
 </footer>`;
     },
@@ -1715,7 +1739,10 @@ export function renderModulo(mod) {
   const tipo = mod.tipo || mod.type;
   const def = SECTIONS[tipo];
   if (!def) return `<div style="padding:2rem;background:#fee;color:#900;text-align:center;">Módulo desconocido: ${esc(tipo)}</div>`;
-  return wrapDesign(def.render(mod.data || {}, mod.design || {}), mod.design);
+  setFieldColors((mod.data && mod.data.__colores) || {});   // colores por palabra
+  const out = wrapDesign(def.render(mod.data || {}, mod.design || {}), mod.design);
+  setFieldColors({});
+  return out;
 }
 
 // Compat: render de una "sección" v1 ({ type, data, design }). Lo usa el editor actual.

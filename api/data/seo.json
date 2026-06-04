@@ -26,5 +26,17 @@
   "blog": {
     "title": "Blog · SISGRA S.R.L.",
     "description": "Novedades, soluciones tecnológicas, infraestructura, conectividad, redes y consejos para empresas y hogares."
+  },
+  "articulo": {
+    "title": "Artículo · SISGRA S.R.L.",
+    "description": "Novedades, soluciones tecnológicas, infraestructura, conectividad, redes y consejos para empresas y hogares."
+  },
+  "cliente": {
+    "title": "Clientes · SISGRA S.R.L.",
+    "description": "Novedades, soluciones tecnológicas, infraestructura, conectividad, redes y consejos para empresas y hogares."
+  },
+  "btn-8": {
+    "title": "TEST · SISGRA S.R.L.",
+    "description": "TEST"
   }
 }

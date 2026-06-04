@@ -22,6 +22,14 @@ function nextId(modulos) {
   return (nums.length ? Math.max(...nums) : 0) + 1;
 }
 
+// Normaliza el id de página asignada: '' / null / undefined → null.
+// Acepta un id numérico (id_plantilla) o, por compatibilidad, texto libre.
+function normPagina(v) {
+  if (v === undefined || v === null || v === '') return null;
+  const n = Number(v);
+  return isNaN(n) ? String(v) : n;
+}
+
 function plantillasQueUsan(id) {
   try {
     const plts = JSON.parse(fs.readFileSync(PLT_FILE, 'utf-8')).plantillas || [];
@@ -49,7 +57,7 @@ exports.usos = (req, res) => {
 
 // POST /api/modulos  [auth]   Body: { tipo, nombre, data?, design?, alerta? }
 exports.crear = (req, res) => {
-  const { tipo, nombre, data, design, alerta } = req.body || {};
+  const { tipo, nombre, data, design, alerta, id_pagina } = req.body || {};
   if (!tipo)   return res.status(400).json({ error: 'El campo "tipo" es obligatorio' });
   if (!nombre || !String(nombre).trim()) return res.status(400).json({ error: 'El campo "nombre" es obligatorio' });
 
@@ -59,6 +67,7 @@ exports.crear = (req, res) => {
     id_modulo: nextId(state.modulos),
     tipo,
     nombre: String(nombre).trim(),
+    id_pagina: normPagina(id_pagina),
     data:   data   || {},
     design: design || {},
     alerta: alerta === true,
@@ -77,12 +86,13 @@ exports.actualizar = (req, res) => {
   const m = state.modulos.find(x => x.id_modulo === id);
   if (!m) return res.status(404).json({ error: 'Módulo no encontrado' });
 
-  const { tipo, nombre, data, design, alerta } = req.body || {};
-  if (tipo   !== undefined) m.tipo   = tipo;
-  if (nombre !== undefined) m.nombre = String(nombre).trim();
-  if (data   !== undefined) m.data   = data;
-  if (design !== undefined) m.design = design;
-  if (alerta !== undefined) m.alerta = alerta === true;
+  const { tipo, nombre, data, design, alerta, id_pagina } = req.body || {};
+  if (tipo      !== undefined) m.tipo      = tipo;
+  if (nombre    !== undefined) m.nombre    = String(nombre).trim();
+  if (id_pagina !== undefined) m.id_pagina = normPagina(id_pagina);
+  if (data      !== undefined) m.data      = data;
+  if (design    !== undefined) m.design    = design;
+  if (alerta    !== undefined) m.alerta    = alerta === true;
   m.editado_en = new Date().toISOString();
 
   save(state);

@@ -84,7 +84,6 @@
   .e3-tray{width:100%;height:auto;max-height:200px;overflow-x:auto;flex-direction:row;border-right:none;border-bottom:1px solid var(--slate-200);}
   .e3-tray-body{display:flex;flex-direction:row;overflow-x:auto;gap:.5rem;padding:.5rem;}
   .tray-chip{flex:0 0 auto;width:140px;}
-  .props-panel{width:100%!important;border-left:none;border-top:1px solid var(--slate-200);}
   .e3-canvas-wrap{min-height:300px;}
   .page-frame.desktop{width:100%!important;min-width:0!important;}
 

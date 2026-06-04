@@ -73,7 +73,7 @@
         <i class="fa-solid fa-layer-group"></i>
         Ver todas las plantillas
       </div>
-      <div class="sidebar-tpl-group" id="sidebar-tpl-list"></div>
+      <!-- <div class="sidebar-tpl-group" id="sidebar-tpl-list"></div> -->
  
       <div class="sidebar-section-label">Configuración</div>
       <div class="sidebar-item" data-panel="contacto">
@@ -196,7 +196,7 @@
           <!-- Vista 3: editor de variante -->
           <div id="modulos-editor-view" style="display:none;">
             <div class="page-header modulos-editor-header" style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
-              <button class="btn-secondary" id="modulos-back-btn" style="padding:.5rem 1rem;font-size:.75rem;flex-shrink:0;"><i class="fa-solid fa-arrow-left fa-lg"></i> Volver</button>
+              <button class="btn-secondary" id="modulos-back-btn" style="padding:.5rem 1rem;font-size:.75rem;flex-shrink:0;"><i class="fa-solid fa-arrow-left"></i> Volver al catálogo</button>
               <div style="flex:1;min-width:120px;">
                 <div class="page-title" id="modulos-editor-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
                 <div class="page-desc" id="modulos-editor-variant-name"></div>
@@ -207,11 +207,19 @@
               </div>
             </div>
             <div style="display:grid;gap:1rem;align-items:start;">
-"              <!-- Nombre de la variante -->             
+                          <!-- Nombre de la variante -->             
               <div class="section-card">
                 <div class="section-card-body" style="padding:1rem;">
                   <label class="form-label">Nombre de la variante</label>
                   <input type="text" class="form-input" id="modulos-variant-name-input" placeholder="Ej: Hero — Fondo Oscuro">
+                </div>
+              </div>
+              <!-- Página asignada al módulo -->
+              <div class="section-card">
+                <div class="section-card-body" style="padding:1rem;">
+                  <label class="form-label">Página asignada</label>
+                  <select class="form-input" id="modulos-variant-pagina"></select>
+                  <div id="modulos-variant-pagina-hint" style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Indicá a qué página pertenece este módulo (ej: «Blog»). Es solo un identificador para organizar el catálogo; no cambia dónde se puede usar.</div>
                 </div>
               </div>
               <!-- Check de alerta de la variante -->
@@ -238,22 +246,30 @@
                 <div style="font-size:.7rem;color:#94a3b8;padding:.6rem 1rem 0;line-height:1.5;">Este contenido es compartido: los cambios se aplican automáticamente a todas las variantes de este módulo.</div>
                 <div class="section-card-body" id="modulos-content-body" style="padding:1rem;"></div>
               </div>
-              <!-- Campos de diseño (visible solo si el tipo tiene designFields) -->
-              <div class="section-card" id="modulos-editor-design-card" style="display:none;">
-                <div class="section-card-header"><span class="section-card-title">Diseño</span></div>
-                <div class="section-card-body" id="modulos-editor-design-fields" style="padding:1rem;display:flex;flex-direction:column;gap:.875rem;"></div>
+              <!-- El diseño (colores) y el preview ahora viven en el modal de edición visual. -->
+            </div>
+          </div>
+
+          <!-- ═══ Modal: edición visual en vivo (preview + lápices + colores) ═══ -->
+          <div id="mod-preview-modal" class="mpm" style="display:none;">
+            <div class="mpm-backdrop" id="mpm-backdrop"></div>
+            <div class="mpm-dialog" role="dialog" aria-modal="true" aria-labelledby="mpm-title">
+              <div class="mpm-header">
+                <div class="mpm-title" id="mpm-title">Edición visual</div>
+                <div class="mpm-header-actions">
+                  <button class="btn-save" id="mpm-save">Guardar</button>
+                  <button class="btn-secondary" id="mpm-close"><i class="fa-solid fa-xmark"></i> Cerrar</button>
+                </div>
               </div>
-              <!-- Preview (visible después de guardar o al hacer click en Preview) -->
-              <div class="section-card" id="modulos-preview-card" style="display:none;grid-column:1/-1;">
-                <div class="section-card-header" style="display:flex;align-items:center;justify-content:space-between;">
-                  <span class="section-card-title">Preview</span>
-                  <button class="btn-secondary" id="modulos-preview-close-btn" style="padding:.25rem .625rem;font-size:.7rem;"><i class="fa-solid fa-xmark"></i> Cerrar</button>
+              <div class="mpm-body">
+                <div class="mpm-stage">
+                  <iframe id="mpm-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
                 </div>
-                <div class="section-card-body" style="padding:0;overflow-x:auto;overflow-y:hidden;border-radius:0 0 .5rem .5rem;">
-                  <iframe id="modulos-preview-iframe"
-                    style="width:100%;min-width:1200px;min-height:400px;border:none;display:block;"
-                    sandbox="allow-scripts allow-same-origin"></iframe>
-                </div>
+                <aside class="mpm-side">
+                  <div class="mpm-side-head"><i class="fa-solid fa-palette"></i> Colores y diseño</div>
+                  <div class="mpm-side-fields" id="mpm-design-fields"></div>
+                  <div class="mpm-side-tip"><i class="fa-solid fa-pen"></i> Tocá el lápiz al lado de cada texto del preview para editarlo en vivo.</div>
+                </aside>
               </div>
             </div>
           </div>
