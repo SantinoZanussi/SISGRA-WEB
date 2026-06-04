@@ -228,7 +228,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
     // Post-render: conectar funcionalidad que estaba en el HTML estático
     bindMobileDrawer();
     bindContactForm();
-    applyGlobalContactoSEO();
+    applyGlobalContactoSEO(tipo);
     hydrateBlogList();
     hydrateBlogCards();
     hydrateClientesTrack();
@@ -432,7 +432,7 @@ async function hydrateClientesTrack() {
 }
 
 // ── Aplicar contacto + SEO globales (datos transversales a todas las plantillas) ──
-async function applyGlobalContactoSEO() {
+async function applyGlobalContactoSEO(tipo) {
   try {
     const [contacto, seo] = await Promise.all([
       fetch(`${API_BASE}/data/contacto?t=${Date.now()}`, { cache: 'no-store' }).then(r => r.ok ? r.json() : null).catch(() => null),
@@ -446,8 +446,10 @@ async function applyGlobalContactoSEO() {
       }
     }
     if (seo) {
-      // Determinar key SEO por título de página
-      const route = (() => {
+      // Clave SEO: del tipo de la plantilla (index→home, igual que el admin). Si no
+      // hay datos guardados para esa clave, caemos al mapeo por ruta (compatibilidad
+      // con las páginas estándar).
+      const byPath = () => {
         const path = window.location.pathname.toLowerCase();
         if (path.endsWith('/blog.html')) return 'blog';
         if (path.endsWith('/articulo.html')) return 'articulo';
@@ -457,7 +459,9 @@ async function applyGlobalContactoSEO() {
         if (path.endsWith('/soporte_it.html')) return 'soporte';
         if (path.endsWith('/desarrollo.html')) return 'desarrollo';
         return 'home';
-      })();
+      };
+      const tipoKey = tipo ? (tipo === 'index' ? 'home' : tipo) : null;
+      const route = (tipoKey && seo[tipoKey]) ? tipoKey : byPath();
       const meta = seo[route];
       if (meta) {
         const t = document.getElementById('meta-title');

@@ -61,30 +61,25 @@ function pendingContIndex() {
   return e3.conts.findIndex(c => c.modulos.length < c.cap);
 }
 
-// Refresca el estado de los controles del tray según haya o no un contenedor
-// incompleto (bloquea "Nuevo contenedor", habilita "Insertar" solo si hay destino,
-// y muestra el aviso de cuántos módulos faltan).
+// Refresca el estado de los controles de inserción según haya o no un contenedor
+// incompleto: habilita "Insertar" solo si hay destino y selección, y actualiza el
+// título del popover con cuántos módulos faltan.
 function refreshContControls() {
   const pending = pendingContIndex();
   e3.activeCont = pending;   // el destino de inserción siempre es el incompleto
 
-  const newBtn = document.getElementById('e3-newcont');
-  if (newBtn) {
-    newBtn.disabled = pending !== -1;
-    newBtn.title = pending !== -1 ? 'Completá el contenedor actual antes de crear otro' : 'Crear un contenedor (1 a 3 módulos en fila)';
-  }
   const insBtn = document.getElementById('e3-insert');
   if (insBtn) insBtn.disabled = e3.search.selected.length === 0 || pending === -1;
 
-  const hint = document.getElementById('e3-cont-hint');
-  if (hint) {
+  // El título del popover de inserción refleja el contenedor incompleto destino.
+  const title = document.getElementById('e3-insert-pop-title');
+  if (title) {
     if (pending !== -1) {
       const c = e3.conts[pending];
       const faltan = c.cap - c.modulos.length;
-      hint.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Contenedor <b>${c.cap}×1</b> incompleto: falta${faltan !== 1 ? 'n' : ''} <b>${faltan}</b> módulo${faltan !== 1 ? 's' : ''}. Insertálo${faltan !== 1 ? 's' : ''} para continuar.`;
-      hint.style.display = '';
+      title.innerHTML = `Insertar en contenedor <b>${c.cap}×1</b> · falta${faltan !== 1 ? 'n' : ''} ${faltan} módulo${faltan !== 1 ? 's' : ''}`;
     } else {
-      hint.style.display = 'none';
+      title.textContent = 'Insertar módulo';
     }
   }
 }
@@ -518,6 +513,7 @@ async function openEditor(id) {
 
 function backToOverview() {
   if (e3.dirty && !confirm('Hay cambios sin guardar. ¿Salir igual?')) return;
+  closeInsertPopover();
   e3.activeTpl = null; e3.conts = []; e3.sel = null; e3.activeCont = null;
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-plantillas').classList.add('active');
@@ -544,60 +540,41 @@ function renderEditorShell() {
       </div>
     </div>
     <style>
-      /* Barra horizontal de inserción (arriba del canvas, ya no es tray vertical) */
-      /* El editor llena el alto disponible con flex (robusto al alto de la barra). */
+      /* El editor llena el alto disponible con flex; el canvas ocupa todo el alto. */
       #panel-tpl-editor{height:100%;}
       #tpl-editor-inner{display:flex;flex-direction:column;height:100%;min-height:0;}
       .editor-shell{flex:1;min-height:0;height:auto;}
-      .e3-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;padding:.55rem .9rem;background:var(--white);border:1px solid var(--slate-200);}
-      .e3-tb-label{font-size:.5rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--slate-500);white-space:nowrap;flex-shrink:0;}
-      .e3-newcont-wrap{position:relative;flex-shrink:0;}
-      .e3-newcont-btn{white-space:nowrap;}
-      .e3-newcont-btn:disabled{opacity:.45;cursor:not-allowed;}
-      .e3-chipsearch{flex:1;min-width:220px;position:relative;}
+      /* El preview del e3 ocupa el ancho disponible (con un margen via el padding del
+         scroll), en vez del 1200px fijo de .page-frame.desktop (esa regla la usa el
+         editor legacy con su switcher de viewport, no la tocamos). */
+      #e3-canvas.page-frame.desktop{width:100%;min-width:0;max-width:1600px;}
+      /* Popover de inserción de módulos: aparece al click en "+ Insertar módulo"
+         (ya no es una barra fija arriba del canvas). */
+      .e3-insert-pop{position:fixed;z-index:2000;width:360px;max-width:calc(100vw - 1.5rem);background:#fff;border:1px solid var(--slate-200);border-radius:.5rem;box-shadow:0 12px 40px rgba(0,0,0,.22);padding:.7rem;}
+      .e3-insert-pop-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.55rem;}
+      .e3-insert-pop-title{font-size:.58rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--sisgra-blue);line-height:1.3;}
+      .e3-insert-pop-close{background:none;border:none;font-size:1.15rem;line-height:1;color:var(--slate-400);cursor:pointer;padding:0 .2rem;}
+      .e3-insert-pop-close:hover{color:var(--slate-700);}
+      .e3-chipsearch{position:relative;margin-bottom:.55rem;}
       .e3-chipbox{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;border:1px solid var(--slate-300);border-radius:.4rem;padding:.3rem;background:#fff;min-height:2.2rem;}
       .e3-chip{display:inline-flex;align-items:center;gap:.3rem;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .5rem;border-radius:1rem;white-space:nowrap;}
       .e3-chip button{background:rgba(255,255,255,.3);border:none;color:#fff;border-radius:50%;width:1rem;height:1rem;line-height:1;cursor:pointer;font-size:.7rem;padding:0;}
       .e3-search-input{flex:1;min-width:90px;border:none;outline:none;font-size:.75rem;font-family:inherit;padding:.2rem;background:transparent;}
-      .e3-insert{flex-shrink:0;white-space:nowrap;}
+      .e3-insert{width:100%;white-space:nowrap;}
       .e3-insert:disabled{opacity:.5;cursor:not-allowed;}
       .e3-results{position:absolute;left:0;right:0;top:calc(100% + .3rem);background:#fff;border:1px solid var(--slate-200);border-radius:.4rem;box-shadow:0 8px 24px rgba(0,0,0,.14);max-height:300px;overflow:auto;z-index:60;}
       .e3-result{padding:.5rem .6rem;cursor:pointer;display:flex;flex-direction:column;gap:.1rem;border-bottom:1px solid var(--slate-100);}
       .e3-result:hover{background:var(--slate-50);}
       .e3-result-name{font-size:.75rem;font-weight:700;color:var(--slate-800);}
       .e3-result-sub{font-size:.6rem;color:var(--slate-400);letter-spacing:.04em;text-transform:uppercase;}
-      .e3-cont-hint{flex-basis:100%;font-size:.62rem;line-height:1.4;color:#9a3412;background:#fff7ed;border:1px solid #fed7aa;border-radius:.3rem;padding:.4rem .55rem;}
-      .e3-gridpick{position:absolute;left:0;top:calc(100% + .3rem);min-width:150px;z-index:70;background:#fff;border:1px solid var(--slate-200);box-shadow:0 8px 24px rgba(0,0,0,.16);border-radius:.4rem;padding:.6rem;}
-      .e3-gridpick-hint{font-size:.55rem;color:var(--slate-400);letter-spacing:.05em;text-transform:uppercase;font-weight:700;margin-bottom:.4rem;text-align:center;}
-      .e3-gridpick-cells{display:flex;gap:.3rem;justify-content:center;}
-      .e3-gridpick-cell{width:2rem;height:2rem;border:1px solid var(--slate-300);background:var(--slate-50);cursor:pointer;border-radius:.2rem;transition:background .1s,border-color .1s;}
-      .e3-gridpick-cell.on{background:#bfdbfe;border-color:#2563eb;}
-      .e3-gridpick-label{text-align:center;font-size:.7rem;font-weight:800;color:var(--sisgra-blue);margin-top:.45rem;font-family:'IBM Plex Mono',monospace;}
       .e3-props-tabs{display:flex;gap:.25rem;}
       .e3-props-tabs button{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .55rem;border:1px solid var(--slate-200);background:#fff;color:var(--slate-500);cursor:pointer;border-radius:.3rem;}
       .e3-props-tabs button.active{background:var(--sisgra-blue);color:#fff;border-color:var(--sisgra-blue);}
     </style>
-    <div class="e3-toolbar">
-      <span class="e3-tb-label">Insertar · ${escAttr(tpl.tipo)}</span>
-      <div class="e3-newcont-wrap">
-        <button class="btn-edit-small e3-newcont-btn" id="e3-newcont"><i class="fa-solid fa-table-cells-large"></i> Nuevo contenedor</button>
-        <div class="e3-gridpick" id="e3-gridpick" style="display:none;">
-          <div class="e3-gridpick-hint">Módulos en fila</div>
-          <div class="e3-gridpick-cells" id="e3-gridpick-cells"></div>
-          <div class="e3-gridpick-label" id="e3-gridpick-label">1 × 1</div>
-        </div>
-      </div>
-      <div class="e3-chipsearch">
-        <div class="e3-chipbox" id="e3-chipbox"><input class="e3-search-input" id="e3-search-input" placeholder="Buscar módulo (ej: noticias)…" autocomplete="off"/></div>
-        <div class="e3-results" id="e3-results" style="display:none;"></div>
-      </div>
-      <button class="btn-save e3-insert" id="e3-insert" disabled><i class="fa-solid fa-plus"></i> Insertar seleccionados</button>
-      <div class="e3-cont-hint" id="e3-cont-hint" style="display:none;"></div>
-    </div>
     <div class="editor-shell">
       <div class="page-canvas-wrap">
         <div class="canvas-ruler"><span style="font-size:.5rem;font-weight:700;color:var(--slate-400);letter-spacing:.2em;text-transform:uppercase;">Vista previa — ${escAttr(tpl.tipo)}.html</span></div>
-        <div style="flex:1;min-height:0;overflow:auto;display:flex;align-items:stretch;justify-content:center;padding:1rem 1.5rem;">
+        <div style="flex:1;min-height:0;overflow:auto;display:flex;align-items:stretch;justify-content:center;padding:1rem 2rem;">
           <iframe class="page-frame desktop" id="e3-canvas" style="border:none;background:#fff;height:100%;min-height:420px;"></iframe>
         </div>
       </div>
@@ -611,6 +588,17 @@ function renderEditorShell() {
         </div>
         <div class="props-body" id="e3-props-body"><div class="props-empty">Click sobre un módulo del canvas para editarlo.</div></div>
       </div>
+    </div>
+    <div class="e3-insert-pop" id="e3-insert-pop" style="display:none;">
+      <div class="e3-insert-pop-head">
+        <span class="e3-insert-pop-title" id="e3-insert-pop-title">Insertar módulo</span>
+        <button type="button" class="e3-insert-pop-close" id="e3-insert-pop-close" title="Cerrar">×</button>
+      </div>
+      <div class="e3-chipsearch">
+        <div class="e3-chipbox" id="e3-chipbox"><input class="e3-search-input" id="e3-search-input" placeholder="Buscar módulo (ej: noticias)…" autocomplete="off"/></div>
+        <div class="e3-results" id="e3-results" style="display:none;"></div>
+      </div>
+      <button class="btn-save e3-insert" id="e3-insert" disabled><i class="fa-solid fa-plus"></i> Insertar seleccionados</button>
     </div>`;
 
   document.getElementById('e3-back').addEventListener('click', backToOverview);
@@ -621,7 +609,7 @@ function renderEditorShell() {
   });
   document.getElementById('e3-insert').addEventListener('click', insertSelected);
   bindChipSearch();
-  bindGridPicker();
+  bindInsertPopover();
   document.querySelectorAll('[data-e3-tab]').forEach(t => t.addEventListener('click', () => {
     e3.propsTab = t.dataset.e3Tab;
     document.querySelectorAll('[data-e3-tab]').forEach(x => x.classList.toggle('active', x === t));
@@ -780,9 +768,7 @@ function insertSelected() {
     }
   }
   const { placed, rejected } = placeModuleIds(ids);
-  e3.search.selected = [];
-  renderChips();
-  const box = document.getElementById('e3-results'); if (box) box.style.display = 'none';
+  closeInsertPopover();   // limpia chips/buscador y oculta el popover
   markDirty(); renderCanvas(); renderProps();
   const base = `✓ ${placed} módulo${placed !== 1 ? 's' : ''} insertado${placed !== 1 ? 's' : ''}`;
   notif(rejected ? `${base} · ${rejected} no entró: el contenedor ya está completo` : base, rejected ? 'error' : 'success');
@@ -817,42 +803,145 @@ function crearContenedor(cap) {
   e3.sel = null;
   markDirty(); renderCanvas(); renderProps();
   notif(`✓ Contenedor ${n}×1 creado — insertá ${n} módulo${n > 1 ? 's' : ''} adentro para continuar`);
-  document.getElementById('e3-search-input')?.focus();
+  openInsertPopoverForPending();   // abre el buscador anclado al primer slot vacío
 }
 
-// ─── Grid picker tipo Docs (1 a 3 módulos en fila) ──────────────────
-function bindGridPicker() {
-  const btn = document.getElementById('e3-newcont');
-  const pop = document.getElementById('e3-gridpick');
-  const cellsWrap = document.getElementById('e3-gridpick-cells');
-  const label = document.getElementById('e3-gridpick-label');
-  if (!btn || !pop || !cellsWrap) return;
+// ─── Botón "Nuevo contenedor" (al fondo del canvas, dentro del iframe) ──
+// HTML del botón grande de "Nuevo contenedor" que se renderiza SIEMPRE al final
+// del canvas (los contenedores nuevos siempre aparecen abajo). Si hay un
+// contenedor incompleto, en su lugar se muestra un aviso (no se puede crear otro).
+function buildAddContHtml() {
+  if (pendingContIndex() !== -1) {
+    return `
+<div class="e3-addcont">
+  <div class="e3-addcont-blocked"><i class="fa-solid fa-circle-info"></i> Completá el contenedor de arriba para agregar otro</div>
+</div>`;
+  }
+  return `
+<div class="e3-addcont" data-addcont>
+  <button type="button" class="e3-addcont-btn" data-addcont-toggle><span class="e3-addcont-plus">+</span> Nuevo contenedor</button>
+  <div class="e3-addcont-pick" data-addcont-pick style="display:none;">
+    <span class="e3-addcont-pick-hint">¿Cuántos módulos en fila?</span>
+    <div class="e3-addcont-pick-cells">
+      <button type="button" data-addk="1">1 × 1</button>
+      <button type="button" data-addk="2">2 × 1</button>
+      <button type="button" data-addk="3">3 × 1</button>
+    </div>
+  </div>
+</div>`;
+}
 
-  cellsWrap.innerHTML = Array.from({ length: CONT_MAX }, (_, i) =>
-    `<div class="e3-gridpick-cell" data-k="${i + 1}"></div>`).join('');
-  const cells = [...cellsWrap.querySelectorAll('.e3-gridpick-cell')];
-  const paint = k => {
-    cells.forEach((c, i) => c.classList.toggle('on', i < k));
-    if (label) label.textContent = `${k} × 1`;
-  };
-  paint(1);
+// Conecta el botón del fondo del canvas: al click, el selector de tamaño (1 a 3
+// módulos en fila) REEMPLAZA al botón en el mismo lugar (sin empujar el layout), y
+// cada celda crea el contenedor. Click fuera del bloque → vuelve al botón.
+function bindAddCont(doc) {
+  const wrap = doc.querySelector('[data-addcont]');
+  if (!wrap) return;
+  const toggle = wrap.querySelector('[data-addcont-toggle]');
+  toggle?.addEventListener('click', ev => { ev.stopPropagation(); setAddContOpen(wrap, true); });
+  wrap.querySelectorAll('[data-addk]').forEach(b =>
+    b.addEventListener('click', () => crearContenedor(+b.dataset.addk)));
+  // Colapsar el selector al click fuera del bloque (listener de-duplicado: el doc
+  // del iframe persiste entre renders, sólo cambia su innerHTML).
+  doc.removeEventListener('click', onIframeClickCollapseAddCont);
+  doc.addEventListener('click', onIframeClickCollapseAddCont);
+}
 
-  btn.addEventListener('click', ev => {
-    ev.stopPropagation();
-    pop.style.display = (pop.style.display === 'none') ? '' : 'none';
-    paint(1);
-  });
-  cells.forEach(c => {
-    c.addEventListener('mouseenter', () => paint(+c.dataset.k));
-    c.addEventListener('click', ev => {
-      ev.stopPropagation();
-      crearContenedor(+c.dataset.k);
-      pop.style.display = 'none';
-    });
-  });
-  document.addEventListener('click', ev => {
-    if (!ev.target.closest('.e3-newcont-wrap')) pop.style.display = 'none';
-  });
+function setAddContOpen(wrap, open) {
+  const toggle = wrap.querySelector('[data-addcont-toggle]');
+  const pick = wrap.querySelector('[data-addcont-pick]');
+  if (pick) pick.style.display = open ? 'flex' : 'none';
+  if (toggle) toggle.style.display = open ? 'none' : 'flex';
+}
+
+function onIframeClickCollapseAddCont(ev) {
+  if (ev.target.closest('[data-addcont]')) return;   // click dentro del bloque
+  const wrap = ev.currentTarget.querySelector('[data-addcont]');
+  if (wrap) setAddContOpen(wrap, false);
+}
+
+// ─── Popover de inserción de módulos (aparece al click en "+ Insertar módulo") ──
+function bindInsertPopover() {
+  document.getElementById('e3-insert-pop-close')?.addEventListener('click', closeInsertPopover);
+  // Listeners a nivel documento: de-duplicados (esta función corre por cada editor abierto).
+  document.removeEventListener('mousedown', onDocMouseForPopover);
+  document.addEventListener('mousedown', onDocMouseForPopover);
+  document.removeEventListener('keydown', onKeyForPopover);
+  document.addEventListener('keydown', onKeyForPopover);
+}
+
+// Cierra el popover al click fuera de él (los clicks dentro del iframe no llegan acá,
+// así que abrir desde un slot no lo cierra al instante).
+function onDocMouseForPopover(ev) {
+  const pop = document.getElementById('e3-insert-pop');
+  if (!pop || pop.style.display === 'none') return;
+  if (ev.target.closest('#e3-insert-pop')) return;
+  closeInsertPopover();
+}
+function onKeyForPopover(ev) {
+  if (ev.key !== 'Escape') return;
+  const pop = document.getElementById('e3-insert-pop');
+  if (pop && pop.style.display !== 'none') closeInsertPopover();
+}
+
+// Abre el popover de inserción anclado a un slot del canvas (elemento del iframe).
+function openInsertPopover(slotEl) {
+  const pop = document.getElementById('e3-insert-pop');
+  if (!pop) return;
+  if (pendingContIndex() === -1) { notif('Este contenedor ya está completo', 'error'); return; }
+  pop.style.display = 'block';
+  positionInsertPopover(slotEl);
+  refreshContControls();             // título + estado del botón insertar
+  const input = document.getElementById('e3-search-input');
+  if (input) { input.value = e3.search.query || ''; setTimeout(() => input.focus(), 0); }
+  renderResults();
+}
+
+// Abre el popover sobre el primer slot vacío del contenedor incompleto, trayéndolo
+// a la vista primero (un contenedor recién creado puede quedar bajo el fold).
+function openInsertPopoverForPending() {
+  const slot = document.getElementById('e3-canvas')?.contentDocument?.querySelector('.e3-slot');
+  if (!slot) return;
+  slot.scrollIntoView({ block: 'center' });
+  openInsertPopover(slot);
+}
+
+// Posiciona el popover (position:fixed) justo debajo del slot clickeado, dentro del
+// iframe; mapea las coordenadas del iframe al viewport del padre y las recorta.
+function positionInsertPopover(slotEl) {
+  const pop = document.getElementById('e3-insert-pop');
+  const iframe = document.getElementById('e3-canvas');
+  if (!pop || !iframe) return;
+  const ifr = iframe.getBoundingClientRect();
+  const margin = 8;
+  let top, left;
+  if (slotEl) {
+    const r = slotEl.getBoundingClientRect();   // relativo al viewport del iframe
+    top = ifr.top + r.bottom + 6;
+    left = ifr.left + r.left;
+  } else {
+    top = ifr.top + 40; left = ifr.left + 40;
+  }
+  const pw = pop.offsetWidth || 360;
+  const ph = pop.offsetHeight || 200;
+  if (left + pw > window.innerWidth - margin) left = window.innerWidth - margin - pw;
+  if (left < margin) left = margin;
+  if (top + ph > window.innerHeight - margin) top = Math.max(margin, window.innerHeight - margin - ph);
+  pop.style.top = `${Math.round(top)}px`;
+  pop.style.left = `${Math.round(left)}px`;
+}
+
+// Cierra el popover y limpia el buscador (chips + query) para arrancar en limpio.
+function closeInsertPopover() {
+  const pop = document.getElementById('e3-insert-pop');
+  if (pop) pop.style.display = 'none';
+  e3.search.query = '';
+  e3.search.selected = [];
+  const input = document.getElementById('e3-search-input');
+  if (input) input.value = '';
+  const box = document.getElementById('e3-results');
+  if (box) { box.style.display = 'none'; box.innerHTML = ''; }
+  renderChips();
 }
 
 // ─── Iframe con CSS específico por tipo ─────────────────────────────
@@ -898,7 +987,6 @@ ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
   .e3-sec-ctrls .e3-danger{color:#dc2626;}
   .e3-sec-badge{position:absolute;top:8px;left:8px;z-index:9998;background:rgba(15,23,42,.85);color:#fff;font:700 .6rem/1 Inter,system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;padding:.25rem .5rem;border-radius:.25rem;opacity:0;transition:opacity .15s;pointer-events:none;}
   .e3-sec-wrap:hover .e3-sec-badge,.e3-sec-wrap.e3-selected .e3-sec-badge{opacity:1;}
-  .e3-empty{padding:6rem 2rem;text-align:center;color:#94a3b8;border:2px dashed #cbd5e1;margin:1rem;font-family:Inter,system-ui,sans-serif;}
   /* ── Contenedores (filas) en el canvas ── */
   .e3-cont{position:relative;border:2px dashed #cbd5e1;margin:10px;transition:border-color .15s,box-shadow .15s;}
   .e3-cont.e3-cont-active{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12);}
@@ -912,6 +1000,19 @@ ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
   .e3-slot{display:flex;align-items:center;justify-content:center;min-height:90px;border:2px dashed #d4dae3;margin:6px;background:repeating-linear-gradient(45deg,#fafbfc,#fafbfc 8px,#f1f5f9 8px,#f1f5f9 16px);cursor:pointer;transition:border-color .15s,background .15s;}
   .e3-slot:hover{border-color:#60a5fa;}
   .e3-slot-inner{font:700 .68rem/1.3 Inter,system-ui,sans-serif;color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:.4rem;}
+  /* ── Botón "Nuevo contenedor" al fondo del canvas ── */
+  .e3-empty-lite{padding:3rem 2rem 1rem;text-align:center;color:#94a3b8;font:700 .82rem/1.6 Inter,system-ui,sans-serif;}
+  .e3-empty-lite small{display:block;margin-top:.4rem;font-weight:500;font-size:.68rem;opacity:.8;}
+  .e3-addcont{margin:10px;}
+  .e3-addcont-btn{width:100%;min-height:96px;display:flex;align-items:center;justify-content:center;gap:.5rem;border:2px dashed #c2cad6;background:repeating-linear-gradient(45deg,#fafbfc,#fafbfc 8px,#f1f5f9 8px,#f1f5f9 16px);color:#94a3b8;font:800 .82rem/1 Inter,system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;border-radius:4px;transition:border-color .15s,color .15s,background .15s;}
+  .e3-addcont-btn:hover{border-color:#60a5fa;color:#2563eb;background:#eff6ff;}
+  .e3-addcont-plus{font-size:1.4rem;line-height:1;font-weight:400;}
+  .e3-addcont-pick{flex-direction:column;align-items:center;justify-content:center;gap:.6rem;min-height:96px;border:2px dashed #93c5fd;background:#eff6ff;border-radius:4px;padding:1rem;}
+  .e3-addcont-pick-hint{font:700 .62rem/1 Inter,system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#2563eb;}
+  .e3-addcont-pick-cells{display:flex;gap:.5rem;}
+  .e3-addcont-pick-cells button{font:800 .82rem/1 'IBM Plex Mono',monospace;color:#1d4ed8;background:#fff;border:1px solid #93c5fd;border-radius:4px;padding:.6rem .95rem;cursor:pointer;transition:background .12s,color .12s,border-color .12s;}
+  .e3-addcont-pick-cells button:hover{background:#2563eb;color:#fff;border-color:#2563eb;}
+  .e3-addcont-blocked{display:flex;align-items:center;justify-content:center;gap:.4rem;min-height:64px;border:2px dashed #e2e8f0;background:#f8fafc;color:#94a3b8;font:700 .68rem/1.3 Inter,system-ui,sans-serif;letter-spacing:.04em;text-transform:uppercase;border-radius:4px;}
 </style>
 </head><${B}></${B}></html>`;
   iframe._queue = iframe._queue || [];
@@ -929,11 +1030,12 @@ function renderCanvas() {
   ensureCanvasCss(doc);
   refreshContControls();   // fija activeCont = contenedor incompleto y estado de botones
   if (!e3.conts.length) {
-    doc.body.innerHTML = `<div class="e3-empty" style="min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-      <div style="font-size:2.5rem;margin-bottom:.75rem;opacity:.25;line-height:1;">⊞</div>
-      Creá un <b style="margin:0 .3rem;">contenedor</b> a la izquierda<br>
-      <small style="font-size:.65rem;display:block;margin-top:.4rem;opacity:.7;">elegí 1 a 3 módulos en fila, después insertá los módulos adentro</small>
-    </div>`;
+    doc.body.innerHTML = `<div class="e3-empty-lite">
+      <div style="font-size:2.25rem;margin-bottom:.5rem;opacity:.25;line-height:1;">⊞</div>
+      Esta plantilla todavía no tiene contenedores.<br>
+      <small>Creá uno abajo: elegí 1 a 3 módulos en fila y después insertá los módulos adentro.</small>
+    </div>` + buildAddContHtml();
+    bindAddCont(doc);
     return;
   }
   const navItems = buildNavItems(e3.navbar);
@@ -978,7 +1080,7 @@ function renderCanvas() {
   </div>
   <div class="e3-cont-grid" style="grid-template-columns:repeat(${cols},minmax(0,1fr));">${slots.join('')}</div>
 </div>`;
-  }).join('');
+  }).join('') + buildAddContHtml();
 
   // Selección de módulo (para el panel de propiedades)
   doc.querySelectorAll('.e3-sec-wrap').forEach(w => {
@@ -998,11 +1100,9 @@ function renderCanvas() {
       });
     });
   });
-  // Slots vacíos → enfocan el buscador (el destino de inserción ya es este contenedor)
+  // Slots vacíos → abren el popover de inserción anclado al slot clickeado.
   doc.querySelectorAll('.e3-slot').forEach(s => {
-    s.addEventListener('click', () => {
-      document.getElementById('e3-search-input')?.focus();
-    });
+    s.addEventListener('click', () => openInsertPopover(s));
   });
   // Botones de la barra del contenedor → mover/eliminar
   doc.querySelectorAll('[data-cont-bar]').forEach(bar => {
@@ -1017,6 +1117,8 @@ function renderCanvas() {
       });
     });
   });
+  // Botón "Nuevo contenedor" al fondo del canvas.
+  bindAddCont(doc);
   doc.querySelectorAll('a').forEach(a => a.addEventListener('click', ev => ev.preventDefault()));
   doc.querySelectorAll('form').forEach(f => f.addEventListener('submit', ev => ev.preventDefault()));
 }
@@ -1443,6 +1545,12 @@ function initE3() {
 
   const c = stripListeners(document.getElementById('crear-plantilla-btn'));
   if (c) c.addEventListener('click', crearPlantilla);
+
+  // El botón "Gestionar Plantillas" del dashboard apuntaba al editor legacy
+  // (openTemplateEditor con state.templates, que está vacío en el sistema e3).
+  // Lo redirigimos al overview de plantillas e3.
+  const dashBtn = stripListeners(document.getElementById('dash-editar-home'));
+  if (dashBtn) dashBtn.addEventListener('click', goToPlantillas);
 
   // Override old globals so any leftover async old code doesn't overwrite our renders
   window.renderSidebarTemplates = renderSidebarList;

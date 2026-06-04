@@ -145,6 +145,7 @@ function showPanel(id){
 
   if (id === 'navbar'  && typeof loadNavbarItems  === 'function') loadNavbarItems();
   if (id === 'modulos' && typeof window.loadModulos === 'function') window.loadModulos();
+  if (id === 'seo'     && typeof buildSeoTabs      === 'function') buildSeoTabs();
  
   // The editor panel has no padding so we override content-area
   const ca = document.querySelector('.content-area');
@@ -1546,16 +1547,76 @@ function heroJsonToSectionData(h){
 /* ══════════════════════════════════════════════
    SEO
 ══════════════════════════════════════════════ */
-const SEO_PAGES = ['home','cableado','fibra','seguridad','soporte','blog'];
+// Las pestañas de SEO se generan dinámicamente desde las plantillas existentes
+// (ver buildSeoTabs). La clave SEO de cada página = su `tipo` de plantilla, con
+// index→home (igual que el resolutor del sitio público en page-bootstrap.js).
+const SEO_LABELS = { home:'Inicio', blog:'Blog', articulo:'Artículo', cableado:'Cableado', fibra:'Fibra Óptica', seguridad:'Seguridad', soporte:'Soporte IT', desarrollo:'Desarrollo', cliente:'Clientes' };
+const SEO_ORDER  = ['home','cableado','fibra','seguridad','soporte','desarrollo','blog','articulo','cliente'];
+const seoKeyForTipo = (tipo) => tipo === 'index' ? 'home' : tipo;
+let SEO_PAGES = ['home'];   // se completa en buildSeoTabs() desde /plantillas
 const seoData = {};
 SEO_PAGES.forEach(p=>{ seoData[p]={title:'',description:''}; });
  
+// Genera las pestañas de SEO a partir de las plantillas que existen ahora mismo:
+// una pestaña por página (tipo de plantilla, deduplicado). Así aparece la pestaña
+// de una plantilla nueva y desaparece la de una que se borró. Se llama al cargar y
+// cada vez que se entra al panel SEO (showPanel('seo')).
+async function buildSeoTabs(){
+  const tabsEl = document.getElementById('seo-tabs');
+  if(!tabsEl) return;
+  const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  let plantillas = [];
+  try { const r = await apiGet('/plantillas'); plantillas = r?.plantillas || []; } catch(_){}
+
+  const keys = [];
+  const labels = {};
+  plantillas.forEach(p => {
+    const key = seoKeyForTipo(p.tipo);
+    if(!key || keys.includes(key)) return;
+    keys.push(key);
+    labels[key] = SEO_LABELS[key] || p.nombre || key;
+  });
+  // La home existe siempre, aunque por algún motivo no viniera en la lista.
+  if(!keys.includes('home')){ keys.unshift('home'); labels.home = SEO_LABELS.home; }
+  // Orden: páginas conocidas primero (SEO_ORDER), luego las custom alfabéticas.
+  keys.sort((a,b)=>{
+    const ia = SEO_ORDER.indexOf(a), ib = SEO_ORDER.indexOf(b);
+    if(ia!==-1 && ib!==-1) return ia-ib;
+    if(ia!==-1) return -1;
+    if(ib!==-1) return 1;
+    return a.localeCompare(b);
+  });
+
+  SEO_PAGES = keys;
+  // Sembrar seoData de cada clave con los valores guardados (state.seo).
+  keys.forEach(k => { seoData[k] = { title: state.seo?.[k]?.title || seoData[k]?.title || '', description: state.seo?.[k]?.description || seoData[k]?.description || '' }; });
+
+  // Conservar la pestaña activa si sigue existiendo; si no, la primera.
+  const prev = document.querySelector('#seo-tabs .tab-item.active')?.dataset.seo;
+  const active = keys.includes(prev) ? prev : keys[0];
+
+  tabsEl.innerHTML = keys.map(k => `<div class="tab-item ${k===active?'active':''}" data-seo="${esc(k)}">${esc(labels[k])}</div>`).join('');
+  tabsEl.querySelectorAll('.tab-item').forEach(tab=>{
+    tab.addEventListener('click',()=>{
+      tabsEl.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      renderSEOTab(tab.dataset.seo);
+    });
+  });
+  renderSEOTab(active);
+}
+
 function renderSEOTab(page){
   const c = document.getElementById('seo-tabs-content');
   const d = seoData[page]||{};
+  // Encabezado = etiqueta amigable de la pestaña (ej. "Plantilla TEST", "Fibra Óptica")
+  // en vez de la clave cruda capitalizada ("Btn-8", "Fibra").
+  const escH = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const label = document.querySelector(`#seo-tabs .tab-item[data-seo="${page}"]`)?.textContent?.trim() || (page.charAt(0).toUpperCase()+page.slice(1));
   c.innerHTML = `
     <div class="section-card">
-      <div class="section-card-header"><span class="section-card-title">${page.charAt(0).toUpperCase()+page.slice(1)} — SEO</span></div>
+      <div class="section-card-header"><span class="section-card-title">${escH(label)} — SEO</span></div>
       <div class="section-card-body">
         <div class="form-row"><div class="form-group">
           <label class="form-label">&lt;title&gt;</label>
@@ -1916,8 +1977,7 @@ function initApp(){
     }
     if(seo){
       state.seo=seo;
-      SEO_PAGES.forEach(p=>{ if(seo[p]) seoData[p]={title:seo[p].title||'',description:seo[p].description||''}; });
-      renderSEOTab(document.querySelector('#seo-tabs .tab-item.active')?.dataset.seo||'home');
+      buildSeoTabs();   // tabs dinámicas desde las plantillas + valores guardados
     }
     if(contacto){
       state.contacto=contacto;
@@ -2046,14 +2106,9 @@ function initApp(){
     });
   });
  
-  document.querySelectorAll('#seo-tabs .tab-item').forEach(tab=>{
-    tab.addEventListener('click',()=>{
-      document.querySelectorAll('#seo-tabs .tab-item').forEach(t=>t.classList.remove('active'));
-      tab.classList.add('active');
-      renderSEOTab(tab.dataset.seo);
-    });
-  });
-  renderSEOTab('home');
+  // Las pestañas de SEO se generan dinámicamente en buildSeoTabs() (desde las
+  // plantillas), llamada al cargar los datos y al entrar al panel SEO.
+  buildSeoTabs();
  
   document.querySelectorAll('[data-close]').forEach(btn=>{
     btn.addEventListener('click',()=>closeModal(btn.dataset.close));
