@@ -43,6 +43,10 @@ const fld = (name, value) => {
   if (EDIT_MODE) return `<span class="ed-f" data-field="${name}"${c ? ` style="color:${c}"` : ''}>${value}</span>`;
   return c ? `<span data-fc="${name}" style="color:${c}">${value}</span>` : value;
 };
+// fldImg(name) — atributo para marcar una <img> como editable en el preview del
+// panel: en modo edición agrega data-imgfield para que al hacer click se abra el
+// selector de imágenes. En el sitio público no agrega nada (markup idéntico).
+const fldImg = (name) => EDIT_MODE ? ` data-imgfield="${esc(name)}"` : '';
 
 // ═══════════════════════════════════════════════════════════════════
 export const SECTIONS = {
@@ -136,7 +140,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   <div class="max-w-1400">
     <div class="nav-inner">
       <a href="${esc(d.logoSrcHref)}" class="nav-logo">
-        <img src="${esc(d.logoSrc)}" alt="SISGRA">
+        <img src="${esc(d.logoSrc)}" alt="SISGRA"${fldImg('logoSrc')}>
       </a>
       <div class="nav-menu">
         <div class="nav-menu-list">
@@ -459,9 +463,9 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       titulo_seccion: 'Portafolio de Soluciones',
       eyebrow: 'Lo que hacemos',
       cards: [
-        { id: 'instalaciones', titulo: 'Instalaciones', descripcion: 'Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas TIA/EIA para entornos corporativos exigentes.', enlace: './html/cableado_estructurado' },
-        { id: 'soporte',       titulo: 'Soporte IT',    descripcion: 'Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.', enlace: './html/soporte_it' },
-        { id: 'software',      titulo: 'Desarrollo de Software', descripcion: 'Soluciones digitales a medida: sistemas de gestión logística, control de inventario y procesos empresariales integrados.', enlace: './html/desarrollo' },
+        { id: 'instalaciones', titulo: 'Instalaciones', descripcion: 'Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas TIA/EIA para entornos corporativos exigentes.', enlace: '/html/cableado_estructurado' },
+        { id: 'soporte',       titulo: 'Soporte IT',    descripcion: 'Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.', enlace: '/html/soporte_it' },
+        { id: 'software',      titulo: 'Desarrollo de Software', descripcion: 'Soluciones digitales a medida: sistemas de gestión logística, control de inventario y procesos empresariales integrados.', enlace: '/html/desarrollo' },
       ],
     },
     defaultDesign: { bg: '', sectionColor: '', cardBg: '', cardTitleColor: '', cardLinkColor: '', paddingY: '', titleSize: '', cardRadius: '', cardPadding: '', gap: '' },
@@ -548,7 +552,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     <div class="about-inner">
       <div class="about-img-wrap">
         <div class="about-img-frame">
-          <img src="${esc(d.imagen)}" alt="Imagen Corporativa">
+          <img src="${esc(d.imagen)}" alt="Imagen Corporativa"${fldImg('imagen')}>
         </div>
       </div>
       <div class="about-content">
@@ -701,7 +705,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     </div>
   </div>
   <div class="footer-bottom"${css({ background: s.bottomBg })}>
-    <div class="footer-brand"><img src="${esc(d.brandImg)}" alt="SISGRA"></div>
+    <div class="footer-brand"><img src="${esc(d.brandImg)}" alt="SISGRA"${fldImg('brandImg')}></div>
     <div class="footer-links">
       <a href="/html/cableado_estructurado"${css({ color: s.linkColor })}>Cableado Estructurado</a>
       <a href="/html/fibra_optica"${css({ color: s.linkColor })}>Fibra Óptica</a>
@@ -885,7 +889,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     <div class="fibra-layout">
       <div class="fibra-visual">
         <div class="fibra-image-frame">
-          <img src="${esc(d.imagenUrl)}" alt="Fibra Óptica"/>
+          <img src="${esc(d.imagenUrl)}" alt="Fibra Óptica"${fldImg('imagenUrl')}/>
           <div class="fibra-image-overlay"></div>
         </div>
         <div class="fibra-badge">
@@ -994,7 +998,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       </div>
       <div class="section-image">
         <div class="img-wrapper">
-          <img src="${esc(d.imagenUrl)}" alt="Seguridad electrónica">
+          <img src="${esc(d.imagenUrl)}" alt="Seguridad electrónica"${fldImg('imagenUrl')}>
           <div class="img-badge">
             <div class="img-badge-label">${fld('imgBadgeLabel', esc(d.imgBadgeLabel))}</div>
             <div class="img-badge-status">
@@ -1406,7 +1410,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
 <main class="article-container"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl article-grid">
     <div class="article-body"${css({ color: s.bodyTextColor })}>
-      ${d.featuredImageUrl ? `<img src="${esc(d.featuredImageUrl)}" alt="${esc(d.featuredImageAlt)}" class="featured-image"${css({ 'border-radius': s.imgRadius })}>` : ''}
+      ${d.featuredImageUrl ? `<img src="${esc(d.featuredImageUrl)}" alt="${esc(d.featuredImageAlt)}" class="featured-image"${css({ 'border-radius': s.imgRadius })}${fldImg('featuredImageUrl')}>` : ''}
       ${d.contentHtml || ''}
       <div class="article-cta"${css({ background: s.ctaBg })}>
         <h3${css({ color: s.ctaTitleColor })}>${fld('ctaTitle', esc(d.ctaTitle))}</h3>
@@ -1567,7 +1571,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
 <main class="cl-body"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl cl-grid">
     <div class="cl-content"${css({ color: s.bodyTextColor })}>
-      ${d.featuredImageUrl ? `<img src="${esc(d.featuredImageUrl)}" alt="${esc(d.featuredImageAlt)}" class="cl-featured"${css({ 'border-radius': s.imgRadius })}>` : ''}
+      ${d.featuredImageUrl ? `<img src="${esc(d.featuredImageUrl)}" alt="${esc(d.featuredImageAlt)}" class="cl-featured"${css({ 'border-radius': s.imgRadius })}${fldImg('featuredImageUrl')}>` : ''}
       <div class="cl-richtext">${d.contentHtml || ''}</div>
       <div class="cl-cta"${css({ background: s.ctaBg })}>
         <h3${css({ color: s.ctaTitleColor })}>${fld('ctaTitle', esc(d.ctaTitle))}</h3>

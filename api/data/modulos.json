@@ -116,8 +116,8 @@
       "nombre": "Hero - Inicio principal",
       "data": {
         "badge": "INFRAESTRUCTURA DE ELITE",
-        "titulo1": "chau",
-        "titulo2": "MARCE",
+        "titulo1": "TEST",
+        "titulo2": "TEST 2",
         "descripcion": "Descripción del hero. Editá este texto haciendo clic directamente sobre él.",
         "boton_primario": "Ver Soluciones",
         "boton_secundario": "Conocer más",
@@ -143,7 +143,7 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-04T18:08:15.558Z",
+      "editado_en": "2026-06-07T19:01:07.404Z",
       "id_pagina": 1
     },
     {
@@ -250,20 +250,20 @@
             "id": "instalaciones",
             "titulo": "Instalaciones",
             "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
-            "enlace": "./html/cableado_estructurado.html",
+            "enlace": "/html/cableado_estructurado",
             "link": ""
           },
           {
             "id": "soporte",
             "titulo": "Soporte IT",
             "descripcion": "Mantenimiento integral de infraestructura y asistencia técnica corporativa especializada.",
-            "enlace": "./html/soporte_it.html"
+            "enlace": "/html/soporte_it"
           },
           {
             "id": "software",
             "titulo": "Software",
             "descripcion": "Soluciones a medida para optimizar procesos logísticos y gestión de datos empresariales.",
-            "enlace": "./html/desarrollo.html"
+            "enlace": "/html/desarrollo"
           }
         ]
       },
@@ -314,7 +314,7 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-04T18:17:17.550Z",
+      "editado_en": "2026-06-07T19:38:31.510Z",
       "id_pagina": null
     },
     {
@@ -607,20 +607,20 @@
             "id": "instalaciones",
             "titulo": "Instalaciones",
             "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
-            "enlace": "./html/cableado_estructurado.html",
+            "enlace": "/html/cableado_estructurado",
             "link": ""
           },
           {
             "id": "soporte",
             "titulo": "Soporte IT",
             "descripcion": "Mantenimiento integral de infraestructura y asistencia técnica corporativa especializada.",
-            "enlace": "./html/soporte_it.html"
+            "enlace": "/html/soporte_it"
           },
           {
             "id": "software",
             "titulo": "Software",
             "descripcion": "Soluciones a medida para optimizar procesos logísticos y gestión de datos empresariales.",
-            "enlace": "./html/desarrollo.html"
+            "enlace": "/html/desarrollo"
           }
         ]
       },
@@ -643,7 +643,7 @@
       },
       "alerta": false,
       "creado_en": "2026-06-03T17:13:58.429Z",
-      "editado_en": "2026-06-04T18:16:48.226Z",
+      "editado_en": "2026-06-07T19:49:24.411Z",
       "id_pagina": null
     },
     {
@@ -803,20 +803,20 @@
             "id": "instalaciones",
             "titulo": "Instalaciones",
             "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
-            "enlace": "./html/cableado_estructurado.html",
+            "enlace": "/html/cableado_estructurado",
             "link": ""
           },
           {
             "id": "soporte",
             "titulo": "Soporte IT",
             "descripcion": "Mantenimiento integral de infraestructura y asistencia técnica corporativa especializada.",
-            "enlace": "./html/soporte_it.html"
+            "enlace": "/html/soporte_it"
           },
           {
             "id": "software",
             "titulo": "Software",
             "descripcion": "Soluciones a medida para optimizar procesos logísticos y gestión de datos empresariales.",
-            "enlace": "./html/desarrollo.html"
+            "enlace": "/html/desarrollo"
           }
         ]
       },
@@ -905,20 +905,20 @@
             "id": "instalaciones",
             "titulo": "Instalaciones",
             "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
-            "enlace": "./html/cableado_estructurado.html",
+            "enlace": "/html/cableado_estructurado",
             "link": ""
           },
           {
             "id": "soporte",
             "titulo": "Soporte IT",
             "descripcion": "Mantenimiento integral de infraestructura y asistencia técnica corporativa especializada.",
-            "enlace": "./html/soporte_it.html"
+            "enlace": "/html/soporte_it"
           },
           {
             "id": "software",
             "titulo": "Software",
             "descripcion": "Soluciones a medida para optimizar procesos logísticos y gestión de datos empresariales.",
-            "enlace": "./html/desarrollo.html"
+            "enlace": "/html/desarrollo"
           }
         ]
       },

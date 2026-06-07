@@ -70,7 +70,7 @@
 .form-row.cols-3{grid-template-columns:1fr 1fr 1fr;}
 .form-group{display:flex;flex-direction:column;gap:.4rem;}
 .form-label{font-size:.5625rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--slate-500);}
-.form-input{border:1px solid var(--slate-200);padding:.6rem .875rem;font-size:.875rem;color:var(--slate-800);outline:none;transition:border-color .2s;background:var(--white);}
+.form-input{border:1px solid var(--slate-200);padding:.6rem .875rem;font-size:.875rem;color:var(--slate-800);outline:none;transition:border-color .2s;background:var(--white);width:100%;}
 .form-input:focus{border-color:var(--blue-400);}
 .form-textarea{border:1px solid var(--slate-200);padding:.6rem .875rem;font-size:.875rem;color:var(--slate-800);outline:none;transition:border-color .2s;resize:vertical;min-height:80px;background:var(--white);}
 .form-textarea:focus{border-color:var(--blue-400);}

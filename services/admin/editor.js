@@ -158,12 +158,38 @@ function modulesForTipo(_tipo) {
   return Object.entries(SECTIONS);
 }
 
+// pageKey — slug común para unir el navbar (href "/html/fibra_optica") con la
+// lista de páginas (file "html/fibra_optica.html"). La raíz "/" se mapea a "index".
+const pageKey = s => String(s ?? '').replace(/^\//, '').replace(/\.html$/, '') || 'index';
+
 // ─── Tipo select populate ───────────────────────────────────────────
+// Llena el <select> de "HTML destino" mostrando SOLO el nombre de la página y
+// agrupando las que pertenecen a un grupo del navbar (p.ej. "Instalaciones")
+// dentro de un <optgroup>. El grupo sale de navbar.json (campo `grupo`), unido a
+// cada página por su slug (href ↔ file). Las páginas que no están en el menú
+// (Artículo, Perfil de Cliente) aparecen sueltas.
 function populateTipoSelect() {
   const sel = document.getElementById('np-tipo');
   if (!sel) return;
-  sel.innerHTML = '<option value="">— Seleccionar página destino —</option>'
-    + TIPOS_HTML.map(t => `<option value="${t.value}">${t.label} — ${t.file}</option>`).join('');
+
+  // slug de página → grupo del navbar (null si no tiene grupo o no está en el menú)
+  const grupoPorPagina = {};
+  (e3.navbar || []).forEach(b => { grupoPorPagina[pageKey(b.href)] = b.grupo || null; });
+  const grupoDe = t => grupoPorPagina[pageKey(t.file)] ?? null;
+
+  const opt = t => `<option value="${t.value}">${escAttr(t.label)}</option>`;
+  let html = '<option value="">— Seleccionar página destino —</option>';
+  const emitidos = new Set();
+  TIPOS_HTML.forEach(t => {
+    if (emitidos.has(t.value)) return;
+    const grupo = grupoDe(t);
+    if (!grupo) { html += opt(t); emitidos.add(t.value); return; }
+    // Primer miembro del grupo: emitir todo el grupo junto, en orden de TIPOS_HTML.
+    const miembros = TIPOS_HTML.filter(x => grupoDe(x) === grupo);
+    html += `<optgroup label="${escAttr(grupo)}">${miembros.map(opt).join('')}</optgroup>`;
+    miembros.forEach(x => emitidos.add(x.value));
+  });
+  sel.innerHTML = html;
 }
 
 // ─── Load + render dashboard ────────────────────────────────────────
@@ -404,6 +430,9 @@ function renderSidebarList() {
 function openNuevaModal(preTipo = '') {
   document.getElementById('np-name').value = '';
   document.getElementById('np-desc').value = '';
+  // Repoblamos acá para reflejar los grupos del navbar ya cargado (en initE3
+  // el navbar todavía puede estar vacío).
+  populateTipoSelect();
   const tipoSel = document.getElementById('np-tipo');
   if (tipoSel) tipoSel.value = preTipo;
   document.getElementById('modal-nueva-plantilla').classList.add('open');
@@ -1562,6 +1591,7 @@ const GLOBAL_TIPOS_MOD = new Set(['nav','footer','footer-full']);
 let _mods       = [];      // catálogo plano [{ id_modulo, tipo, nombre, id_pagina, data, design, alerta }]
 let _modUsos    = {};      // id_modulo → cantidad de plantillas que lo usan
 let _plantillas = [];      // lista de plantillas/páginas (para el desplegable "Página asignada")
+let _modQuery   = '';      // texto del buscador del catálogo de módulos
 let _curModId   = null;
 let _curModType = null;
 let _curModData = { nombre: '', alerta: false, id_pagina: null, data: {}, design: {} };
@@ -1593,14 +1623,20 @@ function _renderPaginaSelect(selectedId) {
   }
 
   sel.disabled = false;
-  const opts = ['<option value="">— Sin asignar —</option>'].concat(
+  const opts = [
+    '<option value="">— Sin asignar —</option>',
+    '<option value="all">🌐 Todas las páginas</option>',
+  ].concat(
     _plantillas.map(p =>
       `<option value="${p.id_plantilla}">${escAttr(p.nombre)} · ${escAttr(p.tipo)}</option>`)
   );
   sel.innerHTML = opts.join('');
   sel.value = (selectedId == null || selectedId === '') ? '' : String(selectedId);
-  sel.onchange = () => { _curModData.id_pagina = sel.value === '' ? null : Number(sel.value); };
-  if (hint) hint.textContent = 'Indicá a qué página pertenece este módulo (ej: «Blog»). Es solo un identificador para organizar el catálogo; no cambia dónde se puede usar.';
+  sel.onchange = () => {
+    const v = sel.value;
+    _curModData.id_pagina = v === '' ? null : (v === 'all' ? 'all' : Number(v));
+  };
+  if (hint) hint.textContent = 'Indicá a qué página pertenece este módulo (ej: «Blog»), o «Todas las páginas». Es solo un identificador para organizar el catálogo; no cambia dónde se puede usar.';
 }
 
 function _showView(id) {
@@ -1631,6 +1667,16 @@ window.loadModulos = async function() {
   }
 };
 
+/* ¿El módulo coincide con la búsqueda? Busca en nombre, tipo, label, #id y página. */
+function _modMatches(m, q) {
+  if (!q) return true;
+  const label = SECTIONS[m.tipo]?.label || m.tipo;
+  const pag   = GLOBAL_TIPOS_MOD.has(m.tipo) || m.id_pagina === 'all'
+    ? 'todas las páginas' : _paginaLabel(m.id_pagina);
+  return `${m.nombre || ''} ${label} ${m.tipo} #${m.id_modulo} ${pag}`
+    .toLowerCase().includes(q);
+}
+
 /* ── Vista 1: catálogo plano (un card por módulo, agrupado por tipo) ── */
 function renderModCatalog() {
   _showView('modulos-catalog-view');
@@ -1640,8 +1686,14 @@ function renderModCatalog() {
     grid.innerHTML = `<div class="mod-cat-empty">No hay módulos todavía.</div>`;
     return;
   }
+  const q = _modQuery.trim().toLowerCase();
+  const matched = _mods.filter(m => _modMatches(m, q));
+  if (!matched.length) {
+    grid.innerHTML = `<div class="mod-cat-empty">Ningún módulo coincide con “${escAttr(_modQuery.trim())}”.</div>`;
+    return;
+  }
   const byTipo = {};
-  _mods.forEach(m => (byTipo[m.tipo] = byTipo[m.tipo] || []).push(m));
+  matched.forEach(m => (byTipo[m.tipo] = byTipo[m.tipo] || []).push(m));
 
   // Una sección por tipo: header (ícono + label + contador + "Nuevo") y grilla de cards.
   grid.innerHTML = Object.entries(byTipo).map(([tipo, mods]) => {
@@ -1651,15 +1703,16 @@ function renderModCatalog() {
     const cards = mods.map(m => {
       const usos     = _modUsos[m.id_modulo] || 0;
       const esGlobal = GLOBAL_TIPOS_MOD.has(m.tipo);
-      const pag      = esGlobal ? 'Todas las páginas' : _paginaLabel(m.id_pagina);
-      const pagIcon  = esGlobal ? 'fa-globe' : 'fa-file-lines';
+      const esTodas  = esGlobal || m.id_pagina === 'all';
+      const pag      = esTodas ? 'Todas las páginas' : _paginaLabel(m.id_pagina);
+      const pagIcon  = esTodas ? 'fa-globe' : 'fa-file-lines';
       return `<div class="mod-card">
         <div class="mod-card-top">
           <span class="mod-card-id">#${m.id_modulo}</span>
           <span class="mod-usos ${usos ? 'on' : ''}">${usos} uso${usos!==1?'s':''}</span>
         </div>
         <div class="mod-card-name" title="${escAttr(m.nombre || '')}">${escAttr(m.nombre || '(sin nombre)')}</div>
-        ${pag ? `<div class="mod-card-pagina${esGlobal ? ' is-global' : ''}" title="Página asignada: ${escAttr(pag)}"><i class="fa-solid ${pagIcon}"></i> ${escAttr(pag)}</div>` : ''}
+        ${pag ? `<div class="mod-card-pagina${esTodas ? ' is-global' : ''}" title="Página asignada: ${escAttr(pag)}"><i class="fa-solid ${pagIcon}"></i> ${escAttr(pag)}</div>` : ''}
         <div class="mod-card-actions">
           <button class="btn-edit-small mod-card-edit" onclick="openModEditor(${m.id_modulo})">Editar</button>
           <button class="btn-edit-small mod-icon-btn" style="background:#f1f5f9;color:#334155;" onclick="duplicarModulo(${m.id_modulo})" title="Duplicar"><i class="fa-solid fa-clone"></i></button>
@@ -1872,7 +1925,9 @@ const ED_STYLE = `
 .ed-box-color .ed-color-clear{margin-left:auto;background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;}
 .ed-box-color .ed-color-clear:hover{background:#e2e8f0;}
 .ed-box-done{margin-top:10px;width:100%;background:#2563eb;color:#fff;border:none;border-radius:6px;padding:7px;font-size:12px;font-weight:600;cursor:pointer;}
-.ed-box-done:hover{background:#1d4ed8;}`;
+.ed-box-done:hover{background:#1d4ed8;}
+[data-imgfield]{cursor:pointer;outline:2px dashed rgba(37,99,235,.6);outline-offset:3px;transition:outline .1s,filter .1s;}
+[data-imgfield]:hover{outline-style:solid;outline-color:#2563eb;filter:brightness(.9);}`;
 
 // Script inyectado DENTRO del iframe: coloca un lápiz al lado de cada texto y
 // maneja el cuadro flotante (editar la palabra + cambiar su color).
@@ -1949,6 +2004,17 @@ function ED_SCRIPT() {
       el.insertAdjacentElement('afterend', p);
       el.addEventListener('click', function (e) { e.stopPropagation(); open(el); });
     })(nodes[i]);
+  }
+  // Imágenes editables: click → avisar al padre para abrir el selector de imágenes.
+  var imgs = document.querySelectorAll('[data-imgfield]');
+  for (var k = 0; k < imgs.length; k++) {
+    (function (el) {
+      el.title = 'Click para cambiar la imagen';
+      el.addEventListener('click', function (e) {
+        e.stopPropagation(); e.preventDefault();
+        try { parent.postMessage({ __edimg: true, field: el.getAttribute('data-imgfield') }, '*'); } catch (e) {}
+      });
+    })(imgs[k]);
   }
   document.addEventListener('click', function (e) {
     if (box && !box.contains(e.target) && !(e.target.classList && e.target.classList.contains('ed-pencil'))) close();
@@ -2109,6 +2175,12 @@ async function saveCurrentModule() {
   }
 }
 
+/* ── Buscador del catálogo de módulos ── */
+document.getElementById('modulos-search')?.addEventListener('input', e => {
+  _modQuery = e.target.value || '';
+  renderModCatalog();
+});
+
 /* ── Botón: abrir el modal de edición visual (Preview) ── */
 document.getElementById('modulos-preview-btn')?.addEventListener('click', openPreviewModal);
 
@@ -2136,10 +2208,28 @@ function _setByPath(obj, path, val) {
   o[parts[parts.length - 1]] = val;
 }
 
-/* ── Ediciones inline (texto y color por palabra) que llegan del iframe ── */
-window.addEventListener('message', e => {
+// Lee un valor por "path" con puntos/índices (ej: "cards.0.titulo").
+function _getByPath(obj, path) {
+  return String(path).split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
+}
+
+/* ── Ediciones inline (texto, color y ahora imágenes) que llegan del iframe ── */
+window.addEventListener('message', async e => {
   const d = e.data;
-  if (!d || d.__ed !== true || !d.field) return;
+  if (!d || !d.field) return;
+  // Cambio de imagen desde el preview: abre el selector y re-renderiza el iframe.
+  if (d.__edimg === true) {
+    const current = _getByPath(_curModData.data || {}, d.field) || '';
+    const path = await window.__imgPicker?.open({ current });
+    if (path) {
+      _curModData.data = _curModData.data || {};
+      _setByPath(_curModData.data, d.field, path);
+      const iframe = document.getElementById('mpm-iframe');
+      if (iframe) iframe.srcdoc = _moduleSrcdoc({ editable: true });
+    }
+    return;
+  }
+  if (d.__ed !== true) return;
   _curModData.data = _curModData.data || {};
   if (d.value !== undefined) _setByPath(_curModData.data, d.field, d.value);
   if (d.color !== undefined) {
