@@ -243,9 +243,9 @@ function refreshDashVencidas() {
   } else if (proximas.length > 0) {
     const n = proximas[0];
     text.innerHTML = `<strong>Atención:</strong> "${n.nombre}" vence en ${diasRestantes(n)} día${diasRestantes(n)===1?'':'s'} (${fmtFecha(n.fecha_fin)}). Considerá renovarla.`;
-    banner.style.background = '#78350f';
-    banner.style.borderLeftColor = '#f59e0b';
-    banner.querySelector('.dash-vencidas-banner-text').style.color = '#fef3c7';
+    banner.style.background = '#fff7ed';
+    banner.style.borderLeftColor = '#ea580c';
+    banner.querySelector('.dash-vencidas-banner-text').style.color = '#9a3412';
     banner.style.display = '';
   } else {
     banner.style.display = 'none';
@@ -275,7 +275,7 @@ function renderOverview() {
           <div style="display:flex;align-items:center;gap:.35rem;flex-wrap:wrap;">
             <span class="tpl-list-name-text" style="font-weight:700;color:var(--slate-800);font-size:.8125rem;">${escAttr(p.nombre)}</span>
             ${vencida ? '<span class="tpl-badge-vencida">[ VENCIDA ]</span>' : ''}
-            <button class="tpl-rename-btn" data-e3-rename="${p.id_plantilla}" title="Renombrar plantilla">✏</button>
+            <button class="tpl-rename-btn" data-e3-rename="${p.id_plantilla}" title="Renombrar plantilla"><i class="fa-solid fa-pencil fa-xs"></i></button>
           </div>
           ${p.descripcion ? `<div style="font-size:.6875rem;color:var(--slate-500);">${escAttr(p.descripcion)}</div>` : ''}
           <div style="font-size:.6rem;color:var(--slate-400);font-family:'IBM Plex Mono',monospace;margin-top:.1rem;">ID: ${escAttr(p.id_plantilla)}</div>
@@ -1513,16 +1513,20 @@ function injectDashboardCard() {
   if (!dash || document.getElementById('dash-go-plantillas')) return;
   const card = document.createElement('div');
   card.id = 'dash-go-plantillas';
-  card.style.cssText = 'background:linear-gradient(135deg,#0A1D37,#1e3a8a);color:#fff;padding:1.5rem 2rem;margin-bottom:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;box-shadow:0 4px 16px rgba(10,29,55,.15);transition:transform .15s,box-shadow .15s;';
+  card.style.cssText = 'background:linear-gradient(135deg,#0A1D37,#15294d);color:#fff;border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:1.25rem 1.75rem;margin-bottom:1.5rem;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;box-shadow:0 2px 10px rgba(10,29,55,.12);transition:transform .15s,box-shadow .15s,border-color .15s;';
   card.innerHTML = `
-    <div>
-      <div style="font-size:.55rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:#60a5fa;margin-bottom:.4rem;">EDITOR VISUAL</div>
-      <div style="font-size:1.25rem;font-weight:900;letter-spacing:-.02em;margin-bottom:.25rem;">Plantillas del sitio</div>
-      <div style="font-size:.8125rem;color:rgba(255,255,255,.7);">Editá visualmente cada HTML del sitio. Cada plantilla controla en vivo su página correspondiente.</div>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <div style="width:42px;height:42px;border-radius:9px;background:rgba(96,165,250,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i class="fa-solid fa-code" style="color:#60a5fa;font-size:1.05rem;"></i>
+      </div>
+      <div>
+        <div style="font-size:1.05rem;font-weight:700;letter-spacing:-.01em;margin-bottom:.2rem;">Plantillas del sitio</div>
+        <div style="font-size:.8125rem;color:rgba(255,255,255,.6);line-height:1.45;">Editá visualmente cada HTML del sitio. Cada plantilla controla en vivo su página correspondiente.</div>
+      </div>
     </div>
-    <div style="background:#2563eb;color:#fff;padding:.75rem 1.5rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;font-size:.7rem;white-space:nowrap;">Ir a Plantillas <i class="fa-solid fa-arrow-right fa-lg"></i></div>`;
-  card.addEventListener('mouseenter', () => card.style.transform = 'translateY(-2px)');
-  card.addEventListener('mouseleave', () => card.style.transform = 'translateY(0)');
+    <div style="display:flex;align-items:center;gap:.5rem;color:#93c5fd;font-weight:600;font-size:.8125rem;white-space:nowrap;">Ir a plantillas <i class="fa-solid fa-arrow-right"></i></div>`;
+  card.addEventListener('mouseenter', () => { card.style.transform = 'translateY(-1px)'; card.style.boxShadow = '0 4px 16px rgba(10,29,55,.2)'; card.style.borderColor = 'rgba(96,165,250,.25)'; });
+  card.addEventListener('mouseleave', () => { card.style.transform = 'translateY(0)'; card.style.boxShadow = '0 2px 10px rgba(10,29,55,.12)'; card.style.borderColor = 'rgba(255,255,255,.07)'; });
   card.addEventListener('click', goToPlantillas);
   const pageHeader = dash.querySelector('.page-header');
   if (pageHeader) pageHeader.insertAdjacentElement('afterend', card);
@@ -1604,6 +1608,27 @@ function _paginaLabel(id_pagina) {
   return p ? p.nombre : String(id_pagina);
 }
 
+/* Badge "a dónde pertenece": muestra la página asignada del módulo en el editor. */
+function _paginaBadgeHTML(id_pagina) {
+  const esTodas = id_pagina === 'all';
+  const label   = esTodas ? 'Todas las páginas' : (_paginaLabel(id_pagina) || 'Sin asignar');
+  const none    = !esTodas && label === 'Sin asignar';
+  const cls     = esTodas ? 'is-global' : (none ? 'is-none' : '');
+  const icon    = esTodas ? 'fa-globe' : (none ? 'fa-circle-question' : 'fa-file-lines');
+  return `<span class="mod-pertenece ${cls}" title="Página a la que pertenece este módulo"><i class="fa-solid ${icon}"></i> ${escAttr(label)}</span>`;
+}
+
+/* Coloca el badge de página en el header de la tarjeta de contenido que corresponda:
+   en la tarjeta de lista (blog/clientes) si la tiene, o en la de campos en el resto. */
+function _refreshPaginaBadges() {
+  const isList = !!MOD_CONTENT_CONFIG[_curModType];
+  const badge  = _paginaBadgeHTML(_curModData.id_pagina);
+  const dataSlot    = document.getElementById('modulos-editor-data-pagina');
+  const contentSlot = document.getElementById('modulos-content-pagina');
+  if (dataSlot)    dataSlot.innerHTML    = isList ? '' : badge;
+  if (contentSlot) contentSlot.innerHTML = isList ? badge : '';
+}
+
 /* Llena el <select> de "Página asignada".
    Los módulos globales (nav / footer) aplican a TODO el sitio: el campo queda
    fijo en "Todas las páginas". El resto elige una página puntual del catálogo. */
@@ -1619,6 +1644,7 @@ function _renderPaginaSelect(selectedId) {
     sel.onchange = null;
     _curModData.id_pagina = 'all';
     if (hint) hint.textContent = 'Módulo global: se muestra en todas las páginas del sitio. No se asigna a una página específica.';
+    _refreshPaginaBadges();
     return;
   }
 
@@ -1635,6 +1661,7 @@ function _renderPaginaSelect(selectedId) {
   sel.onchange = () => {
     const v = sel.value;
     _curModData.id_pagina = v === '' ? null : (v === 'all' ? 'all' : Number(v));
+    _refreshPaginaBadges();
   };
   if (hint) hint.textContent = 'Indicá a qué página pertenece este módulo (ej: «Blog»), o «Todas las páginas». Es solo un identificador para organizar el catálogo; no cambia dónde se puede usar.';
 }
@@ -1677,57 +1704,139 @@ function _modMatches(m, q) {
     .toLowerCase().includes(q);
 }
 
-/* ── Vista 1: catálogo plano (un card por módulo, agrupado por tipo) ── */
+/* ── Vista 1: catálogo — UNA fila por sección (formato lista, como el blog) ──
+   Regla "un módulo por sección": de cada tipo se muestra un solo módulo (el
+   principal). Si un tipo tiene varios, se prefiere uno que esté EN USO y, entre
+   esos, el de menor id. Los demás NO se borran: siguen existiendo y funcionando
+   en sus plantillas, simplemente no aparecen en el catálogo. */
+function _principalDeTipo(mods) {
+  const enUso = mods.filter(m => (_modUsos[m.id_modulo] || 0) > 0);
+  const pool  = enUso.length ? enUso : mods;
+  return pool.slice().sort((a, b) => a.id_modulo - b.id_modulo)[0];
+}
+
+/* Texto de "descripción" de la fila: primer campo de texto significativo del módulo. */
+const _PREVIEW_FIELDS = ['titulo_seccion', 'titulo', 'titulo1', 'lead', 'descripcion', 'badge', 'eyebrow', 'formTitulo', 'loadingMessage'];
+function _modPreview(m) {
+  const d = m.data || {};
+  for (const f of _PREVIEW_FIELDS) {
+    const v = d[f];
+    if (typeof v === 'string' && v.trim()) return v.replace(/\s+/g, ' ').trim().slice(0, 120);
+  }
+  return '';
+}
+
 function renderModCatalog() {
   _showView('modulos-catalog-view');
   const grid = document.getElementById('modulos-grid');
   if (!grid) return;
-  if (!_mods.length) {
-    grid.innerHTML = `<div class="mod-cat-empty">No hay módulos todavía.</div>`;
+
+  // 1 módulo por sección: el principal de cada tipo, ordenado por id.
+  const byTipo = {};
+  _mods.forEach(m => (byTipo[m.tipo] = byTipo[m.tipo] || []).push(m));
+  const principales = Object.values(byTipo)
+    .map(_principalDeTipo)
+    .sort((a, b) => a.id_modulo - b.id_modulo);
+
+  if (!principales.length) {
+    grid.innerHTML = `<div class="mod-cat-empty">No hay módulos todavía. Tocá <b>Nuevo</b> para crear el primero.</div>`;
     return;
   }
+
   const q = _modQuery.trim().toLowerCase();
-  const matched = _mods.filter(m => _modMatches(m, q));
+  const matched = principales.filter(m => _modMatches(m, q));
   if (!matched.length) {
     grid.innerHTML = `<div class="mod-cat-empty">Ningún módulo coincide con “${escAttr(_modQuery.trim())}”.</div>`;
     return;
   }
-  const byTipo = {};
-  matched.forEach(m => (byTipo[m.tipo] = byTipo[m.tipo] || []).push(m));
 
-  // Una sección por tipo: header (ícono + label + contador + "Nuevo") y grilla de cards.
-  grid.innerHTML = Object.entries(byTipo).map(([tipo, mods]) => {
-    const label  = SECTIONS[tipo]?.label || tipo;
-    const icon   = SECTIONS[tipo]?.icon || '';
-    const global = GLOBAL_TIPOS_MOD.has(tipo);
-    const cards = mods.map(m => {
-      const usos     = _modUsos[m.id_modulo] || 0;
-      const esGlobal = GLOBAL_TIPOS_MOD.has(m.tipo);
-      const esTodas  = esGlobal || m.id_pagina === 'all';
-      const pag      = esTodas ? 'Todas las páginas' : _paginaLabel(m.id_pagina);
-      const pagIcon  = esTodas ? 'fa-globe' : 'fa-file-lines';
-      return `<div class="mod-card">
-        <div class="mod-card-top">
-          <span class="mod-card-id">#${m.id_modulo}</span>
-          <span class="mod-usos ${usos ? 'on' : ''}">${usos} uso${usos!==1?'s':''}</span>
+  const rows = matched.map(m => {
+    const label    = SECTIONS[m.tipo]?.label || m.tipo;
+    const usos     = _modUsos[m.id_modulo] || 0;
+    const esGlobal = GLOBAL_TIPOS_MOD.has(m.tipo);
+    const esTodas  = esGlobal || m.id_pagina === 'all';
+    const pag      = esTodas ? 'Todas las páginas' : (_paginaLabel(m.id_pagina) || 'Sin asignar');
+    const enUso    = usos > 0 || esGlobal;
+    const badge    = enUso
+      ? `<span class="mod-row-badge on">En uso</span>`
+      : `<span class="mod-row-badge off">Sin usar</span>`;
+    const preview  = _modPreview(m);
+    const desc     = preview || (enUso ? `En uso en ${usos} plantilla${usos !== 1 ? 's' : ''}.` : 'Todavía no se usa en ninguna plantilla.');
+    return `<div class="blog-item">
+      <div class="blog-info">
+        <div class="mod-row-headline">
+          <span class="blog-title-text">${escAttr(m.nombre || '(sin nombre)')}</span>
+          ${badge}
         </div>
-        <div class="mod-card-name" title="${escAttr(m.nombre || '')}">${escAttr(m.nombre || '(sin nombre)')}</div>
-        ${pag ? `<div class="mod-card-pagina${esTodas ? ' is-global' : ''}" title="Página asignada: ${escAttr(pag)}"><i class="fa-solid ${pagIcon}"></i> ${escAttr(pag)}</div>` : ''}
-        <div class="mod-card-actions">
-          <button class="btn-edit-small mod-card-edit" onclick="openModEditor(${m.id_modulo})">Editar</button>
-          <button class="btn-edit-small mod-icon-btn" style="background:#f1f5f9;color:#334155;" onclick="duplicarModulo(${m.id_modulo})" title="Duplicar"><i class="fa-solid fa-clone"></i></button>
-          <button class="btn-edit-small mod-icon-btn" style="background:#fee2e2;color:#991b1b;" onclick="eliminarModulo(${m.id_modulo})" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
-        </div>
-      </div>`;
-    }).join('');
-    return `<section class="mod-group">
-      <div class="mod-group-head">
-        <div class="mod-group-title">${icon}<span>${escAttr(label)}</span><span class="mod-group-count">${mods.length}</span>${global ? '<span class="mod-global-badge">global</span>' : ''}</div>
-        <button class="btn-add mod-group-new" onclick="nuevoModulo('${tipo}')"><i class="fa-solid fa-plus"></i> Nuevo</button>
+        <div class="blog-meta">${escAttr(label)} · ${escAttr(pag)}</div>
+        <div class="blog-excerpt">${escAttr(desc)}</div>
       </div>
-      <div class="mod-group-grid">${cards}</div>
-    </section>`;
+      <div class="blog-actions">
+        <button type="button" class="btn-edit-small" onclick="openModEditor(${m.id_modulo})">Editar</button>
+        <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="eliminarModulo(${m.id_modulo})">Eliminar</button>
+      </div>
+    </div>`;
   }).join('');
+
+  grid.innerHTML = `<div class="blog-grid">${rows}</div>`;
+}
+
+/* ── Tipos de sección que todavía NO tienen módulo (para el botón "Nuevo") ── */
+function _tiposSinModulo() {
+  const existentes = new Set(_mods.map(m => m.tipo));
+  return Object.keys(SECTIONS).filter(t => !existentes.has(t));
+}
+
+/* ── Abrir el modal "Nuevo módulo" — solo ofrece secciones sin módulo ── */
+window.openNuevoModulo = function() {
+  const disponibles = _tiposSinModulo();
+  const sel    = document.getElementById('nm-tipo');
+  const nombre = document.getElementById('nm-nombre');
+  const crear  = document.getElementById('nm-crear-btn');
+  const hint   = document.getElementById('nm-hint');
+  if (!sel) return;
+
+  if (!disponibles.length) {
+    sel.innerHTML = `<option value="">— No quedan secciones —</option>`;
+    sel.disabled = true;
+    if (nombre) { nombre.value = ''; nombre.disabled = true; }
+    if (crear)  crear.disabled = true;
+    if (hint)   hint.textContent = 'Todas las secciones ya tienen su módulo. Para cambiar uno, editá el existente.';
+  } else {
+    sel.disabled = false;
+    sel.innerHTML = disponibles
+      .map(t => `<option value="${escAttr(t)}">${escAttr(SECTIONS[t]?.label || t)}</option>`)
+      .join('');
+    if (nombre) { nombre.disabled = false; nombre.value = SECTIONS[disponibles[0]]?.label || disponibles[0]; }
+    if (crear)  crear.disabled = false;
+    if (hint)   hint.textContent = 'Solo aparecen las secciones que todavía no tienen un módulo (uno por sección).';
+    sel.onchange = () => { if (nombre) nombre.value = SECTIONS[sel.value]?.label || sel.value; };
+  }
+  window.__svc?.openModal('modal-nuevo-modulo');
+};
+
+/* ── Crear el módulo elegido en el modal y abrir su editor ── */
+async function crearModuloDesdeModal() {
+  const sel    = document.getElementById('nm-tipo');
+  const nombre = document.getElementById('nm-nombre');
+  const tipo   = sel?.value;
+  const sec    = tipo && SECTIONS[tipo];
+  if (!sec) return;
+  try {
+    const res = await window.__svc.apiPost('/modulos', {
+      tipo,
+      nombre: (nombre?.value || '').trim() || sec.label,
+      data:   JSON.parse(JSON.stringify(sec.defaultData   || {})),
+      design: JSON.parse(JSON.stringify(sec.defaultDesign || {})),
+    });
+    _mods.push(res.modulo);
+    _modUsos[res.modulo.id_modulo] = 0;
+    window.__svc?.closeModal('modal-nuevo-modulo');
+    window.__svc.showNotif('Módulo creado', 'success');
+    openModEditor(res.modulo.id_modulo);
+  } catch (e) {
+    window.__svc.showNotif('Error: ' + e.message, 'error');
+  }
 }
 
 /* ── Vista 2: editor de un módulo del catálogo ── */
@@ -1770,6 +1879,11 @@ window.openModEditor = function(id) {
   renderModFieldGroup('data', sec.dataFields || [], 'modulos-editor-data-fields');
 
   renderModContentCard(m.tipo);
+  // Ocultar la tarjeta de campos cuando son solo técnicos (ej: blog-list): se
+  // muestra únicamente la lista de contenido (artículos), como pidió el usuario.
+  const dataCard = document.getElementById('modulos-editor-data-card');
+  if (dataCard) dataCard.style.display = MOD_HIDE_DATA_CARD.has(m.tipo) ? 'none' : '';
+  _refreshPaginaBadges();
 
   _showView('modulos-editor-view');
 };
@@ -1781,6 +1895,16 @@ window.openModEditor = function(id) {
    Reutilizamos las funciones de gestión definidas en panel.js. */
 const MOD_CONTENT_CONFIG = {
   blog: {
+    title: 'Artículos del blog',
+    addLabel: '<i class="fa-solid fa-plus"></i> Nuevo artículo',
+    bodyHTML: '<div class="blog-grid" id="blog-list"></div>',
+    render: () => window.renderBlogList?.(),
+    add:    () => window.openNewPost?.(),
+  },
+  // "Listado de artículos" (página Blog): gestiona los MISMOS artículos (blog.json)
+  // que el módulo Blog. Sus campos propios son solo mensajes de estado, por eso
+  // mostramos la lista de artículos en vez de esos campos.
+  'blog-list': {
     title: 'Artículos del blog',
     addLabel: '<i class="fa-solid fa-plus"></i> Nuevo artículo',
     bodyHTML: '<div class="blog-grid" id="blog-list"></div>',
@@ -1800,6 +1924,11 @@ const MOD_CONTENT_CONFIG = {
     add:    () => window.openNewCliente?.(),
   },
 };
+
+// Módulos cuyos campos sueltos son técnicos/secundarios: se ocultan en el editor
+// y la gestión real va por la lista de contenido (ej: blog-list → solo mensajes
+// de estado, se editan los artículos en la lista).
+const MOD_HIDE_DATA_CARD = new Set(['blog-list']);
 
 function renderModContentCard(type) {
   const card = document.getElementById('modulos-editor-content-card');
@@ -2180,6 +2309,10 @@ document.getElementById('modulos-search')?.addEventListener('input', e => {
   _modQuery = e.target.value || '';
   renderModCatalog();
 });
+
+/* ── Botón único "Nuevo" del catálogo + modal de creación ── */
+document.getElementById('modulos-nuevo-btn')?.addEventListener('click', () => window.openNuevoModulo());
+document.getElementById('nm-crear-btn')?.addEventListener('click', crearModuloDesdeModal);
 
 /* ── Botón: abrir el modal de edición visual (Preview) ── */
 document.getElementById('modulos-preview-btn')?.addEventListener('click', openPreviewModal);

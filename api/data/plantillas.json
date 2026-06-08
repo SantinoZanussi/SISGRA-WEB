@@ -286,8 +286,9 @@
         ]
       ],
       "creado_en": "2026-05-28T00:00:00.000Z",
-      "editado_en": "2026-06-02T18:49:27.502Z",
-      "fecha_fin": "2026-06-11T18:21:29.982Z"
+      "editado_en": "2026-06-08T17:47:30.851Z",
+      "fecha_fin": "2026-06-15T17:47:30.851Z",
+      "fecha_inicio": "2026-06-08T17:47:30.851Z"
     },
     {
       "id_plantilla": 10,
@@ -344,6 +345,38 @@
       "contenedores": [],
       "creado_en": "2026-06-04T18:34:01.979Z",
       "editado_en": "2026-06-04T18:34:01.979Z"
+    },
+    {
+      "id_plantilla": 12,
+      "tipo": "btn-9",
+      "nombre": "Nosotros — página personalizada",
+      "descripcion": "Página personalizada generada automáticamente.",
+      "activa": true,
+      "id_menu": [
+        9
+      ],
+      "id_modulos": [
+        1,
+        32,
+        33,
+        3
+      ],
+      "contenedores": [
+        [
+          1
+        ],
+        [
+          32
+        ],
+        [
+          33
+        ],
+        [
+          3
+        ]
+      ],
+      "creado_en": "2026-06-08T17:47:53.732Z",
+      "editado_en": "2026-06-08T17:49:52.622Z"
     }
   ]
 }

@@ -90,7 +90,7 @@
           <div class="sidebar-avatar">AD</div>
           <div>
             <div class="sidebar-user-name">Administrador</div>
-            <div class="sidebar-user-role"><span class="sidebar-tpl-dot-logout"></span>Conectado</div>
+            <div class="sidebar-user-role"><i class="fa-solid fa-circle-check"></i><span class="sidebar-tpl-dot-logout"></span>Conectado</div>
           </div>
           <button class="sidebar-logout" id="logout-btn" title="Cerrar sesión"><i class="fa-solid fa-right-from-bracket fa-xl"></i></button>
         </div>
@@ -166,9 +166,12 @@
 
           <!-- Vista 1: catálogo de tipos -->
           <div id="modulos-catalog-view">
-            <div class="page-header">
-              <div class="page-title">Catálogo de Módulos</div>
-              <div class="page-desc">Cada módulo es una pieza reutilizable. Editá su contenido y diseño; los cambios impactan en las plantillas que lo usan.</div>
+            <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;">
+              <div>
+                <div class="page-title">Catálogo de Módulos</div>
+                <div class="page-desc">Un módulo por sección. Editá su contenido y diseño; los cambios impactan en las plantillas que lo usan.</div>
+              </div>
+              <button class="btn-add" id="modulos-nuevo-btn" style="flex-shrink:0;"><i class="fa-solid fa-plus"></i> Nuevo</button>
             </div>
             <div class="mod-search-wrap" style="position:relative;margin-bottom:1.25rem;max-width:440px;">
               <i class="fa-solid fa-magnifying-glass fa-xl" style="position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:#7DB4F7;font-size:.8rem;pointer-events:none;"></i>
@@ -238,13 +241,16 @@
               </div>
               <!-- Campos de contenido -->
               <div class="section-card" id="modulos-editor-data-card">
-                <div class="section-card-header"><span class="section-card-title">Contenido</span></div>
+                <div class="section-card-header"><span class="section-card-title">Contenido</span><span id="modulos-editor-data-pagina" class="mod-pertenece-wrap"></span></div>
                 <div class="section-card-body" id="modulos-editor-data-fields" style="padding:1rem;display:flex;flex-direction:column;gap:.875rem;max-height:50vh;overflow-y:auto;"></div>
               </div>
               <!-- Gestión de contenido global (blog / clientes) — se aplica a todas las variantes -->
               <div class="section-card" id="modulos-editor-content-card" style="display:none;">
-                <div class="section-card-header" style="display:flex;align-items:center;justify-content:space-between;">
-                  <span class="section-card-title" id="modulos-content-title">Contenido</span>
+                <div class="section-card-header" style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;">
+                  <span style="display:flex;align-items:center;gap:.6rem;min-width:0;flex-wrap:wrap;">
+                    <span class="section-card-title" id="modulos-content-title">Contenido</span>
+                    <span id="modulos-content-pagina" class="mod-pertenece-wrap"></span>
+                  </span>
                   <button class="btn-add" id="modulos-content-add-btn"><i class="fa-solid fa-plus"></i> Agregar</button>
                 </div>
                 <div style="font-size:.7rem;color:#94a3b8;padding:.6rem 1rem 0;line-height:1.5;">Este contenido es compartido: los cambios se aplican automáticamente a todas las variantes de este módulo.</div>
@@ -531,7 +537,29 @@
     </div>
   </div>
 </div>
- 
+
+<!-- MODAL: Nuevo módulo (catálogo) -->
+<div class="modal-overlay" id="modal-nuevo-modulo">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header"><span class="modal-title">Nuevo módulo</span><button class="modal-close" data-close="modal-nuevo-modulo"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem;">
+      <div class="form-group">
+        <label class="form-label">Sección</label>
+        <select class="form-input form-select" id="nm-tipo"></select>
+        <div class="form-hint" id="nm-hint">Solo aparecen las secciones que todavía no tienen un módulo (uno por sección).</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nombre</label>
+        <input class="form-input" id="nm-nombre" placeholder="Ej: Hero centrado — Inicio">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" data-close="modal-nuevo-modulo">Cancelar</button>
+      <button class="btn-save" id="nm-crear-btn">Crear módulo</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: Nuevo ítem del navbar -->
 <div class="modal-overlay" id="modal-navbar">
   <div class="modal" style="max-width:520px;">
