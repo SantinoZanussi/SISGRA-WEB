@@ -126,6 +126,16 @@
 .mod-pertenece i{font-size:.62rem;flex-shrink:0;}
 .mod-pertenece.is-global{color:#0f766e;background:#f0fdfa;border-color:#ccfbf1;}
 .mod-pertenece.is-none{color:#92400e;background:#fef3c7;border-color:#fde68a;}
+/* Columna del medio en cada fila del catálogo: "a dónde pertenece" */
+.mod-row-pertenece{flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;min-width:150px;}
+
+/* ── Modal "Nuevo módulo" (catálogo) ── */
+.nm-title-ico{color:var(--blue-600,#2563eb);margin-right:.15rem;}
+.nm-body{display:flex;flex-direction:column;gap:1.15rem;}
+.nm-field .form-label{display:flex;align-items:center;gap:.45rem;}
+.nm-flbl-ico{color:#94a3b8;font-size:.72rem;width:.85rem;text-align:center;}
+.nm-field .form-input{padding:.7rem .9rem;}
+.nm-field .form-select{cursor:pointer;}
 
 /* ── MODAL ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(10,29,55,.7);z-index:500;display:none;align-items:center;justify-content:center;}

@@ -666,19 +666,29 @@ function bindChipSearch() {
 }
 
 // Resultados = módulos existentes del catálogo + tipos de SECTIONS (para crear nuevos).
+/* ¿El módulo puede usarse en la plantilla que se está editando?
+   Globales (nav/footer/footer-full) y "Todas las páginas" → siempre disponibles.
+   El resto, SOLO si está asignado a ESTA plantilla (id_pagina === id_plantilla).
+   Los "Sin asignar" no aparecen: así se separan los contenidos por plantilla. */
+function _modAllowedInActiveTpl(m) {
+  if (GLOBAL_TIPOS.has(m.tipo)) return true;
+  if (m.id_pagina === 'all') return true;
+  if (m.id_pagina == null || m.id_pagina === '') return false;
+  const tplId = e3.activeTpl?.id_plantilla;
+  return tplId != null && Number(m.id_pagina) === Number(tplId);
+}
+
 function searchResults(query) {
   const q = (query || '').trim().toLowerCase();
   if (!q) return [];
   const res = [];
   for (const m of e3.modulos) {
+    if (!_modAllowedInActiveTpl(m)) continue;   // solo globales / Todas / asignados a esta plantilla
     const hay = `${m.nombre} ${m.tipo} ${SECTIONS[m.tipo]?.label || ''}`.toLowerCase();
     if (hay.includes(q)) res.push({ kind: 'modulo', id_modulo: m.id_modulo, tipo: m.tipo, label: m.nombre, sub: SECTIONS[m.tipo]?.label || m.tipo });
   }
-  for (const [tipo, def] of Object.entries(SECTIONS)) {
-    if (`${def.label} ${tipo}`.toLowerCase().includes(q)) {
-      res.push({ kind: 'tipo', tipo, label: def.label, sub: 'crear módulo nuevo' });
-    }
-  }
+  // Solo módulos ya existentes (globales / "Todas las páginas" / asignados a esta
+  // plantilla). Ya NO se ofrece "crear módulo nuevo" desde el buscador.
   return res.slice(0, 40);
 }
 
@@ -1667,15 +1677,19 @@ function _renderPaginaSelect(selectedId) {
 }
 
 function _showView(id) {
-  ['modulos-catalog-view','modulos-variants-view','modulos-editor-view'].forEach(v => {
+  // El editor de módulo es ahora un modal (modulos-editor-view = .modal-overlay),
+  // se abre/cierra con openModal/closeModal, no con este toggle de vistas.
+  ['modulos-catalog-view','modulos-variants-view'].forEach(v => {
     const el = document.getElementById(v);
     if (el) el.style.display = v === id ? '' : 'none';
   });
-  // Hide preview when leaving editor
-  if (id !== 'modulos-editor-view') {
-    const card = document.getElementById('modulos-preview-card');
-    if (card) card.style.display = 'none';
-  }
+}
+
+/* ── Cerrar el modal del editor de módulo y volver al catálogo ── */
+function _closeModEditor() {
+  closePreviewModal();
+  window.__svc?.closeModal('modulos-editor-view');
+  renderModCatalog();
 }
 
 window.loadModulos = async function() {
@@ -1762,6 +1776,7 @@ function renderModCatalog() {
       : `<span class="mod-row-badge off">Sin usar</span>`;
     const preview  = _modPreview(m);
     const desc     = preview || (enUso ? `En uso en ${usos} plantilla${usos !== 1 ? 's' : ''}.` : 'Todavía no se usa en ninguna plantilla.');
+    const pertenece = _paginaBadgeHTML(esTodas ? 'all' : m.id_pagina);
     return `<div class="blog-item">
       <div class="blog-info">
         <div class="mod-row-headline">
@@ -1771,6 +1786,7 @@ function renderModCatalog() {
         <div class="blog-meta">${escAttr(label)} · ${escAttr(pag)}</div>
         <div class="blog-excerpt">${escAttr(desc)}</div>
       </div>
+      <div class="mod-row-pertenece">${pertenece}</div>
       <div class="blog-actions">
         <button type="button" class="btn-edit-small" onclick="openModEditor(${m.id_modulo})">Editar</button>
         <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="eliminarModulo(${m.id_modulo})">Eliminar</button>
@@ -1787,45 +1803,75 @@ function _tiposSinModulo() {
   return Object.keys(SECTIONS).filter(t => !existentes.has(t));
 }
 
-/* ── Abrir el modal "Nuevo módulo" — solo ofrece secciones sin módulo ── */
+/* Llena el <select> de "Página asignada" del modal de nuevo módulo. */
+function _fillNuevoPaginaSelect() {
+  const pagSel = document.getElementById('nm-pagina');
+  if (!pagSel) return;
+  pagSel.innerHTML = [
+    '<option value="">— Sin asignar —</option>',
+    '<option value="all">🌐 Todas las páginas</option>',
+  ].concat(
+    _plantillas.map(p => `<option value="${p.id_plantilla}">${escAttr(p.nombre)} · ${escAttr(p.tipo)}</option>`)
+  ).join('');
+  pagSel.value = '';
+}
+
+/* ── Abrir el modal "Nuevo módulo": Sección + Nombre + Página asignada ── */
 window.openNuevoModulo = function() {
   const disponibles = _tiposSinModulo();
   const sel    = document.getElementById('nm-tipo');
   const nombre = document.getElementById('nm-nombre');
+  const pagSel = document.getElementById('nm-pagina');
   const crear  = document.getElementById('nm-crear-btn');
-  const hint   = document.getElementById('nm-hint');
   if (!sel) return;
+
+  _fillNuevoPaginaSelect();
 
   if (!disponibles.length) {
     sel.innerHTML = `<option value="">— No quedan secciones —</option>`;
     sel.disabled = true;
     if (nombre) { nombre.value = ''; nombre.disabled = true; }
+    if (pagSel) pagSel.disabled = true;
     if (crear)  crear.disabled = true;
-    if (hint)   hint.textContent = 'Todas las secciones ya tienen su módulo. Para cambiar uno, editá el existente.';
-  } else {
-    sel.disabled = false;
-    sel.innerHTML = disponibles
-      .map(t => `<option value="${escAttr(t)}">${escAttr(SECTIONS[t]?.label || t)}</option>`)
-      .join('');
-    if (nombre) { nombre.disabled = false; nombre.value = SECTIONS[disponibles[0]]?.label || disponibles[0]; }
-    if (crear)  crear.disabled = false;
-    if (hint)   hint.textContent = 'Solo aparecen las secciones que todavía no tienen un módulo (uno por sección).';
-    sel.onchange = () => { if (nombre) nombre.value = SECTIONS[sel.value]?.label || sel.value; };
+    return void window.__svc?.openModal('modal-nuevo-modulo');
   }
+
+  sel.disabled = false;
+  sel.innerHTML = disponibles
+    .map(t => `<option value="${escAttr(t)}">${escAttr(SECTIONS[t]?.label || t)}</option>`)
+    .join('');
+  if (nombre) nombre.disabled = false;
+  if (crear)  crear.disabled = false;
+
+  // Al cambiar de sección: sugerir nombre y, si es un tipo global, fijar la página.
+  const syncForTipo = () => {
+    if (nombre) nombre.value = SECTIONS[sel.value]?.label || sel.value;
+    if (pagSel) {
+      if (GLOBAL_TIPOS_MOD.has(sel.value)) { pagSel.value = 'all'; pagSel.disabled = true; }
+      else { pagSel.disabled = false; }
+    }
+  };
+  sel.onchange = syncForTipo;
+  syncForTipo();
+
   window.__svc?.openModal('modal-nuevo-modulo');
 };
 
-/* ── Crear el módulo elegido en el modal y abrir su editor ── */
+/* ── Crear el módulo elegido en el modal (con su página) y abrir su editor ── */
 async function crearModuloDesdeModal() {
   const sel    = document.getElementById('nm-tipo');
   const nombre = document.getElementById('nm-nombre');
+  const pagSel = document.getElementById('nm-pagina');
   const tipo   = sel?.value;
   const sec    = tipo && SECTIONS[tipo];
   if (!sec) return;
+  const pv = pagSel?.value;
+  const id_pagina = (pv == null || pv === '') ? null : (pv === 'all' ? 'all' : Number(pv));
   try {
     const res = await window.__svc.apiPost('/modulos', {
       tipo,
       nombre: (nombre?.value || '').trim() || sec.label,
+      id_pagina,
       data:   JSON.parse(JSON.stringify(sec.defaultData   || {})),
       design: JSON.parse(JSON.stringify(sec.defaultDesign || {})),
     });
@@ -1885,7 +1931,8 @@ window.openModEditor = function(id) {
   if (dataCard) dataCard.style.display = MOD_HIDE_DATA_CARD.has(m.tipo) ? 'none' : '';
   _refreshPaginaBadges();
 
-  _showView('modulos-editor-view');
+  // El editor es un modal: lo abrimos por encima del catálogo.
+  window.__svc?.openModal('modulos-editor-view');
 };
 
 /* ── Gestión de contenido global embebida (blog posts / clientes) ──
@@ -2284,7 +2331,7 @@ window.nuevoModulo = async function(tipo) {
 
 /* ── Guardar el módulo en edición (lo usan el editor y el modal) ── */
 async function saveCurrentModule() {
-  if (!_curModId) return;
+  if (!_curModId) return false;
   const nombre = document.getElementById('modulos-variant-name-input')?.value?.trim() || _curModData.nombre;
   try {
     const res = await window.__svc.apiPut(`/modulos/${_curModId}`, {
@@ -2299,8 +2346,10 @@ async function saveCurrentModule() {
     const nameEl = document.getElementById('modulos-editor-variant-name');
     if (nameEl) nameEl.textContent = nombre;
     window.__svc.showNotif('Módulo guardado', 'success');
+    return true;
   } catch (e) {
     window.__svc.showNotif('Error: ' + e.message, 'error');
+    return false;
   }
 }
 
@@ -2373,7 +2422,11 @@ window.addEventListener('message', async e => {
 
 /* ── Botón: volver al catálogo / Cancelar ── */
 document.getElementById('modulos-variants-back-btn')?.addEventListener('click', renderModCatalog);
-document.getElementById('modulos-back-btn')?.addEventListener('click', () => { closePreviewModal(); renderModCatalog(); });
+document.getElementById('modulos-back-btn')?.addEventListener('click', _closeModEditor);
+document.getElementById('modulos-cancel-btn')?.addEventListener('click', _closeModEditor);
 
 /* ── Botón: guardar módulo (editor) ── */
-document.getElementById('modulos-save-btn')?.addEventListener('click', saveCurrentModule);
+document.getElementById('modulos-save-btn')?.addEventListener('click', async () => {
+  const ok = await saveCurrentModule();
+  if (ok) _closeModEditor();
+});
