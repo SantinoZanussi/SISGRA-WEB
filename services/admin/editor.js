@@ -294,7 +294,6 @@ function renderOverview() {
     <div style="margin-bottom:1.25rem;">
       <div style="display:flex;align-items:center;gap:.75rem;padding:.4rem 0 .5rem;border-bottom:1px solid var(--slate-100);margin-bottom:.5rem;">
         <span style="font-size:.625rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--sisgra-blue);">${label}</span>
-        <span style="font-size:.6rem;color:var(--slate-400);font-family:monospace;">${file}</span>
       </div>
       ${pls.length === 0
         ? (vacioMsg ? `<div style="padding:.85rem;color:var(--slate-400);font-size:.7rem;text-align:center;background:var(--slate-50);">${vacioMsg}</div>` : '')
@@ -681,9 +680,16 @@ function _modAllowedInActiveTpl(m) {
 function searchResults(query) {
   const q = (query || '').trim().toLowerCase();
   if (!q) return [];
+  // Módulos ya colocados en esta plantilla (o ya seleccionados como chip): se
+  // excluyen para no insertar dos referencias al MISMO módulo (ahora no se clona).
+  const yaUsados = new Set([
+    ...allModIds(),
+    ...e3.search.selected.filter(s => s.kind === 'modulo').map(s => s.id_modulo),
+  ]);
   const res = [];
   for (const m of e3.modulos) {
     if (!_modAllowedInActiveTpl(m)) continue;   // solo globales / Todas / asignados a esta plantilla
+    if (yaUsados.has(m.id_modulo)) continue;     // ya está en esta plantilla
     const hay = `${m.nombre} ${m.tipo} ${SECTIONS[m.tipo]?.label || ''}`.toLowerCase();
     if (hay.includes(q)) res.push({ kind: 'modulo', id_modulo: m.id_modulo, tipo: m.tipo, label: m.nombre, sub: SECTIONS[m.tipo]?.label || m.tipo });
   }
@@ -793,7 +799,11 @@ function insertSelected() {
     } else {
       const src = modById(sel.id_modulo);
       if (!src) continue;
-      ids.push(GLOBAL_TIPOS.has(src.tipo) ? src.id_modulo : cloneModule(src));
+      // Referencia DIRECTA al módulo (sin clonar): editar su contenido se refleja
+      // en vivo en la plantilla donde está usado. Cada módulo pertenece a una
+      // página (id_pagina) y el buscador solo lo ofrece en esa plantilla, así que
+      // no se "contamina" otra plantilla.
+      ids.push(src.id_modulo);
     }
   }
   const { placed, rejected } = placeModuleIds(ids);
