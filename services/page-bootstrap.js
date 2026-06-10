@@ -47,25 +47,33 @@ function ensurePageCss(tipo, mods) {
 // Construye los items del nav (dropdowns + links) desde navbar.json. Reemplaza
 // el armado embebido en cada plantilla (el viejo syncNavEnPlantillas del backend).
 // Se omite el item "home" (href "/") porque el logo ya enlaza al inicio.
+// Menú jerárquico (padre/hijos): cada ítem tiene `padre` (id del contenedor padre,
+// 0 = nivel principal). Un contenedor (encabezado de submenú) es un ítem con hijos
+// y sin destino propio. Se arma: desplegables (con hijos) + links sueltos.
 function buildNavItems(botones) {
-  const activos = (botones || []).filter(b => b.activo !== false && b.href !== '/');
-  const grupos = {};   // grupo → children[]
-  const sueltos = [];
-  activos.forEach(b => {
-    if (b.grupo) (grupos[b.grupo] = grupos[b.grupo] || []).push(b);
-    else sueltos.push(b);
+  const all = botones || [];
+  const visibles = b => b.activo !== false && b.href !== '/';
+  const hijosDe = id => all
+    .filter(b => (b.padre || 0) === id && visibles(b))
+    .sort((a, b) => (a.orden || 0) - (b.orden || 0));
+  const top = all.filter(b => (b.padre || 0) === 0 && visibles(b));
+  const dropdowns = [];
+  const links = [];
+  top.forEach(b => {
+    const hijos = hijosDe(b.id_menu);
+    if (hijos.length) {
+      dropdowns.push({ orden: b.orden || 0, item: {
+        tipo: 'dropdown', titulo: b.titulo,
+        children: hijos.map(h => ({ titulo: h.titulo, href: h.href || '#' })),
+      } });
+    } else if (b.href) {
+      links.push(b);   // ítems sin href ni hijos (contenedor vacío) se omiten
+    }
   });
   const items = [];
-  Object.entries(grupos).forEach(([grupo, hijos]) => {
-    items.push({
-      tipo: 'dropdown',
-      titulo: grupo,
-      children: hijos.sort((a, b) => (a.orden || 0) - (b.orden || 0))
-                     .map(b => ({ titulo: b.titulo, href: b.href || '#' })),
-    });
-  });
-  sueltos.sort((a, b) => (a.orden || 0) - (b.orden || 0))
-         .forEach(b => items.push({ tipo: 'link', titulo: b.titulo, href: b.href || '#' }));
+  dropdowns.sort((a, b) => a.orden - b.orden).forEach(d => items.push(d.item));
+  links.sort((a, b) => (a.orden || 0) - (b.orden || 0))
+       .forEach(b => items.push({ tipo: 'link', titulo: b.titulo, href: b.href || '#' }));
   return items;
 }
 

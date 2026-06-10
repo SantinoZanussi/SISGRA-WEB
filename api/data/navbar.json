@@ -4,7 +4,7 @@
       "id_menu": 1,
       "titulo": "Inicio",
       "href": "/",
-      "grupo": null,
+      "padre": 0,
       "orden": 1,
       "activo": true
     },
@@ -12,7 +12,16 @@
       "id_menu": 2,
       "titulo": "Blog",
       "href": "/html/blog",
-      "grupo": null,
+      "padre": 0,
+      "orden": 3,
+      "activo": true
+    },
+    {
+      "id_menu": 10,
+      "titulo": "Instalaciones",
+      "href": null,
+      "padre": 0,
+      "contenedor": true,
       "orden": 3,
       "activo": true
     },
@@ -20,7 +29,7 @@
       "id_menu": 3,
       "titulo": "Cableado Estructurado",
       "href": "/html/cableado_estructurado",
-      "grupo": "Instalaciones",
+      "padre": 10,
       "orden": 3,
       "activo": true
     },
@@ -28,7 +37,7 @@
       "id_menu": 4,
       "titulo": "Fibra Óptica",
       "href": "/html/fibra_optica",
-      "grupo": "Instalaciones",
+      "padre": 10,
       "orden": 4,
       "activo": true
     },
@@ -36,7 +45,7 @@
       "id_menu": 5,
       "titulo": "Seguridad Electrónica",
       "href": "/html/seguridad",
-      "grupo": "Instalaciones",
+      "padre": 10,
       "orden": 5,
       "activo": true
     },
@@ -44,7 +53,7 @@
       "id_menu": 6,
       "titulo": "Soporte IT",
       "href": "/html/soporte_it",
-      "grupo": null,
+      "padre": 0,
       "orden": 6,
       "activo": true
     },
@@ -52,7 +61,7 @@
       "id_menu": 7,
       "titulo": "Desarrollo de Software",
       "href": "/html/desarrollo",
-      "grupo": null,
+      "padre": 0,
       "orden": 7,
       "activo": true
     },
@@ -60,7 +69,7 @@
       "id_menu": 8,
       "titulo": "asdasd",
       "href": "/html/btn-8",
-      "grupo": null,
+      "padre": 0,
       "orden": 9,
       "activo": true
     },
@@ -68,7 +77,7 @@
       "id_menu": 9,
       "titulo": "Nosotros",
       "href": "/html/btn-9",
-      "grupo": null,
+      "padre": 0,
       "orden": 2,
       "activo": true
     }

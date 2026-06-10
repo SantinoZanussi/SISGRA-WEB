@@ -579,7 +579,7 @@ function renderEditorShell() {
       #e3-canvas.page-frame.desktop{width:100%;min-width:0;max-width:1600px;}
       /* Popover de inserción de módulos: aparece al click en "+ Insertar módulo"
          (ya no es una barra fija arriba del canvas). */
-      .e3-insert-pop{position:fixed;z-index:2000;width:360px;max-width:calc(100vw - 1.5rem);background:#fff;border:1px solid var(--slate-200);border-radius:.5rem;box-shadow:0 12px 40px rgba(0,0,0,.22);padding:.7rem;}
+      .e3-insert-pop{width:360px;max-width:calc(100vw - 1.5rem);background:#fff;border:1px solid var(--slate-200);border-radius:.5rem;box-shadow:0 12px 40px rgba(0,0,0,.22);padding:.7rem;}
       .e3-insert-pop-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.55rem;}
       .e3-insert-pop-title{font-size:.58rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--sisgra-blue);line-height:1.3;}
       .e3-insert-pop-close{background:none;border:none;font-size:1.15rem;line-height:1;color:var(--slate-400);cursor:pointer;padding:0 .2rem;}
@@ -928,7 +928,9 @@ function openInsertPopover(slotEl) {
   const pop = document.getElementById('e3-insert-pop');
   if (!pop) return;
   if (pendingContIndex() === -1) { notif('Este contenedor ya está completo', 'error'); return; }
-  pop.style.display = 'block';
+  document.querySelectorAll('.e3-slot').forEach(s => s.classList.remove('is-open'));
+  slotEl.classList.add('is-open');
+  pop.style.display = 'flex';
   positionInsertPopover(slotEl);
   refreshContControls();             // título + estado del botón insertar
   const input = document.getElementById('e3-search-input');
@@ -936,8 +938,6 @@ function openInsertPopover(slotEl) {
   renderResults();
 }
 
-// Abre el popover sobre el primer slot vacío del contenedor incompleto, trayéndolo
-// a la vista primero (un contenedor recién creado puede quedar bajo el fold).
 function openInsertPopoverForPending() {
   const slot = document.getElementById('e3-canvas')?.contentDocument?.querySelector('.e3-slot');
   if (!slot) return;
@@ -950,8 +950,13 @@ function positionInsertPopover(slotEl) {
   const pop = document.getElementById('e3-insert-pop');
   if (!pop) return;
   
-  pop.style.top = `60%`;
-  pop.style.left = `47%`;
+  slotEl.style.position = 'relative';
+  slotEl.appendChild(pop);
+  pop.style.position = 'absolute';
+  pop.style.top = `50%`; // 60%
+  pop.style.left = `50%`; // 47%
+  pop.style.transform = 'translate(-50%, -50%)';
+  pop.style.zIndex = '2000';
 }
 
 // Cierra el popover y limpia el buscador (chips + query) para arrancar en limpio.
@@ -1020,7 +1025,7 @@ ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
   .e3-cont-ctrls button{background:#fff;border:1px solid #cbd5e1;padding:.2rem .4rem;font-size:.65rem;line-height:1;color:#0A1D37;cursor:pointer;font-family:inherit;border-radius:2px;}
   .e3-cont-ctrls .e3-danger{color:#dc2626;}
   .e3-cont-grid{display:grid;align-items:stretch;}
-  .e3-slot{display:flex;align-items:center;justify-content:center;min-height:90px;border:2px dashed #d4dae3;margin:6px;background:repeating-linear-gradient(45deg,#fafbfc,#fafbfc 8px,#f1f5f9 8px,#f1f5f9 16px);cursor:pointer;transition:border-color .15s,background .15s;}
+  .e3-slot{position:relative;display:flex;align-items:center;justify-content:center;min-height:90px;border:2px dashed #d4dae3;margin:6px;background:repeating-linear-gradient(45deg,#fafbfc,#fafbfc 8px,#f1f5f9 8px,#f1f5f9 16px);cursor:pointer;transition:border-color .15s,background .15s;}
   .e3-slot:hover{border-color:#60a5fa;}
   .e3-slot-inner{font:700 .68rem/1.3 Inter,system-ui,sans-serif;color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:.4rem;}
   /* ── Botón "Nuevo contenedor" al fondo del canvas ── */

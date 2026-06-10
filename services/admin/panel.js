@@ -161,24 +161,23 @@ function showPanel(id){
 /* ══════════════════════════════════════════════
    SIDEBAR TEMPLATES
 ══════════════════════════════════════════════ */
-// function renderSidebarTemplates(){
-//   const el = document.getElementById('sidebar-tpl-list');
-//   el.innerHTML = state.templates.map(t => `
-//     <div class="sidebar-tpl-item ${t.id === state.currentTplId ? 'active' : ''}" data-tpl-id="${t.id}">
-//       <span class="sidebar-tpl-dot"></span>
-//       <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.name}</span>
-//       ${t.status==='active' ? '<span class="tpl-live-pill">LIVE</span>' : ''}
-//     </div>
-//   `).join('');
- 
-//   el.querySelectorAll('.sidebar-tpl-item').forEach(item => {
-//     item.addEventListener('click', () => {
-//       state.currentTplId = item.dataset.tplId;
-//       renderSidebarTemplates();
-//       openTemplateEditor(state.currentTplId);
-//     });
-//   });
-// }
+function renderSidebarTemplates(){
+  const el = document.getElementById('sidebar-tpl-list');
+  el.innerHTML = state.templates.map(t => `
+    <div class="sidebar-tpl-item ${t.id === state.currentTplId ? 'active' : ''}" data-tpl-id="${t.id}">
+      <span class="sidebar-tpl-dot"></span>
+      <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.name}</span>
+      ${t.status==='active' ? '<span class="tpl-live-pill">LIVE</span>' : ''}
+    </div>
+  `).join('');  
+  el.querySelectorAll('.sidebar-tpl-item').forEach(item => {
+    item.addEventListener('click', () => {
+      state.currentTplId = item.dataset.tplId;
+      renderSidebarTemplates();
+      openTemplateEditor(state.currentTplId);
+    });
+  });
+}
  
 /* ══════════════════════════════════════════════
    TEMPLATE OVERVIEW

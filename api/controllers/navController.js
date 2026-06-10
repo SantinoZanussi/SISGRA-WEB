@@ -52,6 +52,44 @@ function plantillaDeMenu(id_menu, plantillas) {
 }
 const esCustom = p => !!p && /^btn-/.test(p.tipo || '');
 
+// ── Menú jerárquico (padre/hijos) ───────────────────────────────────
+// El menú se modela como árbol: cada botón tiene `padre` (id_menu del contenedor
+// padre; 0 = nivel principal). Un "contenedor" (contenedor:true) es el encabezado
+// de un submenú (lo que antes era el "grupo" de texto). El panel sigue trabajando
+// con "grupo" (nombre): acá traducimos grupo ⇄ contenedor/padre.
+
+// Devuelve el id del contenedor con ese título; lo crea si no existe. 0 si no hay grupo.
+function findOrCreateContainer(botones, grupoTitulo) {
+  const t = (grupoTitulo || '').trim();
+  if (!t) return 0;
+  let c = botones.find(b => b.contenedor && b.titulo === t);
+  if (!c) {
+    c = { id_menu: nextMenuId(botones), titulo: t, href: null, padre: 0, contenedor: true, orden: botones.length + 1, activo: true };
+    botones.push(c);
+  }
+  return c.id_menu;
+}
+
+// Borra un contenedor si quedó sin hijos (para que los grupos vacíos desaparezcan,
+// igual que antes pasaba con los grupos-string).
+function cleanupEmptyContainer(botones, containerId) {
+  if (!containerId) return;
+  const c = botones.find(b => b.id_menu === containerId && b.contenedor);
+  if (!c) return;
+  const tieneHijos = botones.some(b => (b.padre || 0) === containerId && !b.contenedor);
+  if (!tieneHijos) {
+    const i = botones.indexOf(c);
+    if (i >= 0) botones.splice(i, 1);
+  }
+}
+
+// Nombre del grupo (= título del contenedor padre) de un botón, o null.
+function grupoDe(boton, botones) {
+  if (!boton.padre) return null;
+  const c = botones.find(b => b.id_menu === boton.padre);
+  return c ? c.titulo : null;
+}
+
 // ── páginas personalizadas (btn-*) ──────────────────────────────────
 // Shell físico html/<tipo>/index.html: un cascarón que hidrata la plantilla
 // activa de ese tipo vía bootstrapPage (igual que las páginas del sistema).
@@ -121,17 +159,22 @@ function crearPlantillaCustom(pltData, id_menu, titulo) {
 // ── controllers ─────────────────────────────────────────────────────
 
 // GET /api/nav/botones
+// Devuelve solo los ítems "reales" (oculta los contenedores, que son encabezados
+// de submenú) con su `grupo` derivado del contenedor padre → el panel no cambia.
 exports.listarBotones = (_req, res) => {
   const { botones } = readNav();
   const { plantillas } = readPlantillas();
-  const out = botones.map(b => {
-    const p = plantillaDeMenu(b.id_menu, plantillas);
-    return {
-      ...b,
-      esCustom: esCustom(p),
-      plantilla: p ? { id: p.id_plantilla, nombre: p.nombre, tipo: p.tipo } : null,
-    };
-  });
+  const out = botones
+    .filter(b => !b.contenedor)
+    .map(b => {
+      const p = plantillaDeMenu(b.id_menu, plantillas);
+      return {
+        ...b,
+        grupo: grupoDe(b, botones),
+        esCustom: esCustom(p),
+        plantilla: p ? { id: p.id_plantilla, nombre: p.nombre, tipo: p.tipo } : null,
+      };
+    });
   res.json({ botones: out });
 };
 
@@ -142,6 +185,8 @@ exports.crearBoton = (req, res) => {
   if (!titulo || !titulo.trim()) return res.status(400).json({ error: 'El campo "titulo" es obligatorio' });
 
   const data = readNav();
+  // Traducir grupo → padre (crea el contenedor si el grupo es nuevo) ANTES del id.
+  const padre = findOrCreateContainer(data.botones, grupo);
   const id_menu = nextMenuId(data.botones);
   let botonHref = null;
 
@@ -168,14 +213,14 @@ exports.crearBoton = (req, res) => {
     id_menu,
     titulo: titulo.trim(),
     href:   botonHref,
-    grupo:  grupo || null,
+    padre,
     orden:  orden ?? (data.botones.length + 1),
     activo: activo !== undefined ? activo : true,
   };
   data.botones.push(nuevo);
   saveNav(data);
 
-  res.status(201).json({ ok: true, boton: nuevo });
+  res.status(201).json({ ok: true, boton: { ...nuevo, grupo: grupo || null } });
 };
 
 // PATCH /api/nav/botones/:id   [auth]   (:id = id_menu)
@@ -187,13 +232,20 @@ exports.crearBoton = (req, res) => {
 exports.actualizarBoton = (req, res) => {
   const id = Number(req.params.id);
   const data = readNav();
-  const b = data.botones.find(x => x.id_menu === id);
+  const b = data.botones.find(x => x.id_menu === id && !x.contenedor);
   if (!b) return res.status(404).json({ error: 'Ítem no encontrado' });
 
-  // Campos simples (href se maneja aparte cuando hay cambio de destino).
-  ['titulo', 'grupo', 'orden', 'activo'].forEach(f => {
+  // Campos simples (href y grupo se manejan aparte).
+  ['titulo', 'orden', 'activo'].forEach(f => {
     if (req.body[f] !== undefined) b[f] = req.body[f];
   });
+
+  // grupo → padre (contenedor). Si el contenedor anterior queda vacío, se borra.
+  if (req.body.grupo !== undefined) {
+    const oldPadre = b.padre || 0;
+    b.padre = findOrCreateContainer(data.botones, req.body.grupo);
+    if (oldPadre && oldPadre !== b.padre) cleanupEmptyContainer(data.botones, oldPadre);
+  }
 
   const { id_plantilla, tipoRedireccion, href } = req.body || {};
   const cambiaDestino = id_plantilla !== undefined || tipoRedireccion !== undefined || href !== undefined;
@@ -240,7 +292,7 @@ exports.actualizarBoton = (req, res) => {
   }
 
   saveNav(data);
-  res.json({ ok: true, boton: b });
+  res.json({ ok: true, boton: { ...b, grupo: grupoDe(b, data.botones) } });
 };
 
 // DELETE /api/nav/botones/:id   [auth]   (:id = id_menu)
@@ -267,7 +319,12 @@ exports.eliminarBoton = (req, res) => {
     savePlantillas(pltData);
   }
 
+  const padre = boton.padre || 0;
   data.botones = data.botones.filter(x => x.id_menu !== id);
+  // Si era un contenedor, subir sus hijos al nivel principal (no perderlos).
+  if (boton.contenedor) data.botones.forEach(x => { if ((x.padre || 0) === id) x.padre = 0; });
+  // Si el ítem colgaba de un contenedor que quedó vacío, borrarlo.
+  if (padre) cleanupEmptyContainer(data.botones, padre);
   saveNav(data);
 
   res.json({ ok: true, plantillaEliminada });
