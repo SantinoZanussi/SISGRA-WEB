@@ -1,0 +1,17 @@
+{
+  "envios": [
+    {
+      "id": "contacto-06d63fa3-4055-4333-b516-8ca8458af684",
+      "date_time_hour": "2026-06-11T19:06:19.754Z",
+      "estado": "pendiente",
+      "destino_url": null,
+      "pagina": "btn-11",
+      "formulario": null,
+      "campos": {
+        "Nombre": "Prueba Claude",
+        "Email": "test@test.com",
+        "Mensaje": "hola"
+      }
+    }
+  ]
+}

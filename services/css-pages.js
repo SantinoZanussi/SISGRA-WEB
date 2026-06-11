@@ -33,7 +33,7 @@ export const TYPE_TO_PAGE = {
 
 // Módulos globales: se estilan con los layouts compartidos (nav/footer) o con
 // estilos inline (cta/spacer), así que no necesitan ninguna hoja de /css/pages/.
-export const GLOBAL_MODULE_TYPES = new Set(['nav', 'footer', 'footer-full', 'cta', 'spacer']);
+export const GLOBAL_MODULE_TYPES = new Set(['nav', 'footer', 'footer-full', 'cta', 'spacer', 'formulario']);
 
 // Layout por defecto para páginas nuevas (btn-*) que no están en TIPO_CSS: usan
 // el layout interno (no el de home), igual que el resto de páginas internas.

@@ -1,46 +1,5 @@
 {
   "titulo_seccion": "Últimas Noticias",
   "visible": true,
-  "posts": [
-    {
-      "id": "post-2",
-      "titulo": "SISGRA cumple 25 años en la industria",
-      "categoria": "Infraestructura",
-      "estado": "publicado",
-      "fecha": "2026-05-01",
-      "extracto": "Un cuarto de siglo conectando empresas, integrando tecnología y formando parte del crecimiento de Rosario y el país.",
-      "contenido": "<p>Un cuarto de siglo conectando empresas, integrando tecnología y formando parte del crecimiento de Rosario y el país.</p>",
-      "imagen": ""
-    },
-    {
-      "id": "post-3",
-      "titulo": "Cableado Categoría 8: Todo lo que necesitás saber",
-      "categoria": "Seguridad",
-      "estado": "publicado",
-      "fecha": "2026-05-12",
-      "extracto": "Una guía completa sobre los estándares Cat8 y por qué son la elección correcta para infraestructura crítica moderna.",
-      "contenido": "<p><b>Una guía completa sobre los estándares Cat8.</b></p><p><b><br></b></p><p><img src=\"/img/clients/fondo/sancristobal.png\"></p>",
-      "imagen": "/img/img1.png"
-    },
-    {
-      "titulo": "adwadaw",
-      "categoria": "Soporte IT",
-      "estado": "borrador",
-      "fecha": "2026-05-21",
-      "extracto": "dwadawd",
-      "contenido": "d<a href=\"youtube.com\">wadawdaw</a><div><br></div><div><img src=\"/img/seguridadelectronica.png\"></div>",
-      "imagen": "/img/img1.png",
-      "id": "po-1779385550236"
-    },
-    {
-      "titulo": "hola",
-      "categoria": "Fibra Óptica",
-      "estado": "publicado",
-      "fecha": "2026-05-28",
-      "extracto": "saas",
-      "contenido": "<blockquote>asdas</blockquote><p></p><ul><li><span style=\"font-style: normal;\"><br></span></li><li><span style=\"font-style: normal;\"><br></span></li><li><span style=\"font-style: normal;\"><br></span></li></ul><ol><li><span style=\"font-size: 1rem;\"><br></span></li><li><span style=\"font-size: 1rem;\"><br></span></li><li><span style=\"font-size: 1rem;\"><br></span></li><li><span style=\"font-size: 1rem;\"><br></span></li><li><span style=\"font-size: 1rem;\"><br></span></li></ol><p><span style=\"font-size: 1rem;\"><br></span></p><img src=\"/img/chatgptfoto.png\"><p><span style=\"font-size: 1rem;\">xassda</span></p><p><span style=\"font-size: 1rem;\">dsad</span></p><p><span style=\"font-size: 1rem;\">sadsadasddddawdaw</span></p><p><span style=\"font-size: 1rem;\">fjoafm</span></p><p><span style=\"font-size: 1rem;\"><br></span></p><p></p>",
-      "imagen": "/img/img1.png",
-      "id": "po-1779985550732"
-    }
-  ]
+  "posts": []
 }

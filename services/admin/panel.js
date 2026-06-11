@@ -1759,11 +1759,14 @@ function renderNavbarTable() {
         const delBtn = `<button class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="eliminarNavItem(${b.id_menu})">Eliminar</button>`;
         acciones = editBtn + ' ' + delBtn;
       }
-      const grupoTag = b.grupo
-        ? ` <span style="font-size:.5rem;background:#e0e7ff;color:#4338ca;padding:.1rem .35rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border-radius:2px;">${b.grupo}</span>`
+      const padreTag = b.padreTitulo
+        ? ` <span style="font-size:.5rem;background:#e0e7ff;color:#4338ca;padding:.1rem .35rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border-radius:2px;">${b.padreTitulo}</span>`
+        : '';
+      const hijosTag = b.tieneHijos
+        ? ` <span style="font-size:.5rem;background:#ccfbf1;color:#0f766e;padding:.1rem .35rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border-radius:2px;">Desplegable</span>`
         : '';
       return `<tr>
-        <td>${b.titulo}${grupoTag}</td>
+        <td>${b.titulo}${padreTag}${hijosTag}</td>
         <td>${b.orden}</td>
         <td>${plantillaCell}</td>
         <td>${estado}</td>
@@ -1796,62 +1799,32 @@ async function doEliminarNavItem(id_menu) {
   }
 }
 
-// Muestra/oculta los campos del modal de edición según el destino elegido.
-function updateNavEditModalFields() {
-  const mode = document.querySelector('input[name="nav-edit-tipo-red"]:checked')?.value || 'url';
-  const show = (id, on) => { const el = document.getElementById(id); if (el) el.style.display = on ? '' : 'none'; };
-  show('nav-edit-plantilla-field', mode === 'link');
-  show('nav-edit-href-field',      mode === 'url');
-  show('nav-edit-custom-info',     mode === 'custom');
-}
-
-// Opciones del <select> de grupo: "sin grupo" + grupos existentes + "crear nuevo".
-// `selected` preselecciona un grupo existente (si lo hay).
-function fillNavGrupoSelect(sel, selected) {
-  if (!sel) return;
-  const grupos = [...new Set(navbarItems.map(b => b.grupo).filter(Boolean))];
-  const sel0 = selected || '';
-  const opts = ['<option value="">— Sin grupo —</option>'];
-  grupos.forEach(g => {
-    const v = String(g).replace(/"/g, '&quot;');
-    opts.push(`<option value="${v}"${g === sel0 ? ' selected' : ''}>${v}</option>`);
+// Ids de todos los descendientes de un ítem (para no ofrecerlos como padre: ciclo).
+function navDescendientes(id) {
+  const out = new Set();
+  const walk = pid => navbarItems.forEach(b => {
+    if ((b.padre || 0) === pid && !out.has(b.id_menu)) { out.add(b.id_menu); walk(b.id_menu); }
   });
-  opts.push('<option value="__new__">＋ Crear grupo nuevo…</option>');
-  sel.innerHTML = opts.join('');
+  walk(id);
+  return out;
 }
 
-// Muestra/oculta el input de "grupo nuevo" según el select.
-function toggleNavGrupoNuevo(selectId, nuevoId) {
-  const sel = document.getElementById(selectId);
-  const nuevo = document.getElementById(nuevoId);
-  if (!sel || !nuevo) return;
-  const on = sel.value === '__new__';
-  nuevo.style.display = on ? '' : 'none';
-  nuevo.value = '';
-  if (on) nuevo.focus();
-}
-
-// Grupo elegido: '' (sin grupo), un grupo existente, o el nombre nuevo tipeado.
-function readNavGrupo(selectId, nuevoId) {
-  const sel = document.getElementById(selectId);
-  if (!sel) return '';
-  if (sel.value === '__new__') return (document.getElementById(nuevoId)?.value || '').trim();
-  return sel.value;
-}
-
-// Llena un <select> de plantillas y preselecciona selectedId (si se pasa).
-async function fillNavPlantillaSelect(sel, selectedId) {
+// Opciones del <select> de padre: "Raíz" (0) + el resto de los ítems.
+// `excludeId` saca al propio ítem y a sus descendientes (un ítem no puede
+// colgar de sí mismo ni de un hijo suyo).
+function fillNavPadreSelect(sel, selectedPadre, excludeId) {
   if (!sel) return;
-  sel.innerHTML = '<option value="">Cargando…</option>';
-  try {
-    const { plantillas } = await window.__svc.apiGet('/plantillas');
-    const list = plantillas || [];
-    sel.innerHTML = list.length
-      ? list.map(p => `<option value="${p.id_plantilla}"${Number(selectedId) === p.id_plantilla ? ' selected' : ''}>${p.nombre} · ${p.tipo}</option>`).join('')
-      : '<option value="">No hay plantillas</option>';
-  } catch (e) {
-    sel.innerHTML = '<option value="">Error cargando plantillas</option>';
-  }
+  const excluidos = excludeId ? navDescendientes(excludeId).add(excludeId) : new Set();
+  const sel0 = Number(selectedPadre) || 0;
+  const opts = [`<option value="0"${sel0 === 0 ? ' selected' : ''}>0</option>`];
+  navbarItems
+    .slice()
+    .sort((a, b) => (a.orden || 0) - (b.orden || 0))
+    .forEach(b => {
+      if (excluidos.has(b.id_menu)) return;
+      opts.push(`<option value="${b.id_menu}"${sel0 === b.id_menu ? ' selected' : ''}>${b.titulo}</option>`);
+    });
+  sel.innerHTML = opts.join('');
 }
 
 window.editarNavItem = function(id_menu) {
@@ -1861,18 +1834,7 @@ window.editarNavItem = function(id_menu) {
   document.getElementById('nav-edit-titulo').value = b.titulo || '';
   document.getElementById('nav-edit-orden').value = b.orden || '';
   document.getElementById('nav-edit-activo').value = b.activo !== false ? 'visible' : 'oculto';
-  fillNavGrupoSelect(document.getElementById('nav-edit-grupo-select'), b.grupo || '');
-  toggleNavGrupoNuevo('nav-edit-grupo-select', 'nav-edit-grupo-nuevo');
-
-  // Modo actual del ítem: página propia / plantilla vinculada / URL externa.
-  const mode = b.esCustom ? 'custom' : (b.plantilla ? 'link' : 'url');
-  const radio = document.getElementById(`nav-edit-red-${mode}`);
-  if (radio) radio.checked = true;
-
-  document.getElementById('nav-edit-href').value = (mode === 'url') ? (b.href || '') : '';
-  fillNavPlantillaSelect(document.getElementById('nav-edit-plantilla-select'), b.plantilla ? b.plantilla.id : null);
-  updateNavEditModalFields();
-
+  fillNavPadreSelect(document.getElementById('nav-edit-padre-select'), b.padre || 0, b.id_menu);
   window.__svc.openModal('modal-editar-navbar');
 };
 
@@ -2058,80 +2020,23 @@ function initApp(){
  
   document.getElementById('btn-guardar')?.addEventListener('click',saveCurrentPanel);
  
-  // Modal Navbar: 3 modos (vincular plantilla / página nueva / URL externa)
-  function updateNavModalFields() {
-    const mode = document.querySelector('input[name="nav-tipo-red"]:checked')?.value || 'link';
-    const show = (id, on) => { const el = document.getElementById(id); if (el) el.style.display = on ? '' : 'none'; };
-    show('nav-plantilla-field', mode === 'link');
-    show('nav-href-field',      mode === 'url');
-    show('nav-custom-info',     mode === 'custom');
-  }
-  async function populateNavPlantillaSelect() {
-    const sel = document.getElementById('nav-plantilla-select');
-    if (!sel) return;
-    sel.innerHTML = '<option value="">Cargando…</option>';
-    try {
-      const { plantillas } = await window.__svc.apiGet('/plantillas');
-      const list = plantillas || [];
-      sel.innerHTML = list.length
-        ? list.map(p => `<option value="${p.id_plantilla}">${p.nombre} · ${p.tipo}</option>`).join('')
-        : '<option value="">No hay plantillas</option>';
-    } catch (e) {
-      sel.innerHTML = '<option value="">Error cargando plantillas</option>';
-    }
-  }
-
   document.getElementById('abrir-modal-navbar')?.addEventListener('click', () => {
     document.getElementById('nav-titulo').value = '';
-    document.getElementById('nav-href').value = '';
-    fillNavGrupoSelect(document.getElementById('nav-grupo-select'), '');
-    toggleNavGrupoNuevo('nav-grupo-select', 'nav-grupo-nuevo');
-    const linkRadio = document.getElementById('nav-red-link');
-    if (linkRadio) linkRadio.checked = true;
-    updateNavModalFields();
-    populateNavPlantillaSelect();
+    fillNavPadreSelect(document.getElementById('nav-padre-select'), 0, null);
     window.__svc.openModal('modal-navbar');
   });
-
-  document.querySelectorAll('input[name="nav-tipo-red"]').forEach(r => {
-    r.addEventListener('change', updateNavModalFields);
-  });
-  document.querySelectorAll('input[name="nav-edit-tipo-red"]').forEach(r => {
-    r.addEventListener('change', updateNavEditModalFields);
-  });
-  document.getElementById('nav-grupo-select')?.addEventListener('change', () => toggleNavGrupoNuevo('nav-grupo-select', 'nav-grupo-nuevo'));
-  document.getElementById('nav-edit-grupo-select')?.addEventListener('change', () => toggleNavGrupoNuevo('nav-edit-grupo-select', 'nav-edit-grupo-nuevo'));
 
   document.getElementById('guardar-nav-item-btn')?.addEventListener('click', async () => {
     const titulo = document.getElementById('nav-titulo').value.trim();
     if (!titulo) { window.__svc.showNotif('El título es obligatorio', 'error'); return; }
-    const mode = document.querySelector('input[name="nav-tipo-red"]:checked')?.value || 'link';
-    const grupo = readNavGrupo('nav-grupo-select', 'nav-grupo-nuevo');
-    const body = { titulo };
-    if (grupo) body.grupo = grupo;
-    if (mode === 'link') {
-      const id_plantilla = Number(document.getElementById('nav-plantilla-select').value);
-      if (!id_plantilla) { window.__svc.showNotif('Elegí una plantilla de la lista', 'error'); return; }
-      body.id_plantilla = id_plantilla;
-    } else if (mode === 'custom') {
-      body.tipoRedireccion = 'custom';
-    } else {
-      const href = document.getElementById('nav-href').value.trim();
-      if (!href) { window.__svc.showNotif('La URL externa es obligatoria', 'error'); return; }
-      body.href = href;
-    }
+    const padre = Number(document.getElementById('nav-padre-select').value) || 0;
     try {
-      await window.__svc.apiPost('/nav/botones', body);
+      await window.__svc.apiPost('/nav/botones', { titulo, padre });
       window.__svc.closeModal('modal-navbar');
       loadNavbarItems();
-      if (mode === 'custom') {
-        // Página nueva = plantilla en blanco (sin archivo HTML). Refrescar la lista
-        // del editor para que aparezca al instante, sin recargar.
-        window.reloadPlantillas?.();
-        window.__svc.showNotif('✓ Página nueva creada — editala en Plantillas', 'success');
-      } else {
-        window.__svc.showNotif('Ítem agregado al navbar', 'success');
-      }
+      // Cada ítem nuevo crea su página en blanco: refrescar la lista de plantillas.
+      window.reloadPlantillas?.();
+      window.__svc.showNotif('✓ Ítem agregado — editá su página en Plantillas', 'success');
     } catch(e) {
       window.__svc.showNotif(e.message, 'error');
     }
@@ -2142,35 +2047,17 @@ function initApp(){
     const titulo = document.getElementById('nav-edit-titulo').value.trim();
     if (!titulo) { window.__svc.showNotif('El título es obligatorio', 'error'); return; }
     const orden = parseInt(document.getElementById('nav-edit-orden').value) || undefined;
-    const grupo = readNavGrupo('nav-edit-grupo-select', 'nav-edit-grupo-nuevo');
     const body = {
       titulo,
-      grupo: grupo || null,
+      padre: Number(document.getElementById('nav-edit-padre-select').value) || 0,
       activo: document.getElementById('nav-edit-activo').value === 'visible',
     };
     if (orden) body.orden = orden;
-
-    // Destino: mismos 3 modos que al crear. El backend crea la plantilla btn-N
-    // automáticamente si se pasa a "página propia" y aún no la tiene.
-    const mode = document.querySelector('input[name="nav-edit-tipo-red"]:checked')?.value || 'url';
-    if (mode === 'link') {
-      const id_plantilla = Number(document.getElementById('nav-edit-plantilla-select').value);
-      if (!id_plantilla) { window.__svc.showNotif('Elegí una plantilla de la lista', 'error'); return; }
-      body.id_plantilla = id_plantilla;
-    } else if (mode === 'custom') {
-      body.tipoRedireccion = 'custom';
-    } else {
-      const href = document.getElementById('nav-edit-href').value.trim();
-      if (!href) { window.__svc.showNotif('La URL externa es obligatoria', 'error'); return; }
-      body.href = href;
-    }
-
     try {
       await window.__svc.apiPatch(`/nav/botones/${id_boton}`, body);
       window.__svc.closeModal('modal-editar-navbar');
       window.__svc.showNotif('✓ Ítem actualizado', 'success');
       loadNavbarItems();
-      if (mode === 'custom') window.reloadPlantillas?.();
     } catch(e) {
       window.__svc.showNotif(e.message, 'error');
     }

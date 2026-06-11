@@ -442,7 +442,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
 
   //  SERVICIOS — copia exacta de la sección servicios del index actual
   services: {
-    label: 'Servicios (cards)',
+    label: 'Cards',
     description: 'Grid de tarjetas de servicios',
     icon: `<i class="fa-solid fa-table-cells-large"></i>`,
     validTipos: ['index'],
@@ -589,6 +589,77 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     <p style="color:rgba(255,255,255,.6);font-size:.9375rem;">${fld('desc', esc(d.desc))}</p>
   </div>
   <a href="${esc(d.href)}" style="background:${s.btnBg};color:#fff;padding:.875rem 2rem;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;white-space:nowrap;flex-shrink:0;${s.btnRadius ? `border-radius:${s.btnRadius};` : ''}">${fld('btn', esc(d.btn))}</a>
+</section>`;
+    },
+  },
+
+  //  FORMULARIO — campos configurables desde el panel; los envíos se guardan
+  //  en el backend (contactos) hasta que se defina el endpoint de destino.
+  formulario: {
+    label: 'Formulario',
+    description: 'Formulario personalizable. Los envíos quedan guardados para mandarse al endpoint que se configure.',
+    icon: `<i class="fa-solid fa-envelope-open-text"></i>`,
+    defaultData: {
+      titulo: 'Contáctese con nosotros',
+      descripcion: 'Complete el formulario y le responderemos a la brevedad.',
+      btn: 'Enviar consulta',
+      successMsg: '✓ Recibimos su consulta. Le responderemos a la brevedad.',
+      campos: [
+        { etiqueta: 'Nombre',   tipo: 'text',     requerido: true  },
+        { etiqueta: 'Empresa',  tipo: 'text',     requerido: false },
+        { etiqueta: 'Email',    tipo: 'email',    requerido: true  },
+        { etiqueta: 'Teléfono', tipo: 'tel',      requerido: false },
+        { etiqueta: 'Mensaje',  tipo: 'textarea', requerido: false },
+      ],
+    },
+    defaultDesign: {
+      bg: '#f8fafc', cardBg: '#ffffff', titleColor: '#0A1D37', textColor: '#475569',
+      labelColor: '#334155', btnBg: '#2563eb', btnColor: '#ffffff', paddingY: '',
+    },
+    dataFields: [
+      { name: 'titulo',      label: 'Título',            type: 'text' },
+      { name: 'descripcion', label: 'Descripción',       type: 'textarea' },
+      { name: 'btn',         label: 'Texto del botón',   type: 'text' },
+      { name: 'successMsg',  label: 'Mensaje de éxito',  type: 'text' },
+    ],
+    designFields: [
+      { name: 'bg',         label: 'Fondo de la sección', type: 'color' },
+      { name: 'cardBg',     label: 'Fondo del formulario',type: 'color' },
+      { name: 'titleColor', label: 'Color del título',    type: 'color' },
+      { name: 'textColor',  label: 'Color del texto',     type: 'color' },
+      { name: 'labelColor', label: 'Color de etiquetas',  type: 'color' },
+      { name: 'btnBg',      label: 'Botón — fondo',       type: 'color' },
+      { name: 'btnColor',   label: 'Botón — texto',       type: 'color' },
+      { name: 'paddingY',   label: 'Padding vertical',    type: 'text', placeholder: 'ej: 5rem' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS.formulario.defaultData, ...data };
+      const s = { ...SECTIONS.formulario.defaultDesign, ...design };
+      const py = s.paddingY || '5rem';
+      const slug = t => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+        .replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'campo';
+      const inputStyle = 'width:100%;box-sizing:border-box;padding:.75rem .875rem;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;font-size:.9rem;color:#0f172a;background:#fff;outline:none;';
+      const campos = (Array.isArray(d.campos) ? d.campos : []).map((c, i) => {
+        const name = slug(c.etiqueta) || `campo_${i}`;
+        const req  = c.requerido ? ' required' : '';
+        const label = `<label for="fm-${name}" style="display:block;font-size:.75rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:${s.labelColor};margin-bottom:.4rem;">${esc(c.etiqueta)}${c.requerido ? ' <span style="color:#ef4444;">*</span>' : ''}</label>`;
+        const input = c.tipo === 'textarea'
+          ? `<textarea id="fm-${name}" name="${name}" data-etiqueta="${esc(c.etiqueta)}" rows="5" style="${inputStyle}resize:vertical;"${req}></textarea>`
+          : `<input id="fm-${name}" name="${name}" data-etiqueta="${esc(c.etiqueta)}" type="${esc(c.tipo || 'text')}" style="${inputStyle}"${req}>`;
+        return `<div style="margin-bottom:1.1rem;">${label}${input}</div>`;
+      }).join('');
+      return `
+<section style="background:${s.bg};padding:${py} 1.5rem;">
+  <div style="max-width:640px;margin:0 auto;">
+    <h2 style="font-size:2rem;font-weight:900;color:${s.titleColor};letter-spacing:-.03em;margin-bottom:.5rem;">${fld('titulo', esc(d.titulo))}</h2>
+    <p style="color:${s.textColor};font-size:.9375rem;margin-bottom:2rem;">${fld('descripcion', esc(d.descripcion))}</p>
+    <form data-form-modulo style="background:${s.cardBg};border:1px solid #e2e8f0;border-radius:10px;padding:2rem;">
+      ${campos}
+      <button type="submit" style="background:${s.btnBg};color:${s.btnColor};border:none;cursor:pointer;padding:.875rem 2rem;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border-radius:6px;font-family:inherit;">${fld('btn', esc(d.btn))}</button>
+      <div data-form-ok style="display:none;margin-top:1rem;padding:.75rem 1rem;background:#dcfce7;color:#166534;border-radius:6px;font-size:.875rem;">${esc(d.successMsg)}</div>
+      <div data-form-err style="display:none;margin-top:1rem;padding:.75rem 1rem;background:#fee2e2;color:#991b1b;border-radius:6px;font-size:.875rem;">No se pudo enviar el formulario. Intentá de nuevo en unos minutos.</div>
+    </form>
+  </div>
 </section>`;
     },
   },

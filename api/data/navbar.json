@@ -3,82 +3,100 @@
     {
       "id_menu": 1,
       "titulo": "Inicio",
-      "href": "/",
       "padre": 0,
+      "menu": "CE",
+      "href": "/",
       "orden": 1,
       "activo": true
     },
     {
       "id_menu": 2,
       "titulo": "Blog",
-      "href": "/html/blog",
       "padre": 0,
+      "menu": "CE",
+      "href": "/html/blog",
       "orden": 3,
       "activo": true
     },
     {
       "id_menu": 10,
       "titulo": "Instalaciones",
-      "href": null,
       "padre": 0,
-      "contenedor": true,
+      "menu": "CE",
+      "href": null,
       "orden": 3,
       "activo": true
     },
     {
       "id_menu": 3,
       "titulo": "Cableado Estructurado",
-      "href": "/html/cableado_estructurado",
       "padre": 10,
+      "menu": "CE",
+      "href": "/html/cableado_estructurado",
       "orden": 3,
       "activo": true
     },
     {
       "id_menu": 4,
       "titulo": "Fibra Óptica",
-      "href": "/html/fibra_optica",
       "padre": 10,
+      "menu": "CE",
+      "href": "/html/fibra_optica",
       "orden": 4,
       "activo": true
     },
     {
       "id_menu": 5,
       "titulo": "Seguridad Electrónica",
-      "href": "/html/seguridad",
       "padre": 10,
+      "menu": "CE",
+      "href": "/html/seguridad",
       "orden": 5,
       "activo": true
     },
     {
       "id_menu": 6,
       "titulo": "Soporte IT",
-      "href": "/html/soporte_it",
       "padre": 0,
+      "menu": "CE",
+      "href": "/html/soporte_it",
       "orden": 6,
       "activo": true
     },
     {
       "id_menu": 7,
       "titulo": "Desarrollo de Software",
-      "href": "/html/desarrollo",
       "padre": 0,
+      "menu": "CE",
+      "href": "/html/desarrollo",
       "orden": 7,
       "activo": true
     },
     {
       "id_menu": 8,
       "titulo": "asdasd",
-      "href": "/html/btn-8",
       "padre": 0,
+      "menu": "CE",
+      "href": "/html/btn-8",
       "orden": 9,
       "activo": true
     },
     {
       "id_menu": 9,
       "titulo": "Nosotros",
-      "href": "/html/btn-9",
       "padre": 0,
+      "menu": "CE",
+      "href": "/html/btn-9",
       "orden": 2,
+      "activo": true
+    },
+    {
+      "id_menu": 11,
+      "titulo": "Contáctese",
+      "padre": 0,
+      "menu": "CE",
+      "href": "/html/btn-11",
+      "orden": 10,
       "activo": true
     }
   ]

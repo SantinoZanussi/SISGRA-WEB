@@ -53,41 +53,34 @@ function plantillaDeMenu(id_menu, plantillas) {
 const esCustom = p => !!p && /^btn-/.test(p.tipo || '');
 
 // Menú jerárquico (padre/hijos)
-// El menú se modela como árbol: cada botón tiene `padre` (id_menu del contenedor
-// padre; 0 = nivel principal). Un "contenedor" (contenedor:true) es el encabezado
-// de un submenú (lo que antes era el "grupo" de texto). El panel sigue trabajando
-// con "grupo" (nombre): acá traducimos grupo ⇄ contenedor/padre.
+// El menú se modela como árbol: cada ítem tiene `padre` (id_menu de otro ítem;
+// 0 = nivel principal). Un ítem con hijos se muestra como desplegable. No hay
+// ítems especiales: cualquier ítem puede ser padre de otros.
 
-// Devuelve el id del contenedor con ese título; lo crea si no existe. 0 si no hay grupo.
-function findOrCreateContainer(botones, grupoTitulo) {
-  const t = (grupoTitulo || '').trim();
-  if (!t) return 0;
-  let c = botones.find(b => b.contenedor && b.titulo === t);
-  if (!c) {
-    c = { id_menu: nextMenuId(botones), titulo: t, href: null, padre: 0, contenedor: true, orden: botones.length + 1, activo: true };
-    botones.push(c);
-  }
-  return c.id_menu;
-}
-
-// Borra un contenedor si quedó sin hijos (para que los grupos vacíos desaparezcan,
-// igual que antes pasaba con los grupos-string).
-function cleanupEmptyContainer(botones, containerId) {
-  if (!containerId) return;
-  const c = botones.find(b => b.id_menu === containerId && b.contenedor);
-  if (!c) return;
-  const tieneHijos = botones.some(b => (b.padre || 0) === containerId && !b.contenedor);
-  if (!tieneHijos) {
-    const i = botones.indexOf(c);
-    if (i >= 0) botones.splice(i, 1);
-  }
-}
-
-// Nombre del grupo (= título del contenedor padre) de un botón, o null.
-function grupoDe(boton, botones) {
+// Título del padre de un botón, o null si cuelga de la raíz.
+function padreTituloDe(boton, botones) {
   if (!boton.padre) return null;
-  const c = botones.find(b => b.id_menu === boton.padre);
-  return c ? c.titulo : null;
+  const p = botones.find(b => b.id_menu === boton.padre);
+  return p ? p.titulo : null;
+}
+
+// Valida un valor de `padre` para un ítem: debe ser 0, o el id de otro ítem que
+// no sea él mismo ni un descendiente suyo (evita ciclos). Devuelve el id
+// normalizado o null si es inválido.
+function validarPadre(botones, padre, idPropio) {
+  const id = Number(padre) || 0;
+  if (id === 0) return 0;
+  if (id === idPropio) return null;
+  if (!botones.some(b => b.id_menu === id)) return null;
+  // Subir por la cadena de padres desde el candidato: si aparece idPropio, hay ciclo.
+  let cur = id;
+  const visitados = new Set();
+  while (cur && !visitados.has(cur)) {
+    visitados.add(cur);
+    if (cur === idPropio) return null;
+    cur = botones.find(b => b.id_menu === cur)?.padre || 0;
+  }
+  return id;
 }
 
 // páginas personalizadas (btn-*)
@@ -159,140 +152,75 @@ function crearPlantillaCustom(pltData, id_menu, titulo) {
 // controllers
 
 // GET /api/nav/botones
-// Devuelve solo los ítems "reales" (oculta los contenedores, que son encabezados
-// de submenú) con su `grupo` derivado del contenedor padre → el panel no cambia.
+// Devuelve todos los ítems con datos derivados para el panel: título del padre,
+// si tiene hijos (desplegable) y la plantilla vinculada (si la hay).
 exports.listarBotones = (_req, res) => {
   const { botones } = readNav();
   const { plantillas } = readPlantillas();
-  const out = botones
-    .filter(b => !b.contenedor)
-    .map(b => {
-      const p = plantillaDeMenu(b.id_menu, plantillas);
-      return {
-        ...b,
-        grupo: grupoDe(b, botones),
-        esCustom: esCustom(p),
-        plantilla: p ? { id: p.id_plantilla, nombre: p.nombre, tipo: p.tipo } : null,
-      };
-    });
+  const out = botones.map(b => {
+    const p = plantillaDeMenu(b.id_menu, plantillas);
+    return {
+      ...b,
+      padreTitulo: padreTituloDe(b, botones),
+      tieneHijos:  botones.some(x => (x.padre || 0) === b.id_menu),
+      esCustom:    esCustom(p),
+      plantilla:   p ? { id: p.id_plantilla, nombre: p.nombre, tipo: p.tipo } : null,
+    };
+  });
   res.json({ botones: out });
 };
 
 // POST /api/nav/botones  [auth]
-// Body: { titulo, tipoRedireccion ('url'|'custom'), href?, grupo?, orden?, activo? }
+// Body: { titulo, padre?, orden?, activo? }. Crea siempre la página propia del
+// ítem (plantilla btn-N + shell), que se edita desde el panel de Plantillas.
 exports.crearBoton = (req, res) => {
-  const { titulo, href, tipoRedireccion, id_plantilla, grupo, orden, activo } = req.body || {};
+  const { titulo, padre, orden, activo } = req.body || {};
   if (!titulo || !titulo.trim()) return res.status(400).json({ error: 'El campo "titulo" es obligatorio' });
 
   const data = readNav();
-  // Traducir grupo → padre (crea el contenedor si el grupo es nuevo) ANTES del id.
-  const padre = findOrCreateContainer(data.botones, grupo);
-  const id_menu = nextMenuId(data.botones);
-  let botonHref = null;
+  const padreId = validarPadre(data.botones, padre, -1);
+  if (padreId === null) return res.status(400).json({ error: 'El "padre" indicado no existe' });
 
-  if (id_plantilla != null) {
-    // Vincular a una plantilla existente (sin escribir rutas a mano)
-    const pltData = readPlantillas();
-    const plt = pltData.plantillas.find(p => p.id_plantilla === Number(id_plantilla));
-    if (!plt) return res.status(404).json({ error: 'Plantilla no encontrada' });
-    botonHref = plantillaHref(plt.tipo);
-  } else if (tipoRedireccion === 'custom') {
-    // Crear plantilla v2 en blanco + su shell físico html/<tipo>/index.html,
-    // que se edita como cualquier plantilla y anda en cualquier server.
-    const pltData = readPlantillas();
-    const tipo = crearPlantillaCustom(pltData, id_menu, titulo.trim());
-    savePlantillas(pltData);
-    botonHref = customHref(tipo);
-  } else {
-    // URL externa libre
-    botonHref = href || null;
-    if (!botonHref) return res.status(400).json({ error: 'Se requiere "href" para ítems de tipo URL' });
-  }
+  const id_menu = nextMenuId(data.botones);
+  const pltData = readPlantillas();
+  const tipo = crearPlantillaCustom(pltData, id_menu, titulo.trim());
+  savePlantillas(pltData);
 
   const nuevo = {
     id_menu,
     titulo: titulo.trim(),
-    href:   botonHref,
-    padre,
+    padre:  padreId,
+    menu:   'CE',
+    href:   customHref(tipo),
     orden:  orden ?? (data.botones.length + 1),
     activo: activo !== undefined ? activo : true,
   };
   data.botones.push(nuevo);
   saveNav(data);
 
-  res.status(201).json({ ok: true, boton: { ...nuevo, grupo: grupo || null } });
+  res.status(201).json({ ok: true, boton: { ...nuevo, padreTitulo: padreTituloDe(nuevo, data.botones) } });
 };
 
 // PATCH /api/nav/botones/:id   [auth]   (:id = id_menu)
-// Body: { titulo?, grupo?, orden?, activo?, + destino opcional }
-// El destino se cambia con los mismos 3 modos que crearBoton:
-//   · id_plantilla       → vincular a una plantilla existente
-//   · tipoRedireccion:'custom' → asegurar/crear la página propia (btn-N)
-//   · href               → URL externa
+// Body: { titulo?, padre?, orden?, activo? }
 exports.actualizarBoton = (req, res) => {
   const id = Number(req.params.id);
   const data = readNav();
-  const b = data.botones.find(x => x.id_menu === id && !x.contenedor);
+  const b = data.botones.find(x => x.id_menu === id);
   if (!b) return res.status(404).json({ error: 'Ítem no encontrado' });
 
-  // Campos simples (href y grupo se manejan aparte).
   ['titulo', 'orden', 'activo'].forEach(f => {
     if (req.body[f] !== undefined) b[f] = req.body[f];
   });
 
-  // grupo → padre (contenedor). Si el contenedor anterior queda vacío, se borra.
-  if (req.body.grupo !== undefined) {
-    const oldPadre = b.padre || 0;
-    b.padre = findOrCreateContainer(data.botones, req.body.grupo);
-    if (oldPadre && oldPadre !== b.padre) cleanupEmptyContainer(data.botones, oldPadre);
-  }
-
-  const { id_plantilla, tipoRedireccion, href } = req.body || {};
-  const cambiaDestino = id_plantilla !== undefined || tipoRedireccion !== undefined || href !== undefined;
-
-  if (cambiaDestino) {
-    const pltData = readPlantillas();
-    const actual = plantillaDeMenu(id, pltData.plantillas);
-
-    // Suelta el destino anterior: si era página propia (btn-*) la borra junto
-    // a su shell físico; si era una página del sistema, solo desvincula el id_menu.
-    const soltarDestinoPrevio = () => {
-      if (esCustom(actual)) {
-        pltData.plantillas = pltData.plantillas.filter(p => p.id_plantilla !== actual.id_plantilla);
-        borrarShellCustom(actual.tipo);
-      } else if (actual) {
-        actual.id_menu = (actual.id_menu || []).filter(m => m !== id);
-      }
-    };
-
-    if (id_plantilla != null) {
-      // Vincular a una plantilla existente
-      const plt = pltData.plantillas.find(p => p.id_plantilla === Number(id_plantilla));
-      if (!plt) return res.status(404).json({ error: 'Plantilla no encontrada' });
-      if (!actual || actual.id_plantilla !== plt.id_plantilla) soltarDestinoPrevio();
-      b.href = plantillaHref(plt.tipo);
-    } else if (tipoRedireccion === 'custom') {
-      // Asegurar la página propia. Si ya es btn-*, se conserva su plantilla
-      // (y su contenido) y se re-asegura el shell; si no, se crea en blanco.
-      if (esCustom(actual)) {
-        escribirShellCustom(actual.tipo, b.titulo);
-        b.href = customHref(actual.tipo);
-      } else {
-        soltarDestinoPrevio();
-        const tipo = crearPlantillaCustom(pltData, id, b.titulo);
-        b.href = customHref(tipo);
-      }
-    } else if (href !== undefined) {
-      // URL externa libre
-      soltarDestinoPrevio();
-      b.href = href || null;
-    }
-
-    savePlantillas(pltData);
+  if (req.body.padre !== undefined) {
+    const padreId = validarPadre(data.botones, req.body.padre, id);
+    if (padreId === null) return res.status(400).json({ error: 'Padre inválido: no existe o crea un ciclo' });
+    b.padre = padreId;
   }
 
   saveNav(data);
-  res.json({ ok: true, boton: { ...b, grupo: grupoDe(b, data.botones) } });
+  res.json({ ok: true, boton: { ...b, padreTitulo: padreTituloDe(b, data.botones) } });
 };
 
 // DELETE /api/nav/botones/:id   [auth]   (:id = id_menu)
@@ -319,12 +247,9 @@ exports.eliminarBoton = (req, res) => {
     savePlantillas(pltData);
   }
 
-  const padre = boton.padre || 0;
   data.botones = data.botones.filter(x => x.id_menu !== id);
-  // Si era un contenedor, subir sus hijos al nivel principal (no perderlos).
-  if (boton.contenedor) data.botones.forEach(x => { if ((x.padre || 0) === id) x.padre = 0; });
-  // Si el ítem colgaba de un contenedor que quedó vacío, borrarlo.
-  if (padre) cleanupEmptyContainer(data.botones, padre);
+  // Subir los hijos del ítem borrado al nivel principal (no perderlos).
+  data.botones.forEach(x => { if ((x.padre || 0) === id) x.padre = 0; });
   saveNav(data);
 
   res.json({ ok: true, plantillaEliminada });

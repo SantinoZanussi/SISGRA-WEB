@@ -84,7 +84,7 @@
     {
       "id_modulo": 2,
       "tipo": "footer",
-      "nombre": "Footer (Inicio) — global",
+      "nombre": "Footer",
       "data": {
         "formTitulo": "Solicite un presupuesto",
         "formDesc": "Cuéntenos sobre su organización. Un asesor se comunicará para recomendarle la mejor solución.",
@@ -98,7 +98,7 @@
       "design": {},
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-01T17:53:46.115Z"
+      "editado_en": "2026-06-11T18:40:59.637Z"
     },
     {
       "id_modulo": 3,
@@ -113,7 +113,7 @@
     {
       "id_modulo": 4,
       "tipo": "hero",
-      "nombre": "Hero - Inicio principal",
+      "nombre": "Hero 1",
       "data": {
         "badge": "INFRAESTRUCTURA DE ELITE",
         "titulo1": "hola",
@@ -143,13 +143,13 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-08T16:25:46.793Z",
+      "editado_en": "2026-06-11T18:38:58.703Z",
       "id_pagina": 1
     },
     {
       "id_modulo": 5,
       "tipo": "clientes",
-      "nombre": "Clientes — Inicio",
+      "nombre": "Clientes",
       "data": {
         "titulo_seccion": "NUESTROS CLIENTES",
         "carrusel_activo": true,
@@ -184,13 +184,13 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-04T18:08:44.201Z",
+      "editado_en": "2026-06-11T18:38:39.102Z",
       "id_pagina": 1
     },
     {
       "id_modulo": 6,
       "tipo": "blog",
-      "nombre": "Blog / Noticias - Inicio",
+      "nombre": "Noticias",
       "data": {
         "titulo_seccion": "Novedades & Blog",
         "posts": [
@@ -235,13 +235,13 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-04T18:11:11.076Z",
+      "editado_en": "2026-06-11T18:38:29.117Z",
       "id_pagina": 1
     },
     {
       "id_modulo": 7,
       "tipo": "services",
-      "nombre": "Servicios - Inicio",
+      "nombre": "Cards",
       "data": {
         "titulo_seccion": "Portafolio de Soluciones",
         "eyebrow": "Lo que hacemos",
@@ -286,7 +286,7 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-04T18:16:41.606Z",
+      "editado_en": "2026-06-11T18:38:14.773Z",
       "id_pagina": 1
     },
     {
@@ -320,7 +320,7 @@
     {
       "id_modulo": 9,
       "tipo": "blog-list",
-      "nombre": "Listado de artículos - Blog",
+      "nombre": "Blog",
       "data": {
         "loadingMessage": "Cargando artículos…",
         "emptyMessage": "No hay artículos publicados aún.",
@@ -346,13 +346,13 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-10T16:44:38.460Z",
+      "editado_en": "2026-06-11T18:41:24.316Z",
       "id_pagina": 2
     },
     {
       "id_modulo": 10,
       "tipo": "articulo-header",
-      "nombre": "Header de artículo — Artículo principal",
+      "nombre": "Header 1",
       "data": {
         "backLabel": "← Volver al Blog",
         "backHref": "/html/blog/",
@@ -379,7 +379,7 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-10T16:44:52.676Z",
+      "editado_en": "2026-06-11T18:42:17.270Z",
       "id_pagina": 3
     },
     {
@@ -424,7 +424,7 @@
     {
       "id_modulo": 12,
       "tipo": "cableado-hero",
-      "nombre": "Hero Cableado — Cableado principal",
+      "nombre": "Hero 2",
       "data": {
         "badge": "Infraestructura Crítica",
         "titulo1": "Cableado",
@@ -465,13 +465,13 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-10T16:45:19.308Z",
+      "editado_en": "2026-06-11T18:39:07.769Z",
       "id_pagina": 4
     },
     {
       "id_modulo": 13,
       "tipo": "fibra-hero",
-      "nombre": "Hero Fibra Óptica — Fibra Óptica principal",
+      "nombre": "Hero 3",
       "data": {
         "imagenUrl": "https://images.unsplash.com/photo-1551703599-6b3e8379aa8c?q=80&w=2072&auto=format&fit=crop",
         "badgeTitle": "LIGHT",
@@ -507,13 +507,13 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-10T16:45:35.629Z",
+      "editado_en": "2026-06-11T18:39:16.759Z",
       "id_pagina": 5
     },
     {
       "id_modulo": 14,
       "tipo": "seguridad-hero",
-      "nombre": "Hero Seguridad — Seguridad principal",
+      "nombre": "Hero 4",
       "data": {
         "badge": "Protección Perimetral",
         "titulo1": "Seguridad",
@@ -544,13 +544,13 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-10T16:45:45.447Z",
+      "editado_en": "2026-06-11T18:39:24.763Z",
       "id_pagina": 6
     },
     {
       "id_modulo": 15,
       "tipo": "soporte-hero",
-      "nombre": "Hero Soporte IT — Soporte IT principal",
+      "nombre": "Hero 5",
       "data": {
         "badge": "Continuidad Operativa Garantizada",
         "titulo1": "Soporte",
@@ -591,13 +591,13 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-10T16:46:01.183Z",
+      "editado_en": "2026-06-11T18:39:32.168Z",
       "id_pagina": 7
     },
     {
       "id_modulo": 16,
       "tipo": "desarrollo-hero",
-      "nombre": "Hero Desarrollo — Desarrollo principal",
+      "nombre": "Hero 6",
       "data": {
         "badge": "Intelligence Labs",
         "titulo1": "Desarrollo de",
@@ -644,13 +644,13 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-10T16:46:09.104Z",
+      "editado_en": "2026-06-11T18:39:41.084Z",
       "id_pagina": 8
     },
     {
       "id_modulo": 17,
       "tipo": "cliente-header",
-      "nombre": "Header de cliente — Clientes",
+      "nombre": "Header 3",
       "data": {
         "backLabel": "← Volver al Inicio",
         "backHref": "/",
@@ -680,13 +680,13 @@
       },
       "alerta": false,
       "creado_en": "2026-05-28T00:00:00.000Z",
-      "editado_en": "2026-06-08T17:55:40.710Z",
+      "editado_en": "2026-06-11T18:42:49.426Z",
       "id_pagina": 12
     },
     {
       "id_modulo": 18,
       "tipo": "cliente-body",
-      "nombre": "Cuerpo de cliente — Clientes",
+      "nombre": "Cuerpo de cliente",
       "data": {
         "featuredImageUrl": "",
         "featuredImageAlt": "",
@@ -724,7 +724,7 @@
       },
       "alerta": false,
       "creado_en": "2026-05-28T00:00:00.000Z",
-      "editado_en": "2026-06-10T16:46:25.687Z",
+      "editado_en": "2026-06-11T18:43:42.776Z",
       "id_pagina": 9
     },
     {
@@ -781,7 +781,7 @@
     {
       "id_modulo": 20,
       "tipo": "desarrollo-hero",
-      "nombre": "Hero Desarrollo — Tipo 2",
+      "nombre": "Hero 6 Tipo 2",
       "data": {
         "badge": "Intelligence Labs",
         "titulo1": "El mundo del",
@@ -825,12 +825,13 @@
       },
       "alerta": false,
       "creado_en": "2026-06-03T17:14:16.908Z",
-      "editado_en": "2026-06-03T18:09:29.649Z"
+      "editado_en": "2026-06-11T18:39:58.625Z",
+      "id_pagina": null
     },
     {
       "id_modulo": 21,
       "tipo": "desarrollo-hero",
-      "nombre": "Hero Desarrollo — Tipo 3",
+      "nombre": "Hero 6 — Tipo 3",
       "data": {
         "badge": "Intelligence Labs",
         "titulo1": "Desarrollo de",
@@ -877,7 +878,8 @@
       },
       "alerta": false,
       "creado_en": "2026-06-03T17:20:26.564Z",
-      "editado_en": "2026-06-03T18:09:43.723Z"
+      "editado_en": "2026-06-11T18:40:10.498Z",
+      "id_pagina": null
     },
     {
       "id_modulo": 22,
@@ -1148,38 +1150,35 @@
     {
       "id_modulo": 28,
       "tipo": "articulo-header",
-      "nombre": "Header de artículo — Artículo principal",
+      "nombre": "Header 1 tipo 2",
       "data": {
         "backLabel": "← Volver al Blog",
         "backHref": "/html/blog/",
         "badge": "Infraestructura",
         "titulo": "Nuevos estándares de certificación Cat8 para plantas industriales",
-        "lead": "Análisis detallado sobre cómo la infraestructura física determina el rendimiento de los sistemas de datos en entornos de alta demanda."
+        "lead": "Análisis detallado sobre cómo la infraestructura física determina el rendimiento de los sistemas de datos en entornos de alta demanda.",
+        "fecha": ""
       },
-      "design": {},
+      "design": {
+        "bg": "",
+        "paddingY": "",
+        "titleColor": "",
+        "titleSize": "",
+        "leadColor": "",
+        "leadSize": "",
+        "backLinkColor": "",
+        "badgeBg": "",
+        "badgeColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
       "alerta": false,
       "creado_en": "2026-06-08T17:45:50.128Z",
-      "editado_en": "2026-06-08T17:45:50.129Z"
-    },
-    {
-      "id_modulo": 29,
-      "tipo": "cliente-header",
-      "nombre": "Header de cliente — Clientes",
-      "data": {
-        "backLabel": "← Volver al Inicio",
-        "backHref": "/",
-        "empresaLogo": "",
-        "empresaNombre": "Nombre de la empresa",
-        "titulo": "Caso de éxito",
-        "lead": "Descripción del proyecto o caso de éxito.",
-        "sector": "",
-        "ubicacion": "",
-        "anio": ""
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-08T17:46:00.752Z",
-      "editado_en": "2026-06-08T17:46:00.752Z"
+      "editado_en": "2026-06-11T18:42:28.656Z",
+      "id_pagina": null
     },
     {
       "id_modulo": 30,
@@ -1204,23 +1203,40 @@
     {
       "id_modulo": 31,
       "tipo": "articulo-header",
-      "nombre": "Header de artículo — Artículo principal",
+      "nombre": "Header 1 tipo 3",
       "data": {
         "backLabel": "← Volver al Blog",
         "backHref": "/html/blog/",
         "badge": "Infraestructura",
         "titulo": "Nuevos estándares de certificación Cat8 para plantas industriales",
-        "lead": "Análisis detallado sobre cómo la infraestructura física determina el rendimiento de los sistemas de datos en entornos de alta demanda."
+        "lead": "Análisis detallado sobre cómo la infraestructura física determina el rendimiento de los sistemas de datos en entornos de alta demanda.",
+        "fecha": ""
       },
-      "design": {},
+      "design": {
+        "bg": "",
+        "paddingY": "",
+        "titleColor": "",
+        "titleSize": "",
+        "leadColor": "",
+        "leadSize": "",
+        "backLinkColor": "",
+        "badgeBg": "",
+        "badgeColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
       "alerta": false,
       "creado_en": "2026-06-08T17:49:17.073Z",
-      "editado_en": "2026-06-08T17:49:17.073Z"
+      "editado_en": "2026-06-11T18:42:39.614Z",
+      "id_pagina": null
     },
     {
       "id_modulo": 32,
       "tipo": "cliente-header",
-      "nombre": "Header de cliente — Clientes",
+      "nombre": "Header 3 tipo 2",
       "data": {
         "backLabel": "← Volver al Inicio",
         "backHref": "/",
@@ -1232,10 +1248,26 @@
         "ubicacion": "",
         "anio": ""
       },
-      "design": {},
+      "design": {
+        "bg": "",
+        "paddingY": "",
+        "eyebrowColor": "",
+        "titleColor": "",
+        "titleSize": "",
+        "leadColor": "",
+        "metaColor": "",
+        "backLinkColor": "",
+        "logoMaxHeight": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
       "alerta": false,
       "creado_en": "2026-06-08T17:49:37.106Z",
-      "editado_en": "2026-06-08T17:49:37.106Z"
+      "editado_en": "2026-06-11T18:42:58.126Z",
+      "id_pagina": null
     },
     {
       "id_modulo": 33,
@@ -1299,7 +1331,7 @@
     {
       "id_modulo": 35,
       "tipo": "hero",
-      "nombre": "Hero lateral",
+      "nombre": "Hero 1 tipo 2",
       "id_pagina": 1,
       "data": {
         "badge": "INFRAESTRUCTURA DE ELITE",
@@ -1330,7 +1362,294 @@
       },
       "alerta": false,
       "creado_en": "2026-06-11T17:10:42.055Z",
-      "editado_en": "2026-06-11T17:10:42.055Z"
+      "editado_en": "2026-06-11T18:40:32.994Z"
+    },
+    {
+      "id_modulo": 36,
+      "tipo": "about",
+      "nombre": "Nosotros para la pagina prueba",
+      "id_pagina": [
+        10
+      ],
+      "data": {
+        "eyebrow": "Excelencia Corporativa",
+        "titulo": "prueba\n",
+        "descripcion": "En SISGRA, entendemos que la infraestructura crítica no permite errores. Cada proyecto atraviesa un riguroso proceso de planificación, ejecución certificada y soporte post-instalación que garantiza resultados duraderos para su organización.",
+        "imagen": "/img/chatgptfoto.png"
+      },
+      "design": {
+        "bg": "",
+        "eyebrowColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "paddingY": "",
+        "titleSize": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-11T17:17:26.004Z",
+      "editado_en": "2026-06-11T17:20:22.619Z"
+    },
+    {
+      "id_modulo": 37,
+      "tipo": "soporte-hero",
+      "nombre": "Hero Soporte IT",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "badge": "Continuidad Operativa Garantizada",
+        "titulo1": "Soporte",
+        "accent": "IT Integral.",
+        "descripcion": "Minimizamos el tiempo de inactividad de su empresa. Actuamos como su departamento de sistemas externo, brindando soluciones rápidas y escalables.",
+        "features": [
+          {
+            "iconType": "gear",
+            "titulo": "Mantenimiento Preventivo",
+            "desc": "Monitoreo constante de servidores y terminales."
+          },
+          {
+            "iconType": "shield",
+            "titulo": "Seguridad Proactiva",
+            "desc": "Protección de datos y backups automatizados."
+          }
+        ],
+        "dashLabel": "Monitoreo de las actividades",
+        "dashMainValue": "99.9%",
+        "dashStat1Label": "Tiempo de respuesta",
+        "dashStat1Value": "< 45 min",
+        "dashStat2Label": "Vida del Sistema",
+        "dashStat2Value": "OPTIMIZADO",
+        "dashStat2Highlight": true,
+        "btnRemote": "Acceder al Soporte Remoto Inmediato"
+      },
+      "design": {
+        "bg": "",
+        "titleColor": "",
+        "accentColor": "",
+        "paddingY": "",
+        "titleSize": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-11T17:40:13.060Z",
+      "editado_en": "2026-06-11T17:40:55.009Z"
+    },
+    {
+      "id_modulo": 38,
+      "tipo": "cliente-header",
+      "nombre": "Header 3 tipo 3",
+      "id_pagina": null,
+      "data": {
+        "backLabel": "← Volver al Inicio",
+        "backHref": "/index.html",
+        "empresaLogo": "/img/clients/syngenta.png",
+        "empresaNombre": "Prueba",
+        "titulo": "Para plantilla de prueba",
+        "lead": "Resumen breve del proyecto prueba.",
+        "sector": "",
+        "ubicacion": "",
+        "anio": "",
+        "__colores": {
+          "empresaNombre": "#fb609e"
+        }
+      },
+      "design": {
+        "bg": "",
+        "paddingY": "",
+        "eyebrowColor": "",
+        "titleColor": "",
+        "titleSize": "",
+        "leadColor": "",
+        "metaColor": "",
+        "backLinkColor": "",
+        "logoMaxHeight": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-11T17:42:45.273Z",
+      "editado_en": "2026-06-11T18:43:12.843Z"
+    },
+    {
+      "id_modulo": 39,
+      "tipo": "services",
+      "nombre": "Cards",
+      "id_pagina": 1,
+      "data": {
+        "titulo_seccion": "Portafolio de Soluciones",
+        "eyebrow": "Lo que hacemos",
+        "cards": [
+          {
+            "id": "instalaciones",
+            "titulo": "Instalaciones",
+            "descripcion": "Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas TIA/EIA para entornos corporativos exigentes.",
+            "enlace": "/html/cableado_estructurado"
+          },
+          {
+            "id": "soporte",
+            "titulo": "Soporte IT",
+            "descripcion": "Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.",
+            "enlace": "/html/soporte_it"
+          },
+          {
+            "id": "software",
+            "titulo": "Desarrollo de Software",
+            "descripcion": "Soluciones digitales a medida: sistemas de gestión logística, control de inventario y procesos empresariales integrados.",
+            "enlace": "/html/desarrollo"
+          }
+        ]
+      },
+      "design": {
+        "bg": "",
+        "sectionColor": "",
+        "cardBg": "",
+        "cardTitleColor": "",
+        "cardLinkColor": "",
+        "paddingY": "",
+        "titleSize": "",
+        "cardRadius": "",
+        "cardPadding": "",
+        "gap": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-11T18:03:45.975Z",
+      "editado_en": "2026-06-11T18:03:45.975Z"
+    },
+    {
+      "id_modulo": 40,
+      "tipo": "about",
+      "nombre": "Nosotros",
+      "id_pagina": 1,
+      "data": {
+        "eyebrow": "Excelencia Corporativa",
+        "titulo": "Liderando la industria\ndesde el año 1999.",
+        "descripcion": "En SISGRA, entendemos que la infraestructura crítica no permite errores. Cada proyecto atraviesa un riguroso proceso de planificación, ejecución certificada y soporte post-instalación que garantiza resultados duraderos para su organización.",
+        "imagen": "/img/img1.png"
+      },
+      "design": {
+        "bg": "",
+        "eyebrowColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "paddingY": "",
+        "titleSize": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-11T18:54:55.851Z",
+      "editado_en": "2026-06-11T18:54:55.851Z"
+    },
+    {
+      "id_modulo": 41,
+      "tipo": "about",
+      "nombre": "Nosotros",
+      "id_pagina": 1,
+      "data": {
+        "eyebrow": "Excelencia Corporativa",
+        "titulo": "Liderando la industria\ndesde el año 1999.",
+        "descripcion": "En SISGRA, entendemos que la infraestructura crítica no permite errores. Cada proyecto atraviesa un riguroso proceso de planificación, ejecución certificada y soporte post-instalación que garantiza resultados duraderos para su organización.",
+        "imagen": "/img/img1.png"
+      },
+      "design": {
+        "bg": "",
+        "eyebrowColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "paddingY": "",
+        "titleSize": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-11T18:55:41.557Z",
+      "editado_en": "2026-06-11T18:55:41.557Z"
+    },
+    {
+      "id_modulo": 42,
+      "tipo": "formulario",
+      "nombre": "Formulario de contacto",
+      "id_pagina": 13,
+      "data": {
+        "titulo": "Contáctese con nosotros",
+        "descripcion": "Complete el formulario y le responderemos a la brevedad.",
+        "btn": "Enviar consulta",
+        "successMsg": "✓ Recibimos su consulta. Le responderemos a la brevedad.",
+        "campos": [
+          {
+            "etiqueta": "Nombre",
+            "tipo": "text",
+            "requerido": true
+          },
+          {
+            "etiqueta": "Empresa",
+            "tipo": "text",
+            "requerido": false
+          },
+          {
+            "etiqueta": "Email",
+            "tipo": "email",
+            "requerido": true
+          },
+          {
+            "etiqueta": "Teléfono",
+            "tipo": "tel",
+            "requerido": false
+          },
+          {
+            "etiqueta": "Mensaje",
+            "tipo": "textarea",
+            "requerido": false
+          }
+        ]
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-11T19:03:59.898Z",
+      "editado_en": "2026-06-11T19:03:59.898Z"
+    },
+    {
+      "id_modulo": 43,
+      "tipo": "spacer",
+      "nombre": "Espaciador",
+      "id_pagina": "all",
+      "data": {
+        "height": 60
+      },
+      "design": {
+        "bg": "#ffffff",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-11T19:11:00.554Z",
+      "editado_en": "2026-06-11T19:11:12.005Z"
     }
   ]
 }

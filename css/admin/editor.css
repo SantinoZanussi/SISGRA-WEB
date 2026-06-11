@@ -129,14 +129,29 @@
 /* Columna del medio en cada fila del catálogo: "a dónde pertenece" */
 .mod-row-pertenece{flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;min-width:150px;}
 
-/* Lista de checkboxes "Páginas asignadas" (multi-página) */
+/* Lista de checkboxes "Ítems del navbar" (multi) */
 .mod-pag-list{display:flex;flex-direction:column;gap:.15rem;border:1px solid var(--slate-200);border-radius:.4rem;padding:.4rem;max-height:220px;overflow-y:auto;background:var(--white);}
 .mod-pag-check{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--slate-700);padding:.3rem .45rem;border-radius:.3rem;cursor:pointer;user-select:none;}
 .mod-pag-check:hover{background:var(--slate-50);}
 .mod-pag-check input{width:.95rem;height:.95rem;flex-shrink:0;cursor:pointer;}
 .mod-pag-check.is-disabled{opacity:.55;cursor:default;}
 .mod-pag-check.is-disabled:hover{background:none;}
-.mod-pag-tipo{color:var(--slate-400);font-size:.68rem;}
+.mod-pag-grupo{font-size:.5rem;background:#e0e7ff;color:#4338ca;padding:.1rem .35rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border-radius:2px;}
+
+/* Editor de campos del módulo Formulario */
+.fm-campos-list{display:flex;flex-direction:column;gap:.4rem;}
+.fm-campo-row{display:flex;align-items:center;gap:.4rem;}
+.fm-campo-row .form-input{flex:1;min-width:0;}
+.fm-campo-row select.form-input{flex:0 0 120px;}
+.fm-campo-req{display:flex;align-items:center;gap:.3rem;font-size:.68rem;font-weight:700;color:var(--slate-600);white-space:nowrap;cursor:pointer;}
+.fm-campo-req input{width:.9rem;height:.9rem;cursor:pointer;}
+.fm-campo-del{color:var(--red-400);}
+.fm-campos-empty{font-size:.75rem;color:var(--slate-400);padding:.5rem 0;}
+
+/* Lápiz para renombrar el módulo desde el encabezado del modal "Ver" */
+.mod-rename-btn{flex-shrink:0;border:none;background:none;color:var(--slate-400);cursor:pointer;padding:.25rem;font-size:.8rem;line-height:1;border-radius:.3rem;}
+.mod-rename-btn:hover{color:var(--blue-600,#2563eb);background:#eff6ff;}
+.mod-rename-input{flex:1;min-width:160px;font-size:1rem;font-weight:800;color:var(--slate-800);border:1px solid var(--blue-600,#2563eb);border-radius:.35rem;padding:.2rem .5rem;outline:none;}
 
 /* Modal "Nuevo módulo" (catálogo) */
 .nm-title-ico{color:var(--blue-600,#2563eb);margin-right:.15rem;}

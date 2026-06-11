@@ -209,22 +209,18 @@
       ],
       "id_modulos": [
         1,
-        15,
-        3
+        34
       ],
       "contenedores": [
         [
           1
         ],
         [
-          15
-        ],
-        [
-          3
+          34
         ]
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-04T17:59:30.504Z",
+      "editado_en": "2026-06-11T17:37:58.976Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
       "fecha_fin": "2026-06-17T11:38:57.111Z"
     },
@@ -307,6 +303,7 @@
         25,
         26,
         27,
+        36,
         3
       ],
       "contenedores": [
@@ -326,11 +323,14 @@
           27
         ],
         [
+          36
+        ],
+        [
           3
         ]
       ],
       "creado_en": "2026-06-03T17:20:07.004Z",
-      "editado_en": "2026-06-04T18:26:51.600Z",
+      "editado_en": "2026-06-11T17:20:50.119Z",
       "fecha_inicio": "2026-06-03T17:40:40.173Z",
       "fecha_fin": "2026-06-17T17:40:40.173Z"
     },
@@ -378,6 +378,38 @@
       "creado_en": "2026-06-08T17:47:53.732Z",
       "editado_en": "2026-06-11T12:41:37.166Z",
       "fecha_fin": "2026-06-18T12:41:37.166Z"
+    },
+    {
+      "id_plantilla": 13,
+      "tipo": "btn-11",
+      "nombre": "Contáctese — página personalizada",
+      "descripcion": "Página de contacto con el formulario del sitio.",
+      "activa": true,
+      "id_menu": [
+        11
+      ],
+      "id_modulos": [
+        1,
+        43,
+        42,
+        3
+      ],
+      "contenedores": [
+        [
+          1
+        ],
+        [
+          43
+        ],
+        [
+          42
+        ],
+        [
+          3
+        ]
+      ],
+      "creado_en": "2026-06-11T19:03:59.898Z",
+      "editado_en": "2026-06-11T19:11:26.572Z"
     }
   ]
 }

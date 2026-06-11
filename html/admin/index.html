@@ -219,12 +219,12 @@
                   <input type="text" class="form-input" id="modulos-variant-name-input" placeholder="Ej: Hero — Fondo Oscuro">
                 </div>
               </div>
-              <!-- Páginas asignadas al módulo (multi) -->
+              <!-- Ítems del navbar a los que pertenece el módulo (multi) -->
               <div class="section-card">
                 <div class="section-card-body" style="padding:1rem;">
-                  <label class="form-label">Páginas asignadas</label>
+                  <label class="form-label">Ítems del navbar</label>
                   <div class="mod-pag-list" id="modulos-variant-pagina"></div>
-                  <div id="modulos-variant-pagina-hint" style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Marcá a qué página(s) pertenece este módulo (ej: «Blog»), o «Todas las páginas».</div>
+                  <div id="modulos-variant-pagina-hint" style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Marcá a qué ítem(s) del navbar pertenece este módulo (ej: «Fibra Óptica»), o «Todas las páginas».</div>
                 </div>
               </div>
               <!-- Check de alerta de la variante -->
@@ -273,6 +273,7 @@
                 <span style="display:flex;align-items:center;gap:.6rem;min-width:0;flex:1;flex-wrap:wrap;">
                   <span class="modal-title" id="modulos-view-title">Módulo</span>
                   <span id="modulos-view-pagina" class="mod-pertenece-wrap"></span>
+                  <button type="button" class="mod-rename-btn" id="modulos-view-rename" title="Cambiar el nombre del módulo"><i class="fa-solid fa-pen"></i></button>
                 </span>
                 <button class="btn-add" id="modulos-view-add-btn" style="display:none;flex-shrink:0;"><i class="fa-solid fa-plus"></i> Agregar</button>
                 <button class="modal-close" id="modulos-view-close"><i class="fa-solid fa-xmark"></i></button>
@@ -579,9 +580,9 @@
         <input class="form-input" id="nm-nombre" placeholder="Ej: Hero — Inicio">
       </div>
       <div class="form-group nm-field">
-        <label class="form-label"><i class="fa-solid fa-file-lines nm-flbl-ico"></i> Páginas asignadas</label>
+        <label class="form-label"><i class="fa-solid fa-bars nm-flbl-ico"></i> Ítems del navbar</label>
         <div class="mod-pag-list" id="nm-pagina"></div>
-        <div class="form-hint" id="nm-pagina-hint">A qué página(s) pertenece este módulo. Podés marcar varias.</div>
+        <div class="form-hint" id="nm-pagina-hint">A qué ítem(s) del navbar pertenece este módulo. Podés marcar varios.</div>
       </div>
     </div>
     <div class="modal-footer">
@@ -604,36 +605,12 @@
         <input class="form-input" id="nav-titulo" placeholder="ej. Nuestros Servicios">
       </div>
       <div>
-        <label class="form-label">Destino</label>
-        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.375rem;">
-          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;">
-            <input type="radio" name="nav-tipo-red" value="link" id="nav-red-link" checked> Vincular a una plantilla existente
-          </label>
-          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;">
-            <input type="radio" name="nav-tipo-red" value="custom" id="nav-red-custom"> Crear página nueva (en blanco)
-          </label>
-          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;">
-            <input type="radio" name="nav-tipo-red" value="url" id="nav-red-url"> URL externa
-          </label>
-        </div>
+        <label class="form-label">Padre</label>
+        <select class="form-input form-select" id="nav-padre-select"></select>
+        <div class="form-hint">«Raíz» lo deja en el nivel principal del menú. Si elegís otro ítem, este aparece dentro de su desplegable.</div>
       </div>
-      <div id="nav-plantilla-field">
-        <label class="form-label">Plantilla a vincular <span style="color:#f87171">*</span></label>
-        <select class="form-input form-select" id="nav-plantilla-select"></select>
-        <div class="form-hint">El ítem del menú llevará a la página de esta plantilla — sin escribir rutas.</div>
-      </div>
-      <div id="nav-href-field" style="display:none;">
-        <label class="form-label">URL externa <span style="color:#f87171">*</span></label>
-        <input class="form-input" id="nav-href" placeholder="ej. https://wa.me/549…">
-      </div>
-      <div id="nav-custom-info" style="display:none;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:.5rem;padding:.875rem;font-size:.78rem;color:#a5b4fc;line-height:1.6;">
-        Se crea una <b>plantilla nueva en blanco</b> (sin archivo HTML aparte). La editás desde el panel de <b>Plantillas</b>, igual que todas las demás.
-      </div>
-      <div>
-        <label class="form-label">Grupo (opcional)</label>
-        <select class="form-input form-select" id="nav-grupo-select"></select>
-        <input class="form-input" id="nav-grupo-nuevo" placeholder="Nombre del grupo nuevo" style="display:none;margin-top:.5rem;">
-        <div class="form-hint">Los ítems con el mismo grupo se muestran juntos en un desplegable del menú. Dejalo en "Sin grupo" para un ítem suelto.</div>
+      <div style="background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:.5rem;padding:.875rem;font-size:.78rem;color:#a5b4fc;line-height:1.6;">
+        Se crea una <b>página nueva en blanco</b> para este ítem. La editás desde el panel de <b>Plantillas</b>, igual que todas las demás.
       </div>
     </div>
     <div class="modal-footer">
@@ -647,7 +624,7 @@
 <div class="modal-overlay" id="modal-editar-navbar">
   <div class="modal" style="max-width:520px;">
     <div class="modal-header">
-      <div class="modal-title">Editar ítem del Navbar</div>
+      <div class="modal-title">Editar ítem</div>
       <button class="modal-close" data-close="modal-editar-navbar"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="modal-body" style="display:flex;flex-direction:column;gap:1rem;">
@@ -657,36 +634,9 @@
         <input class="form-input" id="nav-edit-titulo">
       </div>
       <div>
-        <label class="form-label">Destino</label>
-        <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.375rem;">
-          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;">
-            <input type="radio" name="nav-edit-tipo-red" value="link" id="nav-edit-red-link"> Vincular a una plantilla existente
-          </label>
-          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;">
-            <input type="radio" name="nav-edit-tipo-red" value="custom" id="nav-edit-red-custom"> Página propia (HTML propio)
-          </label>
-          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.8rem;">
-            <input type="radio" name="nav-edit-tipo-red" value="url" id="nav-edit-red-url"> URL externa
-          </label>
-        </div>
-      </div>
-      <div id="nav-edit-plantilla-field">
-        <label class="form-label">Plantilla a vincular <span style="color:#f87171">*</span></label>
-        <select class="form-input form-select" id="nav-edit-plantilla-select"></select>
-        <div class="form-hint">El ítem del menú llevará a la página de esta plantilla — sin escribir rutas.</div>
-      </div>
-      <div id="nav-edit-href-field" style="display:none;">
-        <label class="form-label">URL externa <span style="color:#f87171">*</span></label>
-        <input class="form-input" id="nav-edit-href" placeholder="ej. /html/servicios o https://…">
-      </div>
-      <div id="nav-edit-custom-info" style="display:none;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:.5rem;padding:.875rem;font-size:.78rem;color:#a5b4fc;line-height:1.6;">
-        Página con <b>HTML propio</b>. Si todavía no tiene su plantilla, se crea una <b>en blanco</b> automáticamente al guardar. La editás desde el panel de <b>Plantillas</b>.
-      </div>
-      <div>
-        <label class="form-label">Grupo (opcional)</label>
-        <select class="form-input form-select" id="nav-edit-grupo-select"></select>
-        <input class="form-input" id="nav-edit-grupo-nuevo" placeholder="Nombre del grupo nuevo" style="display:none;margin-top:.5rem;">
-        <div class="form-hint">Los ítems con el mismo grupo se muestran juntos en un desplegable del menú.</div>
+        <label class="form-label">Padre</label>
+        <select class="form-input form-select" id="nav-edit-padre-select"></select>
+        <div class="form-hint">«Raíz» lo deja en el nivel principal del menú. Si elegís otro ítem, este aparece dentro de su desplegable.</div>
       </div>
       <div>
         <label class="form-label">Orden</label>

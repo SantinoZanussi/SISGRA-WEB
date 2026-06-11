@@ -236,6 +236,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
     // Post-render: conectar funcionalidad que estaba en el HTML estático
     bindMobileDrawer();
     bindContactForm();
+    bindFormularioModules(tipo);
     applyGlobalContactoSEO(tipo);
     hydrateBlogList();
     hydrateBlogCards();
@@ -314,6 +315,39 @@ function bindContactForm() {
     );
     const msg = document.getElementById('successMsg');
     if (msg) msg.style.display = 'flex';
+  });
+}
+
+// Módulo Formulario: manda los campos a la API. El backend los guarda en
+// contactos_log.json (estado "pendiente") hasta que se defina el endpoint externo.
+function bindFormularioModules(tipo) {
+  document.querySelectorAll('form[data-form-modulo]').forEach(form => {
+    if (form.dataset.fmBound) return;
+    form.dataset.fmBound = '1';
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      const campos = {};
+      form.querySelectorAll('input[name],textarea[name]').forEach(el => {
+        campos[el.dataset.etiqueta || el.name] = el.value;
+      });
+      const ok  = form.querySelector('[data-form-ok]');
+      const err = form.querySelector('[data-form-err]');
+      if (ok)  ok.style.display  = 'none';
+      if (err) err.style.display = 'none';
+      try {
+        const r = await fetch(`${API_BASE}/contactos`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ campos, pagina: tipo || window.location.pathname }),
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        form.reset();
+        if (ok) ok.style.display = '';
+      } catch (_) {
+        if (err) err.style.display = '';
+      }
+    });
   });
 }
 

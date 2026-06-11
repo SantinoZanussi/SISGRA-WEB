@@ -45,6 +45,9 @@ app.use("/api/alertas", alertasRoutes);
 const assetRoutes = require("./routes/assetRoutes");
 app.use("/api/assets", assetRoutes);
 
+const contactosRoutes = require("./routes/contactosRoutes");
+app.use("/api/contactos", contactosRoutes);
+
 // Shell genérico para páginas de plantilla "custom" (sin archivo .html físico).
 // /p/:slug hidrata la plantilla cuyo tipo === slug usando page-bootstrap, igual
 // que las páginas del sistema pero servido desde un único shell compartido.

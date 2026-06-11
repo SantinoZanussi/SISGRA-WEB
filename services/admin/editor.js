@@ -1519,19 +1519,32 @@ const GLOBAL_TIPOS_MOD = new Set(['nav','footer','footer-full']);
 let _mods       = [];      // catálogo plano [{ id_modulo, tipo, nombre, id_pagina, data, design, alerta }]
 let _modUsos    = {};      // id_modulo → cantidad de plantillas que lo usan
 let _plantillas = [];      // lista de plantillas/páginas (para el desplegable "Página asignada")
+let _navbar     = [];      // ítems del navbar (botones), para rotular cada página con su ítem
 let _modQuery   = '';      // texto del buscador del catálogo de módulos
 let _curModId   = null;
 let _curModType = null;
 let _curModData = { nombre: '', alerta: false, id_pagina: null, data: {}, design: {} };
 
-/* Nombre(s) legible(s) de la(s) página(s) asignada(s) a un módulo (o '' si no tiene). */
+/* Ítem del navbar al que apunta una plantilla: { titulo, grupo, orden }.
+   El grupo es el título del contenedor padre (ej: "Instalaciones"); '' si no
+   tiene. Si la página no está en el menú, cae al nombre de la plantilla. */
+function _navInfoDePlantilla(id_plantilla) {
+  const p      = _plantillas.find(x => x.id_plantilla === id_plantilla);
+  const idMenu = (p?.id_menu || [])[0];
+  const item   = idMenu != null ? _navbar.find(b => b.id_menu === idMenu) : null;
+  const padre  = item?.padre ? _navbar.find(b => b.id_menu === item.padre) : null;
+  return {
+    titulo: item?.titulo || p?.nombre || String(id_plantilla),
+    grupo:  padre?.titulo || '',
+    orden:  item?.orden ?? 999,
+  };
+}
+
+/* Ítem(s) del navbar a los que pertenece un módulo (o '' si no tiene). */
 function _paginaLabel(id_pagina) {
   const pags = _paginasDe(id_pagina);
   if (pags === 'all') return 'Todas las páginas';
-  return pags.map(id => {
-    const p = _plantillas.find(x => x.id_plantilla === id);
-    return p ? p.nombre : String(id);
-  }).join(', ');
+  return pags.map(id => _navInfoDePlantilla(id).titulo).join(', ');
 }
 
 /* Badge "a dónde pertenece": muestra la página asignada del módulo en el editor. */
@@ -1562,10 +1575,13 @@ function _renderPaginaChecks(box, value, onChange) {
   const pags    = _paginasDe(value);
   const esTodas = pags === 'all';
   const ids     = esTodas ? [] : pags;
+  const items   = _plantillas
+    .map(p => ({ p, nav: _navInfoDePlantilla(p.id_plantilla) }))
+    .sort((a, b) => a.nav.orden - b.nav.orden);
   box.innerHTML = [
     `<label class="mod-pag-check"><input type="checkbox" data-pag="all" ${esTodas ? 'checked' : ''}/> 🌐 Todas las páginas</label>`,
-    ..._plantillas.map(p =>
-      `<label class="mod-pag-check ${esTodas ? 'is-disabled' : ''}"><input type="checkbox" data-pag="${p.id_plantilla}" ${ids.includes(p.id_plantilla) ? 'checked' : ''} ${esTodas ? 'disabled' : ''}/> ${escAttr(p.nombre)} <span class="mod-pag-tipo">· ${escAttr(p.tipo)}</span></label>`),
+    ...items.map(({ p, nav }) =>
+      `<label class="mod-pag-check ${esTodas ? 'is-disabled' : ''}"><input type="checkbox" data-pag="${p.id_plantilla}" ${ids.includes(p.id_plantilla) ? 'checked' : ''} ${esTodas ? 'disabled' : ''}/> ${escAttr(nav.titulo)}${nav.grupo ? ` <span class="mod-pag-grupo">${escAttr(nav.grupo)}</span>` : ''}</label>`),
   ].join('');
   box.querySelectorAll('[data-pag]').forEach(cb => cb.addEventListener('change', () => {
     let v;
@@ -1580,9 +1596,9 @@ function _renderPaginaChecks(box, value, onChange) {
   }));
 }
 
-/* Llena la lista de "Páginas asignadas" del editor de módulo.
+/* Llena la lista de "Ítems del navbar" del editor de módulo.
    Los módulos globales (nav / footer) aplican a TODO el sitio: queda fijo en
-   "Todas las páginas". El resto puede marcar una o varias páginas. */
+   "Todas las páginas". El resto puede marcar uno o varios ítems. */
 function _renderPaginaSelect(selected) {
   const box  = document.getElementById('modulos-variant-pagina');
   const hint = document.getElementById('modulos-variant-pagina-hint');
@@ -1600,7 +1616,7 @@ function _renderPaginaSelect(selected) {
     _curModData.id_pagina = v;
     _refreshPaginaBadges();
   });
-  if (hint) hint.textContent = 'Marcá a qué página(s) pertenece este módulo (ej: «Blog»), o «Todas las páginas». El módulo solo se puede insertar en las plantillas marcadas.';
+  if (hint) hint.textContent = 'Marcá a qué ítem(s) del navbar pertenece este módulo (ej: «Fibra Óptica»), o «Todas las páginas». El módulo solo se puede insertar en las plantillas marcadas.';
 }
 
 function _showView(id) {
@@ -1621,12 +1637,14 @@ function _closeModEditor() {
 
 window.loadModulos = async function() {
   try {
-    const [mres, pres] = await Promise.all([
+    const [mres, pres, nres] = await Promise.all([
       window.__svc.apiGet('/modulos'),
       window.__svc.apiGet('/plantillas').catch(() => ({ plantillas: [] })),
+      window.__svc.apiGet('/data/navbar').catch(() => ({ botones: [] })),
     ]);
     _mods = Array.isArray(mres.modulos) ? mres.modulos : [];
     _plantillas = Array.isArray(pres.plantillas) ? pres.plantillas : [];
+    _navbar = Array.isArray(nres.botones) ? nres.botones : [];
     _modUsos = {};
     _plantillas.forEach(p => (p.id_modulos || []).forEach(id => { _modUsos[id] = (_modUsos[id] || 0) + 1; }));
     renderModCatalog();
@@ -1855,6 +1873,7 @@ window.openModEditor = function(id) {
   // Solo los campos de CONTENIDO van en el editor. El DISEÑO (colores) y el
   // PREVIEW viven ahora en el modal de edición visual (botón "Preview").
   renderModFieldGroup('data', sec.dataFields || [], 'modulos-editor-data-fields');
+  if (m.tipo === 'formulario') renderFormCamposEditor('modulos-editor-data-fields');
 
   renderModContentCard(m.tipo);
   // Ocultar la tarjeta de campos técnicos (ej: blog-list): solo se muestra la
@@ -1939,6 +1958,51 @@ function _closeModVer() {
   if (body) body.innerHTML = '';
 }
 
+/* Lápiz del modal Ver: renombra el módulo desde el encabezado (input inline). */
+function _renameModuloInline(m) {
+  const titleEl = document.getElementById('modulos-view-title');
+  const penBtn  = document.getElementById('modulos-view-rename');
+  if (!titleEl || titleEl.style.display === 'none') return;
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'mod-rename-input';
+  input.value = m.nombre || '';
+  titleEl.style.display = 'none';
+  if (penBtn) penBtn.style.display = 'none';
+  titleEl.insertAdjacentElement('afterend', input);
+  input.focus();
+  input.select();
+
+  let cerrado = false;
+  const restaurar = () => {
+    if (cerrado) return;
+    cerrado = true;
+    input.remove();
+    titleEl.style.display = '';
+    if (penBtn) penBtn.style.display = '';
+  };
+  const guardar = async () => {
+    const nuevo = input.value.trim();
+    restaurar();
+    if (!nuevo || nuevo === m.nombre) return;
+    try {
+      await window.__svc.apiPut(`/modulos/${m.id_modulo}`, { nombre: nuevo });
+      m.nombre = nuevo;
+      window.__svc.showNotif('Módulo renombrado', 'success');
+      if (!MOD_CONTENT_CONFIG[m.tipo]) _renderModVerLista(m.tipo);
+      renderModCatalog();
+    } catch (e) {
+      window.__svc.showNotif('Error: ' + e.message, 'error');
+    }
+  };
+  input.addEventListener('blur', guardar);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter')  { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { input.value = m.nombre || ''; restaurar(); }
+  });
+}
+
 window.openModVer = function(id) {
   const m = _mods.find(x => x.id_modulo === Number(id));
   if (!m) return;
@@ -1955,6 +2019,9 @@ window.openModVer = function(id) {
 
   const esTodas = GLOBAL_TIPOS_MOD.has(m.tipo) || m.id_pagina === 'all';
   if (pagEl) pagEl.innerHTML = _paginaBadgeHTML(esTodas ? 'all' : m.id_pagina);
+
+  const renameBtn = document.getElementById('modulos-view-rename');
+  if (renameBtn) renameBtn.onclick = () => _renameModuloInline(m);
 
   // El contenido compartido (#blog-list / #clientes-tbody) debe existir en UN
   // solo lugar: limpiamos el del editor para que render() apunte a este modal.
@@ -2107,6 +2174,63 @@ function renderModFieldGroup(group, fields, containerId) {
         scheduleLivePreview();
       });
     }
+  });
+}
+
+/* Editor de campos del módulo Formulario: una fila por campo (etiqueta + tipo +
+   requerido + mover/borrar) editando _curModData.data.campos en vivo. */
+const FM_TIPOS = [
+  ['text', 'Texto'], ['textarea', 'Texto largo'], ['email', 'Email'],
+  ['tel', 'Teléfono'], ['number', 'Número'], ['date', 'Fecha'],
+];
+
+function renderFormCamposEditor(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  let box = document.getElementById('fm-campos-editor');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'fm-campos-editor';
+    container.appendChild(box);
+  }
+  const campos = _curModData.data.campos = Array.isArray(_curModData.data.campos)
+    ? _curModData.data.campos : [];
+
+  const filas = campos.map((c, i) => `
+    <div class="fm-campo-row">
+      <input type="text" class="form-input" data-fmc="etiqueta" data-i="${i}" value="${escAttr(c.etiqueta || '')}" placeholder="Etiqueta del campo">
+      <select class="form-input form-select" data-fmc="tipo" data-i="${i}">
+        ${FM_TIPOS.map(([v, l]) => `<option value="${v}"${(c.tipo || 'text') === v ? ' selected' : ''}>${l}</option>`).join('')}
+      </select>
+      <label class="fm-campo-req" title="Campo obligatorio">
+        <input type="checkbox" data-fmc="requerido" data-i="${i}" ${c.requerido ? 'checked' : ''}> Req.
+      </label>
+      <button type="button" class="btn-icon" data-fmc="up" data-i="${i}" title="Subir" ${i === 0 ? 'disabled' : ''}><i class="fa-solid fa-arrow-up"></i></button>
+      <button type="button" class="btn-icon" data-fmc="down" data-i="${i}" title="Bajar" ${i === campos.length - 1 ? 'disabled' : ''}><i class="fa-solid fa-arrow-down"></i></button>
+      <button type="button" class="btn-icon fm-campo-del" data-fmc="del" data-i="${i}" title="Eliminar campo"><i class="fa-solid fa-xmark"></i></button>
+    </div>`).join('');
+
+  box.innerHTML = `
+    <div class="mf-row">
+      <label class="mf-label">Campos del formulario</label>
+      <div class="fm-campos-list">${filas || '<div class="fm-campos-empty">Sin campos. Agregá el primero.</div>'}</div>
+      <button type="button" class="btn-secondary" id="fm-campo-add" style="margin-top:.5rem;font-size:.7rem;padding:.45rem .9rem;"><i class="fa-solid fa-plus"></i> Agregar campo</button>
+    </div>`;
+
+  const redraw = () => { renderFormCamposEditor(containerId); scheduleLivePreview(); };
+  box.querySelectorAll('[data-fmc]').forEach(el => {
+    const i = Number(el.dataset.i);
+    const op = el.dataset.fmc;
+    if (op === 'etiqueta') el.addEventListener('input', () => { campos[i].etiqueta = el.value; scheduleLivePreview(); });
+    if (op === 'tipo')      el.addEventListener('change', () => { campos[i].tipo = el.value; scheduleLivePreview(); });
+    if (op === 'requerido') el.addEventListener('change', () => { campos[i].requerido = el.checked; scheduleLivePreview(); });
+    if (op === 'del')       el.addEventListener('click', () => { campos.splice(i, 1); redraw(); });
+    if (op === 'up')        el.addEventListener('click', () => { [campos[i - 1], campos[i]] = [campos[i], campos[i - 1]]; redraw(); });
+    if (op === 'down')      el.addEventListener('click', () => { [campos[i + 1], campos[i]] = [campos[i], campos[i + 1]]; redraw(); });
+  });
+  box.querySelector('#fm-campo-add')?.addEventListener('click', () => {
+    campos.push({ etiqueta: 'Campo nuevo', tipo: 'text', requerido: false });
+    redraw();
   });
 }
 
