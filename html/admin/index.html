@@ -219,12 +219,12 @@
                   <input type="text" class="form-input" id="modulos-variant-name-input" placeholder="Ej: Hero — Fondo Oscuro">
                 </div>
               </div>
-              <!-- Página asignada al módulo -->
+              <!-- Páginas asignadas al módulo (multi) -->
               <div class="section-card">
                 <div class="section-card-body" style="padding:1rem;">
-                  <label class="form-label">Página asignada</label>
-                  <select class="form-input" id="modulos-variant-pagina"></select>
-                  <div id="modulos-variant-pagina-hint" style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Indicá a qué página pertenece este módulo (ej: «Blog»). Es solo un identificador para organizar el catálogo; no cambia dónde se puede usar.</div>
+                  <label class="form-label">Páginas asignadas</label>
+                  <div class="mod-pag-list" id="modulos-variant-pagina"></div>
+                  <div id="modulos-variant-pagina-hint" style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Marcá a qué página(s) pertenece este módulo (ej: «Blog»), o «Todas las páginas».</div>
                 </div>
               </div>
               <!-- Check de alerta de la variante -->
@@ -261,6 +261,25 @@
                 <button class="btn-secondary" id="modulos-preview-btn"><i class="fa-solid fa-eye"></i> Preview</button>
                 <button class="btn-secondary" id="modulos-cancel-btn">Cancelar</button>
                 <button class="btn-save" id="modulos-save-btn">Guardar módulo</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vista "Ver módulo": SOLO la lista de contenido del módulo.
+               Desde acá, "Editar" abre el modal de edición correspondiente. -->
+          <div class="modal-overlay" id="modulos-view-modal">
+            <div class="modal" style="max-width:680px;">
+              <div class="modal-header" style="gap:.75rem;">
+                <span style="display:flex;align-items:center;gap:.6rem;min-width:0;flex:1;flex-wrap:wrap;">
+                  <span class="modal-title" id="modulos-view-title">Módulo</span>
+                  <span id="modulos-view-pagina" class="mod-pertenece-wrap"></span>
+                </span>
+                <button class="btn-add" id="modulos-view-add-btn" style="display:none;flex-shrink:0;"><i class="fa-solid fa-plus"></i> Agregar</button>
+                <button class="modal-close" id="modulos-view-close"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+              <div class="modal-body" style="padding:1rem 1.5rem 1.5rem;">
+                <div id="modulos-view-note" style="font-size:.7rem;color:#94a3b8;margin-bottom:.85rem;line-height:1.5;"></div>
+                <div id="modulos-view-body"></div>
               </div>
             </div>
           </div>
@@ -560,9 +579,9 @@
         <input class="form-input" id="nm-nombre" placeholder="Ej: Hero — Inicio">
       </div>
       <div class="form-group nm-field">
-        <label class="form-label"><i class="fa-solid fa-file-lines nm-flbl-ico"></i> Página asignada</label>
-        <select class="form-input form-select" id="nm-pagina"></select>
-        <div class="form-hint" id="nm-pagina-hint">A qué página pertenece este módulo.</div>
+        <label class="form-label"><i class="fa-solid fa-file-lines nm-flbl-ico"></i> Páginas asignadas</label>
+        <div class="mod-pag-list" id="nm-pagina"></div>
+        <div class="form-hint" id="nm-pagina-hint">A qué página(s) pertenece este módulo. Podés marcar varias.</div>
       </div>
     </div>
     <div class="modal-footer">

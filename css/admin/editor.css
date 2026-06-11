@@ -129,6 +129,15 @@
 /* Columna del medio en cada fila del catálogo: "a dónde pertenece" */
 .mod-row-pertenece{flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;min-width:150px;}
 
+/* ── Lista de checkboxes "Páginas asignadas" (multi-página) ── */
+.mod-pag-list{display:flex;flex-direction:column;gap:.15rem;border:1px solid var(--slate-200);border-radius:.4rem;padding:.4rem;max-height:220px;overflow-y:auto;background:var(--white);}
+.mod-pag-check{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--slate-700);padding:.3rem .45rem;border-radius:.3rem;cursor:pointer;user-select:none;}
+.mod-pag-check:hover{background:var(--slate-50);}
+.mod-pag-check input{width:.95rem;height:.95rem;flex-shrink:0;cursor:pointer;}
+.mod-pag-check.is-disabled{opacity:.55;cursor:default;}
+.mod-pag-check.is-disabled:hover{background:none;}
+.mod-pag-tipo{color:var(--slate-400);font-size:.68rem;}
+
 /* ── Modal "Nuevo módulo" (catálogo) ── */
 .nm-title-ico{color:var(--blue-600,#2563eb);margin-right:.15rem;}
 .nm-body{display:flex;flex-direction:column;gap:1.15rem;}

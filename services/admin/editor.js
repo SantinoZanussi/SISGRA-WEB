@@ -20,7 +20,7 @@ const e3 = {
   dirty: false,
   propsTab: 'data',
   currentTipo: null,
-  search: { query: '', selected: [] },   // buscador de chips: selected=[{kind,id_modulo?,tipo,label,color}]
+  slotSearch: null,       // buscador inline abierto en un slot vacío: { ci, mi, query }
 };
 
 const CONT_MAX = 3;   // máximo de módulos por contenedor (fila)
@@ -61,27 +61,9 @@ function pendingContIndex() {
   return e3.conts.findIndex(c => c.modulos.length < c.cap);
 }
 
-// Refresca el estado de los controles de inserción según haya o no un contenedor
-// incompleto: habilita "Insertar" solo si hay destino y selección, y actualiza el
-// título del popover con cuántos módulos faltan.
+// Mantiene activeCont apuntando al contenedor incompleto (destino de inserción).
 function refreshContControls() {
-  const pending = pendingContIndex();
-  e3.activeCont = pending;   // el destino de inserción siempre es el incompleto
-
-  const insBtn = document.getElementById('e3-insert');
-  if (insBtn) insBtn.disabled = e3.search.selected.length === 0 || pending === -1;
-
-  // El título del popover de inserción refleja el contenedor incompleto destino.
-  const title = document.getElementById('e3-insert-pop-title');
-  if (title) {
-    if (pending !== -1) {
-      const c = e3.conts[pending];
-      const faltan = c.cap - c.modulos.length;
-      title.innerHTML = `Insertar en contenedor <b>${c.cap}×1</b> · falta${faltan !== 1 ? 'n' : ''} ${faltan} módulo${faltan !== 1 ? 's' : ''}`;
-    } else {
-      title.textContent = 'Insertar módulo';
-    }
-  }
+  e3.activeCont = pendingContIndex();
 }
 
 // nav/footer = se referencian compartidos; el resto se clona al insertar (modelo híbrido).
@@ -101,22 +83,33 @@ async function loadE3Catalog() {
 
 const modById = id => e3.modulos.find(m => m.id_modulo === id);
 
-function nextModId() {
-  const nums = e3.modulos.map(m => Number(m.id_modulo)).filter(n => !isNaN(n));
-  return (nums.length ? Math.max(...nums) : 0) + 1;
-}
-
-// Items del nav (dropdowns + links) desde navbar.json — igual que el runtime.
+// Items del nav (dropdowns + links) desde navbar.json — igual que el runtime
+// (page-bootstrap): menú jerárquico padre/hijos; un contenedor (encabezado con
+// hijos) se vuelve desplegable, el resto links sueltos.
 function buildNavItems(botones) {
-  const activos = (botones || []).filter(b => b.activo !== false && b.href !== '/');
-  const grupos = {}; const sueltos = [];
-  activos.forEach(b => { if (b.grupo) (grupos[b.grupo] = grupos[b.grupo] || []).push(b); else sueltos.push(b); });
+  const all = botones || [];
+  const visibles = b => b.activo !== false && b.href !== '/';
+  const hijosDe = id => all
+    .filter(b => (b.padre || 0) === id && visibles(b))
+    .sort((a, b) => (a.orden || 0) - (b.orden || 0));
+  const top = all.filter(b => (b.padre || 0) === 0 && visibles(b));
+  const dropdowns = [];
+  const links = [];
+  top.forEach(b => {
+    const hijos = hijosDe(b.id_menu);
+    if (hijos.length) {
+      dropdowns.push({ orden: b.orden || 0, item: {
+        tipo: 'dropdown', titulo: b.titulo,
+        children: hijos.map(h => ({ titulo: h.titulo, href: h.href || '#' })),
+      } });
+    } else if (b.href) {
+      links.push(b);   // ítems sin href ni hijos (contenedor vacío) se omiten
+    }
+  });
   const items = [];
-  Object.entries(grupos).forEach(([grupo, hijos]) => items.push({
-    tipo: 'dropdown', titulo: grupo,
-    children: hijos.sort((a,b)=>(a.orden||0)-(b.orden||0)).map(b => ({ titulo: b.titulo, href: b.href || '#' })),
-  }));
-  sueltos.sort((a,b)=>(a.orden||0)-(b.orden||0)).forEach(b => items.push({ tipo: 'link', titulo: b.titulo, href: b.href || '#' }));
+  dropdowns.sort((a, b) => a.orden - b.orden).forEach(d => items.push(d.item));
+  links.sort((a, b) => (a.orden || 0) - (b.orden || 0))
+       .forEach(b => items.push({ tipo: 'link', titulo: b.titulo, href: b.href || '#' }));
   return items;
 }
 
@@ -172,9 +165,16 @@ function populateTipoSelect() {
   const sel = document.getElementById('np-tipo');
   if (!sel) return;
 
-  // slug de página → grupo del navbar (null si no tiene grupo o no está en el menú)
+  // slug de página → título del contenedor padre del navbar (null si el ítem es
+  // de nivel principal o no está en el menú). El menú es jerárquico: cada ítem
+  // tiene `padre` (id_menu de su contenedor; 0 = suelto) — ver page-bootstrap.
+  const botones = e3.navbar || [];
   const grupoPorPagina = {};
-  (e3.navbar || []).forEach(b => { grupoPorPagina[pageKey(b.href)] = b.grupo || null; });
+  botones.forEach(b => {
+    if (!b.href) return;   // los contenedores (encabezados de submenú) no tienen href
+    const padre = botones.find(x => x.id_menu === (b.padre || 0));
+    grupoPorPagina[pageKey(b.href)] = padre?.titulo || null;
+  });
   const grupoDe = t => grupoPorPagina[pageKey(t.file)] ?? null;
 
   const opt = t => `<option value="${t.value}">${escAttr(t.label)}</option>`;
@@ -261,7 +261,8 @@ function renderOverview() {
     const dias    = diasRestantes(p);
     const cls     = expiryClass(p);
     let expiryHtml = '';
-    if (p.activa && p.fecha_fin) {
+    // El vencimiento se muestra también en borradores (se asigna al crear).
+    if (p.fecha_fin) {
       const label = vencida
         ? `Venció el ${fmtFecha(p.fecha_fin)}`
         : `Vence ${dias === 0 ? 'hoy' : dias === 1 ? 'mañana' : `en ${dias} días`} · ${fmtFecha(p.fecha_fin)}`;
@@ -396,7 +397,7 @@ function renderSidebarList() {
     const dias    = diasRestantes(p);
     const cls     = expiryClass(p);
     let expiryLine = '';
-    if (p.activa && p.fecha_fin) {
+    if (p.fecha_fin) {
       const label = vencida
         ? `Venció ${fmtFecha(p.fecha_fin)}`
         : dias === 0 ? 'Vence hoy'
@@ -526,7 +527,7 @@ async function openEditor(id) {
     e3.sel = null;
     e3.activeCont = e3.conts.length ? e3.conts.length - 1 : null;
     e3.dirty = false;
-    e3.search = { query: '', selected: [] };
+    e3.slotSearch = null;
     await loadE3Catalog();
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-tpl-editor').classList.add('active');
@@ -541,7 +542,7 @@ async function openEditor(id) {
 
 function backToOverview() {
   if (e3.dirty && !confirm('Hay cambios sin guardar. ¿Salir igual?')) return;
-  closeInsertPopover();
+  e3.slotSearch = null;
   e3.activeTpl = null; e3.conts = []; e3.sel = null; e3.activeCont = null;
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-plantillas').classList.add('active');
@@ -577,25 +578,6 @@ function renderEditorShell() {
          scroll), en vez del 1200px fijo de .page-frame.desktop (esa regla la usa el
          editor legacy con su switcher de viewport, no la tocamos). */
       #e3-canvas.page-frame.desktop{width:100%;min-width:0;max-width:1600px;}
-      /* Popover de inserción de módulos: aparece al click en "+ Insertar módulo"
-         (ya no es una barra fija arriba del canvas). */
-      .e3-insert-pop{width:360px;max-width:calc(100vw - 1.5rem);background:#fff;border:1px solid var(--slate-200);border-radius:.5rem;box-shadow:0 12px 40px rgba(0,0,0,.22);padding:.7rem;}
-      .e3-insert-pop-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.55rem;}
-      .e3-insert-pop-title{font-size:.58rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--sisgra-blue);line-height:1.3;}
-      .e3-insert-pop-close{background:none;border:none;font-size:1.15rem;line-height:1;color:var(--slate-400);cursor:pointer;padding:0 .2rem;}
-      .e3-insert-pop-close:hover{color:var(--slate-700);}
-      .e3-chipsearch{position:relative;margin-bottom:.55rem;}
-      .e3-chipbox{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;border:1px solid var(--slate-300);border-radius:.4rem;padding:.3rem;background:#fff;min-height:2.2rem;}
-      .e3-chip{display:inline-flex;align-items:center;gap:.3rem;color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .5rem;border-radius:1rem;white-space:nowrap;}
-      .e3-chip button{background:rgba(255,255,255,.3);border:none;color:#fff;border-radius:50%;width:1rem;height:1rem;line-height:1;cursor:pointer;font-size:.7rem;padding:0;}
-      .e3-search-input{flex:1;min-width:90px;border:none;outline:none;font-size:.75rem;font-family:inherit;padding:.2rem;background:transparent;}
-      .e3-insert{width:100%;white-space:nowrap;}
-      .e3-insert:disabled{opacity:.5;cursor:not-allowed;}
-      .e3-results{position:absolute;left:0;right:0;top:calc(100% + .3rem);background:#fff;border:1px solid var(--slate-200);border-radius:.4rem;box-shadow:0 8px 24px rgba(0,0,0,.14);max-height:300px;overflow:auto;z-index:60;}
-      .e3-result{padding:.5rem .6rem;cursor:pointer;display:flex;flex-direction:column;gap:.1rem;border-bottom:1px solid var(--slate-100);}
-      .e3-result:hover{background:var(--slate-50);}
-      .e3-result-name{font-size:.75rem;font-weight:700;color:var(--slate-800);}
-      .e3-result-sub{font-size:.6rem;color:var(--slate-400);letter-spacing:.04em;text-transform:uppercase;}
       .e3-props-tabs{display:flex;gap:.25rem;}
       .e3-props-tabs button{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .55rem;border:1px solid var(--slate-200);background:#fff;color:var(--slate-500);cursor:pointer;border-radius:.3rem;}
       .e3-props-tabs button.active{background:var(--sisgra-blue);color:#fff;border-color:var(--sisgra-blue);}
@@ -606,17 +588,6 @@ function renderEditorShell() {
           <iframe class="page-frame desktop" id="e3-canvas" style="border:none;background:#fff;height:100%;min-height:420px;"></iframe>
         </div>
       </div>
-    </div>
-    <div class="e3-insert-pop" id="e3-insert-pop" style="display:none;">
-      <div class="e3-insert-pop-head">
-        <span class="e3-insert-pop-title" id="e3-insert-pop-title">Insertar módulo</span>
-        <button type="button" class="e3-insert-pop-close" id="e3-insert-pop-close" title="Cerrar">×</button>
-      </div>
-      <div class="e3-chipsearch">
-        <div class="e3-chipbox" id="e3-chipbox"><input class="e3-search-input" id="e3-search-input" placeholder="Buscar módulo (ej: noticias)…" autocomplete="off"/></div>
-        <div class="e3-results" id="e3-results" style="display:none;"></div>
-      </div>
-      <button class="btn-save e3-insert" id="e3-insert" disabled><i class="fa-solid fa-plus"></i> Insertar seleccionados</button>
     </div>`;
 
   document.getElementById('e3-back').addEventListener('click', backToOverview);
@@ -625,208 +596,149 @@ function renderEditorShell() {
     await activarPlantilla(tpl.id_plantilla);
     renderEditorShell();
   });
-  document.getElementById('e3-insert').addEventListener('click', insertSelected);
-  bindChipSearch();
-  bindInsertPopover();
+  // Click fuera del iframe (en el panel) → cierra el buscador inline del slot.
+  document.removeEventListener('mousedown', onParentMouseCloseSlotSearch);
+  document.addEventListener('mousedown', onParentMouseCloseSlotSearch);
   document.querySelectorAll('[data-e3-tab]').forEach(t => t.addEventListener('click', () => {
     e3.propsTab = t.dataset.e3Tab;
     document.querySelectorAll('[data-e3-tab]').forEach(x => x.classList.toggle('active', x === t));
     renderProps();
   }));
 
-  renderChips();
   initIframe(() => {
     try { renderCanvas(); } catch (e) { console.error('[e3] renderCanvas error:', e); }
   });
   renderProps();
 }
 
-// ─── BUSCADOR DE CHIPS ──────────────────────────────────────────────
-function bindChipSearch() {
-  const input = document.getElementById('e3-search-input');
-  if (!input) return;
-  input.addEventListener('input', () => { e3.search.query = input.value; renderResults(); });
-  input.addEventListener('keydown', ev => {
-    if (ev.key === 'Backspace' && !input.value && e3.search.selected.length) {
-      e3.search.selected.pop(); renderChips();
-    } else if (ev.key === 'Enter') {
-      ev.preventDefault();
-      const res = searchResults(e3.search.query);
-      if (res.length) selectResult(res[0]);
-    } else if (ev.key === 'Escape') {
-      e3.search.query = ''; input.value = ''; renderResults();
-    }
-  });
-  document.addEventListener('click', ev => {
-    if (!ev.target.closest('.e3-chipsearch')) {
-      const b = document.getElementById('e3-results'); if (b) b.style.display = 'none';
-    }
-  });
+// ─── BUSCADOR INLINE EN EL SLOT ─────────────────────────────────────
+// El buscador vive DENTRO del slot vacío clickeado (en el iframe): buscar acá
+// inserta SOLO en ese contenedor. Elegir un resultado inserta el módulo al
+// instante (un módulo por slot, sin chips ni botón "Insertar seleccionados").
+/* Páginas asignadas de un módulo, normalizadas: 'all' | [ids].
+   `id_pagina` puede ser null, 'all', un id suelto (datos viejos) o un array
+   de ids (multi-página). Compartido con el catálogo de módulos de abajo. */
+function _paginasDe(id_pagina) {
+  if (id_pagina === 'all') return 'all';
+  if (id_pagina == null || id_pagina === '') return [];
+  return (Array.isArray(id_pagina) ? id_pagina : [id_pagina]).map(Number).filter(n => !isNaN(n));
 }
 
-// Resultados = módulos existentes del catálogo + tipos de SECTIONS (para crear nuevos).
 /* ¿El módulo puede usarse en la plantilla que se está editando?
    Globales (nav/footer/footer-full) y "Todas las páginas" → siempre disponibles.
-   El resto, SOLO si está asignado a ESTA plantilla (id_pagina === id_plantilla).
+   El resto, SOLO si esta plantilla está entre sus páginas asignadas.
    Los "Sin asignar" no aparecen: así se separan los contenidos por plantilla. */
 function _modAllowedInActiveTpl(m) {
   if (GLOBAL_TIPOS.has(m.tipo)) return true;
-  if (m.id_pagina === 'all') return true;
-  if (m.id_pagina == null || m.id_pagina === '') return false;
+  const pags = _paginasDe(m.id_pagina);
+  if (pags === 'all') return true;
   const tplId = e3.activeTpl?.id_plantilla;
-  return tplId != null && Number(m.id_pagina) === Number(tplId);
+  return tplId != null && pags.includes(Number(tplId));
 }
 
 function searchResults(query) {
   const q = (query || '').trim().toLowerCase();
   if (!q) return [];
-  // Módulos ya colocados en esta plantilla (o ya seleccionados como chip): se
-  // excluyen para no insertar dos referencias al MISMO módulo (ahora no se clona).
-  const yaUsados = new Set([
-    ...allModIds(),
-    ...e3.search.selected.filter(s => s.kind === 'modulo').map(s => s.id_modulo),
-  ]);
+  // Módulos ya colocados en esta plantilla: se excluyen para no insertar dos
+  // referencias al MISMO módulo (no se clona).
+  const yaUsados = new Set(allModIds());
   const res = [];
   for (const m of e3.modulos) {
     if (!_modAllowedInActiveTpl(m)) continue;   // solo globales / Todas / asignados a esta plantilla
     if (yaUsados.has(m.id_modulo)) continue;     // ya está en esta plantilla
     const hay = `${m.nombre} ${m.tipo} ${SECTIONS[m.tipo]?.label || ''}`.toLowerCase();
-    if (hay.includes(q)) res.push({ kind: 'modulo', id_modulo: m.id_modulo, tipo: m.tipo, label: m.nombre, sub: SECTIONS[m.tipo]?.label || m.tipo });
+    if (hay.includes(q)) res.push({ id_modulo: m.id_modulo, tipo: m.tipo, label: m.nombre, sub: SECTIONS[m.tipo]?.label || m.tipo });
   }
   // Solo módulos ya existentes (globales / "Todas las páginas" / asignados a esta
   // plantilla). Ya NO se ofrece "crear módulo nuevo" desde el buscador.
   return res.slice(0, 40);
 }
 
-function chipColor(sel) {
-  if (sel.kind === 'tipo') return '#16a34a';
-  return GLOBAL_TIPOS.has(sel.tipo) ? '#7c3aed' : '#2563eb';
-}
-
-function renderResults() {
-  const box = document.getElementById('e3-results');
-  if (!box) return;
-  const res = searchResults(e3.search.query);
-  if (!res.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
-  box.style.display = '';
-  box.innerHTML = res.map((r, i) => `
-    <div class="e3-result" data-res="${i}">
-      <span class="e3-result-name">${escAttr(r.label)}</span>
-      <span class="e3-result-sub">${escAttr(r.sub)}${r.kind === 'modulo' ? ` · #${r.id_modulo}${GLOBAL_TIPOS.has(r.tipo) ? ' · global' : ''}` : ''}</span>
-    </div>`).join('');
-  box.querySelectorAll('[data-res]').forEach(el => el.addEventListener('click', () => selectResult(res[+el.dataset.res])));
-}
-
-function selectResult(r) {
-  // Solo se pueden seleccionar tantos módulos como falten para completar el
-  // contenedor incompleto (regla #1: cantidad exacta = capacidad del contenedor).
-  const pending = pendingContIndex();
-  if (pending === -1) {
-    notif('Creá un contenedor primero para insertar módulos', 'error');
-    return;
-  }
-  const c = e3.conts[pending];
-  const restante = c.cap - c.modulos.length - e3.search.selected.length;
-  if (restante <= 0) {
-    notif(`El contenedor ${c.cap}×1 admite exactamente ${c.cap} módulo${c.cap !== 1 ? 's' : ''}`, 'error');
-    return;
-  }
-  e3.search.selected.push({ ...r, color: chipColor(r) });
-  e3.search.query = '';
-  const input = document.getElementById('e3-search-input');
-  if (input) input.value = '';
-  renderChips();
-  renderResults();
-  input?.focus();
-}
-
-function renderChips() {
-  const wrap = document.getElementById('e3-chipbox');
-  const input = document.getElementById('e3-search-input');
-  if (!wrap || !input) return;
-  wrap.querySelectorAll('.e3-chip').forEach(c => c.remove());
-  e3.search.selected.forEach((s, i) => {
-    const chip = document.createElement('span');
-    chip.className = 'e3-chip';
-    chip.style.background = s.color;
-    chip.innerHTML = `${escAttr(s.label)} <button title="Quitar">×</button>`;
-    chip.querySelector('button').addEventListener('click', () => { e3.search.selected.splice(i, 1); renderChips(); });
-    wrap.insertBefore(chip, input);
+// Conecta el buscador inline del slot abierto (si hay uno en el canvas).
+function bindSlotSearch(doc) {
+  const slot = doc.querySelector('.e3-slot-open');
+  if (!slot || !e3.slotSearch) return;
+  const ci = +slot.dataset.ci;
+  slot.querySelector('.e3-slot-search-close')?.addEventListener('click', ev => {
+    ev.stopPropagation();
+    closeSlotSearch();
   });
-  input.placeholder = e3.search.selected.length ? 'Agregar otro…' : 'Buscar módulo (ej: noticias)…';
-  refreshContControls();
+  const input = slot.querySelector('.e3-slot-search-input');
+  if (!input) return;
+  input.value = e3.slotSearch.query || '';
+  setTimeout(() => input.focus(), 0);
+  input.addEventListener('input', () => {
+    e3.slotSearch.query = input.value;
+    renderSlotResults(slot, ci);
+  });
+  input.addEventListener('keydown', ev => {
+    if (ev.key === 'Escape') {
+      closeSlotSearch();
+    } else if (ev.key === 'Enter') {
+      ev.preventDefault();
+      const res = searchResults(e3.slotSearch.query);
+      if (res.length) insertarEnContenedor(ci, res[0].id_modulo);
+    }
+  });
+  renderSlotResults(slot, ci);
 }
 
-// Clona un módulo de contenido → nuevo id_modulo en el catálogo (working copy).
-function cloneModule(src) {
-  const c = JSON.parse(JSON.stringify(src));
-  c.id_modulo = nextModId();
-  c.creado_en = new Date().toISOString();
-  c.editado_en = new Date().toISOString();
-  e3.modulos.push(c);
-  return c.id_modulo;
-}
-
-// Crea un módulo nuevo desde un tipo de SECTIONS (defaults).
-function newModuleFromType(tipo) {
-  const def = SECTIONS[tipo];
-  const m = {
-    id_modulo: nextModId(),
-    tipo,
-    nombre: `${def?.label || tipo} — ${e3.activeTpl?.nombre || 'nuevo'}`,
-    data:   JSON.parse(JSON.stringify(def?.defaultData   || {})),
-    design: JSON.parse(JSON.stringify(def?.defaultDesign || {})),
-    alerta: false,
-    creado_en: new Date().toISOString(),
-    editado_en: new Date().toISOString(),
-  };
-  e3.modulos.push(m);
-  return m.id_modulo;
-}
-
-// Inserta los chips seleccionados DENTRO del contenedor incompleto (regla #2).
-// No crea contenedores nuevos: si algo no entra, se rechaza con aviso.
-function insertSelected() {
-  if (!e3.search.selected.length) return;
-  if (pendingContIndex() === -1) {
-    notif('Creá un contenedor primero (no hay ninguno esperando módulos)', 'error');
+function renderSlotResults(slot, ci) {
+  const box = slot.querySelector('.e3-slot-results');
+  if (!box || !e3.slotSearch) return;
+  const q = (e3.slotSearch.query || '').trim();
+  if (!q) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  const res = searchResults(q);
+  box.style.display = 'block';
+  if (!res.length) {
+    box.innerHTML = '<div class="e3-slot-empty">No hay módulos disponibles para esta búsqueda.</div>';
     return;
   }
-  const ids = [];
-  for (const sel of e3.search.selected) {
-    if (sel.kind === 'tipo') {
-      ids.push(newModuleFromType(sel.tipo));
-    } else {
-      const src = modById(sel.id_modulo);
-      if (!src) continue;
-      // Referencia DIRECTA al módulo (sin clonar): editar su contenido se refleja
-      // en vivo en la plantilla donde está usado. Cada módulo pertenece a una
-      // página (id_pagina) y el buscador solo lo ofrece en esa plantilla, así que
-      // no se "contamina" otra plantilla.
-      ids.push(src.id_modulo);
-    }
-  }
-  const { placed, rejected } = placeModuleIds(ids);
-  closeInsertPopover();   // limpia chips/buscador y oculta el popover
-  markDirty(); renderCanvas(); renderProps();
-  const base = `✓ ${placed} módulo${placed !== 1 ? 's' : ''} insertado${placed !== 1 ? 's' : ''}`;
-  notif(rejected ? `${base} · ${rejected} no entró: el contenedor ya está completo` : base, rejected ? 'error' : 'success');
+  box.innerHTML = res.map((r, i) => `
+    <div class="e3-slot-result" data-res="${i}">
+      <span class="e3-slot-result-name">${escAttr(r.label)}</span>
+      <span class="e3-slot-result-sub">${escAttr(r.sub)} · #${r.id_modulo}${GLOBAL_TIPOS.has(r.tipo) ? ' · global' : ''}</span>
+    </div>`).join('');
+  box.querySelectorAll('[data-res]').forEach(el =>
+    el.addEventListener('click', ev => {
+      ev.stopPropagation();
+      insertarEnContenedor(ci, res[+el.dataset.res].id_modulo);
+    }));
 }
 
-// Llena los contenedores incompletos en orden (hasta su capacidad exacta, regla #1).
-// NO crea contenedores nuevos: devuelve { placed, rejected } (rejected = sin lugar).
-function placeModuleIds(ids) {
-  const queue = ids.slice();
-  let placed = 0;
-  for (let ci = 0; ci < e3.conts.length && queue.length; ci++) {
-    const cont = e3.conts[ci];
-    while (cont.modulos.length < cont.cap && queue.length) {
-      cont.modulos.push(queue.shift());
-      e3.sel = { ci, mi: cont.modulos.length - 1 };
-      placed++;
-    }
+function closeSlotSearch() {
+  if (!e3.slotSearch) return;
+  e3.slotSearch = null;
+  renderCanvas();
+}
+
+// Inserta el módulo elegido en ESE contenedor (el del slot donde está el buscador).
+// Referencia DIRECTA al módulo (sin clonar): editar su contenido se refleja en
+// vivo en la plantilla donde está usado.
+function insertarEnContenedor(ci, id_modulo) {
+  const cont = e3.conts[ci];
+  if (!cont) return;
+  if (cont.modulos.length >= cont.cap) {
+    notif('Este contenedor ya está completo', 'error');
+    return;
   }
-  return { placed, rejected: queue.length };
+  cont.modulos.push(id_modulo);
+  e3.sel = { ci, mi: cont.modulos.length - 1 };
+  e3.slotSearch = null;
+  markDirty(); renderCanvas(); renderProps();
+  notif('✓ Módulo insertado');
+}
+
+// Cierra el buscador del slot al click fuera del iframe (en el panel).
+function onParentMouseCloseSlotSearch() {
+  if (e3.slotSearch) closeSlotSearch();
+}
+
+// Cierra el buscador del slot al click DENTRO del iframe pero fuera de un slot.
+function onIframeClickCloseSlotSearch(ev) {
+  if (!e3.slotSearch) return;
+  if (ev.target.closest('.e3-slot')) return;   // clicks en slots: abren/usan el buscador
+  closeSlotSearch();
 }
 
 // Crea un contenedor vacío de `cap` columnas (1 a 3) y lo deja activo para insertar.
@@ -840,9 +752,10 @@ function crearContenedor(cap) {
   e3.conts.push({ cap: n, modulos: [] });
   e3.activeCont = e3.conts.length - 1;
   e3.sel = null;
+  // El buscador NO se abre solo: aparece recién al click en "+ Insertar módulo".
+  e3.slotSearch = null;
   markDirty(); renderCanvas(); renderProps();
-  notif(`✓ Contenedor ${n}×1 creado — insertá ${n} módulo${n > 1 ? 's' : ''} adentro para continuar`);
-  openInsertPopoverForPending();   // abre el buscador anclado al primer slot vacío
+  notif(`✓ Contenedor ${n}×1 creado — tocá "+ Insertar módulo" para llenar sus ${n} lugar${n > 1 ? 'es' : ''}`);
 }
 
 // ─── Botón "Nuevo contenedor" (al fondo del canvas, dentro del iframe) ──
@@ -897,79 +810,6 @@ function onIframeClickCollapseAddCont(ev) {
   if (ev.target.closest('[data-addcont]')) return;   // click dentro del bloque
   const wrap = ev.currentTarget.querySelector('[data-addcont]');
   if (wrap) setAddContOpen(wrap, false);
-}
-
-// ─── Popover de inserción de módulos (aparece al click en "+ Insertar módulo") ──
-function bindInsertPopover() {
-  document.getElementById('e3-insert-pop-close')?.addEventListener('click', closeInsertPopover);
-  // Listeners a nivel documento: de-duplicados (esta función corre por cada editor abierto).
-  document.removeEventListener('mousedown', onDocMouseForPopover);
-  document.addEventListener('mousedown', onDocMouseForPopover);
-  document.removeEventListener('keydown', onKeyForPopover);
-  document.addEventListener('keydown', onKeyForPopover);
-}
-
-// Cierra el popover al click fuera de él (los clicks dentro del iframe no llegan acá,
-// así que abrir desde un slot no lo cierra al instante).
-function onDocMouseForPopover(ev) {
-  const pop = document.getElementById('e3-insert-pop');
-  if (!pop || pop.style.display === 'none') return;
-  if (ev.target.closest('#e3-insert-pop')) return;
-  closeInsertPopover();
-}
-function onKeyForPopover(ev) {
-  if (ev.key !== 'Escape') return;
-  const pop = document.getElementById('e3-insert-pop');
-  if (pop && pop.style.display !== 'none') closeInsertPopover();
-}
-
-// Abre el popover de inserción anclado a un slot del canvas (elemento del iframe).
-function openInsertPopover(slotEl) {
-  const pop = document.getElementById('e3-insert-pop');
-  if (!pop) return;
-  if (pendingContIndex() === -1) { notif('Este contenedor ya está completo', 'error'); return; }
-  document.querySelectorAll('.e3-slot').forEach(s => s.classList.remove('is-open'));
-  slotEl.classList.add('is-open');
-  pop.style.display = 'flex';
-  positionInsertPopover(slotEl);
-  refreshContControls();             // título + estado del botón insertar
-  const input = document.getElementById('e3-search-input');
-  if (input) { input.value = e3.search.query || ''; setTimeout(() => input.focus(), 0); }
-  renderResults();
-}
-
-function openInsertPopoverForPending() {
-  const slot = document.getElementById('e3-canvas')?.contentDocument?.querySelector('.e3-slot');
-  if (!slot) return;
-  slot.scrollIntoView({ block: 'center' });
-  openInsertPopover(slot);
-}
-
-// Posiciona el popover
-function positionInsertPopover(slotEl) {
-  const pop = document.getElementById('e3-insert-pop');
-  if (!pop) return;
-  
-  slotEl.style.position = 'relative';
-  slotEl.appendChild(pop);
-  pop.style.position = 'absolute';
-  pop.style.top = `50%`; // 60%
-  pop.style.left = `50%`; // 47%
-  pop.style.transform = 'translate(-50%, -50%)';
-  pop.style.zIndex = '2000';
-}
-
-// Cierra el popover y limpia el buscador (chips + query) para arrancar en limpio.
-function closeInsertPopover() {
-  const pop = document.getElementById('e3-insert-pop');
-  if (pop) pop.style.display = 'none';
-  e3.search.query = '';
-  e3.search.selected = [];
-  const input = document.getElementById('e3-search-input');
-  if (input) input.value = '';
-  const box = document.getElementById('e3-results');
-  if (box) { box.style.display = 'none'; box.innerHTML = ''; }
-  renderChips();
 }
 
 // ─── Iframe con CSS específico por tipo ─────────────────────────────
@@ -1028,6 +868,21 @@ ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
   .e3-slot{position:relative;display:flex;align-items:center;justify-content:center;min-height:90px;border:2px dashed #d4dae3;margin:6px;background:repeating-linear-gradient(45deg,#fafbfc,#fafbfc 8px,#f1f5f9 8px,#f1f5f9 16px);cursor:pointer;transition:border-color .15s,background .15s;}
   .e3-slot:hover{border-color:#60a5fa;}
   .e3-slot-inner{font:700 .68rem/1.3 Inter,system-ui,sans-serif;color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:.4rem;}
+  /* ── Buscador inline DENTRO del slot clickeado ── */
+  .e3-slot.e3-slot-open{cursor:default;align-items:stretch;background:#fff;border-color:#2563eb;border-style:solid;}
+  .e3-slot-search{display:flex;flex-direction:column;gap:.45rem;width:100%;padding:.7rem;font-family:Inter,system-ui,sans-serif;box-sizing:border-box;}
+  .e3-slot-search-title{font-size:.58rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#2563eb;display:flex;align-items:center;justify-content:space-between;gap:.5rem;}
+  .e3-slot-search-close{background:none;border:none;font-size:1.05rem;line-height:1;color:#94a3b8;cursor:pointer;padding:0 .2rem;}
+  .e3-slot-search-close:hover{color:#334155;}
+  .e3-slot-search-input{border:1px solid #cbd5e1;border-radius:.35rem;padding:.45rem .6rem;font-size:.78rem;font-family:inherit;outline:none;background:#fff;width:100%;box-sizing:border-box;}
+  .e3-slot-search-input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12);}
+  .e3-slot-results{max-height:180px;overflow:auto;border:1px solid #e2e8f0;border-radius:.35rem;background:#fff;display:none;}
+  .e3-slot-result{padding:.45rem .6rem;cursor:pointer;border-bottom:1px solid #f1f5f9;display:flex;flex-direction:column;gap:.1rem;}
+  .e3-slot-result:last-child{border-bottom:none;}
+  .e3-slot-result:hover{background:#eff6ff;}
+  .e3-slot-result-name{font-size:.74rem;font-weight:700;color:#1e293b;}
+  .e3-slot-result-sub{font-size:.58rem;color:#94a3b8;letter-spacing:.04em;text-transform:uppercase;}
+  .e3-slot-empty{font-size:.66rem;color:#94a3b8;padding:.45rem .6rem;}
   /* ── Botón "Nuevo contenedor" al fondo del canvas ── */
   .e3-empty-lite{padding:3rem 2rem 1rem;text-align:center;color:#94a3b8;font:700 .82rem/1.6 Inter,system-ui,sans-serif;}
   .e3-empty-lite small{display:block;margin-top:.4rem;font-weight:500;font-size:.68rem;opacity:.8;}
@@ -1073,7 +928,17 @@ function renderCanvas() {
     for (let mi = 0; mi < cont.cap; mi++) {
       const id = cont.modulos[mi];
       if (id == null) {
-        slots.push(`<div class="e3-slot" data-ci="${ci}"><div class="e3-slot-inner"><i class="fa-solid fa-plus"></i> Insertar módulo</div></div>`);
+        // Slot vacío: si el buscador está abierto EN ESTE slot, se renderiza
+        // adentro (reemplaza al "+ Insertar módulo"); si no, el mensaje.
+        const abierto = e3.slotSearch && e3.slotSearch.ci === ci && e3.slotSearch.mi === mi;
+        slots.push(abierto ? `
+<div class="e3-slot e3-slot-open" data-ci="${ci}" data-mi="${mi}">
+  <div class="e3-slot-search">
+    <div class="e3-slot-search-title"><span>Insertar módulo acá</span><button type="button" class="e3-slot-search-close" title="Cerrar">×</button></div>
+    <input class="e3-slot-search-input" type="text" placeholder="Buscar módulo (ej: noticias)…" autocomplete="off"/>
+    <div class="e3-slot-results"></div>
+  </div>
+</div>` : `<div class="e3-slot" data-ci="${ci}" data-mi="${mi}"><div class="e3-slot-inner"><i class="fa-solid fa-plus"></i> Insertar módulo</div></div>`);
         continue;
       }
       const m = modById(id);
@@ -1128,10 +993,18 @@ function renderCanvas() {
       });
     });
   });
-  // Slots vacíos → abren el popover de inserción anclado al slot clickeado.
-  doc.querySelectorAll('.e3-slot').forEach(s => {
-    s.addEventListener('click', () => openInsertPopover(s));
+  // Slots vacíos → abren el buscador inline DENTRO del slot clickeado (solo
+  // se puede insertar en ESE contenedor).
+  doc.querySelectorAll('.e3-slot:not(.e3-slot-open)').forEach(s => {
+    s.addEventListener('click', () => {
+      e3.slotSearch = { ci: +s.dataset.ci, mi: +s.dataset.mi, query: '' };
+      renderCanvas();
+    });
   });
+  bindSlotSearch(doc);
+  // Click dentro del iframe pero fuera de un slot → cierra el buscador.
+  doc.removeEventListener('click', onIframeClickCloseSlotSearch);
+  doc.addEventListener('click', onIframeClickCloseSlotSearch);
   // Botones de la barra del contenedor → mover/eliminar
   doc.querySelectorAll('[data-cont-bar]').forEach(bar => {
     const ci = +bar.dataset.contBar;
@@ -1173,6 +1046,7 @@ function removeModuleFromCont(ci, mi) {
     if (e3.sel.mi === mi) e3.sel = null;
     else if (e3.sel.mi > mi) e3.sel.mi--;
   }
+  e3.slotSearch = null;   // los índices de slots cambiaron
   markDirty(); renderCanvas(); renderProps();
 }
 
@@ -1184,6 +1058,7 @@ function moveContenedor(ci, delta) {
   if (e3.activeCont === ci) e3.activeCont = j;
   else if (e3.activeCont === j) e3.activeCont = ci;
   if (e3.sel) { if (e3.sel.ci === ci) e3.sel.ci = j; else if (e3.sel.ci === j) e3.sel.ci = ci; }
+  e3.slotSearch = null;   // los índices de contenedores cambiaron
   markDirty(); renderCanvas(); renderProps();
 }
 
@@ -1196,6 +1071,7 @@ function deleteContenedor(ci) {
   if (e3.activeCont === ci) e3.activeCont = e3.conts.length ? Math.min(ci, e3.conts.length - 1) : null;
   else if (e3.activeCont != null && e3.activeCont > ci) e3.activeCont--;
   if (e3.sel) { if (e3.sel.ci === ci) e3.sel = null; else if (e3.sel.ci > ci) e3.sel.ci--; }
+  e3.slotSearch = null;   // los índices de contenedores cambiaron
   markDirty(); renderCanvas(); renderProps();
 }
 
@@ -1558,11 +1434,36 @@ function injectDashboardCard() {
   else dash.insertAdjacentElement('afterbegin', card);
 }
 
+// ─── Aviso de cambios sin guardar al salir por el sidebar ───────────
+// El botón "← Volver" ya avisa (backToOverview); esto cubre el resto de las
+// salidas del editor: cambiar de panel por el sidebar, "Ver todas las
+// plantillas", logout y "+ Nueva plantilla". Corre en fase CAPTURA para frenar
+// el click ANTES de que llegue a los handlers de navegación.
+function onSidebarLeaveGuard(ev) {
+  const navBtn = ev.target.closest('.sidebar-item, .sidebar-logout, #btn-nueva-plantilla');
+  if (!navBtn) return;
+  const editorAbierto = document.getElementById('panel-tpl-editor')?.classList.contains('active');
+  if (!editorAbierto || !e3.dirty || !e3.activeTpl) return;
+  if (!confirm('Hay cambios sin guardar. ¿Salir igual?')) {
+    ev.stopImmediatePropagation();
+    ev.preventDefault();
+    return;
+  }
+  // Sale igual: descartamos el estado del editor para no volver a preguntar.
+  e3.slotSearch = null;
+  e3.activeTpl = null; e3.conts = []; e3.sel = null; e3.activeCont = null;
+  e3.dirty = false;
+}
+
 // ─── Init: override old plantilla buttons + inject UI ───────────────
 function initE3() {
   populateTipoSelect();
   injectSidebarLink();
   injectDashboardCard();
+
+  // Guardia de cambios sin guardar (sidebar / logout / nueva plantilla).
+  document.removeEventListener('click', onSidebarLeaveGuard, true);
+  document.addEventListener('click', onSidebarLeaveGuard, true);
 
   // Fix: el botón "Ver todas las plantillas" tiene un handler viejo que
   // llama openTemplateEditor con un ID del estado legacy. Lo reemplazamos.
@@ -1625,12 +1526,14 @@ let _curModId   = null;
 let _curModType = null;
 let _curModData = { nombre: '', alerta: false, id_pagina: null, data: {}, design: {} };
 
-/* Nombre legible de la página asignada a un módulo (o '' si no tiene). */
+/* Nombre(s) legible(s) de la(s) página(s) asignada(s) a un módulo (o '' si no tiene). */
 function _paginaLabel(id_pagina) {
-  if (id_pagina === 'all') return 'Todas las páginas';
-  if (id_pagina == null || id_pagina === '') return '';
-  const p = _plantillas.find(x => x.id_plantilla === Number(id_pagina));
-  return p ? p.nombre : String(id_pagina);
+  const pags = _paginasDe(id_pagina);
+  if (pags === 'all') return 'Todas las páginas';
+  return pags.map(id => {
+    const p = _plantillas.find(x => x.id_plantilla === id);
+    return p ? p.nombre : String(id);
+  }).join(', ');
 }
 
 /* Badge "a dónde pertenece": muestra la página asignada del módulo en el editor. */
@@ -1654,41 +1557,52 @@ function _refreshPaginaBadges() {
   if (contentSlot) contentSlot.innerHTML = isList ? badge : '';
 }
 
-/* Llena el <select> de "Página asignada".
-   Los módulos globales (nav / footer) aplican a TODO el sitio: el campo queda
-   fijo en "Todas las páginas". El resto elige una página puntual del catálogo. */
-function _renderPaginaSelect(selectedId) {
-  const sel  = document.getElementById('modulos-variant-pagina');
+/* Arma una lista de checkboxes de páginas dentro de `box` (multi-página):
+   "Todas las páginas" + un check por plantilla. Marcar "Todas" deshabilita
+   el resto. `onChange` recibe el valor normalizado: null | 'all' | [ids]. */
+function _renderPaginaChecks(box, value, onChange) {
+  const pags    = _paginasDe(value);
+  const esTodas = pags === 'all';
+  const ids     = esTodas ? [] : pags;
+  box.innerHTML = [
+    `<label class="mod-pag-check"><input type="checkbox" data-pag="all" ${esTodas ? 'checked' : ''}/> 🌐 Todas las páginas</label>`,
+    ..._plantillas.map(p =>
+      `<label class="mod-pag-check ${esTodas ? 'is-disabled' : ''}"><input type="checkbox" data-pag="${p.id_plantilla}" ${ids.includes(p.id_plantilla) ? 'checked' : ''} ${esTodas ? 'disabled' : ''}/> ${escAttr(p.nombre)} <span class="mod-pag-tipo">· ${escAttr(p.tipo)}</span></label>`),
+  ].join('');
+  box.querySelectorAll('[data-pag]').forEach(cb => cb.addEventListener('change', () => {
+    let v;
+    if (box.querySelector('[data-pag="all"]')?.checked) v = 'all';
+    else {
+      const marcados = [...box.querySelectorAll('[data-pag]:checked')]
+        .map(c => c.dataset.pag).filter(x => x !== 'all').map(Number);
+      v = marcados.length ? marcados : null;
+    }
+    _renderPaginaChecks(box, v, onChange);   // re-render: habilita/deshabilita según "Todas"
+    onChange(v);
+  }));
+}
+
+/* Llena la lista de "Páginas asignadas" del editor de módulo.
+   Los módulos globales (nav / footer) aplican a TODO el sitio: queda fijo en
+   "Todas las páginas". El resto puede marcar una o varias páginas. */
+function _renderPaginaSelect(selected) {
+  const box  = document.getElementById('modulos-variant-pagina');
   const hint = document.getElementById('modulos-variant-pagina-hint');
-  if (!sel) return;
+  if (!box) return;
 
   if (GLOBAL_TIPOS_MOD.has(_curModType)) {
-    sel.innerHTML = '<option value="all">🌐 Todas las páginas (global)</option>';
-    sel.value = 'all';
-    sel.disabled = true;
-    sel.onchange = null;
+    box.innerHTML = '<label class="mod-pag-check is-disabled"><input type="checkbox" checked disabled/> 🌐 Todas las páginas (global)</label>';
     _curModData.id_pagina = 'all';
     if (hint) hint.textContent = 'Módulo global: se muestra en todas las páginas del sitio. No se asigna a una página específica.';
     _refreshPaginaBadges();
     return;
   }
 
-  sel.disabled = false;
-  const opts = [
-    '<option value="">— Sin asignar —</option>',
-    '<option value="all">🌐 Todas las páginas</option>',
-  ].concat(
-    _plantillas.map(p =>
-      `<option value="${p.id_plantilla}">${escAttr(p.nombre)} · ${escAttr(p.tipo)}</option>`)
-  );
-  sel.innerHTML = opts.join('');
-  sel.value = (selectedId == null || selectedId === '') ? '' : String(selectedId);
-  sel.onchange = () => {
-    const v = sel.value;
-    _curModData.id_pagina = v === '' ? null : (v === 'all' ? 'all' : Number(v));
+  _renderPaginaChecks(box, selected, v => {
+    _curModData.id_pagina = v;
     _refreshPaginaBadges();
-  };
-  if (hint) hint.textContent = 'Indicá a qué página pertenece este módulo (ej: «Blog»), o «Todas las páginas». Es solo un identificador para organizar el catálogo; no cambia dónde se puede usar.';
+  });
+  if (hint) hint.textContent = 'Marcá a qué página(s) pertenece este módulo (ej: «Blog»), o «Todas las páginas». El módulo solo se puede insertar en las plantillas marcadas.';
 }
 
 function _showView(id) {
@@ -1803,7 +1717,7 @@ function renderModCatalog() {
       </div>
       <div class="mod-row-pertenece">${pertenece}</div>
       <div class="blog-actions">
-        <button type="button" class="btn-edit-small" onclick="openModEditor(${m.id_modulo})">Editar</button>
+        <button type="button" class="btn-edit-small" onclick="openModVer(${m.id_modulo})">Ver</button>
         <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="eliminarModulo(${m.id_modulo})">Eliminar</button>
       </div>
     </div>`;
@@ -1818,17 +1732,21 @@ function _tiposSinModulo() {
   return Object.keys(SECTIONS).filter(t => !existentes.has(t));
 }
 
-/* Llena el <select> de "Página asignada" del modal de nuevo módulo. */
+/* Llena la lista de checkboxes de "Páginas asignadas" del modal de nuevo módulo. */
 function _fillNuevoPaginaSelect() {
-  const pagSel = document.getElementById('nm-pagina');
-  if (!pagSel) return;
-  pagSel.innerHTML = [
-    '<option value="">— Sin asignar —</option>',
-    '<option value="all">🌐 Todas las páginas</option>',
-  ].concat(
-    _plantillas.map(p => `<option value="${p.id_plantilla}">${escAttr(p.nombre)} · ${escAttr(p.tipo)}</option>`)
-  ).join('');
-  pagSel.value = '';
+  const box = document.getElementById('nm-pagina');
+  if (!box) return;
+  _renderPaginaChecks(box, null, () => {});
+}
+
+/* Lee las páginas marcadas en el modal de nuevo módulo: null | 'all' | [ids]. */
+function _nmPaginaValue() {
+  const box = document.getElementById('nm-pagina');
+  if (!box) return null;
+  if (box.querySelector('[data-pag="all"]')?.checked) return 'all';
+  const ids = [...box.querySelectorAll('[data-pag]:checked')]
+    .map(c => c.dataset.pag).filter(x => x !== 'all').map(Number);
+  return ids.length ? ids : null;
 }
 
 /* ── Abrir el modal "Nuevo módulo": Sección + Nombre + Página asignada ── */
@@ -1846,7 +1764,7 @@ window.openNuevoModulo = function() {
     sel.innerHTML = `<option value="">— No quedan secciones —</option>`;
     sel.disabled = true;
     if (nombre) { nombre.value = ''; nombre.disabled = true; }
-    if (pagSel) pagSel.disabled = true;
+    if (pagSel) pagSel.innerHTML = '';
     if (crear)  crear.disabled = true;
     return void window.__svc?.openModal('modal-nuevo-modulo');
   }
@@ -1862,8 +1780,11 @@ window.openNuevoModulo = function() {
   const syncForTipo = () => {
     if (nombre) nombre.value = SECTIONS[sel.value]?.label || sel.value;
     if (pagSel) {
-      if (GLOBAL_TIPOS_MOD.has(sel.value)) { pagSel.value = 'all'; pagSel.disabled = true; }
-      else { pagSel.disabled = false; }
+      if (GLOBAL_TIPOS_MOD.has(sel.value)) {
+        pagSel.innerHTML = '<label class="mod-pag-check is-disabled"><input type="checkbox" data-pag="all" checked disabled/> 🌐 Todas las páginas (global)</label>';
+      } else {
+        _fillNuevoPaginaSelect();
+      }
     }
   };
   sel.onchange = syncForTipo;
@@ -1876,12 +1797,10 @@ window.openNuevoModulo = function() {
 async function crearModuloDesdeModal() {
   const sel    = document.getElementById('nm-tipo');
   const nombre = document.getElementById('nm-nombre');
-  const pagSel = document.getElementById('nm-pagina');
   const tipo   = sel?.value;
   const sec    = tipo && SECTIONS[tipo];
   if (!sec) return;
-  const pv = pagSel?.value;
-  const id_pagina = (pv == null || pv === '') ? null : (pv === 'all' ? 'all' : Number(pv));
+  const id_pagina = _nmPaginaValue();
   try {
     const res = await window.__svc.apiPost('/modulos', {
       tipo,
@@ -1946,6 +1865,11 @@ window.openModEditor = function(id) {
   if (dataCard) dataCard.style.display = MOD_HIDE_DATA_CARD.has(m.tipo) ? 'none' : '';
   _refreshPaginaBadges();
 
+  // El contenido compartido (#blog-list / #clientes-tbody) debe existir en UN
+  // solo lugar: si el modal "Ver" tenía la lista, la vaciamos.
+  const verBody = document.getElementById('modulos-view-body');
+  if (verBody) verBody.innerHTML = '';
+
   // El editor es un modal: lo abrimos por encima del catálogo.
   window.__svc?.openModal('modulos-editor-view');
 };
@@ -2005,6 +1929,98 @@ function renderModContentCard(type) {
   const addBtn = document.getElementById('modulos-content-add-btn');
   if (addBtn) { addBtn.innerHTML = cfg.addLabel; addBtn.onclick = cfg.add; }
 }
+
+/* ═══ Modal "Ver módulo": SOLO la lista de contenido ═══
+   Desde el catálogo se entra con "Ver". Muestra únicamente la lista del módulo
+   (artículos para blog, clientes para clientes, y para el resto la lista de
+   módulos de esa sección). Recién al tocar "Editar" en la lista se abre el
+   modal de edición correspondiente. */
+function _closeModVer() {
+  window.__svc?.closeModal('modulos-view-modal');
+  const body = document.getElementById('modulos-view-body');
+  if (body) body.innerHTML = '';
+}
+
+window.openModVer = function(id) {
+  const m = _mods.find(x => x.id_modulo === Number(id));
+  if (!m) return;
+  const sec = SECTIONS[m.tipo];
+  if (!sec) { window.__svc.showNotif('Tipo de módulo desconocido: ' + m.tipo, 'error'); return; }
+
+  const cfg     = MOD_CONTENT_CONFIG[m.tipo];
+  const titleEl = document.getElementById('modulos-view-title');
+  const pagEl   = document.getElementById('modulos-view-pagina');
+  const noteEl  = document.getElementById('modulos-view-note');
+  const addBtn  = document.getElementById('modulos-view-add-btn');
+  const body    = document.getElementById('modulos-view-body');
+  if (!body) return;
+
+  const esTodas = GLOBAL_TIPOS_MOD.has(m.tipo) || m.id_pagina === 'all';
+  if (pagEl) pagEl.innerHTML = _paginaBadgeHTML(esTodas ? 'all' : m.id_pagina);
+
+  // El contenido compartido (#blog-list / #clientes-tbody) debe existir en UN
+  // solo lugar: limpiamos el del editor para que render() apunte a este modal.
+  const editorContent = document.getElementById('modulos-content-body');
+  if (editorContent) editorContent.innerHTML = '';
+
+  if (cfg) {
+    if (titleEl) titleEl.textContent = cfg.title;
+    if (noteEl) {
+      noteEl.style.display = '';
+      noteEl.textContent = 'Este contenido es compartido: los cambios se aplican automáticamente a todas las variantes de este módulo.';
+    }
+    if (addBtn) { addBtn.style.display = ''; addBtn.innerHTML = cfg.addLabel; addBtn.onclick = cfg.add; }
+    body.innerHTML = cfg.bodyHTML;
+    cfg.render();
+  } else {
+    if (titleEl) titleEl.textContent = sec.label;
+    if (noteEl) noteEl.style.display = 'none';
+    if (addBtn) addBtn.style.display = 'none';
+    _renderModVerLista(m.tipo);
+  }
+  window.__svc?.openModal('modulos-view-modal');
+};
+
+/* Lista genérica (mismo formato que la del blog): los módulos de esa sección.
+   "Editar" cierra este modal y abre el editor del módulo (el otro modal). */
+function _renderModVerLista(tipo) {
+  const body = document.getElementById('modulos-view-body');
+  if (!body) return;
+  const mods = _mods.filter(x => x.tipo === tipo).sort((a, b) => a.id_modulo - b.id_modulo);
+  if (!mods.length) { _closeModVer(); return; }
+  body.innerHTML = `<div class="blog-grid">${mods.map(m => {
+    const usos  = _modUsos[m.id_modulo] || 0;
+    const enUso = usos > 0 || GLOBAL_TIPOS_MOD.has(m.tipo);
+    const badge = enUso
+      ? '<span class="mod-row-badge on">En uso</span>'
+      : '<span class="mod-row-badge off">Sin usar</span>';
+    const desc  = _modPreview(m) || (enUso ? `En uso en ${usos} plantilla${usos !== 1 ? 's' : ''}.` : 'Todavía no se usa en ninguna plantilla.');
+    return `<div class="blog-item">
+      <div class="blog-info">
+        <div class="mod-row-headline">
+          <span class="blog-title-text">${escAttr(m.nombre || '(sin nombre)')}</span>
+          ${badge}
+        </div>
+        <div class="blog-meta">${escAttr(SECTIONS[m.tipo]?.label || m.tipo)} · #${m.id_modulo}</div>
+        <div class="blog-excerpt">${escAttr(desc)}</div>
+      </div>
+      <div class="blog-actions">
+        <button type="button" class="btn-edit-small" data-ver-edit="${m.id_modulo}">Editar</button>
+        <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" data-ver-del="${m.id_modulo}">Eliminar</button>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+  body.querySelectorAll('[data-ver-edit]').forEach(b => b.addEventListener('click', () => {
+    _closeModVer();
+    window.openModEditor(b.dataset.verEdit);
+  }));
+  body.querySelectorAll('[data-ver-del]').forEach(b => b.addEventListener('click', async () => {
+    await window.eliminarModulo(b.dataset.verDel);
+    _renderModVerLista(tipo);   // refresca la lista (o cierra si no quedan)
+  }));
+}
+
+document.getElementById('modulos-view-close')?.addEventListener('click', _closeModVer);
 
 function renderModFieldGroup(group, fields, containerId) {
   const container = document.getElementById(containerId);

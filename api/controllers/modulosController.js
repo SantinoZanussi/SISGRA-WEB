@@ -22,10 +22,15 @@ function nextId(modulos) {
   return (nums.length ? Math.max(...nums) : 0) + 1;
 }
 
-// Normaliza el id de página asignada: '' / null / undefined → null.
-// Acepta un id numérico (id_plantilla) o, por compatibilidad, texto libre.
+// Normaliza la(s) página(s) asignada(s): '' / null / undefined → null.
+// Acepta 'all', un array de ids (multi-página), un id numérico suelto
+// (datos viejos) o, por compatibilidad, texto libre.
 function normPagina(v) {
   if (v === undefined || v === null || v === '') return null;
+  if (Array.isArray(v)) {
+    const ids = [...new Set(v.map(Number).filter(n => !isNaN(n)))];
+    return ids.length ? ids : null;
+  }
   const n = Number(v);
   return isNaN(n) ? String(v) : n;
 }

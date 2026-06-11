@@ -109,7 +109,10 @@ exports.crear = (req, res) => {
   }
 
   const data = read();
-  const now = new Date().toISOString();
+  const ahora = new Date();
+  const now = ahora.toISOString();
+  // Vencimiento automático al crear: 7 días (igual que activar/extender).
+  const fin = new Date(ahora.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString();
   // contenedores es la fuente de verdad; si llega solo id_modulos (legacy), se
   // deriva 1 contenedor 1x1 por módulo. normalizarPlantilla deja todo en sync.
   const nueva = normalizarPlantilla({
@@ -118,6 +121,8 @@ exports.crear = (req, res) => {
     nombre: nombre.trim(),
     descripcion: descripcion || '',
     activa: false,
+    fecha_inicio: now,
+    fecha_fin:    fin,
     id_menu:      Array.isArray(id_menu)    ? id_menu    : [],
     id_modulos:   Array.isArray(id_modulos) ? id_modulos : [],
     contenedores: Array.isArray(contenedores) ? contenedores : undefined,
