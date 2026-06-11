@@ -1,6 +1,6 @@
 import { apiGet, apiPut } from './api.js';
 
-// ── Hero section (admin) → hero.json ─────────────────────────────────────────
+// Hero section (admin) → hero.json
 export function heroSectionToHeroJson(sec, base = {}) {
   const d = sec.data || {};
   if (sec.type === 'hero') {
@@ -39,7 +39,7 @@ export function heroSectionToHeroJson(sec, base = {}) {
   return base;
 }
 
-// ── hero.json → admin section data objects ───────────────────────────────────
+// hero.json → admin section data objects
 export function heroJsonToSectionData(h) {
   return {
     p1: {
@@ -71,7 +71,7 @@ export function heroJsonToSectionData(h) {
   };
 }
 
-// ── About section (admin) → nosotros.json ────────────────────────────────────
+// About section (admin) → nosotros.json
 export function aboutSectionToNosotrosJson(sec, base = {}) {
   const d = sec.data || {};
   return {
@@ -82,7 +82,7 @@ export function aboutSectionToNosotrosJson(sec, base = {}) {
   };
 }
 
-// ── Save active template sections to live JSON files ─────────────────────────
+// Save active template sections to live JSON files
 export async function saveTemplateToLive(tpl) {
   const heroSec     = tpl.sections.find(s => s.type === 'hero' || s.type === 'hero-centered');
   const aboutSec    = tpl.sections.find(s => s.type === 'about');

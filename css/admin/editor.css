@@ -1,6 +1,6 @@
-/* ─── ADMIN EDITOR ─── section cards, forms, tables, modal, visual editor, section previews ─── */
+/* ADMIN EDITOR section cards, forms, tables, modal, visual editor, section previews */
 
-/* ── CATÁLOGO DE MÓDULOS ── secciones apiladas en filas, cada una con su grilla de cards ── */
+/* CATÁLOGO DE MÓDULOS secciones apiladas en filas, cada una con su grilla de cards */
 #modulos-grid{display:flex;flex-direction:column;gap:1.75rem;}
 .mod-cat-empty{padding:3rem;text-align:center;color:#94a3b8;font-size:.8rem;}
 .mod-group-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-bottom:.6rem;margin-bottom:1rem;border-bottom:1px solid var(--slate-200,#e2e8f0);}
@@ -24,7 +24,7 @@
 .mod-card-edit{flex:1;}
 .mod-icon-btn{flex-shrink:0;}
 
-/* ── Campos del editor de módulo (Contenido) y panel de diseño ── */
+/* Campos del editor de módulo (Contenido) y panel de diseño */
 .mf-row{display:flex;flex-direction:column;gap:.4rem;background:#fff;border:1px solid #eef2f7;border-radius:.55rem;padding:.7rem .8rem;transition:border-color .12s,box-shadow .12s;}
 .mf-row:focus-within{border-color:#bfdbfe;box-shadow:0 1px 6px rgba(37,99,235,.08);}
 .mf-row-toggle{flex-direction:row;align-items:center;gap:.65rem;}
@@ -38,7 +38,7 @@
 .mf-advanced strong{display:block;color:#1e293b;font-size:.74rem;margin-bottom:.15rem;}
 .mf-empty{font-size:.78rem;color:#94a3b8;padding:.4rem 0;}
 
-/* ── Modal de edición visual (preview + lápices + colores) ── */
+/* Modal de edición visual (preview + lápices + colores) */
 .mpm{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;}
 .mpm-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);}
 .mpm-dialog{position:relative;z-index:1;width:min(1200px,96vw);height:min(88vh,900px);background:#f8fafc;border-radius:.75rem;box-shadow:0 24px 70px rgba(0,0,0,.35);display:flex;flex-direction:column;overflow:hidden;}
@@ -58,13 +58,13 @@
   .mpm-side{width:auto;border-left:none;border-top:1px solid var(--slate-200,#e2e8f0);max-height:42%;}
 }
 
-/* ── SECTION CARD ── */
+/* SECTION CARD */
 .section-card{background:var(--white);border:1px solid var(--slate-100);margin-bottom:1.5rem;}
 .section-card-header{padding:1rem 1.5rem;border-bottom:1px solid var(--slate-100);display:flex;align-items:center;justify-content:space-between;}
 .section-card-title{font-size:.625rem;font-weight:900;letter-spacing:.25em;text-transform:uppercase;color:var(--slate-500);}
 .section-card-body{padding:1.5rem;}
 
-/* ── FORM ── */
+/* FORM */
 .form-row{display:grid;gap:1rem;margin-bottom:1rem;}
 .form-row.cols-2{grid-template-columns:1fr 1fr;}
 .form-row.cols-3{grid-template-columns:1fr 1fr 1fr;}
@@ -79,7 +79,7 @@
 .form-hint{font-size:.625rem;color:var(--slate-400);margin-top:.2rem;}
 .form-divider{height:1px;background:var(--slate-100);margin:1.5rem 0;}
 
-/* ── TOGGLE ── */
+/* TOGGLE */
 .toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.75rem 0;border-bottom:1px solid var(--slate-100);}
 .toggle-row:last-child{border-bottom:none;}
 .toggle-name{font-size:.8125rem;font-weight:700;color:var(--slate-800);}
@@ -91,7 +91,7 @@
 .toggle input:checked+.toggle-slider{background:var(--blue-500);}
 .toggle input:checked+.toggle-slider:before{transform:translateX(1.1rem);}
 
-/* ── TABLE ── */
+/* TABLE */
 .data-table{width:100%;border-collapse:collapse;}
 .data-table th{font-size:.5rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:var(--slate-400);padding:.6rem 1rem;text-align:left;border-bottom:1px solid var(--slate-100);background:var(--slate-50);}
 .data-table td{font-size:.8125rem;padding:.75rem 1rem;border-bottom:1px solid var(--slate-100);color:var(--slate-700);}
@@ -105,7 +105,7 @@
 .table-delete{color:var(--slate-300);}
 .table-delete:hover{color:var(--red-400);}
 
-/* ── BLOG (admin list) ── */
+/* BLOG (admin list) */
 .blog-grid{display:grid;gap:1rem;}
 .blog-item{background:var(--white);border:1px solid var(--slate-100);padding:1.25rem;display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap;}
 .blog-info{flex:1;}
@@ -114,14 +114,14 @@
 .blog-excerpt{font-size:.75rem;color:var(--slate-500);margin-top:.3rem;line-height:1.5;}
 .blog-actions{display:flex;gap:.5rem;flex-shrink:0;align-items:center;}
 
-/* ── Catálogo de módulos: fila tipo lista (reusa el formato del blog) ── */
+/* Catálogo de módulos: fila tipo lista (reusa el formato del blog) */
 .mod-row-headline{display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem;flex-wrap:wrap;}
 .mod-row-headline .blog-title-text{margin-bottom:0;}
 .mod-row-badge{font-size:.5rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;padding:.15rem .45rem;border-radius:2px;white-space:nowrap;}
 .mod-row-badge.on{background:#dcfce7;color:#166534;}
 .mod-row-badge.off{background:#fef3c7;color:#92400e;}
 
-/* ── Badge "a dónde pertenece" (página del módulo) en el editor ── */
+/* Badge "a dónde pertenece" (página del módulo) en el editor */
 .mod-pertenece{display:inline-flex;align-items:center;gap:.35rem;font-size:.62rem;font-weight:700;letter-spacing:.02em;color:#1d4ed8;background:#eff6ff;border:1px solid #dbeafe;padding:.22rem .6rem;border-radius:999px;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;text-transform:none;}
 .mod-pertenece i{font-size:.62rem;flex-shrink:0;}
 .mod-pertenece.is-global{color:#0f766e;background:#f0fdfa;border-color:#ccfbf1;}
@@ -129,7 +129,7 @@
 /* Columna del medio en cada fila del catálogo: "a dónde pertenece" */
 .mod-row-pertenece{flex-shrink:0;display:flex;align-items:center;justify-content:flex-end;min-width:150px;}
 
-/* ── Lista de checkboxes "Páginas asignadas" (multi-página) ── */
+/* Lista de checkboxes "Páginas asignadas" (multi-página) */
 .mod-pag-list{display:flex;flex-direction:column;gap:.15rem;border:1px solid var(--slate-200);border-radius:.4rem;padding:.4rem;max-height:220px;overflow-y:auto;background:var(--white);}
 .mod-pag-check{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--slate-700);padding:.3rem .45rem;border-radius:.3rem;cursor:pointer;user-select:none;}
 .mod-pag-check:hover{background:var(--slate-50);}
@@ -138,7 +138,7 @@
 .mod-pag-check.is-disabled:hover{background:none;}
 .mod-pag-tipo{color:var(--slate-400);font-size:.68rem;}
 
-/* ── Modal "Nuevo módulo" (catálogo) ── */
+/* Modal "Nuevo módulo" (catálogo) */
 .nm-title-ico{color:var(--blue-600,#2563eb);margin-right:.15rem;}
 .nm-body{display:flex;flex-direction:column;gap:1.15rem;}
 .nm-field .form-label{display:flex;align-items:center;gap:.45rem;}
@@ -146,7 +146,7 @@
 .nm-field .form-input{padding:.7rem .9rem;}
 .nm-field .form-select{cursor:pointer;}
 
-/* ── MODAL ── */
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(10,29,55,.7);z-index:500;display:none;align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--white);width:100%;max-width:640px;max-height:85vh;overflow-y:auto;overflow-x:hidden;}
@@ -157,19 +157,19 @@
 .modal-body{padding:1.5rem;}
 .modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--slate-100);display:flex;justify-content:flex-end;gap:.75rem;}
 
-/* ── NOTIFICATION ── */
+/* NOTIFICATION */
 .save-notif{position:fixed;bottom:2rem;right:2rem;padding:.75rem 1.25rem;font-size:.6875rem;font-weight:700;letter-spacing:.1em;z-index:900;opacity:0;transform:translateY(1rem);transition:opacity .25s,transform .25s;pointer-events:none;}
 .save-notif.show{opacity:1;transform:translateY(0);}
 .save-notif.success{background:var(--sisgra-blue);color:var(--white);}
 .save-notif.error{background:#ef4444;color:var(--white);}
 
-/* ── TAB ROW ── */
+/* TAB ROW */
 .tab-row{display:flex;border-bottom:1px solid var(--slate-200);margin-bottom:1.5rem;}
 .tab-item{font-size:.6875rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.6rem 1rem;color:var(--slate-400);cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
 .tab-item:hover{color:var(--slate-700);}
 .tab-item.active{color:var(--sisgra-blue);border-bottom-color:var(--blue-500);}
 
-/* ── Template list in main panel ── */
+/* Template list in main panel */
 .tpl-list{display:flex;flex-direction:column;gap:.75rem;margin-bottom:1.5rem;}
 .tpl-list-item{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;background:var(--white);border:1px solid var(--slate-100);transition:border-color .15s,box-shadow .15s;cursor:pointer;}
 .tpl-list-item:hover{border-color:var(--blue-300);box-shadow:0 2px 8px rgba(0,0,0,.05);}
@@ -194,7 +194,7 @@
 .btn-edit-small{border:1px solid var(--slate-200);background:transparent;color:var(--slate-600);padding:.375rem .75rem;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:border-color .2s,color .2s;}
 .btn-edit-small:hover{border-color:var(--blue-400);color:var(--blue-600);}
 
-/* ── Rich editor toolbar ── */
+/* Rich editor toolbar */
 .rich-editor-toolbar{display:flex;gap:.25rem;padding:.5rem;border:1px solid var(--slate-200);border-bottom:none;background:var(--slate-50);}
 .rich-btn{border:none;background:transparent;padding:.25rem .5rem;font-size:.75rem;font-weight:700;cursor:pointer;color:var(--slate-600);transition:background .15s;}
 .rich-btn:hover{background:var(--slate-200);}
@@ -214,9 +214,7 @@
 .rich-editor-content a{color:var(--blue-600);text-decoration:underline;}
 .rich-editor-content blockquote{border-left:3px solid var(--blue-500);padding:.5rem 1rem;margin:1rem 0;font-style:italic;font-weight:500;color:#475569;}
 
-/* ════════════════════════════════════════════════
-   VISUAL PAGE EDITOR
-════════════════════════════════════════════════ */
+/* VISUAL PAGE EDITOR */
 /* Template header bar */
 .tpl-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;gap:1rem;flex-wrap:wrap;}
 .tpl-title-block{display:flex;align-items:center;gap:.75rem;}
@@ -300,7 +298,7 @@
 .props-color-row{display:flex;gap:.5rem;align-items:center;}
 .props-color{width:1.5rem;height:1.5rem;border:1px solid var(--slate-200);cursor:pointer;flex-shrink:0;padding:0;}
 
-/* ── PROPS TABS (Contenido / Diseño) ── */
+/* PROPS TABS (Contenido / Diseño) */
 .props-tabs{display:flex;border-bottom:1px solid var(--slate-100);flex-shrink:0;}
 .props-tab{flex:1;padding:.5rem .25rem;font-size:.5rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;text-align:center;cursor:pointer;color:var(--slate-400);border-bottom:2px solid transparent;transition:color .15s,border-color .15s;background:none;border-top:none;border-left:none;border-right:none;}
 .props-tab:hover{color:var(--slate-700);}
@@ -356,7 +354,7 @@
 .section-slot.selected-section{outline:2px solid var(--blue-400);outline-offset:0px;}
 .section-slot.selected-section .section-controls{opacity:1;}
 
-/* ══ ACTUAL SECTION RENDERERS ══ */
+/* ACTUAL SECTION RENDERERS */
 /* These render how the section looks inside the page frame */
 
 /* NAV */

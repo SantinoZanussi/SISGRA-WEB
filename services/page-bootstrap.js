@@ -115,7 +115,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
       if (m.tipo === 'nav') m.data = { ...m.data, items: buildNavItems(navbar) };
     });
 
-    // ── Para cliente.html: si se pasa clienteId, inyectar datos del cliente ──
+    // Para cliente.html: si se pasa clienteId, inyectar datos del cliente
     if (opts.clienteId) {
       try {
         const cr = await fetch(`${API_BASE}/data/clientes?t=${Date.now()}`, { cache: 'no-store' });
@@ -183,7 +183,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
       }
     }
 
-    // ── Para articulo.html: si hay ?id= en la URL, inyectar el post real ──
+    // Para articulo.html: si hay ?id= en la URL, inyectar el post real
     if (tipo === 'articulo' && !opts.clienteId) {
       const postId = new URLSearchParams(window.location.search).get('id');
       if (postId) {
@@ -268,7 +268,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
   }
 }
 
-// ── Mobile nav toggle (busca .nav-mobile-toggle + .nav-mobile-drawer) ──
+// Mobile nav toggle (busca .nav-mobile-toggle + .nav-mobile-drawer)
 function bindMobileDrawer() {
   const toggle = document.querySelector('.nav-mobile-toggle');
   const drawer = document.querySelector('.nav-mobile-drawer');
@@ -287,7 +287,7 @@ function bindMobileDrawer() {
   });
 }
 
-// ── Form submit del footer (envía email via Gmail) ──
+// Form submit del footer (envía email via Gmail)
 let _contactoData = {};
 function bindContactForm() {
   const submit = document.querySelector('.btn-submit');
@@ -317,7 +317,7 @@ function bindContactForm() {
   });
 }
 
-// ── Hidratar [data-blog-list] desde /api/data/blog ──
+// Hidratar [data-blog-list] desde /api/data/blog
 async function hydrateBlogList() {
   const lists = document.querySelectorAll('[data-blog-list]');
   if (!lists.length) return;
@@ -367,7 +367,7 @@ function blogCategoriaIcon(categoria) {
   return 'fa-newspaper';
 }
 
-// ── Hidratar [data-blog-cards] (grid del index) desde /api/data/blog ──
+// Hidratar [data-blog-cards] (grid del index) desde /api/data/blog
 async function hydrateBlogCards() {
   const grids = document.querySelectorAll('[data-blog-cards]');
   if (!grids.length) return;
@@ -410,7 +410,7 @@ async function hydrateBlogCards() {
   }
 }
 
-// ── Hidratar carrusel de clientes con datos en vivo y links a perfiles ──
+// Hidratar carrusel de clientes con datos en vivo y links a perfiles
 async function hydrateClientesTrack() {
   const tracks = document.querySelectorAll('[data-clientes-track]');
   if (!tracks.length) return;
@@ -439,7 +439,7 @@ async function hydrateClientesTrack() {
   }
 }
 
-// ── Aplicar contacto + SEO globales (datos transversales a todas las plantillas) ──
+// Aplicar contacto + SEO globales (datos transversales a todas las plantillas)
 async function applyGlobalContactoSEO(tipo) {
   try {
     const [contacto, seo] = await Promise.all([

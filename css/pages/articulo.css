@@ -192,7 +192,7 @@ blockquote {
     line-height: 1.4;
 }
 
-/* ── RESPONSIVE ── */
+/* RESPONSIVE */
 @media (max-width: 768px) {
     .article-header { padding: 7rem 0 3rem; }
     .article-meta { gap: 1rem; flex-wrap: wrap; }

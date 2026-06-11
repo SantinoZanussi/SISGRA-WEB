@@ -1,9 +1,9 @@
-// ── POPULATE ─────────────────────────────────────────────────────────────────
+// POPULATE
 // Renderiza los datos del state en los formularios del panel
 import { state } from './store.js';
 import { setVal } from './ui.js';
 
-// ─── Dispatcher principal ─────────────────────────────────────────────────────
+// Dispatcher principal
 export function populatePanel(id) {
   switch (id) {
     case 'home':      populateHome();      break;
@@ -17,7 +17,7 @@ export function populatePanel(id) {
   }
 }
 
-// ─── Home / Hero ─────────────────────────────────────────────────────────────
+// Home / Hero
 function populateHome() {
   const d = state.hero || {};
   const fields = [
@@ -36,14 +36,14 @@ function populateHome() {
   fields.forEach(f => setVal(`hero-${f}`, d[f]));
 }
 
-// ─── Nosotros ─────────────────────────────────────────────────────────────────
+// Nosotros
 function populateNosotros() {
   const d = state.nosotros || {};
   ['eyebrow','titulo','descripcion','anio_fundacion','empleados','ciudad','imagen']
     .forEach(f => setVal(`nosotros-${f}`, d[f]));
 }
 
-// ─── Clientes ─────────────────────────────────────────────────────────────────
+// Clientes
 export function populateClientes() {
   setVal('clientes-carrusel_activo', state.clientes?.carrusel_activo);
   setVal('clientes-auto_scroll',     state.clientes?.auto_scroll);
@@ -65,7 +65,7 @@ export function populateClientes() {
   `).join('');
 }
 
-// ─── Blog ─────────────────────────────────────────────────────────────────────
+// Blog
 export function populateBlog() {
   setVal('blog-visible',        state.blog?.visible);
   setVal('blog-titulo_seccion', state.blog?.titulo_seccion || '');
@@ -102,7 +102,7 @@ export function populateBlog() {
   }
 }
 
-// ─── Contacto ─────────────────────────────────────────────────────────────────
+// Contacto
 function populateContacto() {
   const d = state.contacto || {};
   [
@@ -112,7 +112,7 @@ function populateContacto() {
   setVal('contacto-formulario_activo', d.formulario_activo);
 }
 
-// ─── SEO ──────────────────────────────────────────────────────────────────────
+// SEO
 function populateSEO() {
   const seo   = state.seo || {};
   const pages = ['home','cableado','fibra','seguridad','soporte','desarrollo'];
@@ -157,7 +157,7 @@ function populateSEO() {
   }
 }
 
-// ─── Páginas de servicio ──────────────────────────────────────────────────────
+// Páginas de servicio
 function populateServiceEditor(key) {
   const data      = state.paginas?.[key] || {};
   const container = document.getElementById('svc-editor-' + key);
@@ -201,7 +201,7 @@ function populateServiceEditor(key) {
   `;
 }
 
-// ─── Utilidad ─────────────────────────────────────────────────────────────────
+// Utilidad
 function escHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')

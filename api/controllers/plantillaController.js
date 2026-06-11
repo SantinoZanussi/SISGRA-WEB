@@ -23,7 +23,7 @@ function isTipoValido(tipo) {
 // Mantener array exportado para compatibilidad
 const TIPOS_VALIDOS = TIPOS_BASE;
 
-// ─── Contenedores (filas de módulos) ───────────────────────────────
+// Contenedores (filas de módulos)
 // Modelo: plantilla.contenedores = [[id,id], [id], ...] — cada sub-array es
 // una fila; sus ids son los módulos que van adentro, en orden (1 a 3).
 // `id_modulos` se mantiene SIEMPRE como el aplanado de contenedores (lista

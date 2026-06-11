@@ -1,10 +1,8 @@
-// ═══════════════════════════════════════════════════════════════════
 //  SECTION REGISTRY — usa el HTML/CSS EXACTO del sitio actual.
 //  Cada render genera markup idéntico al de index.html (clases reales:
 //  .hero, .hero-grid, .max-w-7xl, .logos-section, .services-section, etc.)
 //  Cargando css/base.css + css/layout_home.css + css/components.css
 //  + css/pages/home.css el resultado se ve igual a la web actual.
-// ═══════════════════════════════════════════════════════════════════
 
 export const TIPOS_HTML = [
   { value: 'index',      label: 'Inicio',                file: 'index.html' },
@@ -28,7 +26,7 @@ const css = (props) => {
   return p.length ? ` style="${p.join(';')}"` : '';
 };
 
-// ── Modo edición visual + color por palabra ─────────────────────────
+// Modo edición visual + color por palabra
 // fld() envuelve cada texto editable. En modo edición agrega data-field para
 // que el modal le ponga un lápiz. Si el campo tiene un color asignado
 // (FIELD_COLORS, que viene de data.__colores), se aplica ese color por palabra
@@ -48,7 +46,6 @@ const fld = (name, value) => {
 // selector de imágenes. En el sitio público no agrega nada (markup idéntico).
 const fldImg = (name) => EDIT_MODE ? ` data-imgfield="${esc(name)}"` : '';
 
-// ═══════════════════════════════════════════════════════════════════
 export const SECTIONS = {
   nav: {
     label: 'Navbar',
@@ -163,10 +160,8 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ─────────────────────────────────────────────────────────────────
   //  HERO — copia exacta de renderHeroP1 del index.html actual
   //  Campos idénticos a hero.json (titulo1, titulo2, stat1_numero, etc.)
-  // ─────────────────────────────────────────────────────────────────
   hero: {
     label: 'Hero lateral',
     description: 'Hero con stats laterales (igual al index actual)',
@@ -240,9 +235,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ─────────────────────────────────────────────────────────────────
   //  HERO CENTRADO — copia exacta de renderHeroP2
-  // ─────────────────────────────────────────────────────────────────
   'hero-centered': {
     label: 'Hero centrado',
     description: 'Hero centrado con métricas y tags',
@@ -327,10 +320,8 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ─────────────────────────────────────────────────────────────────
   //  CLIENTES — copia exacta de la sección clientes del index actual
   //  Estructura: <section class="logos-section">…<div class="logos-track">…
-  // ─────────────────────────────────────────────────────────────────
   clientes: {
     label: 'Clientes',
     description: 'Carrusel de logos de clientes',
@@ -385,9 +376,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ─────────────────────────────────────────────────────────────────
   //  BLOG — copia exacta de la sección blog del index actual
-  // ─────────────────────────────────────────────────────────────────
   blog: {
     label: 'Blog / Noticias',
     description: 'Grid de tarjetas de artículos',
@@ -451,9 +440,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ─────────────────────────────────────────────────────────────────
   //  SERVICIOS — copia exacta de la sección servicios del index actual
-  // ─────────────────────────────────────────────────────────────────
   services: {
     label: 'Servicios (cards)',
     description: 'Grid de tarjetas de servicios',
@@ -514,9 +501,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ─────────────────────────────────────────────────────────────────
   //  NOSOTROS — copia exacta de la sección about del index actual
-  // ─────────────────────────────────────────────────────────────────
   about: {
     label: 'Nosotros',
     description: 'Sección "Sobre nosotros" con texto e imagen',
@@ -566,9 +551,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ─────────────────────────────────────────────────────────────────
   //  CTA — copia de renderExtraSections cta del index actual
-  // ─────────────────────────────────────────────────────────────────
   cta: {
     label: 'Call to Action',
     description: 'Banda con título y botón de contacto',
@@ -610,9 +593,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ─────────────────────────────────────────────────────────────────
   //  SPACER
-  // ─────────────────────────────────────────────────────────────────
   spacer: {
     label: 'Espaciador',
     description: 'Espacio en blanco',
@@ -629,9 +610,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ─────────────────────────────────────────────────────────────────
   //  FOOTER — copia exacta del <footer> del index actual
-  // ─────────────────────────────────────────────────────────────────
   footer: {
     label: 'Footer (index)',
     description: 'Pie de página del index con formulario y links',
@@ -720,10 +699,8 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ═══════════════════════════════════════════════════════════════════
   //  MÓDULOS ESPECÍFICOS DE CABLEADO ESTRUCTURADO
   //  Usan las clases reales de css/pages/cableado.css y css/layout.css
-  // ═══════════════════════════════════════════════════════════════════
 
   'cableado-hero': {
     label: 'Hero Cableado',
@@ -830,10 +807,8 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ═══════════════════════════════════════════════════════════════════
   //  MÓDULOS ESPECÍFICOS DE FIBRA ÓPTICA
   //  Usan las clases reales de css/pages/fibra_optica.css y css/layout.css
-  // ═══════════════════════════════════════════════════════════════════
 
   'fibra-hero': {
     label: 'Hero Fibra Óptica',
@@ -921,9 +896,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ═══════════════════════════════════════════════════════════════════
   //  MÓDULOS ESPECÍFICOS DE SEGURIDAD ELECTRÓNICA
-  // ═══════════════════════════════════════════════════════════════════
 
   'seguridad-hero': {
     label: 'Hero Seguridad',
@@ -1014,9 +987,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ═══════════════════════════════════════════════════════════════════
   //  MÓDULOS ESPECÍFICOS DE SOPORTE IT
-  // ═══════════════════════════════════════════════════════════════════
 
   'soporte-hero': {
     label: 'Hero Soporte IT',
@@ -1131,9 +1102,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ═══════════════════════════════════════════════════════════════════
   //  MÓDULOS ESPECÍFICOS DE DESARROLLO DE SOFTWARE
-  // ═══════════════════════════════════════════════════════════════════
 
   'desarrollo-hero': {
     label: 'Hero Desarrollo Software',
@@ -1238,9 +1207,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  // ═══════════════════════════════════════════════════════════════════
   //  MÓDULOS BLOG (lista de artículos cargada dinámicamente)
-  // ═══════════════════════════════════════════════════════════════════
 
   'blog-list': {
     label: 'Lista de artículos',
@@ -1297,9 +1264,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     },
   },
 
-  // ═══════════════════════════════════════════════════════════════════
   //  MÓDULOS ARTÍCULO (vista detalle)
-  // ═══════════════════════════════════════════════════════════════════
 
   'articulo-header': {
     label: 'Header artículo',
@@ -1429,10 +1394,8 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     },
   },
 
-  // ═══════════════════════════════════════════════════════════════════
   //  MÓDULOS CLIENTE (caso de éxito / perfil de cliente)
   //  Diseño propio en css/pages/cliente.css (clases cl-*)
-  // ═══════════════════════════════════════════════════════════════════
 
   'cliente-header': {
     label: 'Header de cliente',
@@ -1590,11 +1553,9 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     },
   },
 
-  // ═══════════════════════════════════════════════════════════════════
   //  FOOTER COMPLETO (compartido por todas las páginas secundarias:
   //  cableado, fibra, seguridad, soporte, desarrollo, blog, articulo)
   //  Usa las clases reales de css/layout.css
-  // ═══════════════════════════════════════════════════════════════════
 
   'footer-full': {
     label: 'Footer completo',
@@ -1705,9 +1666,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
 
 };
 
-// ═══════════════════════════════════════════════════════════════════
 //  CAMPOS COMUNES — se agregan a todos los módulos automáticamente
-// ═══════════════════════════════════════════════════════════════════
 
 Object.values(SECTIONS).forEach(sec => {
   sec.defaultDesign = sec.defaultDesign || {};
@@ -1721,9 +1680,7 @@ Object.values(SECTIONS).forEach(sec => {
   );
 });
 
-// ═══════════════════════════════════════════════════════════════════
 //  HELPERS
-// ═══════════════════════════════════════════════════════════════════
 
 // Envuelve el HTML de un módulo en un <div> con márgenes/display si el design lo pide.
 function wrapDesign(html, design) {
@@ -1778,7 +1735,7 @@ export function renderModulos(mods) {
   return mods.map(renderModulo).join('');
 }
 
-// ── Contenedores (filas de módulos) ─────────────────────────────────
+// Contenedores (filas de módulos)
 // Un contenedor es una fila con 1 a 3 módulos lado a lado. La plantilla guarda
 // `contenedores: [[id,id],[id],...]`. Acá reagrupamos la lista YA resuelta y
 // mutada (nav/cliente/artículo) en sus filas, casando por id_modulo y

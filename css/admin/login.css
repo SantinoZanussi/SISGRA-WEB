@@ -1,4 +1,4 @@
-/* ─── ADMIN LOGIN SCREEN ─── */
+/* ADMIN LOGIN SCREEN */
 
 #login-screen{position:fixed;inset:0;background:var(--sisgra-blue);display:flex;align-items:center;justify-content:center;z-index:1000;}
 #login-screen::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(59,130,246,.15) 0,transparent 55%),radial-gradient(circle at 80% 20%,rgba(37,99,235,.1) 0,transparent 50%);pointer-events:none;}

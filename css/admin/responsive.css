@@ -1,4 +1,4 @@
-/* ─── ADMIN RESPONSIVE ─── hamburguesa, overlay, media queries, mobile block ─── */
+/* ADMIN RESPONSIVE hamburguesa, overlay, media queries, mobile block */
 
 /* Hamburguesa del admin */
 .admin-hamburger{display:none;flex-direction:column;justify-content:center;gap:4px;background:none;border:none;cursor:pointer;padding:.375rem;flex-shrink:0;-webkit-tap-highlight-color:transparent;}
@@ -52,7 +52,7 @@
   #dash-accesos-grid{grid-template-columns:1fr 1fr!important;}
 }
 
-/* ── Bloqueo editor de plantillas en móvil ── */
+/* Bloqueo editor de plantillas en móvil */
 .e3-mobile-block{display:none;position:fixed;inset:0;z-index:9999;background:rgba(10,29,55,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:1.5rem;}
 .e3-mobile-block.active{display:flex;}
 .e3-mobile-block-card{background:var(--white);border-radius:1rem;padding:2.5rem 2rem;max-width:360px;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:1rem;box-shadow:0 40px 80px rgba(0,0,0,.4);}

@@ -137,7 +137,7 @@
     border: 0;
 }
 
-/* ── CONTENEDORES (filas de 1 a 3 módulos lado a lado) ── */
+/* CONTENEDORES (filas de 1 a 3 módulos lado a lado) */
 /* El número de columnas lo pone el render con grid-template-columns inline.
    Un módulo solo no usa .cont-row (va a ancho completo, idéntico a antes). */
 .cont-row {

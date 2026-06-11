@@ -103,7 +103,6 @@ function getLocalIPv4() {
   return '0.0.0.0';
 }
 
-
 const host = "0.0.0.0";
 app.listen(PORT, host, () => {
   const localIP = getLocalIPv4();

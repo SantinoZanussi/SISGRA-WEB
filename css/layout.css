@@ -178,7 +178,7 @@ nav {
   }
 }
 
-/* ── Responsive nav height ── */
+/* Responsive nav height */
 .nav-inner {
   height: 5rem;
 }
@@ -189,7 +189,7 @@ nav {
   }
 }
 
-/* ── Nav logo image sizing ── */
+/* Nav logo image sizing */
 .nav-logo img {
   max-height: 40px;
   width: auto;
@@ -201,7 +201,7 @@ nav {
   }
 }
 
-/* ── Hamburger button ── */
+/* Hamburger button */
 .nav-mobile-toggle {
   display: flex;
   flex-direction: column;
@@ -233,7 +233,7 @@ nav {
 .nav-mobile-toggle.open span:nth-child(2) { opacity: 0; }
 .nav-mobile-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* ── Mobile drawer (animado con visibility+opacity+transform) ── */
+/* Mobile drawer (animado con visibility+opacity+transform) */
 .nav-mobile-drawer {
   display: flex;
   flex-direction: column;
@@ -333,7 +333,7 @@ nav {
 /* FOOTER */
 
 :root {
-  /* ── Paleta SISGRA ── */
+  /* Paleta SISGRA */
   --sisgra-blue: #0a1d37;
   --blue-300: #93c5fd;
   --blue-400: #60a5fa;
@@ -355,7 +355,7 @@ nav {
     0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 
-  /* ── Mapeo al footer ── */
+  /* Mapeo al footer */
   --ink: var(--sisgra-blue); /* fondo principal */
   --paper: var(--slate-50); /* texto claro */
   --accent: var(--blue-500); /* antes rojo, ahora azul SISGRA */

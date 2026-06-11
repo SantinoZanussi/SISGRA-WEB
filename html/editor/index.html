@@ -13,7 +13,7 @@
   button{cursor:pointer;}
   a{color:inherit;}
 
-  /* ─── LOGIN ─── */
+  /* LOGIN */
   #login{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0A1D37,#1e3a8a);z-index:200;}
   .login-card{background:#fff;padding:2.5rem;width:380px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
   .login-card h1{font-size:1.5rem;font-weight:900;letter-spacing:-.03em;margin-bottom:.25rem;}
@@ -24,7 +24,7 @@
   .login-card .hint{margin-top:1rem;text-align:center;font-size:.7rem;color:#94a3b8;}
   .login-card .hint a{color:#2563eb;text-decoration:none;font-weight:700;}
 
-  /* ─── APP ─── */
+  /* APP */
   #app{display:none;height:100vh;grid-template-rows:auto 1fr;}
   .topbar{background:#0A1D37;color:#fff;padding:.75rem 1.5rem;display:flex;align-items:center;gap:1.5rem;border-bottom:1px solid #1e293b;}
   .topbar .logo{font-weight:900;letter-spacing:.1em;font-size:.875rem;}
@@ -35,7 +35,7 @@
 
   .main{display:flex;overflow:hidden;}
 
-  /* ─── DASHBOARD ─── */
+  /* DASHBOARD */
   .dashboard{flex:1;overflow:auto;padding:2rem;}
   .dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;}
   .dash-header h2{font-size:1.5rem;font-weight:900;letter-spacing:-.02em;}
@@ -57,7 +57,7 @@
   .badge-borrador{background:#fef3c7;color:#92400e;padding:.15rem .5rem;font-size:.65rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;}
   .empty{padding:1.25rem 1.5rem;text-align:center;color:#94a3b8;font-size:.8125rem;}
 
-  /* ─── EDITOR ─── */
+  /* EDITOR */
   .editor{display:none;flex:1;grid-template-columns:260px 1fr 320px;overflow:hidden;}
   .editor.open{display:grid;}
   .editor-toolbar{grid-column:1 / -1;background:#fff;border-bottom:1px solid #e2e8f0;padding:.65rem 1rem;display:flex;align-items:center;gap:.75rem;}
@@ -118,7 +118,7 @@
   .cards-editor .card-item .remove{background:#fee;color:#dc2626;border:1px solid #fca5a5;padding:.25rem .5rem;font-size:.7rem;}
   .cards-editor .add-item{width:100%;padding:.5rem;background:#fff;border:1px dashed #cbd5e1;color:#64748b;font-weight:700;font-size:.75rem;margin-top:.4rem;}
 
-  /* ─── MODAL ─── */
+  /* MODAL */
   .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.6);display:none;align-items:center;justify-content:center;z-index:60;}
   .modal-overlay.open{display:flex;}
   .modal{background:#fff;width:440px;max-width:90vw;}
@@ -128,7 +128,7 @@
   .modal-body{padding:1.5rem;}
   .modal-footer{padding:1rem 1.5rem;border-top:1px solid #e2e8f0;display:flex;justify-content:flex-end;gap:.5rem;}
 
-  /* ─── NOTIF ─── */
+  /* NOTIF */
   .notif{position:fixed;bottom:1.5rem;right:1.5rem;background:#0A1D37;color:#fff;padding:.875rem 1.25rem;font-size:.8125rem;font-weight:600;transform:translateY(120%);transition:transform .25s;z-index:300;max-width:380px;}
   .notif.show{transform:translateY(0);}
   .notif.error{background:#dc2626;}
@@ -259,7 +259,7 @@ function escAttr(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&l
 function markDirty(){ state.dirty = true; $('#dirty-flag').classList.add('show'); }
 function clearDirty(){ state.dirty = false; $('#dirty-flag').classList.remove('show'); }
 
-// ─── LOGIN ─────────────────────────────────────────────────────────
+// LOGIN
 async function doLogin(){
   const usuario = $('#li-user').value.trim();
   const password = $('#li-pass').value.trim();
@@ -293,7 +293,7 @@ function logout(){
   location.reload();
 }
 
-// ─── DASHBOARD ─────────────────────────────────────────────────────
+// DASHBOARD
 async function loadPlantillas(){
   try {
     const { plantillas } = await api('GET', '/plantillas');
@@ -340,7 +340,7 @@ function populateTipoSelect(){
     + TIPOS_HTML.map(t=>`<option value="${t.value}">${t.label} — ${t.file}</option>`).join('');
 }
 
-// ─── CREATE / ACTIVATE / DELETE ────────────────────────────────────
+// CREATE / ACTIVATE / DELETE
 function openNueva(preselectTipo=''){
   $('#np-name').value = '';
   $('#np-desc').value = '';
@@ -384,7 +384,7 @@ async function eliminarTpl(id){
   } catch(e){ notif(e.message, 'error'); }
 }
 
-// ─── EDITOR ────────────────────────────────────────────────────────
+// EDITOR
 async function openEditor(id){
   try {
     const { plantilla } = await api('GET', `/plantillas/${id}`);
@@ -538,7 +538,7 @@ function deleteSection(id){
   renderProps();
 }
 
-// ─── PROPS PANEL ───────────────────────────────────────────────────
+// PROPS PANEL
 function renderProps(){
   const props = $('#props');
   const sec = (state.activeTpl?.secciones||[]).find(s=>s.id===state.selectedSecId);
@@ -698,7 +698,7 @@ function bindFieldEvents(sec){
   });
 }
 
-// ─── SAVE / ACTIVATE ──────────────────────────────────────────────
+// SAVE / ACTIVATE
 async function guardarTpl(){
   if (!state.activeTpl) return;
   try {
@@ -724,7 +724,7 @@ async function activarEdit(){
   $('#btn-activar').disabled = true;
 }
 
-// ─── WIRE ──────────────────────────────────────────────────────────
+// WIRE
 $('#li-btn').addEventListener('click', doLogin);
 $('#li-pass').addEventListener('keydown', e=>{ if (e.key==='Enter') doLogin(); });
 $('#logout-btn').addEventListener('click', logout);

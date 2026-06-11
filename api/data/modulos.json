@@ -1295,6 +1295,42 @@
       "creado_en": "2026-06-10T16:30:39.723Z",
       "editado_en": "2026-06-10T16:30:39.723Z",
       "id_pagina": "all"
+    },
+    {
+      "id_modulo": 35,
+      "tipo": "hero",
+      "nombre": "Hero lateral",
+      "id_pagina": 1,
+      "data": {
+        "badge": "INFRAESTRUCTURA DE ELITE",
+        "titulo1": "Conectamos el futuro",
+        "titulo2": "de su empresa.",
+        "descripcion": "Diseñamos e implementamos infraestructura tecnológica para las empresas líderes de Argentina. 25 años de trayectoria y más de 500 clientes nos respaldan.",
+        "boton_primario": "Ver Soluciones",
+        "boton_secundario": "Conocer más",
+        "stat1_numero": "+25",
+        "stat1_label": "AÑOS DE EXPERIENCIA",
+        "stat2_numero": "+500",
+        "stat2_label": "Clientes satisfechos"
+      },
+      "design": {
+        "bg": "",
+        "titleColor": "",
+        "accentColor": "",
+        "btnBg": "",
+        "paddingY": "",
+        "titleSize": "",
+        "descSize": "",
+        "btnRadius": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-11T17:10:42.055Z",
+      "editado_en": "2026-06-11T17:10:42.055Z"
     }
   ]
 }

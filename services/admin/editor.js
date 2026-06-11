@@ -25,7 +25,7 @@ const e3 = {
 
 const CONT_MAX = 3;   // máximo de módulos por contenedor (fila)
 
-// ─── Contenedores: conversión working-model ↔ persistido ────────────
+// Contenedores: conversión working-model ↔ persistido
 // plantilla.contenedores ([[id,..],..]) → working conts ([{cap,modulos}]).
 // Migra datos viejos (sin contenedores) a 1 contenedor 1x1 por módulo.
 function contsFromPlantilla(tpl) {
@@ -127,7 +127,7 @@ function resolvedMods() {
 const escAttr = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 const notif = (msg, type='success') => window.__svc?.showNotif?.(msg, type) ?? console.log('[e3]', msg);
 
-// ─── API helper ─────────────────────────────────────────────────────
+// API helper
 async function api(method, path, body) {
   const opts = { method, headers: { 'Content-Type': 'application/json' } };
   const t = token();
@@ -146,7 +146,7 @@ function stripListeners(el) {
   return c;
 }
 
-// ─── Module list (todos los módulos disponibles, sin filtro por tipo) ──
+// Module list (todos los módulos disponibles, sin filtro por tipo)
 function modulesForTipo(_tipo) {
   return Object.entries(SECTIONS);
 }
@@ -155,7 +155,7 @@ function modulesForTipo(_tipo) {
 // lista de páginas (file "html/fibra_optica.html"). La raíz "/" se mapea a "index".
 const pageKey = s => String(s ?? '').replace(/^\//, '').replace(/\.html$/, '') || 'index';
 
-// ─── Tipo select populate ───────────────────────────────────────────
+// Tipo select populate
 // Llena el <select> de "HTML destino" mostrando SOLO el nombre de la página y
 // agrupando las que pertenecen a un grupo del navbar (p.ej. "Instalaciones")
 // dentro de un <optgroup>. El grupo sale de navbar.json (campo `grupo`), unido a
@@ -192,7 +192,7 @@ function populateTipoSelect() {
   sel.innerHTML = html;
 }
 
-// ─── Load + render dashboard ────────────────────────────────────────
+// Load + render dashboard
 async function loadPlantillas() {
   try {
     // También bajamos el navbar para poder rotular cada página personalizada
@@ -208,7 +208,7 @@ async function loadPlantillas() {
   } catch (e) { notif('Error cargando plantillas: ' + e.message, 'error'); }
 }
 
-// ─── Helpers de vencimiento ────────────────────────────────────────
+// Helpers de vencimiento
 function isVencida(p) {
   if (!p.activa || !p.fecha_fin) return false;
   return Date.now() > new Date(p.fecha_fin).getTime();
@@ -426,7 +426,7 @@ function renderSidebarList() {
   });
 }
 
-// ─── Modal ─────────────────────────────────────────────────────────
+// Modal
 function openNuevaModal(preTipo = '') {
   document.getElementById('np-name').value = '';
   document.getElementById('np-desc').value = '';
@@ -510,7 +510,7 @@ async function eliminarPlantilla(id) {
   } catch (e) { notif('Error: ' + e.message, 'error'); }
 }
 
-// ─── EDITOR ────────────────────────────────────────────────────────
+// EDITOR
 async function openEditor(id) {
   // Bloquear en pantallas móviles (< 1024px)
   if (window.innerWidth < 1024) {
@@ -611,7 +611,7 @@ function renderEditorShell() {
   renderProps();
 }
 
-// ─── BUSCADOR INLINE EN EL SLOT ─────────────────────────────────────
+// BUSCADOR INLINE EN EL SLOT
 // El buscador vive DENTRO del slot vacío clickeado (en el iframe): buscar acá
 // inserta SOLO en ese contenedor. Elegir un resultado inserta el módulo al
 // instante (un módulo por slot, sin chips ni botón "Insertar seleccionados").
@@ -758,7 +758,7 @@ function crearContenedor(cap) {
   notif(`✓ Contenedor ${n}×1 creado — tocá "+ Insertar módulo" para llenar sus ${n} lugar${n > 1 ? 'es' : ''}`);
 }
 
-// ─── Botón "Nuevo contenedor" (al fondo del canvas, dentro del iframe) ──
+// Botón "Nuevo contenedor" (al fondo del canvas, dentro del iframe)
 // HTML del botón grande de "Nuevo contenedor" que se renderiza SIEMPRE al final
 // del canvas (los contenedores nuevos siempre aparecen abajo). Si hay un
 // contenedor incompleto, en su lugar se muestra un aviso (no se puede crear otro).
@@ -812,7 +812,7 @@ function onIframeClickCollapseAddCont(ev) {
   if (wrap) setAddContOpen(wrap, false);
 }
 
-// ─── Iframe con CSS específico por tipo ─────────────────────────────
+// Iframe con CSS específico por tipo
 
 // Inyecta en el <head> del iframe los <link> de CSS que falten para los módulos
 // actuales (sin quitar los existentes). Se llama en cada render del canvas, así
@@ -855,7 +855,7 @@ ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
   .e3-sec-ctrls .e3-danger{color:#dc2626;}
   .e3-sec-badge{position:absolute;top:8px;left:8px;z-index:9998;background:rgba(15,23,42,.85);color:#fff;font:700 .6rem/1 Inter,system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;padding:.25rem .5rem;border-radius:.25rem;opacity:0;transition:opacity .15s;pointer-events:none;}
   .e3-sec-wrap:hover .e3-sec-badge,.e3-sec-wrap.e3-selected .e3-sec-badge{opacity:1;}
-  /* ── Contenedores (filas) en el canvas ── */
+  /* Contenedores (filas) en el canvas */
   .e3-cont{position:relative;border:2px dashed #cbd5e1;margin:10px;transition:border-color .15s,box-shadow .15s;}
   .e3-cont.e3-cont-active{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12);}
   .e3-cont-bar{display:flex;align-items:center;justify-content:space-between;gap:.5rem;background:#f1f5f9;border-bottom:1px solid #e2e8f0;padding:.25rem .4rem;font-family:Inter,system-ui,sans-serif;}
@@ -868,7 +868,7 @@ ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
   .e3-slot{position:relative;display:flex;align-items:center;justify-content:center;min-height:90px;border:2px dashed #d4dae3;margin:6px;background:repeating-linear-gradient(45deg,#fafbfc,#fafbfc 8px,#f1f5f9 8px,#f1f5f9 16px);cursor:pointer;transition:border-color .15s,background .15s;}
   .e3-slot:hover{border-color:#60a5fa;}
   .e3-slot-inner{font:700 .68rem/1.3 Inter,system-ui,sans-serif;color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:.4rem;}
-  /* ── Buscador inline DENTRO del slot clickeado ── */
+  /* Buscador inline DENTRO del slot clickeado */
   .e3-slot.e3-slot-open{cursor:default;align-items:stretch;background:#fff;border-color:#2563eb;border-style:solid;}
   .e3-slot-search{display:flex;flex-direction:column;gap:.45rem;width:100%;padding:.7rem;font-family:Inter,system-ui,sans-serif;box-sizing:border-box;}
   .e3-slot-search-title{font-size:.58rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#2563eb;display:flex;align-items:center;justify-content:space-between;gap:.5rem;}
@@ -883,7 +883,7 @@ ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
   .e3-slot-result-name{font-size:.74rem;font-weight:700;color:#1e293b;}
   .e3-slot-result-sub{font-size:.58rem;color:#94a3b8;letter-spacing:.04em;text-transform:uppercase;}
   .e3-slot-empty{font-size:.66rem;color:#94a3b8;padding:.45rem .6rem;}
-  /* ── Botón "Nuevo contenedor" al fondo del canvas ── */
+  /* Botón "Nuevo contenedor" al fondo del canvas */
   .e3-empty-lite{padding:3rem 2rem 1rem;text-align:center;color:#94a3b8;font:700 .82rem/1.6 Inter,system-ui,sans-serif;}
   .e3-empty-lite small{display:block;margin-top:.4rem;font-weight:500;font-size:.68rem;opacity:.8;}
   .e3-addcont{margin:10px;}
@@ -1078,7 +1078,7 @@ function deleteContenedor(ci) {
 function markDirty() { e3.dirty = true; syncActiveTpl(); document.getElementById('e3-dirty').style.display = 'inline'; }
 function clearDirty() { e3.dirty = false; document.getElementById('e3-dirty').style.display = 'none'; }
 
-// ─── PROPS PANEL ────────────────────────────────────────────────────
+// PROPS PANEL
 function renderProps() {
   const body = document.getElementById('e3-props-body');
   if (!body) return;
@@ -1346,7 +1346,7 @@ function bindFieldEvents(sec) {
   });
 }
 
-// ─── SAVE ──────────────────────────────────────────────────────────
+// SAVE
 async function guardarPlantilla() {
   if (!e3.activeTpl) return;
   const pend = pendingContIndex();
@@ -1383,7 +1383,7 @@ async function guardarPlantilla() {
   } catch (e) { notif('Error: ' + e.message, 'error'); }
 }
 
-// ─── Quick access (dashboard card + sidebar link) ───────────────────
+// Quick access (dashboard card + sidebar link)
 function goToPlantillas() {
   // Salimos del editor → ninguna plantilla queda "abierta", así el sidebar no
   // resalta una plantilla además de "Ver todas las plantillas" (eran 2 activos).
@@ -1434,7 +1434,7 @@ function injectDashboardCard() {
   else dash.insertAdjacentElement('afterbegin', card);
 }
 
-// ─── Aviso de cambios sin guardar al salir por el sidebar ───────────
+// Aviso de cambios sin guardar al salir por el sidebar
 // El botón "← Volver" ya avisa (backToOverview); esto cubre el resto de las
 // salidas del editor: cambiar de panel por el sidebar, "Ver todas las
 // plantillas", logout y "+ Nueva plantilla". Corre en fase CAPTURA para frenar
@@ -1455,7 +1455,7 @@ function onSidebarLeaveGuard(ev) {
   e3.dirty = false;
 }
 
-// ─── Init: override old plantilla buttons + inject UI ───────────────
+// Init: override old plantilla buttons + inject UI
 function initE3() {
   populateTipoSelect();
   injectSidebarLink();
@@ -1512,9 +1512,7 @@ if (!tryInit()) {
   obs.observe(appEl, { attributes: true, attributeFilter: ['style'] });
 }
 
-/* ═══════════════════════════════════════════════════════
-   MÓDULOS — catálogo plano v2: lista → editor de módulo
-   ═══════════════════════════════════════════════════════ */
+/* MÓDULOS — catálogo plano v2: lista → editor de módulo */
 const SIMPLE_FIELD_TYPES = ['text','textarea','number','color','toggle'];
 const GLOBAL_TIPOS_MOD = new Set(['nav','footer','footer-full']);
 
@@ -1614,7 +1612,7 @@ function _showView(id) {
   });
 }
 
-/* ── Cerrar el modal del editor de módulo y volver al catálogo ── */
+/* Cerrar el modal del editor de módulo y volver al catálogo */
 function _closeModEditor() {
   closePreviewModal();
   window.__svc?.closeModal('modulos-editor-view');
@@ -1647,7 +1645,7 @@ function _modMatches(m, q) {
     .toLowerCase().includes(q);
 }
 
-/* ── Vista 1: catálogo — UNA fila por sección (formato lista, como el blog) ──
+/* Vista 1: catálogo — UNA fila por sección (formato lista, como el blog)
    Regla "un módulo por sección": de cada tipo se muestra un solo módulo (el
    principal). Si un tipo tiene varios, se prefiere uno que esté EN USO y, entre
    esos, el de menor id. Los demás NO se borran: siguen existiendo y funcionando
@@ -1726,7 +1724,7 @@ function renderModCatalog() {
   grid.innerHTML = `<div class="blog-grid">${rows}</div>`;
 }
 
-/* ── Tipos de sección que todavía NO tienen módulo (para el botón "Nuevo") ── */
+/* Tipos de sección que todavía NO tienen módulo (para el botón "Nuevo") */
 function _tiposSinModulo() {
   const existentes = new Set(_mods.map(m => m.tipo));
   return Object.keys(SECTIONS).filter(t => !existentes.has(t));
@@ -1749,7 +1747,7 @@ function _nmPaginaValue() {
   return ids.length ? ids : null;
 }
 
-/* ── Abrir el modal "Nuevo módulo": Sección + Nombre + Página asignada ── */
+/* Abrir el modal "Nuevo módulo": Sección + Nombre + Página asignada */
 window.openNuevoModulo = function() {
   const disponibles = _tiposSinModulo();
   const sel    = document.getElementById('nm-tipo');
@@ -1793,7 +1791,7 @@ window.openNuevoModulo = function() {
   window.__svc?.openModal('modal-nuevo-modulo');
 };
 
-/* ── Crear el módulo elegido en el modal (con su página) y abrir su editor ── */
+/* Crear el módulo elegido en el modal (con su página) y abrir su editor */
 async function crearModuloDesdeModal() {
   const sel    = document.getElementById('nm-tipo');
   const nombre = document.getElementById('nm-nombre');
@@ -1819,7 +1817,7 @@ async function crearModuloDesdeModal() {
   }
 }
 
-/* ── Vista 2: editor de un módulo del catálogo ── */
+/* Vista 2: editor de un módulo del catálogo */
 window.openModEditor = function(id) {
   const m = _mods.find(x => x.id_modulo === Number(id));
   if (!m) return;
@@ -1859,8 +1857,8 @@ window.openModEditor = function(id) {
   renderModFieldGroup('data', sec.dataFields || [], 'modulos-editor-data-fields');
 
   renderModContentCard(m.tipo);
-  // Ocultar la tarjeta de campos cuando son solo técnicos (ej: blog-list): se
-  // muestra únicamente la lista de contenido (artículos), como pidió el usuario.
+  // Ocultar la tarjeta de campos técnicos (ej: blog-list): solo se muestra la
+  // lista de contenido (artículos).
   const dataCard = document.getElementById('modulos-editor-data-card');
   if (dataCard) dataCard.style.display = MOD_HIDE_DATA_CARD.has(m.tipo) ? 'none' : '';
   _refreshPaginaBadges();
@@ -1874,7 +1872,7 @@ window.openModEditor = function(id) {
   window.__svc?.openModal('modulos-editor-view');
 };
 
-/* ── Gestión de contenido global embebida (blog posts / clientes) ──
+/* Gestión de contenido global embebida (blog posts / clientes)
    Para los módulos `blog` y `clientes`, el contenido real (artículos / logos)
    vive en blog.json / clientes.json y se hidrata en vivo en el sitio, por lo
    que editarlo acá se aplica automáticamente a TODAS las variantes del módulo.
@@ -1930,7 +1928,7 @@ function renderModContentCard(type) {
   if (addBtn) { addBtn.innerHTML = cfg.addLabel; addBtn.onclick = cfg.add; }
 }
 
-/* ═══ Modal "Ver módulo": SOLO la lista de contenido ═══
+/* Modal "Ver módulo": SOLO la lista de contenido
    Desde el catálogo se entra con "Ver". Muestra únicamente la lista del módulo
    (artículos para blog, clientes para clientes, y para el resto la lista de
    módulos de esa sección). Recién al tocar "Editar" en la lista se abre el
@@ -1975,7 +1973,11 @@ window.openModVer = function(id) {
   } else {
     if (titleEl) titleEl.textContent = sec.label;
     if (noteEl) noteEl.style.display = 'none';
-    if (addBtn) addBtn.style.display = 'none';
+    if (addBtn) {
+      addBtn.style.display = '';
+      addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Nuevo';
+      addBtn.onclick = () => nuevaVarianteDeModulo(m.tipo, esTodas ? 'all' : m.id_pagina);
+    }
     _renderModVerLista(m.tipo);
   }
   window.__svc?.openModal('modulos-view-modal');
@@ -2108,12 +2110,10 @@ function renderModFieldGroup(group, fields, containerId) {
   });
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   MODAL DE EDICIÓN VISUAL EN VIVO
+/* MODAL DE EDICIÓN VISUAL EN VIVO
    Preview del módulo + lápiz al lado de cada texto editable (cuadro
    flotante) + panel lateral de colores. El diseño (colores) y el preview
-   ya no van en el editor: viven acá.
-   ═══════════════════════════════════════════════════════════════════ */
+   ya no van en el editor: viven acá. */
 
 // Estilos inyectados DENTRO del iframe (aislados del panel admin).
 const ED_STYLE = `
@@ -2261,7 +2261,7 @@ function _moduleSrcdoc({ editable }) {
   return `<!doctype html><html lang="es"><${_H}><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:ital,wght@0,400;0,500;0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">${links}<style>html,body{margin:0;padding:0;}body{overflow-x:hidden;}</style>${editStyle}</${_H}><${_B}>${html}${editScript}</${_B}></html>`;
 }
 
-/* ── Preview en vivo (debounced): re-renderiza el iframe del modal si está abierto ── */
+/* Preview en vivo (debounced): re-renderiza el iframe del modal si está abierto */
 let _previewTimer = null;
 function scheduleLivePreview() {
   const modal = document.getElementById('mod-preview-modal');
@@ -2273,7 +2273,7 @@ function scheduleLivePreview() {
   }, 200);
 }
 
-/* ── Abrir / cerrar el modal de edición visual ── */
+/* Abrir / cerrar el modal de edición visual */
 function openPreviewModal() {
   if (!_curModType) return;
   const sec = SECTIONS[_curModType];
@@ -2301,7 +2301,7 @@ function closePreviewModal() {
   document.body.style.overflow = '';
 }
 
-/* ── Duplicar módulo ── */
+/* Duplicar módulo */
 window.duplicarModulo = async function(id) {
   const m = _mods.find(x => x.id_modulo === Number(id));
   if (!m) return;
@@ -2322,7 +2322,7 @@ window.duplicarModulo = async function(id) {
   }
 };
 
-/* ── Eliminar módulo (guarda si está referenciado) ── */
+/* Eliminar módulo (guarda si está referenciado) */
 window.eliminarModulo = async function(id) {
   const m = _mods.find(x => x.id_modulo === Number(id));
   if (!m) return;
@@ -2339,28 +2339,30 @@ window.eliminarModulo = async function(id) {
   }
 };
 
-/* ── Crear módulo nuevo de un tipo ── */
-window.nuevoModulo = async function(tipo) {
+// "Nuevo" del modal Ver: agrega otra variante del mismo tipo, hereda la página
+// del módulo visto y abre su editor.
+async function nuevaVarianteDeModulo(tipo, id_pagina) {
   const sec = SECTIONS[tipo];
   if (!sec) return;
-  const nombre = prompt(`Nombre del nuevo módulo (${sec.label}):`, `${sec.label} — nuevo`);
-  if (!nombre?.trim()) return;
   try {
     const res = await window.__svc.apiPost('/modulos', {
       tipo,
-      nombre: nombre.trim(),
+      nombre: sec.label,
+      id_pagina: id_pagina ?? null,
       data:   JSON.parse(JSON.stringify(sec.defaultData   || {})),
       design: JSON.parse(JSON.stringify(sec.defaultDesign || {})),
     });
     _mods.push(res.modulo);
+    _modUsos[res.modulo.id_modulo] = 0;
+    _closeModVer();
     window.__svc.showNotif('Módulo creado', 'success');
     openModEditor(res.modulo.id_modulo);
-  } catch(e) {
+  } catch (e) {
     window.__svc.showNotif('Error: ' + e.message, 'error');
   }
-};
+}
 
-/* ── Guardar el módulo en edición (lo usan el editor y el modal) ── */
+/* Guardar el módulo en edición (lo usan el editor y el modal) */
 async function saveCurrentModule() {
   if (!_curModId) return false;
   const nombre = document.getElementById('modulos-variant-name-input')?.value?.trim() || _curModData.nombre;
@@ -2384,20 +2386,20 @@ async function saveCurrentModule() {
   }
 }
 
-/* ── Buscador del catálogo de módulos ── */
+/* Buscador del catálogo de módulos */
 document.getElementById('modulos-search')?.addEventListener('input', e => {
   _modQuery = e.target.value || '';
   renderModCatalog();
 });
 
-/* ── Botón único "Nuevo" del catálogo + modal de creación ── */
+/* Botón único "Nuevo" del catálogo + modal de creación */
 document.getElementById('modulos-nuevo-btn')?.addEventListener('click', () => window.openNuevoModulo());
 document.getElementById('nm-crear-btn')?.addEventListener('click', crearModuloDesdeModal);
 
-/* ── Botón: abrir el modal de edición visual (Preview) ── */
+/* Botón: abrir el modal de edición visual (Preview) */
 document.getElementById('modulos-preview-btn')?.addEventListener('click', openPreviewModal);
 
-/* ── Modal: cerrar ── */
+/* Modal: cerrar */
 document.getElementById('mpm-close')?.addEventListener('click', closePreviewModal);
 document.getElementById('mpm-backdrop')?.addEventListener('click', closePreviewModal);
 document.addEventListener('keydown', e => {
@@ -2406,7 +2408,7 @@ document.addEventListener('keydown', e => {
   if (modal && modal.style.display !== 'none') closePreviewModal();
 });
 
-/* ── Modal: guardar (deja el modal abierto) ── */
+/* Modal: guardar (deja el modal abierto) */
 document.getElementById('mpm-save')?.addEventListener('click', saveCurrentModule);
 
 // Asigna un valor por "path" con puntos/índices (ej: "cards.0.titulo").
@@ -2426,7 +2428,7 @@ function _getByPath(obj, path) {
   return String(path).split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
 }
 
-/* ── Ediciones inline (texto, color y ahora imágenes) que llegan del iframe ── */
+/* Ediciones inline (texto, color y ahora imágenes) que llegan del iframe */
 window.addEventListener('message', async e => {
   const d = e.data;
   if (!d || !d.field) return;
@@ -2451,12 +2453,12 @@ window.addEventListener('message', async e => {
   }
 });
 
-/* ── Botón: volver al catálogo / Cancelar ── */
+/* Botón: volver al catálogo / Cancelar */
 document.getElementById('modulos-variants-back-btn')?.addEventListener('click', renderModCatalog);
 document.getElementById('modulos-back-btn')?.addEventListener('click', _closeModEditor);
 document.getElementById('modulos-cancel-btn')?.addEventListener('click', _closeModEditor);
 
-/* ── Botón: guardar módulo (editor) ── */
+/* Botón: guardar módulo (editor) */
 document.getElementById('modulos-save-btn')?.addEventListener('click', async () => {
   const ok = await saveCurrentModule();
   if (ok) _closeModEditor();

@@ -14,7 +14,7 @@ let labels = [];
 let labelIndex = {};
 let filterBar = null;
 
-// ─── Navegación: mostrar el panel de imágenes ───────────────────────
+// Navegación: mostrar el panel de imágenes
 function showAssetsPanel() {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
@@ -32,7 +32,7 @@ function showAssetsPanel() {
   loadAssets();
 }
 
-// ─── Carga + render ─────────────────────────────────────────────────
+// Carga + render
 async function loadAssets() {
   const grid = document.getElementById('assets-grid');
   if (grid) grid.innerHTML = '<div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--slate-400);font-size:.8rem;">Cargando…</div>';
@@ -99,7 +99,7 @@ function renderAssets() {
   });
 }
 
-// ─── Acciones ───────────────────────────────────────────────────────
+// Acciones
 async function handleAction(act, id) {
   const asset = assets.find(a => a.id === id);
   if (!asset) return;
@@ -176,7 +176,7 @@ function fallbackCopy(text) {
   document.body.removeChild(ta);
 }
 
-// ─── Subida ─────────────────────────────────────────────────────────
+// Subida
 async function uploadFiles(fileList) {
   const files = Array.from(fileList || []).filter(f => f.type.startsWith('image/'));
   if (!files.length) { notif('Seleccioná archivos de imagen', 'error'); return; }
@@ -202,7 +202,7 @@ async function uploadFiles(fileList) {
   notif('✓ Subida completada');
 }
 
-// ─── Lightbox (ver imagen en grande con fondo difuminado) ───────────
+// Lightbox (ver imagen en grande con fondo difuminado)
 function ensureLightbox() {
   if (document.getElementById('assets-lightbox')) return;
   const ov = document.createElement('div');
@@ -251,7 +251,7 @@ function closeLightbox() {
   ov.querySelector('#assets-lightbox-img').src = '';
 }
 
-// ─── Etiquetas: asignar a una imagen ────────────────────────────────
+// Etiquetas: asignar a una imagen
 function buildOverlay(id, z = 9998) {
   let ov = document.getElementById(id);
   if (ov) return ov;
@@ -322,7 +322,7 @@ function openTagAssign(asset) {
   ov.style.display = 'flex';
 }
 
-// ─── Etiquetas: gestor global (crear / editar / eliminar) ───────────
+// Etiquetas: gestor global (crear / editar / eliminar)
 function openLabelManager() {
   const ov = buildOverlay('assets-labels-overlay', 9999);
   renderLabelManager(ov);
@@ -414,7 +414,7 @@ async function refreshLabels() {
   renderAssets();
 }
 
-// ─── Init ───────────────────────────────────────────────────────────
+// Init
 function init() {
   document.querySelector('.sidebar-item[data-panel="assets"]')
     ?.addEventListener('click', showAssetsPanel);

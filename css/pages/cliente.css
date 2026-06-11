@@ -1,11 +1,9 @@
-/* ═══════════════════════════════════════════════════════════════════
-   PERFIL DE CLIENTE / CASO DE ÉXITO — clases cl-*
+/* PERFIL DE CLIENTE / CASO DE ÉXITO — clases cl-*
    Diseño propio (más detallado que articulo.css): header con logo en
    tarjeta, ficha lateral del proyecto y cuerpo con galería de imágenes.
-   Reusa las variables de color de base.css y el contenedor .max-w-7xl.
-   ═══════════════════════════════════════════════════════════════════ */
+   Reusa las variables de color de base.css y el contenedor .max-w-7xl. */
 
-/* ── HEADER ── */
+/* HEADER */
 .cl-header {
     background: linear-gradient(135deg, var(--sisgra-blue) 0%, #0b2a52 100%);
     padding: 9rem 0 4.5rem;
@@ -106,7 +104,7 @@
 }
 .cl-meta-sep { opacity: .4; }
 
-/* ── CUERPO ── */
+/* CUERPO */
 .cl-body { background: #fff; }
 .cl-grid {
     display: grid;
@@ -182,7 +180,7 @@
 }
 .cl-richtext p:has(> img + img) img { margin: 0; flex: 1 1 280px; max-width: calc(50% - .5rem); }
 
-/* ── CTA dentro del cuerpo ── */
+/* CTA dentro del cuerpo */
 .cl-cta {
     background: #eff6ff;
     border: 1px solid #dbeafe;
@@ -210,7 +208,7 @@
 }
 .cl-cta-btn:hover { background: var(--blue-600); transform: translateY(-1px); }
 
-/* ── SIDEBAR: ficha del proyecto ── */
+/* SIDEBAR: ficha del proyecto */
 .cl-sidebar { min-width: 0; }
 .cl-ficha {
     position: sticky;
@@ -247,7 +245,7 @@
     .cl-ficha { position: static; }
 }
 
-/* ── RESPONSIVE móvil ── */
+/* RESPONSIVE móvil */
 @media (max-width: 640px) {
     .cl-grid { padding: 2.5rem 0; gap: 2.5rem; }
     .cl-lead { font-size: 1.05rem; }

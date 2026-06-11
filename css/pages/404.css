@@ -1,4 +1,4 @@
-/* ─── 404 PAGE ─── */
+/* 404 PAGE */
 
 :root {
   --slate-300: #cbd5e1;
@@ -223,7 +223,7 @@ main.err-main {
 
 .err-footer span { color: var(--slate-400); }
 
-/* ─── RESPONSIVE ─── */
+/* RESPONSIVE */
 @media (max-width: 640px) {
   .err-header { padding: 1rem 1.25rem; }
   .err-header img { height: 1.4rem; }

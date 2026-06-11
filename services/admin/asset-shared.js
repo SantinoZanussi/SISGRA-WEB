@@ -53,7 +53,7 @@ export function tagDotsHTML(asset, labelIndex) {
   }</div>`;
 }
 
-// ─── Barra de filtros reutilizable ──────────────────────────────────
+// Barra de filtros reutilizable
 // createFilterBar({ onChange }) → { el, render(labels), getFilters(), reset() }
 // `el` es un contenedor que contiene un buscador de texto + chips agrupados
 // (colores como puntos, categorías como pills). Cada cambio dispara onChange().

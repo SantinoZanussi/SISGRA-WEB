@@ -1,6 +1,4 @@
-/* ══════════════════════════════════════════════
-   STATE
-══════════════════════════════════════════════ */
+/* STATE */
 const state = {
   templates: [
     {
@@ -29,9 +27,7 @@ const state = {
   editingClienteId: null,
 };
  
-/* ══════════════════════════════════════════════
-   SECTION TYPE REGISTRY
-══════════════════════════════════════════════ */
+/* SECTION TYPE REGISTRY */
 const SECTION_TYPES = [
   {
     group: 'Navegación',
@@ -71,7 +67,7 @@ const apiPost = (...args) => window.__svc?.apiPost(...args);
 const apiPatch = (...args) => window.__svc?.apiPatch(...args);
 const apiDelete = (...args) => window.__svc?.apiDelete(...args);
 
-/* ── Preview de imágenes por path/URL ── */
+/* Preview de imágenes por path/URL */
 function updateImgPreview(inputId, previewId) {
   const input = document.getElementById(inputId);
   const preview = document.getElementById(previewId);
@@ -104,9 +100,7 @@ function attachImgPicker(inputId, previewId) {
   input.insertAdjacentElement('afterend', btn);
 }
  
-/* ══════════════════════════════════════════════
-   HELPERS
-══════════════════════════════════════════════ */
+/* HELPERS */
 function uid(){ return 's' + Date.now().toString(36) + Math.random().toString(36).slice(2,5); }
 
 let _autoSaveTimer = null;
@@ -121,9 +115,7 @@ function showNotif(msg, type='success'){ window.__svc?.showNotif(msg, type); }
 function openModal(id){ window.__svc?.openModal(id); }
 function closeModal(id){ window.__svc?.closeModal(id); }
  
-/* ══════════════════════════════════════════════
-   NAVIGATION
-══════════════════════════════════════════════ */
+/* NAVIGATION */
 function showPanel(id){
   try { sessionStorage.setItem('sisgra_panel', id); } catch(_){}
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
@@ -158,9 +150,7 @@ function showPanel(id){
   }
 }
  
-/* ══════════════════════════════════════════════
-   SIDEBAR TEMPLATES
-══════════════════════════════════════════════ */
+/* SIDEBAR TEMPLATES */
 function renderSidebarTemplates(){
   const el = document.getElementById('sidebar-tpl-list');
   el.innerHTML = state.templates.map(t => `
@@ -179,9 +169,7 @@ function renderSidebarTemplates(){
   });
 }
  
-/* ══════════════════════════════════════════════
-   TEMPLATE OVERVIEW
-══════════════════════════════════════════════ */
+/* TEMPLATE OVERVIEW */
 function renderTemplateOverview(){
   const list = document.getElementById('tpl-overview-list');
   list.innerHTML = state.templates.map((t,i) => `
@@ -236,9 +224,7 @@ window.openTemplateEditorFromList = function(id){
   openTemplateEditor(id);
 };
  
-/* ══════════════════════════════════════════════
-   SECTION HTML RENDERERS
-══════════════════════════════════════════════ */
+/* SECTION HTML RENDERERS */
 function renderSectionHTML(sec){
   const d = sec.data || {};
   switch(sec.type){
@@ -411,9 +397,7 @@ function renderSectionHTML(sec){
   }
 }
  
-/* ══════════════════════════════════════════════
-   DESIGN DEFAULTS PER SECTION TYPE
-══════════════════════════════════════════════ */
+/* DESIGN DEFAULTS PER SECTION TYPE */
 const DESIGN_DEFAULTS = {
   hero: {
     bgFrom:'#0A1D37', bgTo:'#1e3a8a', bgAngle:'135',
@@ -468,9 +452,7 @@ function getDesign(sec){
   return Object.assign({}, defaults, sec.design || {});
 }
  
-/* ══════════════════════════════════════════════
-   DESIGN UPDATE (live apply to canvas)
-══════════════════════════════════════════════ */
+/* DESIGN UPDATE (live apply to canvas) */
 window.designUpdate = function(el, secId, tplId){
   const field = el.dataset.field;
   const val = el.value;
@@ -500,9 +482,7 @@ window.designUpdate = function(el, secId, tplId){
   }
 };
  
-/* ══════════════════════════════════════════════
-   BUILD DESIGN PANEL PER TYPE
-══════════════════════════════════════════════ */
+/* BUILD DESIGN PANEL PER TYPE */
 function buildDesignPanel(sec, tplId){
   const d = getDesign(sec);
   const sid = sec.id;
@@ -799,9 +779,7 @@ window.designPill = function(el, field, val, secId, tplId){
   }
 };
  
-/* ══════════════════════════════════════════════
-   PROPS PANEL (tabbed: Contenido + Diseño)
-══════════════════════════════════════════════ */
+/* PROPS PANEL (tabbed: Contenido + Diseño) */
 function buildPropsPanel(secId, tpl){
   const panel = document.getElementById('props-panel-body');
   if(!panel) return;
@@ -813,7 +791,7 @@ function buildPropsPanel(secId, tpl){
   const d = sec.data || {};
   const typeInfo = SECTION_TYPES.flatMap(g=>g.items).find(i=>i.type===sec.type);
  
-  // ── Content fields
+  // Content fields
   const fieldMap = {
     nav: [['logo','Logo/Marca',''],['links','Links (separados por coma)','textarea'],['cta','Texto botón CTA','']],
     hero: [['badge','Badge superior',''],['h1','Título línea 1',''],['h2','Título línea 2 (acento)',''],['desc','Descripción','textarea'],['btn1','Botón primario',''],['btn2','Botón secundario',''],['stat1_num','Estadística 1 — número',''],['stat1_lbl','Estadística 1 — etiqueta',''],['stat2_num','Estadística 2 — número',''],['stat2_lbl','Estadística 2 — etiqueta','']],
@@ -888,9 +866,7 @@ window.propsUpdate = function(el){
   }
 };
  
-/* ══════════════════════════════════════════════
-   INLINE EDITING (contenteditable → state)
-══════════════════════════════════════════════ */
+/* INLINE EDITING (contenteditable → state) */
 function attachInlineEdits(sec, container, tplId){
   container.querySelectorAll('[contenteditable="true"]').forEach(el=>{
     el.addEventListener('focus', ()=>{
@@ -918,9 +894,7 @@ function attachInlineEdits(sec, container, tplId){
   });
 }
  
-/* ══════════════════════════════════════════════
-   OPEN TEMPLATE EDITOR
-══════════════════════════════════════════════ */
+/* OPEN TEMPLATE EDITOR */
 function openTemplateEditor(tplId){
   const tpl = state.templates.find(t=>t.id===tplId);
   if(!tpl) return;
@@ -1002,9 +976,7 @@ function openTemplateEditor(tplId){
   initTraySearch();
 }
  
-/* ══════════════════════════════════════════════
-   RENDER PAGE SECTIONS
-══════════════════════════════════════════════ */
+/* RENDER PAGE SECTIONS */
 function renderPageSections(tplId){
   const tpl = state.templates.find(t=>t.id===tplId);
   const container = document.getElementById('page-sections');
@@ -1063,9 +1035,7 @@ function renderPageSections(tplId){
   initSectionReorder(tplId);
 }
  
-/* ══════════════════════════════════════════════
-   SECTION REORDER (drag handle)
-══════════════════════════════════════════════ */
+/* SECTION REORDER (drag handle) */
 let dragReorderSrcId = null;
  
 function initSectionReorder(tplId){
@@ -1118,9 +1088,7 @@ function initSectionReorder(tplId){
   });
 }
  
-/* ══════════════════════════════════════════════
-   SECTION OPERATIONS
-══════════════════════════════════════════════ */
+/* SECTION OPERATIONS */
 window.moveSectionUp = function(tplId, secId){
   const tpl = state.templates.find(t=>t.id===tplId);
   const idx = tpl.sections.findIndex(s=>s.id===secId);
@@ -1218,9 +1186,7 @@ window.saveTpl = async function(id){
   }
 };
  
-/* ══════════════════════════════════════════════
-   VIEWPORT SWITCH
-══════════════════════════════════════════════ */
+/* VIEWPORT SWITCH */
 window.setViewport = function(vp){
   state.viewport = vp;
   const frame = document.getElementById('page-frame');
@@ -1235,9 +1201,7 @@ window.setViewport = function(vp){
   if(lbl) lbl.textContent = labels[vp]||'';
 };
  
-/* ══════════════════════════════════════════════
-   TRAY DRAG DROP (add new section to page)
-══════════════════════════════════════════════ */
+/* TRAY DRAG DROP (add new section to page) */
 let dragNewType = null;
  
 function initTrayDragDrop(tplId){
@@ -1325,9 +1289,7 @@ function getDefaultData(type){
   return defaults[type] || {};
 }
  
-/* ══════════════════════════════════════════════
-   TRAY SEARCH
-══════════════════════════════════════════════ */
+/* TRAY SEARCH */
 function initTraySearch(){
   const input = document.getElementById('tray-search');
   if(!input) return;
@@ -1351,9 +1313,7 @@ function initTraySearch(){
   });
 }
  
-/* ══════════════════════════════════════════════
-   SELECTED SECTION HIGHLIGHT STYLE
-══════════════════════════════════════════════ */
+/* SELECTED SECTION HIGHLIGHT STYLE */
 const selectedStyle = document.createElement('style');
 selectedStyle.textContent = `
   .section-slot { outline: 2px solid transparent; outline-offset: 0; transition: outline-color .15s; position: relative; }
@@ -1362,9 +1322,7 @@ selectedStyle.textContent = `
 `;
 document.head.appendChild(selectedStyle);
  
-/* ══════════════════════════════════════════════
-   CREATE TEMPLATE
-══════════════════════════════════════════════ */
+/* CREATE TEMPLATE */
 function handleCreateTemplate(){
   const name   = document.getElementById('np-name').value.trim();
   const desc   = document.getElementById('np-desc').value.trim();
@@ -1491,9 +1449,7 @@ async function saveBlogPost(){
   closeModal('modal-blog'); renderBlogList(); showNotif('✓ Artículo guardado');
 }
  
-/* ══════════════════════════════════════════════
-   AUTH
-══════════════════════════════════════════════ */
+/* AUTH */
 function doLogin(){
   const u = document.getElementById('l-user').value.trim();
   const p = document.getElementById('l-pass').value.trim();
@@ -1515,9 +1471,7 @@ function doLogin(){
   });
 }
  
-/* ══════════════════════════════════════════════
-   HERO ↔ HERO.JSON MAPPERS
-══════════════════════════════════════════════ */
+/* HERO ↔ HERO.JSON MAPPERS */
 function heroSectionToHeroJson(sec, base){
   const d=sec.data||{};
   if(sec.type==='hero') return {...base,plantilla:'1',badge:d.badge||'',titulo1:d.h1||'',titulo2:d.h2||'',descripcion:d.desc||'',boton_primario:d.btn1||'',boton_secundario:d.btn2||'',stat1_numero:d.stat1_num||'',stat1_label:d.stat1_lbl||'',stat2_numero:d.stat2_num||'',stat2_label:d.stat2_lbl||''};
@@ -1532,9 +1486,7 @@ function heroJsonToSectionData(h){
   };
 }
 
-/* ══════════════════════════════════════════════
-   SEO
-══════════════════════════════════════════════ */
+/* SEO */
 // Las pestañas de SEO se generan dinámicamente desde las plantillas existentes
 // (ver buildSeoTabs). La clave SEO de cada página = su `tipo` de plantilla, con
 // index→home (igual que el resolutor del sitio público en page-bootstrap.js).
@@ -1620,18 +1572,14 @@ function renderSEOTab(page){
     </div>`;
 }
  
-/* ══════════════════════════════════════════════
-   CANVAS REFRESH
-══════════════════════════════════════════════ */
+/* CANVAS REFRESH */
 function refreshCanvas(){
   if(document.getElementById('panel-tpl-editor')?.classList.contains('active') && state.currentTplId){
     renderPageSections(state.currentTplId);
   }
 }
 
-/* ══════════════════════════════════════════════
-   CLIENTS LIST + SAVE
-══════════════════════════════════════════════ */
+/* CLIENTS LIST + SAVE */
 function renderClientesList(){
   const tbody = document.getElementById('clientes-tbody');
   if(!tbody) return;
@@ -1757,9 +1705,7 @@ window.deleteCliente = async function(id){
   } catch(e){ showNotif('Error al eliminar','error'); }
 };
 
-/* ══════════════════════════════════════════════
-   TEMPLATE RENAME
-══════════════════════════════════════════════ */
+/* TEMPLATE RENAME */
 window.renameTpl = function(id){
   const tpl = state.templates.find(t=>t.id===id);
   if(!tpl) return;
@@ -1774,9 +1720,7 @@ window.renameTpl = function(id){
   }
 };
 
-/* ══════════════════════════════════════════════
-   NAVBAR ITEMS
-══════════════════════════════════════════════ */
+/* NAVBAR ITEMS */
 let navbarItems = [];
 
 async function loadNavbarItems() {
@@ -1932,9 +1876,7 @@ window.editarNavItem = function(id_menu) {
   window.__svc.openModal('modal-editar-navbar');
 };
 
-/* ══════════════════════════════════════════════
-   INIT
-══════════════════════════════════════════════ */
+/* INIT */
 function initApp(){
   document.getElementById('dash-date').textContent =
     new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'}) + ' · ' +
@@ -2030,7 +1972,7 @@ function initApp(){
     openTemplateEditor(state.currentTplId);
   });
  
-  // ── Editor de texto enriquecido ──
+  // Editor de texto enriquecido
   // El prompt() del navegador colapsa la selección del contenteditable, por eso
   // antes fallaban "enlace" e "insertar imagen". Guardamos el rango y lo
   // restauramos antes de ejecutar el comando.
@@ -2116,7 +2058,7 @@ function initApp(){
  
   document.getElementById('btn-guardar')?.addEventListener('click',saveCurrentPanel);
  
-  // ── Modal Navbar: 3 modos (vincular plantilla / página nueva / URL externa) ──
+  // Modal Navbar: 3 modos (vincular plantilla / página nueva / URL externa)
   function updateNavModalFields() {
     const mode = document.querySelector('input[name="nav-tipo-red"]:checked')?.value || 'link';
     const show = (id, on) => { const el = document.getElementById(id); if (el) el.style.display = on ? '' : 'none'; };
@@ -2264,7 +2206,7 @@ function initApp(){
 document.getElementById('login-btn').addEventListener('click', doLogin);
 document.getElementById('l-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 
-/* ── Sidebar responsive del admin ── */
+/* Sidebar responsive del admin */
 (function(){
   const toggle  = document.getElementById('admin-sidebar-toggle');
   const sidebar = document.getElementById('admin-sidebar');
@@ -2293,7 +2235,7 @@ document.getElementById('l-pass').addEventListener('keydown', e=>{ if(e.key==='E
   });
 })();
 
-/* ── Sidebar collapse (desktop) ── */
+/* Sidebar collapse (desktop) */
 (function(){
   const btn = document.getElementById('sidebar-collapse-btn');
   if(!btn) return;

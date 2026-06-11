@@ -7,10 +7,10 @@ import { doLogin, doLogout } from './auth.js';
 import { saveCliente, editCliente, deleteCliente, nuevoCliente } from './clientes.js';
 import { saveBlog, editPost, deletePost, nuevoBlog } from './blog.js';
 
-// ─── Exponer funciones que se llaman desde innerHTML (onclick=) ───────────────
+// Exponer funciones que se llaman desde innerHTML (onclick=)
 window.__admin = { editCliente, deleteCliente, editPost, deletePost };
 
-// ─── Nombres de paneles ────────────────────────────────────────────────────────
+// Nombres de paneles
 const PANEL_NAMES = {
   dashboard:    'Dashboard',
   home:         'Inicio — Hero',
@@ -26,7 +26,7 @@ const PANEL_NAMES = {
   seo:          'SEO & Meta',
 };
 
-// ─── Navegación ───────────────────────────────────────────────────────────────
+// Navegación
 function showPanel(id) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
@@ -43,7 +43,7 @@ function showPanel(id) {
   populatePanel(id);
 }
 
-// ─── Inicialización ──────────────────────────────────────────────────────────
+// Inicialización
 export async function initApp() {
   setApiStatus('loading');
   document.getElementById('dash-date').textContent =
@@ -104,22 +104,22 @@ function renderDashboard() {
   if (clientesEl) clientesEl.textContent = state.clientes?.clientes?.length || 0;
 }
 
-// ─── Registrar eventos ────────────────────────────────────────────────────────
+// Registrar eventos
 function bindEvents() {
-  // ── Auth ──
+  // Auth
   document.getElementById('login-btn').addEventListener('click', doLogin);
   document.getElementById('l-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
   document.getElementById('logout-btn').addEventListener('click', doLogout);
 
-  // ── Guardar ──
+  // Guardar
   document.getElementById('btn-guardar').addEventListener('click', saveCurrentPanel);
 
-  // ── Sidebar: todos los .sidebar-item ──
+  // Sidebar: todos los .sidebar-item
   document.querySelectorAll('.sidebar-item').forEach(item => {
     item.addEventListener('click', () => showPanel(item.dataset.panel));
   });
 
-  // ── Clientes ──
+  // Clientes
   document.getElementById('abrir-modal-cliente').addEventListener('click', nuevoCliente);
   document.getElementById('guardar-cliente-btn').addEventListener('click', saveCliente);
 
@@ -128,19 +128,19 @@ function bindEvents() {
     b.addEventListener('click', () => closeModal('modal-cliente'))
   );
 
-  // ── Blog ──
+  // Blog
   document.getElementById('abrir-modal-blog').addEventListener('click', nuevoBlog);
   document.getElementById('guardar-blog').addEventListener('click', saveBlog);
   document.querySelectorAll('#cerrar-modal-blog').forEach(b =>
     b.addEventListener('click', () => closeModal('modal-blog'))
   );
 
-  // ── Accesos rápidos del dashboard ──
+  // Accesos rápidos del dashboard
   document.getElementById('nuevo-post').addEventListener('click',    () => { showPanel('blog');     nuevoBlog(); });
   document.getElementById('nuevo-cliente').addEventListener('click', () => { showPanel('clientes'); nuevoCliente(); });
   document.getElementById('editar-hero').addEventListener('click',   () => showPanel('home'));
 
-  // ── Rich editor ──
+  // Rich editor
   const richCommands = ['bold','italic','underline','insertUnorderedList'];
   richCommands.forEach(cmd => {
     const btn = document.getElementById(cmd);
@@ -154,7 +154,7 @@ function bindEvents() {
   if (fmtH2) fmtH2.addEventListener('click', () => document.execCommand('formatBlock', false, 'h2'));
   if (fmtP)  fmtP.addEventListener('click',  () => document.execCommand('formatBlock', false, 'p'));
 
-  // ── SEO tabs ──
+  // SEO tabs
   const seoPages = ['home','cableado','fibra','seguridad','soporte','desarrollo'];
   seoPages.forEach(p => {
     const btn = document.getElementById(`boton-seo-${p}`);
@@ -169,18 +169,18 @@ function bindEvents() {
     });
   });
 
-  // ── Panel hero: preview de plantilla ──
+  // Panel hero: preview de plantilla
   document.addEventListener('change', e => {
     if (e.target.id === 'hero-plantilla') updateHeroPreviewHint(e.target.value);
   });
 
-  // ── Click fuera de modal cierra ──
+  // Click fuera de modal cierra
   document.querySelectorAll('.modal-overlay').forEach(o => {
     o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
   });
 }
 
-// ─── Preview hint de plantilla hero ──────────────────────────────────────────
+// Preview hint de plantilla hero
 function updateHeroPreviewHint(val) {
   const p1 = document.getElementById('hero-plantilla-1-fields');
   const p2 = document.getElementById('hero-plantilla-2-fields');
@@ -188,7 +188,7 @@ function updateHeroPreviewHint(val) {
   if (p2) p2.style.display = val === '2' ? 'block' : 'none';
 }
 
-// ─── Arranque ─────────────────────────────────────────────────────────────────
+// Arranque
 bindEvents();
 
 // Auto-login si hay token guardado en sessionStorage

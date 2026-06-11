@@ -30,7 +30,7 @@ function plantillaHref(tipo) {
   return TIPO_PATH[tipo] || customHref(tipo);
 }
 
-// ── data helpers ────────────────────────────────────────────────────
+// data helpers
 function readNav() {
   if (!fs.existsSync(NAV_FILE)) return { botones: [] };
   try { return JSON.parse(fs.readFileSync(NAV_FILE, 'utf-8')); } catch { return { botones: [] }; }
@@ -52,7 +52,7 @@ function plantillaDeMenu(id_menu, plantillas) {
 }
 const esCustom = p => !!p && /^btn-/.test(p.tipo || '');
 
-// ── Menú jerárquico (padre/hijos) ───────────────────────────────────
+// Menú jerárquico (padre/hijos)
 // El menú se modela como árbol: cada botón tiene `padre` (id_menu del contenedor
 // padre; 0 = nivel principal). Un "contenedor" (contenedor:true) es el encabezado
 // de un submenú (lo que antes era el "grupo" de texto). El panel sigue trabajando
@@ -90,7 +90,7 @@ function grupoDe(boton, botones) {
   return c ? c.titulo : null;
 }
 
-// ── páginas personalizadas (btn-*) ──────────────────────────────────
+// páginas personalizadas (btn-*)
 // Shell físico html/<tipo>/index.html: un cascarón que hidrata la plantilla
 // activa de ese tipo vía bootstrapPage (igual que las páginas del sistema).
 function shellHtml(tipo, titulo) {
@@ -156,7 +156,7 @@ function crearPlantillaCustom(pltData, id_menu, titulo) {
   return tipo;
 }
 
-// ── controllers ─────────────────────────────────────────────────────
+// controllers
 
 // GET /api/nav/botones
 // Devuelve solo los ítems "reales" (oculta los contenedores, que son encabezados
@@ -191,20 +191,20 @@ exports.crearBoton = (req, res) => {
   let botonHref = null;
 
   if (id_plantilla != null) {
-    // ── Vincular a una plantilla existente (sin escribir rutas a mano) ──
+    // Vincular a una plantilla existente (sin escribir rutas a mano)
     const pltData = readPlantillas();
     const plt = pltData.plantillas.find(p => p.id_plantilla === Number(id_plantilla));
     if (!plt) return res.status(404).json({ error: 'Plantilla no encontrada' });
     botonHref = plantillaHref(plt.tipo);
   } else if (tipoRedireccion === 'custom') {
-    // ── Crear plantilla v2 en blanco + su shell físico html/<tipo>/index.html,
-    //    que se edita como cualquier plantilla y anda en cualquier server. ──
+    // Crear plantilla v2 en blanco + su shell físico html/<tipo>/index.html,
+    // que se edita como cualquier plantilla y anda en cualquier server.
     const pltData = readPlantillas();
     const tipo = crearPlantillaCustom(pltData, id_menu, titulo.trim());
     savePlantillas(pltData);
     botonHref = customHref(tipo);
   } else {
-    // ── URL externa libre ──
+    // URL externa libre
     botonHref = href || null;
     if (!botonHref) return res.status(400).json({ error: 'Se requiere "href" para ítems de tipo URL' });
   }
@@ -266,14 +266,14 @@ exports.actualizarBoton = (req, res) => {
     };
 
     if (id_plantilla != null) {
-      // ── Vincular a una plantilla existente ──
+      // Vincular a una plantilla existente
       const plt = pltData.plantillas.find(p => p.id_plantilla === Number(id_plantilla));
       if (!plt) return res.status(404).json({ error: 'Plantilla no encontrada' });
       if (!actual || actual.id_plantilla !== plt.id_plantilla) soltarDestinoPrevio();
       b.href = plantillaHref(plt.tipo);
     } else if (tipoRedireccion === 'custom') {
-      // ── Asegurar la página propia. Si ya es btn-*, se conserva su plantilla
-      //    (y su contenido) y se re-asegura el shell; si no, se crea en blanco. ──
+      // Asegurar la página propia. Si ya es btn-*, se conserva su plantilla
+      // (y su contenido) y se re-asegura el shell; si no, se crea en blanco.
       if (esCustom(actual)) {
         escribirShellCustom(actual.tipo, b.titulo);
         b.href = customHref(actual.tipo);
@@ -283,7 +283,7 @@ exports.actualizarBoton = (req, res) => {
         b.href = customHref(tipo);
       }
     } else if (href !== undefined) {
-      // ── URL externa libre ──
+      // URL externa libre
       soltarDestinoPrevio();
       b.href = href || null;
     }

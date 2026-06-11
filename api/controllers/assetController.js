@@ -284,7 +284,7 @@ exports.eliminar = (req, res) => {
   res.json({ ok: true });
 };
 
-// ─── Etiquetas (labels) ─────────────────────────────────────────────
+// Etiquetas (labels)
 // Registro global de etiquetas tipo Finder: colores + categorías
 // (grupo ∈ color | modulo | plantilla | menu). Se asignan a las imágenes.
 

@@ -1,6 +1,6 @@
-/* ─── ADMIN DASHBOARD ─── stat cards + banner de plantillas vencidas ─── */
+/* ADMIN DASHBOARD stat cards + banner de plantillas vencidas */
 
-/* ── STAT CARDS ── */
+/* STAT CARDS */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
 .stat-card{background:var(--white);border:1px solid var(--slate-100);padding:1.25rem 1.5rem;}
 .stat-card-label{font-size:.5625rem;font-weight:900;letter-spacing:.25em;text-transform:uppercase;color:var(--slate-400);margin-bottom:.5rem;}
