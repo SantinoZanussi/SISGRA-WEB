@@ -38,5 +38,9 @@
   "btn-8": {
     "title": "TEST · SISGRA S.R.L.",
     "description": "TEST"
+  },
+  "btn-9": {
+    "title": "Nosotros · SISGRA S.R.L.",
+    "description": "Conocé SISGRA S.R.L.: empresa pionera del Polo Tecnológico Rosario desde 1999, especializada en infraestructura tecnológica e ingeniería de software."
   }
 }

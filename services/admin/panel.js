@@ -1809,21 +1809,37 @@ function navDescendientes(id) {
   return out;
 }
 
-// Opciones del <select> de padre: "Raíz" (0) + el resto de los ítems.
+// Opciones del <select> de padre: "0 — Sin grupo" (raíz) + el resto de los
+// ítems. Cada opción se muestra como «[id_plantilla] - título» (el id de la
+// plantilla vinculada, o «—» si el ítem todavía no tiene página).
 // `excludeId` saca al propio ítem y a sus descendientes (un ítem no puede
 // colgar de sí mismo ni de un hijo suyo).
 function fillNavPadreSelect(sel, selectedPadre, excludeId) {
   if (!sel) return;
   const excluidos = excludeId ? navDescendientes(excludeId).add(excludeId) : new Set();
   const sel0 = Number(selectedPadre) || 0;
-  const opts = [`<option value="0"${sel0 === 0 ? ' selected' : ''}>0</option>`];
+  const opts = [`<option value="0"${sel0 === 0 ? ' selected' : ''}>0 — Sin grupo</option>`];
   navbarItems
     .slice()
     .sort((a, b) => (a.orden || 0) - (b.orden || 0))
     .forEach(b => {
       if (excluidos.has(b.id_menu)) return;
-      opts.push(`<option value="${b.id_menu}"${sel0 === b.id_menu ? ' selected' : ''}>${b.titulo}</option>`);
+      const idPlt = b.plantilla ? b.plantilla.id : '—';
+      opts.push(`<option value="${b.id_menu}"${sel0 === b.id_menu ? ' selected' : ''}>[${idPlt}] - ${b.titulo}</option>`);
     });
+  sel.innerHTML = opts.join('');
+}
+
+// Opciones del <select> de orden: posiciones 1..total. `total` permite reservar
+// un lugar extra al crear (el ítem nuevo todavía no está en navbarItems).
+function fillNavOrdenSelect(sel, selectedOrden, total) {
+  if (!sel) return;
+  const n = total || navbarItems.length || 1;
+  const cur = Number(selectedOrden) || n;
+  const opts = [];
+  for (let i = 1; i <= n; i++) {
+    opts.push(`<option value="${i}"${i === cur ? ' selected' : ''}>${i}</option>`);
+  }
   sel.innerHTML = opts.join('');
 }
 
@@ -1832,7 +1848,7 @@ window.editarNavItem = function(id_menu) {
   if (!b) return;
   document.getElementById('nav-edit-id').value = b.id_menu;
   document.getElementById('nav-edit-titulo').value = b.titulo || '';
-  document.getElementById('nav-edit-orden').value = b.orden || '';
+  fillNavOrdenSelect(document.getElementById('nav-edit-orden'), b.orden || navbarItems.length, navbarItems.length);
   document.getElementById('nav-edit-activo').value = b.activo !== false ? 'visible' : 'oculto';
   fillNavPadreSelect(document.getElementById('nav-edit-padre-select'), b.padre || 0, b.id_menu);
   window.__svc.openModal('modal-editar-navbar');
@@ -2023,6 +2039,9 @@ function initApp(){
   document.getElementById('abrir-modal-navbar')?.addEventListener('click', () => {
     document.getElementById('nav-titulo').value = '';
     fillNavPadreSelect(document.getElementById('nav-padre-select'), 0, null);
+    // El ítem nuevo aún no existe: ofrecer una posición extra (al final por defecto).
+    const total = navbarItems.length + 1;
+    fillNavOrdenSelect(document.getElementById('nav-orden-select'), total, total);
     window.__svc.openModal('modal-navbar');
   });
 
@@ -2030,13 +2049,12 @@ function initApp(){
     const titulo = document.getElementById('nav-titulo').value.trim();
     if (!titulo) { window.__svc.showNotif('El título es obligatorio', 'error'); return; }
     const padre = Number(document.getElementById('nav-padre-select').value) || 0;
+    const orden = Number(document.getElementById('nav-orden-select')?.value) || undefined;
     try {
-      await window.__svc.apiPost('/nav/botones', { titulo, padre });
+      await window.__svc.apiPost('/nav/botones', { titulo, padre, orden });
       window.__svc.closeModal('modal-navbar');
       loadNavbarItems();
-      // Cada ítem nuevo crea su página en blanco: refrescar la lista de plantillas.
-      window.reloadPlantillas?.();
-      window.__svc.showNotif('✓ Ítem agregado — editá su página en Plantillas', 'success');
+      window.__svc.showNotif('✓ Ítem agregado al navbar', 'success');
     } catch(e) {
       window.__svc.showNotif(e.message, 'error');
     }

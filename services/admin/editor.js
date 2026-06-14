@@ -1,4 +1,4 @@
-import { SECTIONS, TIPOS_HTML, renderModulo, setEditMode, setFieldColors } from '../sections.js';
+import { SECTIONS, TIPOS_HTML, renderModulo, setEditMode, setFieldColors, SERVICE_ICON_CATALOG, SERVICE_LEGACY_ICONS, serviceCardIcon } from '../sections.js';
 import { TIPO_CSS, TYPE_TO_PAGE, cssFilesFor } from '../css-pages.js';
 
 const API = `http://${window.location.hostname}:3000/api`;
@@ -2028,7 +2028,19 @@ window.openModVer = function(id) {
   const editorContent = document.getElementById('modulos-content-body');
   if (editorContent) editorContent.innerHTML = '';
 
-  if (cfg) {
+  if (m.tipo === 'services') {
+    if (titleEl) titleEl.textContent = m.nombre || sec.label;
+    if (noteEl) {
+      noteEl.style.display = '';
+      noteEl.textContent = 'Cada tarjeta de este módulo. Editá el ícono y su color, los textos, el enlace de “Ver Detalles” y el detalle que se abre en un popup.';
+    }
+    if (addBtn) {
+      addBtn.style.display = '';
+      addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Agregar tarjeta';
+      addBtn.onclick = () => _addServicioCard(m);
+    }
+    _renderServiciosCardsVer(m);
+  } else if (cfg) {
     if (titleEl) titleEl.textContent = cfg.title;
     if (noteEl) {
       noteEl.style.display = '';
@@ -2090,6 +2102,336 @@ function _renderModVerLista(tipo) {
 }
 
 document.getElementById('modulos-view-close')?.addEventListener('click', _closeModVer);
+
+/* ───────────────────────────────────────────────────────────────────────────
+   MÓDULO "SERVICIOS" — editor de tarjetas dentro del modal "Ver".
+   En vez de listar las variantes del módulo, listamos cada tarjeta del módulo
+   con edición in-place: ícono + color (selector), título, descripción, texto y
+   URL del enlace, y un detalle (título/descripción/imagen) que en el sitio
+   público se abre como popup al tocar "Ver Detalles".
+   Los cambios se guardan en este módulo (PUT /modulos/:id) con debounce.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+const _svcSaveTimers = {};
+function _saveServiciosModulo(m, immediate) {
+  clearTimeout(_svcSaveTimers[m.id_modulo]);
+  const doSave = async () => {
+    try {
+      await window.__svc.apiPut(`/modulos/${m.id_modulo}`, { data: m.data });
+    } catch (e) {
+      window.__svc.showNotif('Error al guardar: ' + e.message, 'error');
+    }
+  };
+  if (immediate) return doSave();
+  _svcSaveTimers[m.id_modulo] = setTimeout(doSave, 500);
+}
+
+function _hasDetalle(c) {
+  const d = c && c.detalle;
+  return !!(d && (d.titulo || d.descripcion || d.imagen));
+}
+
+function _servicioCardRowHTML(c, i) {
+  const icon  = serviceCardIcon(c);
+  const color = c.iconoColor || '#2563eb';
+  const desc  = escAttr(c.descripcion || '').replace(/&quot;/g, '"');
+  const enlace = c.enlace ? escAttr(c.enlace) : '';
+  return `<div class="svc-card-row" data-svc-i="${i}">
+    <div class="svc-card-top">
+      <div class="svc-icon-wrap">
+        <span class="svc-icon-preview"><i class="fa-solid ${escAttr(icon)}" style="color:${escAttr(color)}"></i></span>
+        <button type="button" class="svc-icon-pen" data-svc-icon title="Cambiar ícono y color"><i class="fa-solid fa-pen"></i></button>
+      </div>
+      <button type="button" class="svc-card-del" data-svc-del title="Quitar tarjeta"><i class="fa-solid fa-trash"></i></button>
+    </div>
+    <input class="svc-card-titulo" data-svc-f="titulo" value="${escAttr(c.titulo || '')}" placeholder="Título de la tarjeta"/>
+    <textarea class="svc-card-desc" data-svc-f="descripcion" placeholder="Descripción de la tarjeta">${desc}</textarea>
+    <div class="svc-link-row">
+      <input class="svc-card-linktext" data-svc-f="linkText" value="${escAttr(c.linkText || 'Ver Detalles')}" placeholder="Texto del enlace"/>
+      <button type="button" class="svc-link-pen" data-svc-arrow title="Editar la URL de destino (la flechita)"><i class="fa-solid fa-arrow-right"></i><i class="fa-solid fa-pen"></i></button>
+      <button type="button" class="svc-link-pen${_hasDetalle(c) ? ' has-detalle' : ''}" data-svc-detalle title="Editar el detalle (título, descripción, imagen)"><i class="fa-solid fa-pen"></i></button>
+    </div>
+    <div class="svc-enlace-hint" data-svc-hint>${enlace || '<span class="svc-muted">sin enlace de destino</span>'}</div>
+  </div>`;
+}
+
+function _renderServiciosCardsVer(m) {
+  const body = document.getElementById('modulos-view-body');
+  if (!body) return;
+  m.data = m.data || {};
+  const cards = Array.isArray(m.data.cards) ? m.data.cards : (m.data.cards = []);
+  if (!cards.length) {
+    body.innerHTML = `<div class="mod-cat-empty">Este módulo no tiene tarjetas todavía. Tocá <b>Agregar tarjeta</b>.</div>`;
+    return;
+  }
+  body.innerHTML = `<div class="svc-cards-list">${cards.map((c, i) => _servicioCardRowHTML(c, i)).join('')}</div>`;
+  _bindServiciosCardRows(m);
+}
+
+function _bindServiciosCardRows(m) {
+  const body  = document.getElementById('modulos-view-body');
+  if (!body) return;
+  const cards = m.data.cards;
+  body.querySelectorAll('.svc-card-row').forEach(row => {
+    const i = Number(row.dataset.svcI);
+    const card = cards[i];
+    if (!card) return;
+    row.querySelectorAll('[data-svc-f]').forEach(inp => {
+      inp.addEventListener('input', () => { card[inp.dataset.svcF] = inp.value; _saveServiciosModulo(m); });
+    });
+    row.querySelector('[data-svc-icon]')?.addEventListener('click', e => _openIconPicker(e.currentTarget, m, i));
+    row.querySelector('[data-svc-arrow]')?.addEventListener('click', e => _openEnlaceEditor(e.currentTarget, m, i));
+    row.querySelector('[data-svc-detalle]')?.addEventListener('click', () => _openCardDetalle(m, i));
+    row.querySelector('[data-svc-del]')?.addEventListener('click', () => {
+      cards.splice(i, 1);
+      _saveServiciosModulo(m, true);
+      _renderServiciosCardsVer(m);
+      renderModCatalog();
+    });
+  });
+}
+
+function _addServicioCard(m) {
+  m.data = m.data || {};
+  m.data.cards = Array.isArray(m.data.cards) ? m.data.cards : [];
+  m.data.cards.push({
+    id: 'card-' + Date.now(),
+    icono: 'fa-server', iconoColor: '',
+    titulo: 'Nueva tarjeta', descripcion: '',
+    linkText: 'Ver Detalles', enlace: '',
+    detalle: { titulo: '', descripcion: '', imagen: '' },
+  });
+  _saveServiciosModulo(m, true);
+  _renderServiciosCardsVer(m);
+  renderModCatalog();
+}
+
+function _refreshCardIconPreview(m, i) {
+  const row = document.querySelector(`.svc-card-row[data-svc-i="${i}"]`);
+  const card = m.data.cards[i];
+  if (!row || !card) return;
+  const ic = row.querySelector('.svc-icon-preview i');
+  if (ic) { ic.className = `fa-solid ${serviceCardIcon(card)}`; ic.style.color = card.iconoColor || '#2563eb'; }
+}
+
+/* Popover flotante reutilizable, anclado a un botón. Vive sobre el body con
+   z-index alto para no quedar recortado por el modal. */
+function _floatPopover(anchor, innerHTML, width) {
+  document.querySelectorAll('.svc-float-pop').forEach(p => p.remove());
+  const el = document.createElement('div');
+  el.className = 'svc-float-pop';
+  if (width) el.style.width = width + 'px';
+  el.innerHTML = innerHTML;
+  document.body.appendChild(el);
+  const r = anchor.getBoundingClientRect();
+  const vw = document.documentElement.clientWidth;
+  const w = el.offsetWidth;
+  let left = r.left + window.scrollX;
+  if (left + w > window.scrollX + vw - 10) left = window.scrollX + vw - w - 10;
+  el.style.left = Math.max(10, left) + 'px';
+  el.style.top  = (r.bottom + window.scrollY + 6) + 'px';
+  const close = () => { el.remove(); document.removeEventListener('mousedown', onDoc, true); };
+  const onDoc = e => { if (!el.contains(e.target) && !anchor.contains(e.target)) close(); };
+  setTimeout(() => document.addEventListener('mousedown', onDoc, true), 0);
+  return { el, close };
+}
+
+function _openIconPicker(anchor, m, i) {
+  const card = m.data.cards[i];
+  const cur = serviceCardIcon(card);
+  const color = card.iconoColor || '#2563eb';
+  const safeColor = /^#[0-9a-f]{6}$/i.test(color) ? color : '#2563eb';
+  const pop = _floatPopover(anchor, `
+    <div class="svc-iconpick-head">
+      <span>Color del ícono</span>
+      <input type="color" data-ip-color value="${safeColor}"/>
+    </div>
+    <div class="svc-iconpick-grid">
+      ${SERVICE_ICON_CATALOG.map(cls => `<button type="button" class="svc-iconpick-btn${cls === cur ? ' is-sel' : ''}" data-ip-icon="${cls}" title="${cls}"><i class="fa-solid ${cls}"></i></button>`).join('')}
+    </div>`, 300);
+  const colorInp = pop.el.querySelector('[data-ip-color]');
+  colorInp.addEventListener('input', () => {
+    card.iconoColor = colorInp.value;
+    _refreshCardIconPreview(m, i);
+    _saveServiciosModulo(m);
+  });
+  pop.el.querySelectorAll('[data-ip-icon]').forEach(b => b.addEventListener('click', () => {
+    card.icono = b.dataset.ipIcon;
+    pop.el.querySelectorAll('[data-ip-icon]').forEach(x => x.classList.remove('is-sel'));
+    b.classList.add('is-sel');
+    _refreshCardIconPreview(m, i);
+    _saveServiciosModulo(m);
+  }));
+}
+
+function _openEnlaceEditor(anchor, m, i) {
+  const card = m.data.cards[i];
+  const pop = _floatPopover(anchor, `
+    <div class="svc-pop-form">
+      <label class="svc-pop-label">URL de destino de “Ver Detalles”</label>
+      <input class="svc-pop-input" data-en-url value="${escAttr(card.enlace || '')}" placeholder="/html/… o https://…"/>
+      <div class="svc-pop-note">Si la tarjeta tiene detalle cargado, esta URL se usa como botón dentro del popup.</div>
+      <button type="button" class="svc-pop-ok" data-en-ok>Guardar</button>
+    </div>`, 280);
+  const inp = pop.el.querySelector('[data-en-url]');
+  const commit = () => {
+    card.enlace = inp.value.trim();
+    const hint = anchor.closest('.svc-card-row')?.querySelector('[data-svc-hint]');
+    if (hint) hint.innerHTML = card.enlace ? escAttr(card.enlace) : '<span class="svc-muted">sin enlace de destino</span>';
+    _saveServiciosModulo(m);
+    pop.close();
+  };
+  pop.el.querySelector('[data-en-ok]').addEventListener('click', commit);
+  inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); commit(); } });
+  inp.focus();
+  inp.select();
+}
+
+/* Modal de detalle de tarjeta (título, descripción, imagen) → popup público.
+   Genérico: recibe la card y un callback `onSave` (persistir + refrescar). Lo
+   usan el modal "Ver" (guarda en el módulo) y el preview visual (actualiza
+   _curModData + re-render del iframe). */
+let _curDetalleTarget = null;
+function _openCardDetalleFor(card, onSave) {
+  if (!card) return;
+  card.detalle = card.detalle || { titulo: '', descripcion: '', imagen: '' };
+  _curDetalleTarget = { card, onSave };
+  const t   = document.getElementById('card-detalle-titulo');
+  const d   = document.getElementById('card-detalle-desc');
+  const img = document.getElementById('card-detalle-img');
+  const prv = document.getElementById('card-detalle-img-prev');
+  if (t)   t.value   = card.detalle.titulo || '';
+  if (d)   d.value   = card.detalle.descripcion || '';
+  if (img) img.value = card.detalle.imagen || '';
+  if (prv) { const v = card.detalle.imagen || ''; prv.src = v; prv.style.display = v ? '' : 'none'; }
+  window.__svc?.openModal('modal-card-detalle');
+}
+
+function _openCardDetalle(m, i) {
+  const card = m.data.cards[i];
+  if (!card) return;
+  _openCardDetalleFor(card, () => {
+    _saveServiciosModulo(m, true);
+    const pen = document.querySelector(`.svc-card-row[data-svc-i="${i}"] [data-svc-detalle]`);
+    if (pen) pen.classList.toggle('has-detalle', _hasDetalle(card));
+  });
+}
+
+document.getElementById('card-detalle-save')?.addEventListener('click', () => {
+  if (!_curDetalleTarget) return;
+  const { card, onSave } = _curDetalleTarget;
+  if (!card) return;
+  card.detalle = {
+    titulo:      document.getElementById('card-detalle-titulo')?.value || '',
+    descripcion: document.getElementById('card-detalle-desc')?.value || '',
+    imagen:      document.getElementById('card-detalle-img')?.value || '',
+  };
+  if (typeof onSave === 'function') onSave();
+  window.__svc?.closeModal('modal-card-detalle');
+  window.__svc?.showNotif('Detalle guardado', 'success');
+});
+
+document.getElementById('card-detalle-img-btn')?.addEventListener('click', async () => {
+  const inp = document.getElementById('card-detalle-img');
+  const path = await window.__imgPicker?.open({ current: inp?.value || '' });
+  if (path && inp) {
+    inp.value = path;
+    const prv = document.getElementById('card-detalle-img-prev');
+    if (prv) { prv.src = path; prv.style.display = ''; }
+  }
+});
+
+document.getElementById('card-detalle-img')?.addEventListener('input', e => {
+  const prv = document.getElementById('card-detalle-img-prev');
+  if (prv) { const v = e.target.value || ''; prv.src = v; prv.style.display = v ? '' : 'none'; }
+});
+
+/* Selector de íconos global (Promise) — usado por el preview visual.
+   Devuelve { icono, color } al Aplicar, o null al cancelar. */
+let _iconPickerResolve = null;
+function _ensureIconPicker() {
+  if (document.getElementById('iconpicker-overlay')) return;
+  const ov = document.createElement('div');
+  ov.id = 'iconpicker-overlay';
+  ov.className = 'svc-picker-overlay';
+  ov.innerHTML = `
+    <div class="svc-picker-dialog">
+      <div class="svc-picker-head">
+        <span><i class="fa-solid fa-icons" style="color:#2563eb;margin-right:.4rem;"></i>Elegir ícono</span>
+        <div class="svc-picker-color"><label>Color</label><input type="color" id="iconpicker-color" value="#2563eb"/></div>
+        <button type="button" id="iconpicker-x" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="svc-iconpick-grid" id="iconpicker-grid" style="max-height:320px;padding:.25rem;"></div>
+      <div class="svc-picker-foot">
+        <button type="button" class="btn-secondary" id="iconpicker-cancel">Cancelar</button>
+        <button type="button" class="btn-save" id="iconpicker-apply">Aplicar</button>
+      </div>
+    </div>`;
+  document.body.appendChild(ov);
+  const grid = ov.querySelector('#iconpicker-grid');
+  grid.innerHTML = SERVICE_ICON_CATALOG.map(cls => `<button type="button" class="svc-iconpick-btn" data-ip-icon="${cls}" title="${cls}"><i class="fa-solid ${cls}"></i></button>`).join('');
+  grid.addEventListener('click', e => {
+    const b = e.target.closest('[data-ip-icon]');
+    if (!b) return;
+    grid.querySelectorAll('[data-ip-icon]').forEach(x => x.classList.remove('is-sel'));
+    b.classList.add('is-sel');
+  });
+  const finish = val => { ov.classList.remove('open'); const r = _iconPickerResolve; _iconPickerResolve = null; if (r) r(val); };
+  ov.querySelector('#iconpicker-apply').addEventListener('click', () => {
+    const sel = grid.querySelector('[data-ip-icon].is-sel');
+    finish({ icono: sel ? sel.dataset.ipIcon : null, color: ov.querySelector('#iconpicker-color').value });
+  });
+  ov.querySelector('#iconpicker-cancel').addEventListener('click', () => finish(null));
+  ov.querySelector('#iconpicker-x').addEventListener('click', () => finish(null));
+  ov.addEventListener('mousedown', e => { if (e.target === ov) finish(null); });
+}
+window.__iconPicker = {
+  open({ current, color } = {}) {
+    _ensureIconPicker();
+    const ov = document.getElementById('iconpicker-overlay');
+    const grid = ov.querySelector('#iconpicker-grid');
+    grid.querySelectorAll('[data-ip-icon]').forEach(b => b.classList.toggle('is-sel', b.dataset.ipIcon === current));
+    const c = ov.querySelector('#iconpicker-color');
+    c.value = /^#[0-9a-f]{6}$/i.test(color || '') ? color : '#2563eb';
+    ov.classList.add('open');
+    return new Promise(res => { _iconPickerResolve = res; });
+  },
+};
+
+/* Mini-overlay de texto (Promise) — para editar la URL desde el preview. */
+let _promptResolve = null;
+function _promptOverlay({ label, value = '', placeholder = '' } = {}) {
+  let ov = document.getElementById('svc-prompt-overlay');
+  if (!ov) {
+    ov = document.createElement('div');
+    ov.id = 'svc-prompt-overlay';
+    ov.className = 'svc-picker-overlay';
+    ov.innerHTML = `
+      <div class="svc-prompt-dialog">
+        <div class="svc-pop-label" id="svc-prompt-label" style="margin-bottom:.5rem;"></div>
+        <input class="svc-pop-input" id="svc-prompt-input"/>
+        <div class="svc-picker-foot" style="margin-top:.85rem;">
+          <button type="button" class="btn-secondary" id="svc-prompt-cancel">Cancelar</button>
+          <button type="button" class="btn-save" id="svc-prompt-ok">Guardar</button>
+        </div>
+      </div>`;
+    document.body.appendChild(ov);
+    const finish = v => { ov.classList.remove('open'); const r = _promptResolve; _promptResolve = null; if (r) r(v); };
+    ov.querySelector('#svc-prompt-ok').addEventListener('click', () => finish(ov.querySelector('#svc-prompt-input').value));
+    ov.querySelector('#svc-prompt-cancel').addEventListener('click', () => finish(null));
+    ov.addEventListener('mousedown', e => { if (e.target === ov) finish(null); });
+    ov.querySelector('#svc-prompt-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); finish(ov.querySelector('#svc-prompt-input').value); }
+      if (e.key === 'Escape') finish(null);
+    });
+  }
+  ov.querySelector('#svc-prompt-label').textContent = label || '';
+  const inp = ov.querySelector('#svc-prompt-input');
+  inp.value = value; inp.placeholder = placeholder;
+  ov.classList.add('open');
+  setTimeout(() => { inp.focus(); inp.select(); }, 30);
+  return new Promise(res => { _promptResolve = res; });
+}
 
 function renderModFieldGroup(group, fields, containerId) {
   const container = document.getElementById(containerId);
@@ -2326,13 +2668,22 @@ function ED_SCRIPT() {
     cclr.addEventListener('click', function (e) { e.preventDefault(); applyColor(''); });
     done.addEventListener('click', function (e) { e.preventDefault(); close(); });
   }
+  // Durante la edición, los enlaces NO deben navegar (romperían el preview).
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a');
+    if (a) e.preventDefault();
+  }, true);
+  // Inserta un lápiz al lado de `el` que dispara `handler`.
+  function addPencil(el, glyph, title, handler) {
+    var p = document.createElement('button');
+    p.type = 'button'; p.className = 'ed-pencil'; p.title = title || ''; p.innerHTML = glyph || '✎';
+    p.addEventListener('click', function (e) { e.stopPropagation(); e.preventDefault(); handler(); });
+    el.insertAdjacentElement('afterend', p);
+  }
   var nodes = document.querySelectorAll('[data-field]');
   for (var i = 0; i < nodes.length; i++) {
     (function (el) {
-      var p = document.createElement('button');
-      p.type = 'button'; p.className = 'ed-pencil'; p.innerHTML = '✎';
-      p.addEventListener('click', function (e) { e.stopPropagation(); e.preventDefault(); open(el); });
-      el.insertAdjacentElement('afterend', p);
+      addPencil(el, '✎', 'Editar texto y color', function () { open(el); });
       el.addEventListener('click', function (e) { e.stopPropagation(); open(el); });
     })(nodes[i]);
   }
@@ -2346,6 +2697,33 @@ function ED_SCRIPT() {
         try { parent.postMessage({ __edimg: true, field: el.getAttribute('data-imgfield') }, '*'); } catch (e) {}
       });
     })(imgs[k]);
+  }
+  // Ícono editable (servicios): lápiz → el padre abre el selector de íconos + color.
+  var icons = document.querySelectorAll('[data-iconfield]');
+  for (var a = 0; a < icons.length; a++) {
+    (function (el) {
+      addPencil(el, '✎', 'Cambiar ícono y color', function () {
+        try { parent.postMessage({ __edicon: true, field: el.getAttribute('data-iconfield') }, '*'); } catch (e) {}
+      });
+    })(icons[a]);
+  }
+  // URL de destino del enlace (servicios): lápiz "flechita" → editar la URL.
+  var links = document.querySelectorAll('[data-linkfield]');
+  for (var b = 0; b < links.length; b++) {
+    (function (el) {
+      addPencil(el, '↗', 'Editar la URL de destino', function () {
+        try { parent.postMessage({ __edlink: true, field: el.getAttribute('data-linkfield') }, '*'); } catch (e) {}
+      });
+    })(links[b]);
+  }
+  // Detalle del enlace (servicios): lápiz → el padre abre el modal título/descr/imagen.
+  var dets = document.querySelectorAll('[data-detallefield]');
+  for (var c = 0; c < dets.length; c++) {
+    (function (el) {
+      addPencil(el, '＋', 'Editar el detalle (título, descripción, imagen)', function () {
+        try { parent.postMessage({ __eddetalle: true, field: el.getAttribute('data-detallefield') }, '*'); } catch (e) {}
+      });
+    })(dets[c]);
   }
   document.addEventListener('click', function (e) {
     if (box && !box.contains(e.target) && !(e.target.classList && e.target.classList.contains('ed-pencil'))) close();
@@ -2552,6 +2930,12 @@ function _getByPath(obj, path) {
   return String(path).split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
 }
 
+/* Re-renderiza el iframe del preview (refleja cambios en _curModData). */
+function _rerenderPreviewIframe() {
+  const iframe = document.getElementById('mpm-iframe');
+  if (iframe) iframe.srcdoc = _moduleSrcdoc({ editable: true });
+}
+
 /* Ediciones inline (texto, color y ahora imágenes) que llegan del iframe */
 window.addEventListener('message', async e => {
   const d = e.data;
@@ -2563,9 +2947,35 @@ window.addEventListener('message', async e => {
     if (path) {
       _curModData.data = _curModData.data || {};
       _setByPath(_curModData.data, d.field, path);
-      const iframe = document.getElementById('mpm-iframe');
-      if (iframe) iframe.srcdoc = _moduleSrcdoc({ editable: true });
+      _rerenderPreviewIframe();
     }
+    return;
+  }
+  // Cambio de ícono + color de una tarjeta de servicios desde el preview.
+  if (d.__edicon === true) {
+    _curModData.data = _curModData.data || {};
+    const card = _getByPath(_curModData.data, d.field) || {};
+    const picked = await window.__iconPicker?.open({ current: serviceCardIcon(card), color: card.iconoColor || '' });
+    if (picked && picked.icono) {
+      _setByPath(_curModData.data, d.field + '.icono', picked.icono);
+      _setByPath(_curModData.data, d.field + '.iconoColor', picked.color || '');
+      _rerenderPreviewIframe();
+    }
+    return;
+  }
+  // Cambio de la URL de destino del enlace de una tarjeta desde el preview.
+  if (d.__edlink === true) {
+    _curModData.data = _curModData.data || {};
+    const current = _getByPath(_curModData.data, d.field) || '';
+    const url = await _promptOverlay({ label: 'URL de destino de “Ver Detalles”', value: current, placeholder: '/html/… o https://…' });
+    if (url !== null) { _setByPath(_curModData.data, d.field, url.trim()); _rerenderPreviewIframe(); }
+    return;
+  }
+  // Editar el detalle (título/descr/imagen) de una tarjeta desde el preview.
+  if (d.__eddetalle === true) {
+    _curModData.data = _curModData.data || {};
+    const card = _getByPath(_curModData.data, d.field);
+    if (card) _openCardDetalleFor(card, () => _rerenderPreviewIframe());
     return;
   }
   if (d.__ed !== true) return;

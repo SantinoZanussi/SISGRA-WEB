@@ -45,6 +45,32 @@ const fld = (name, value) => {
 // panel: en modo edición agrega data-imgfield para que al hacer click se abra el
 // selector de imágenes. En el sitio público no agrega nada (markup idéntico).
 const fldImg = (name) => EDIT_MODE ? ` data-imgfield="${esc(name)}"` : '';
+// Marcadores extra del editor visual (solo en EDIT_MODE), manejados por ED_SCRIPT:
+// - fldIcon: lápiz para elegir ícono + color de una tarjeta (name = path a la card).
+// - fldLink: lápiz para editar la URL de destino (name = path al campo enlace).
+// - fldDetalle: lápiz para abrir el modal de detalle (name = path a la card).
+const fldIcon    = (name) => EDIT_MODE ? ` data-iconfield="${esc(name)}"` : '';
+const fldLink    = (name) => EDIT_MODE ? ` data-linkfield="${esc(name)}"` : '';
+const fldDetalle = (name) => EDIT_MODE ? ` data-detallefield="${esc(name)}"` : '';
+
+// Catálogo de iconos (Font Awesome 6 solid) que se pueden asignar a las tarjetas
+// de la sección "servicios". Se reutiliza en el selector de iconos del panel
+// admin (editor.js) para que el catálogo sea único.
+export const SERVICE_ICON_CATALOG = [
+  'fa-server', 'fa-headset', 'fa-code', 'fa-laptop-code', 'fa-network-wired', 'fa-ethernet',
+  'fa-wifi', 'fa-tower-broadcast', 'fa-satellite-dish', 'fa-database', 'fa-hard-drive', 'fa-cloud',
+  'fa-microchip', 'fa-shield-halved', 'fa-lock', 'fa-key', 'fa-user-shield', 'fa-fingerprint',
+  'fa-camera', 'fa-video', 'fa-bolt', 'fa-plug', 'fa-gear', 'fa-gears',
+  'fa-screwdriver-wrench', 'fa-toolbox', 'fa-wrench', 'fa-desktop', 'fa-mobile-screen', 'fa-tv',
+  'fa-diagram-project', 'fa-sitemap', 'fa-circle-nodes', 'fa-chart-line', 'fa-chart-pie', 'fa-gauge-high',
+  'fa-rocket', 'fa-lightbulb', 'fa-cubes', 'fa-boxes-stacked', 'fa-warehouse', 'fa-building',
+  'fa-handshake', 'fa-headphones', 'fa-phone', 'fa-envelope', 'fa-globe', 'fa-location-dot',
+];
+// Iconos por defecto para tarjetas heredadas (sin `icono` propio): se mapean por
+// su `id` original para no perder el ícono que ya mostraban en el sitio.
+export const SERVICE_LEGACY_ICONS = { instalaciones: 'fa-server', soporte: 'fa-headset', software: 'fa-code' };
+// Clase de ícono efectiva de una tarjeta de servicio.
+export const serviceCardIcon = (c) => (c && c.icono) || SERVICE_LEGACY_ICONS[c && c.id] || 'fa-table-cells-large';
 
 export const SECTIONS = {
   nav: {
@@ -56,7 +82,9 @@ export const SECTIONS = {
       logoSrc: '/img/sisgra_blanco.png',
       logoSrcHref: '/',
       ctaLabel: 'Contáctese',
-      ctaHref: 'https://wa.me/548101220065',
+      // '#contacto' = abre el formulario de contacto en un modal (ver
+      // bindNavContacto en page-bootstrap.js). Cualquier otra URL navega normal.
+      ctaHref: '#contacto',
       // Los enlaces del menú vienen de "Items del navbar": el backend los
       // sincroniza en data.items desde navbar.json. Estos valores por defecto
       // solo se usan como vista previa en la librería de módulos.
@@ -450,9 +478,9 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       titulo_seccion: 'Portafolio de Soluciones',
       eyebrow: 'Lo que hacemos',
       cards: [
-        { id: 'instalaciones', titulo: 'Instalaciones', descripcion: 'Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas TIA/EIA para entornos corporativos exigentes.', enlace: '/html/cableado_estructurado' },
-        { id: 'soporte',       titulo: 'Soporte IT',    descripcion: 'Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.', enlace: '/html/soporte_it' },
-        { id: 'software',      titulo: 'Desarrollo de Software', descripcion: 'Soluciones digitales a medida: sistemas de gestión logística, control de inventario y procesos empresariales integrados.', enlace: '/html/desarrollo' },
+        { id: 'instalaciones', icono: 'fa-server',  iconoColor: '', titulo: 'Instalaciones', descripcion: 'Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas TIA/EIA para entornos corporativos exigentes.', linkText: 'Ver Detalles', enlace: '/html/cableado_estructurado', detalle: { titulo: '', descripcion: '', imagen: '' } },
+        { id: 'soporte',       icono: 'fa-headset', iconoColor: '', titulo: 'Soporte IT',    descripcion: 'Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.', linkText: 'Ver Detalles', enlace: '/html/soporte_it', detalle: { titulo: '', descripcion: '', imagen: '' } },
+        { id: 'software',      icono: 'fa-code',    iconoColor: '', titulo: 'Desarrollo de Software', descripcion: 'Soluciones digitales a medida: sistemas de gestión logística, control de inventario y procesos empresariales integrados.', linkText: 'Ver Detalles', enlace: '/html/desarrollo', detalle: { titulo: '', descripcion: '', imagen: '' } },
       ],
     },
     defaultDesign: { bg: '', sectionColor: '', cardBg: '', cardTitleColor: '', cardLinkColor: '', paddingY: '', titleSize: '', cardRadius: '', cardPadding: '', gap: '' },
@@ -476,11 +504,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     render: (data, design) => {
       const d = { ...SECTIONS.services.defaultData, ...data };
       const s = { ...SECTIONS.services.defaultDesign, ...design };
-      const SERVICE_ICONS = {
-        instalaciones: `<i class="fa-solid fa-server fa-2xl"></i>`,
-        soporte:       `<i class="fa-solid fa-headset fa-2xl"></i>`,
-        software:      `<i class="fa-solid fa-code fa-2xl"></i>`,
-      };
       return `
 <section id="servicios" class="services-section"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
@@ -488,13 +511,21 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       <h2 class="services-title"${css({ color: s.sectionColor, 'font-size': s.titleSize })}>${fld('titulo_seccion', esc(d.titulo_seccion))}</h2>
     </div>
     <div class="cards-grid"${css({ gap: s.gap })}>
-      ${(d.cards||[]).map((c, i) => `
+      ${(d.cards||[]).map((c, i) => {
+        const linkText = c.linkText || 'Ver Detalles';
+        const det = c.detalle || {};
+        const hasDetalle = !!(det.titulo || det.descripcion || det.imagen);
+        const detAttr = (!EDIT_MODE && hasDetalle)
+          ? ` data-svc-detalle="${esc(JSON.stringify({ titulo: det.titulo || '', descripcion: det.descripcion || '', imagen: det.imagen || '', enlace: c.enlace || '', linkText }))}"`
+          : '';
+        return `
         <div class="service-card"${css({ background: s.cardBg, 'border-radius': s.cardRadius, padding: s.cardPadding })}>
-          <div class="card-icon">${SERVICE_ICONS[c.id] || ''}</div>
+          <div class="card-icon"${css({ color: c.iconoColor })}><i class="fa-solid ${esc(serviceCardIcon(c))} fa-2xl"${fldIcon('cards.'+i)} aria-hidden="true"></i></div>
           <h3 class="card-title"${css({ color: s.cardTitleColor })}>${fld('cards.'+i+'.titulo', esc(c.titulo))}</h3>
           <p class="card-desc">${fld('cards.'+i+'.descripcion', esc(c.descripcion))}</p>
-          <a href="${esc(c.enlace||'#')}" class="card-link"${css({ color: s.cardLinkColor })}>Ver Detalles <i class="fa-solid fa-arrow-right fa-lg" aria-hidden="true"></i></a>
-        </div>`).join('')}
+          <a href="${esc(c.enlace||'#')}" class="card-link"${css({ color: s.cardLinkColor })}${detAttr}${fldLink('cards.'+i+'.enlace')}${fldDetalle('cards.'+i)}>${fld('cards.'+i+'.linkText', esc(linkText))} <i class="fa-solid fa-arrow-right fa-lg" aria-hidden="true"></i></a>
+        </div>`;
+      }).join('')}
     </div>
   </div>
 </section>`;
@@ -681,91 +712,144 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  FOOTER — copia exacta del <footer> del index actual
+  //  FOOTER (index) — replica el look del footer-full de las otras páginas
+  //  (wordmark "SISGRA" + grid Servicios/Contacto/Mapa + copyright), pero con el
+  //  CTA "Solicite un presupuesto" + WhatsApp integrado en la banda del wordmark.
+  //  Estilos en un <style> acotado (clases .sgf-*) porque el index carga
+  //  layout_home.css y NO layout.css (donde viven las clases de footer-full).
   footer: {
     label: 'Footer (index)',
-    description: 'Pie de página del index con formulario y links',
+    description: 'Pie del index: wordmark + CTA presupuesto/WhatsApp, y grid Servicios / Contacto / Mapa',
     icon: `<i class="fa-solid fa-grip-lines"></i>`,
     validTipos: ['index'],
     defaultData: {
+      wordmark: 'SISGRA',
       formTitulo: 'Solicite un presupuesto',
       formDesc: 'Cuéntenos sobre su organización. Un asesor se comunicará para recomendarle la mejor solución.',
       whatsapp: '548101220065',
       whatsappText: 'Consultar por WhatsApp',
-      formLabel: 'Complete el formulario',
-      btnEnviar: 'Enviar consulta',
-      brandImg: '/img/sisgra_blanco.png',
+      serviciosLabel: 'Servicios',
+      servicios: [
+        { label: 'Cableado Estructurado', href: '/html/cableado_estructurado' },
+        { label: 'Fibra Óptica',          href: '/html/fibra_optica' },
+        { label: 'Seguridad Electrónica', href: '/html/seguridad' },
+        { label: 'Soporte IT',            href: '/html/soporte_it' },
+        { label: 'Desarrollo de Software',href: '/html/desarrollo' },
+        { label: 'Blog',                  href: '/html/blog' },
+      ],
+      contactoLabel: 'Contacto',
+      contactoOficina: { tipo: 'Oficina',  valor: 'Lamadrid 468<br>(ZONA I) NAVE 2 - Oficina 05 - NODO ROSARIO' },
+      contactoTelefono:{ tipo: 'Teléfono', valor: '8101220065', href: 'tel:8101220065' },
+      contactoEmail:   { tipo: 'Email',    valor: 'info@sisgra.com.ar', href: 'mailto:info@sisgra.com.ar' },
+      facebookUrl: 'https://www.facebook.com/sisgra.srl',
+      mapaSrc: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3348.9!2d-60.6530!3d-32.9440!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b652f52c9a5e3b%3A0x0!2sLamadrid+468%2C+Rosario%2C+Argentina!5e0!3m2!1ses!2sar!4v1680000000000',
+      mapaLabel: 'Rosario · ARG',
       copyright: '© 2026 SISGRA S.R.L. — Todos los derechos reservados',
     },
-    defaultDesign: { topBg: '', panelLeftBg: '', panelRightBg: '', titleColor: '', descColor: '', btnWaBg: '', btnWaColor: '', submitBg: '', submitColor: '', bottomBg: '', linkColor: '', copyBg: '', copyColor: '' },
+    defaultDesign: { accentColor: '', wordmarkColor: '', textColor: '', mutedColor: '', btnWaBg: '', btnWaColor: '' },
     dataFields: [
-      { name: 'formTitulo',   label: 'Título formulario',  type: 'text' },
-      { name: 'formDesc',     label: 'Texto formulario',   type: 'textarea' },
-      { name: 'whatsapp',     label: 'Número WhatsApp',    type: 'text' },
-      { name: 'whatsappText', label: 'Texto botón WhatsApp', type: 'text' },
-      { name: 'formLabel',    label: 'Label formulario',   type: 'text' },
-      { name: 'btnEnviar',    label: 'Botón enviar',       type: 'text' },
-      { name: 'brandImg',     label: 'Logo URL',           type: 'image' },
-      { name: 'copyright',    label: 'Copyright',          type: 'text' },
+      { name: 'wordmark',        label: 'Marca grande (wordmark)',type: 'text' },
+      { name: 'formTitulo',      label: 'Título del CTA',         type: 'text' },
+      { name: 'formDesc',        label: 'Texto del CTA',          type: 'textarea' },
+      { name: 'whatsapp',        label: 'Número WhatsApp',        type: 'text' },
+      { name: 'whatsappText',    label: 'Texto botón WhatsApp',   type: 'text' },
+      { name: 'serviciosLabel',  label: 'Col 1 — Título',         type: 'text' },
+      { name: 'servicios',       label: 'Col 1 — Servicios',      type: 'link-list' },
+      { name: 'contactoLabel',   label: 'Col 2 — Título',         type: 'text' },
+      { name: 'contactoOficina', label: 'Oficina (HTML permitido)', type: 'contact-item' },
+      { name: 'contactoTelefono',label: 'Teléfono',               type: 'contact-item' },
+      { name: 'contactoEmail',   label: 'Email',                  type: 'contact-item' },
+      { name: 'facebookUrl',     label: 'URL Facebook',           type: 'text' },
+      { name: 'mapaSrc',         label: 'Col 3 — URL iframe mapa',type: 'textarea' },
+      { name: 'mapaLabel',       label: 'Label sobre el mapa',    type: 'text' },
+      { name: 'copyright',       label: 'Copyright',              type: 'text' },
     ],
     designFields: [
-      { name: 'topBg',        label: 'Fondo panel superior',     type: 'color' },
-      { name: 'panelLeftBg',  label: 'Fondo panel izquierdo',    type: 'color' },
-      { name: 'panelRightBg', label: 'Fondo panel formulario',   type: 'color' },
-      { name: 'titleColor',   label: 'Color título',             type: 'color' },
-      { name: 'descColor',    label: 'Color descripción',        type: 'color' },
-      { name: 'btnWaBg',      label: 'Botón WhatsApp — fondo',   type: 'color' },
-      { name: 'btnWaColor',   label: 'Botón WhatsApp — texto',   type: 'color' },
-      { name: 'submitBg',     label: 'Botón enviar — fondo',     type: 'color' },
-      { name: 'submitColor',  label: 'Botón enviar — texto',     type: 'color' },
-      { name: 'bottomBg',     label: 'Franja inferior — fondo',  type: 'color' },
-      { name: 'linkColor',    label: 'Color enlaces inferiores', type: 'color' },
-      { name: 'copyBg',       label: 'Fondo copyright',         type: 'color' },
-      { name: 'copyColor',    label: 'Color copyright',         type: 'color' },
+      { name: 'accentColor',   label: 'Color acento (azul)',      type: 'color' },
+      { name: 'wordmarkColor', label: 'Color marca grande',       type: 'color' },
+      { name: 'textColor',     label: 'Color texto claro',        type: 'color' },
+      { name: 'mutedColor',    label: 'Color texto apagado',      type: 'color' },
+      { name: 'btnWaBg',       label: 'Botón WhatsApp — fondo',   type: 'color' },
+      { name: 'btnWaColor',    label: 'Botón WhatsApp — texto',   type: 'color' },
     ],
     render: (data, design) => {
       const d = { ...SECTIONS.footer.defaultData, ...data };
       const s = { ...SECTIONS.footer.defaultDesign, ...design };
+      const ofi = d.contactoOficina || {}, tel = d.contactoTelefono || {}, mail = d.contactoEmail || {};
+      const accent = s.accentColor   || '#3b82f6';
+      const paper  = s.textColor     || '#f8fafc';
+      const fog    = s.mutedColor    || '#94a3b8';
+      const wm     = s.wordmarkColor || '#0f1f35';
+      const servicios = (d.servicios || []).map((sv, i) =>
+        `<li><a href="${esc(sv.href)}">${fld('servicios.' + i + '.label', esc(sv.label))}</a></li>`).join('');
       return `
-<footer>
-  <div class="footer-top"${css({ background: s.topBg })}>
-    <div class="panel-left"${css({ background: s.panelLeftBg })}>
-      <div>
-        <p class="section-label">Contacto</p>
-        <h2${css({ color: s.titleColor })}>${fld('formTitulo', esc(d.formTitulo))}</h2>
-        <p class="panel-desc"${css({ color: s.descColor })}>${fld('formDesc', esc(d.formDesc))}</p>
-      </div>
-      <div class="action-buttons">
-        <a href="https://wa.me/${esc(d.whatsapp)}" class="btn btn-whatsapp"${css({ background: s.btnWaBg, color: s.btnWaColor })}>
-          <i class="fa-brands fa-whatsapp fa-xl" aria-hidden="true"></i>
-          ${fld('whatsappText', esc(d.whatsappText))}
-        </a>
-      </div>
-    </div>
-    <div class="panel-right"${css({ background: s.panelRightBg })}>
-      <p class="form-title">${fld('formLabel', esc(d.formLabel))}</p>
-      <div class="form-grid">
-        <div class="field"><label>Nombre</label><input type="text" placeholder="Su nombre completo"/></div>
-        <div class="field"><label>Empresa</label><input type="text" placeholder="Nombre de la organización"/></div>
-        <div class="field"><label>Teléfono</label><input type="tel" placeholder="Ej.: 341 0000000"/></div>
-        <div class="field"><label>Email</label><input type="email" placeholder="nombre@empresa.com"/></div>
-        <div class="field full"><label>Mensaje</label><textarea placeholder="Cuéntenos qué necesita resolver"></textarea></div>
-      </div>
-      <button class="btn-submit"${css({ background: s.submitBg, color: s.submitColor })}>${fld('btnEnviar', esc(d.btnEnviar))}</button>
+<style>
+.sgf-foot .sgf-wm{position:relative;z-index:1;border-bottom:1px solid var(--rule);padding:42px 1.5rem 30px;display:flex;align-items:flex-end;justify-content:space-between;gap:28px;flex-wrap:wrap;}
+.sgf-foot .sgf-wm h1{font-family:"Bebas Neue",sans-serif;font-size:clamp(72px,10vw,148px);letter-spacing:.03em;line-height:.88;color:${wm};-webkit-text-stroke:1.5px rgba(242,239,232,.18);margin:0;user-select:none;transition:-webkit-text-stroke .4s;}
+.sgf-foot .sgf-wm h1:hover{-webkit-text-stroke:1.5px ${paper};}
+.sgf-foot .sgf-ctabox{display:flex;flex-direction:column;align-items:flex-start;gap:.7rem;width:800px;}
+.sgf-foot .sgf-ctabox .sgf-eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:${accent};font-weight:700;margin:0;}
+.sgf-foot .sgf-ctabox h2{font-size:1.4rem;font-weight:900;letter-spacing:-.02em;color:${paper};margin:0;}
+.sgf-foot .sgf-ctabox p{font-size:.82rem;color:${fog};line-height:1.5;margin:0;}
+.sgf-foot .sgf-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr;border-bottom:1px solid var(--rule);}
+.sgf-foot .sgf-col{padding:30px 1.5rem;border-bottom:1px solid var(--rule);}
+.sgf-foot .sgf-collabel{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:${accent};font-weight:700;margin:0 0 24px;display:flex;align-items:center;gap:10px;}
+.sgf-foot .sgf-collabel::after{content:"";flex:1;height:1px;background:${accent};opacity:.35;}
+.sgf-foot .sgf-services{list-style:none;margin:0;padding:0;}
+.sgf-foot .sgf-services li a{display:flex;align-items:center;gap:12px;text-decoration:none;color:${fog};font-size:13px;letter-spacing:.04em;padding:10px 0;border-bottom:1px solid var(--rule);transition:color .25s,gap .25s;}
+.sgf-foot .sgf-services li:last-child a{border-bottom:none;}
+.sgf-foot .sgf-services li a::before{font-family:"Font Awesome 6 Free";font-weight:900;content:"\\f061";color:${accent};font-size:11px;opacity:0;transition:opacity .25s;}
+.sgf-foot .sgf-services li a:hover{color:${paper};gap:16px;}
+.sgf-foot .sgf-services li a:hover::before{opacity:1;}
+.sgf-foot .sgf-cstack{display:flex;flex-direction:column;gap:26px;}
+.sgf-foot .sgf-citype{font-size:9px;letter-spacing:.24em;text-transform:uppercase;color:${fog};margin-bottom:6px;}
+.sgf-foot .sgf-civalue{font-size:14px;color:${paper};line-height:1.5;}
+.sgf-foot .sgf-civalue a{color:${paper};text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s,color .2s;}
+.sgf-foot .sgf-civalue a:hover{color:${accent};border-color:${accent};}
+.sgf-foot .sgf-social{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid var(--rule);color:${fog};text-decoration:none;transition:background .2s,color .2s,border-color .2s;}
+.sgf-foot .sgf-social:hover{background:${accent};color:#fff;border-color:${accent};}
+.sgf-foot .sgf-map{position:relative;overflow:hidden;height:100%;min-height:260px;border-radius:8px;}
+.sgf-foot .sgf-map iframe{width:100%;height:100%;min-height:260px;border:none;display:block;filter:grayscale(.3);}
+.sgf-foot .sgf-maplabel{position:absolute;top:16px;left:16px;background:${accent};color:#fff;font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:500;padding:6px 12px;pointer-events:none;}
+.sgf-foot .sgf-copy{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;padding:22px 1.5rem;}
+.sgf-foot .sgf-copy span{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:${fog};text-align:center;}
+@media(min-width:880px){.sgf-foot .sgf-grid{grid-template-columns:1.4fr 1fr 1.6fr;}.sgf-foot .sgf-col{border-bottom:none;border-right:1px solid var(--rule);}.sgf-foot .sgf-col:last-child{border-right:none;}}
+</style>
+<footer class="sgf-foot">
+  <div class="sgf-wm">
+    <h1>${fld('wordmark', esc(d.wordmark))}</h1>
+    <div class="sgf-ctabox">
+      <p class="sgf-eyebrow">${esc(d.contactoLabel || 'Contacto')}</p>
+      <h2>${fld('formTitulo', esc(d.formTitulo))}</h2>
+      <p>${fld('formDesc', esc(d.formDesc))}</p>
+      <a href="https://wa.me/${esc(d.whatsapp)}" class="btn btn-whatsapp"${css({ background: s.btnWaBg, color: s.btnWaColor })}>
+        <i class="fa-brands fa-whatsapp fa-xl" aria-hidden="true"></i>
+        ${fld('whatsappText', esc(d.whatsappText))}
+      </a>
     </div>
   </div>
-  <div class="footer-bottom"${css({ background: s.bottomBg })}>
-    <div class="footer-brand"><img src="${esc(d.brandImg)}" alt="SISGRA"${fldImg('brandImg')}></div>
-    <div class="footer-links">
-      <a href="/html/cableado_estructurado"${css({ color: s.linkColor })}>Cableado Estructurado</a>
-      <a href="/html/fibra_optica"${css({ color: s.linkColor })}>Fibra Óptica</a>
-      <a href="/html/seguridad"${css({ color: s.linkColor })}>Seguridad Electrónica</a>
-      <a href="/html/soporte_it"${css({ color: s.linkColor })}>Soporte IT</a>
-      <a href="/html/desarrollo"${css({ color: s.linkColor })}>Desarrollo de Software</a>
-      <a href="/html/blog"${css({ color: s.linkColor })}>Blog</a>
+  <div class="sgf-grid">
+    <div class="sgf-col">
+      <p class="sgf-collabel">${fld('serviciosLabel', esc(d.serviciosLabel))}</p>
+      <ul class="sgf-services">${servicios}</ul>
+    </div>
+    <div class="sgf-col">
+      <p class="sgf-collabel">${esc(d.contactoLabel || 'Contacto')}</p>
+      <div class="sgf-cstack">
+        <div><div class="sgf-citype">${esc(ofi.tipo || 'Oficina')}</div><div class="sgf-civalue">${fld('contactoOficina.valor', ofi.valor || '')}</div></div>
+        <div><div class="sgf-citype">${esc(tel.tipo || 'Teléfono')}</div><div class="sgf-civalue"><a href="${esc(tel.href || '#')}">${fld('contactoTelefono.valor', esc(tel.valor || ''))}</a></div></div>
+        <div><div class="sgf-citype">${esc(mail.tipo || 'Email')}</div><div class="sgf-civalue"><a href="${esc(mail.href || '#')}">${fld('contactoEmail.valor', esc(mail.valor || ''))}</a></div></div>
+        <div><div class="sgf-citype">Redes</div><a class="sgf-social" href="${esc(d.facebookUrl || '#')}" aria-label="Facebook"><i class="fa-brands fa-facebook-f" aria-hidden="true"></i></a></div>
+      </div>
+    </div>
+    <div class="sgf-col">
+      <div class="sgf-map">
+        <iframe src="${esc(d.mapaSrc)}" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Ubicación SISGRA"></iframe>
+        <div class="sgf-maplabel">${fld('mapaLabel', esc(d.mapaLabel))}</div>
+      </div>
     </div>
   </div>
-  <div class="footer-copy"${css({ background: s.copyBg })}><span${css({ color: s.copyColor })}>${fld('copyright', esc(d.copyright))}</span></div>
+  <div class="sgf-copy"><span>${fld('copyright', esc(d.copyright))}</span></div>
 </footer>`;
     },
   },

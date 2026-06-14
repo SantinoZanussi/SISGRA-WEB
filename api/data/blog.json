@@ -1,5 +1,36 @@
 {
-  "titulo_seccion": "Últimas Noticias",
+  "titulo_seccion": "Novedades & Blog",
   "visible": true,
-  "posts": []
+  "posts": [
+    {
+      "id": "cat8-plantas-industriales",
+      "titulo": "Nuevos estándares de certificación Cat8 para plantas industriales",
+      "extracto": "Cómo la infraestructura de cobre Categoría 8 habilita 40 Gbps y latencias menores a 1 ms en los entornos de alta demanda de la industria 4.0.",
+      "categoria": "Infraestructura",
+      "fecha": "2026-05-28",
+      "estado": "publicado",
+      "imagen": "",
+      "contenido": "<h2>La evolución hacia la Categoría 8</h2>\n<p>En el panorama actual de la industria 4.0, la velocidad de transmisión de datos no es solo una ventaja competitiva, sino un requisito operativo. El cableado <strong>Categoría 8 (Cat8)</strong> representa el salto más significativo en infraestructura de cobre de la última década.</p>\n<p>A diferencia de sus predecesores, Cat8 permite frecuencias de hasta 2 GHz y velocidades de 25 a 40 Gbps, lo que lo hace ideal para el backbone de centros de datos y plantas automatizadas en Rosario y la región.</p>\n<blockquote>\"La certificación no es un trámite, es el seguro de vida de su red de datos.\"</blockquote>\n<h3>Beneficios clave de la certificación profesional</h3>\n<ul>\n  <li><strong>Reducción de latencia:</strong> minimiza la retransmisión de paquetes perdidos por interferencias.</li>\n  <li><strong>Escalabilidad:</strong> prepara la planta para futuras actualizaciones de hardware sin cambiar el cableado.</li>\n  <li><strong>Cumplimiento de normas:</strong> garantiza que la instalación respeta los estándares internacionales ANSI/TIA-568, ISO/IEC 11801 y ANSI/TIA-1152-A.</li>\n</ul>\n<p>En <strong>SISGRA</strong> certificamos cada instalación con el analizador <strong>Fluke DSX-8000</strong>, entregando reportes detallados de cada nodo para asegurar que cada centímetro de su red rinda al 100% de su capacidad nominal.</p>"
+    },
+    {
+      "id": "prevenir-ransomware-redes-locales",
+      "titulo": "Cómo prevenir ataques de ransomware en redes locales",
+      "extracto": "Backups automatizados y aislados, monitoreo proactivo y segmentación de red: las claves para proteger el perímetro digital corporativo.",
+      "categoria": "Ciberseguridad",
+      "fecha": "2026-06-05",
+      "estado": "publicado",
+      "imagen": "",
+      "contenido": "<h2>El ransomware no avisa</h2>\n<p>Un solo equipo comprometido puede paralizar toda la operación de una empresa. El ransomware cifra la información crítica y la mantiene secuestrada, y en redes locales sin protección adecuada se propaga en minutos.</p>\n<h3>Las tres líneas de defensa</h3>\n<ul>\n  <li><strong>Backups automatizados y aislados:</strong> copias de seguridad fuera de línea que no pueden ser alcanzadas por el cifrado, listas para restaurar la operación sin pagar rescate.</li>\n  <li><strong>Monitoreo proactivo:</strong> vigilancia constante de servidores y terminales para detectar comportamientos anómalos antes de que escalen.</li>\n  <li><strong>Segmentación del perímetro:</strong> aislar los segmentos de red para contener cualquier incidente y evitar su propagación.</li>\n</ul>\n<p>En <strong>SISGRA</strong> implementamos estrategias de protección de datos y continuidad operativa que mantienen su infraestructura disponible el 99.9% del tiempo, con tiempos de respuesta menores a 45 minutos ante cualquier incidente.</p>"
+    },
+    {
+      "id": "integracion-erp-terminales-logistica",
+      "titulo": "Integración de sistemas ERP con terminales de logística",
+      "extracto": "Conectar el ERP con la operación en planta reduce errores de inventario y acelera la trazabilidad en terminales graneleras y depósitos inteligentes.",
+      "categoria": "Software",
+      "fecha": "2026-06-12",
+      "estado": "publicado",
+      "imagen": "",
+      "contenido": "<h2>Del dato administrativo a la operación en tiempo real</h2>\n<p>La eficiencia logística no depende solo de tener un buen ERP, sino de que ese sistema converse en tiempo real con la operación física: balanzas, PLCs, lectores y terminales de planta.</p>\n<p>Cuando la información administrativa y la operativa viven en silos separados, aparecen los errores de inventario, las demoras en la trazabilidad y los reprocesos manuales.</p>\n<h3>Qué resuelve la integración</h3>\n<ul>\n  <li><strong>Trazabilidad de punta a punta:</strong> cada movimiento de mercadería queda registrado automáticamente.</li>\n  <li><strong>Gestión de depósitos inteligentes (WMS):</strong> optimización de flujos de inventario en terminales graneleras y marítimas.</li>\n  <li><strong>Interfaz hardware-software:</strong> desarrollos a medida que conectan la maquinaria de planta con las plataformas de gestión en la nube.</li>\n</ul>\n<p>El equipo de ingeniería de <strong>SISGRA</strong> desarrolla software logístico a medida y sistemas propietarios que transforman la complejidad operativa en interfaces simples, integrando la infraestructura física con la gestión empresarial.</p>"
+    }
+  ]
 }

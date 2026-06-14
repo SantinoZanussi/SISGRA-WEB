@@ -592,6 +592,39 @@
   </div>
 </div>
 
+<!-- MODAL: Detalle de tarjeta de servicios (título / descripción / imagen) -->
+<div class="modal-overlay" id="modal-card-detalle">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <span class="modal-title"><i class="fa-solid fa-circle-info nm-title-ico fa-lg"></i> Detalle de la tarjeta</span>
+      <button class="modal-close" data-close="modal-card-detalle"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body nm-body">
+      <div class="form-hint" style="margin-bottom:1rem;">Esto se muestra en un popup cuando un visitante toca “Ver Detalles”.</div>
+      <div class="form-group nm-field">
+        <label class="form-label"><i class="fa-solid fa-heading nm-flbl-ico"></i> Título</label>
+        <input class="form-input" id="card-detalle-titulo" placeholder="Ej: Cableado Estructurado">
+      </div>
+      <div class="form-group nm-field">
+        <label class="form-label"><i class="fa-solid fa-align-left nm-flbl-ico"></i> Descripción</label>
+        <textarea class="form-input" id="card-detalle-desc" rows="5" style="resize:vertical;" placeholder="Descripción del servicio…"></textarea>
+      </div>
+      <div class="form-group nm-field">
+        <label class="form-label"><i class="fa-solid fa-image nm-flbl-ico"></i> Imagen</label>
+        <div style="display:flex;gap:.4rem;align-items:center;">
+          <input class="form-input" id="card-detalle-img" placeholder="/img/… o URL externa" style="flex:1;">
+          <button type="button" class="btn-edit-small" id="card-detalle-img-btn" title="Elegir imagen"><i class="fa-solid fa-image"></i></button>
+        </div>
+        <img id="card-detalle-img-prev" src="" alt="" style="margin-top:.5rem;max-height:120px;border:1px solid var(--slate-200);border-radius:.4rem;background:#fff;object-fit:contain;display:none;" onerror="this.style.display='none'">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" data-close="modal-card-detalle">Cancelar</button>
+      <button class="btn-save" id="card-detalle-save"><i class="fa-solid fa-check" style="margin-right:.35rem;"></i>Guardar detalle</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: Nuevo ítem del navbar -->
 <div class="modal-overlay" id="modal-navbar">
   <div class="modal" style="max-width:520px;">
@@ -607,10 +640,12 @@
       <div>
         <label class="form-label">Padre</label>
         <select class="form-input form-select" id="nav-padre-select"></select>
-        <div class="form-hint">«Raíz» lo deja en el nivel principal del menú. Si elegís otro ítem, este aparece dentro de su desplegable.</div>
+        <div class="form-hint">«0 — Sin grupo» lo deja en el nivel principal del menú. Si elegís otro ítem, este aparece dentro de su desplegable.</div>
       </div>
-      <div style="background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:.5rem;padding:.875rem;font-size:.78rem;color:#a5b4fc;line-height:1.6;">
-        Se crea una <b>página nueva en blanco</b> para este ítem. La editás desde el panel de <b>Plantillas</b>, igual que todas las demás.
+      <div>
+        <label class="form-label">Orden</label>
+        <select class="form-input form-select" id="nav-orden-select"></select>
+        <div class="form-hint">Posición en el navbar. Si elegís un lugar ocupado, los demás se corren.</div>
       </div>
     </div>
     <div class="modal-footer">
@@ -636,11 +671,12 @@
       <div>
         <label class="form-label">Padre</label>
         <select class="form-input form-select" id="nav-edit-padre-select"></select>
-        <div class="form-hint">«Raíz» lo deja en el nivel principal del menú. Si elegís otro ítem, este aparece dentro de su desplegable.</div>
+        <div class="form-hint">«0 — Sin grupo» lo deja en el nivel principal del menú. Si elegís otro ítem, este aparece dentro de su desplegable.</div>
       </div>
       <div>
         <label class="form-label">Orden</label>
-        <input class="form-input" id="nav-edit-orden" type="number" min="1">
+        <select class="form-input form-select" id="nav-edit-orden"></select>
+        <div class="form-hint">Posición en el navbar. Si elegís un lugar ocupado, los demás se corren.</div>
       </div>
       <div>
         <label class="form-label">Visibilidad</label>

@@ -6,30 +6,6 @@ const NAV_FILE = path.join(DATA_DIR, 'navbar.json');
 const PLT_FILE = path.join(DATA_DIR, 'plantillas.json');
 const HTML_DIR = path.join(__dirname, '..', '..', 'html');
 
-// Módulos globales que se inyectan en cada página nueva (compartidos).
-const GLOBAL_NAV_ID    = 1;   // id_modulo del nav global
-const GLOBAL_FOOTER_ID = 3;   // id_modulo del footer-full global
-
-// URL pública de cada plantilla según su tipo. Los tipos del sistema tienen su
-// página física en html/<tipo>/index.html; las plantillas custom (btn-*) también
-// se materializan como html/<tipo>/index.html (ver crearPlantillaCustom), así
-// andan en cualquier server estático (Live Server) sin depender de un route.
-const TIPO_PATH = {
-  index:      '/',
-  blog:       '/html/blog',
-  articulo:   '/html/articulo',
-  cliente:    '/html/cliente',
-  cableado:   '/html/cableado_estructurado',
-  fibra:      '/html/fibra_optica',
-  seguridad:  '/html/seguridad',
-  soporte:    '/html/soporte_it',
-  desarrollo: '/html/desarrollo',
-};
-const customHref = tipo => `/html/${tipo}`;
-function plantillaHref(tipo) {
-  return TIPO_PATH[tipo] || customHref(tipo);
-}
-
 // data helpers
 function readNav() {
   if (!fs.existsSync(NAV_FILE)) return { botones: [] };
@@ -43,8 +19,7 @@ function readPlantillas() {
 }
 function savePlantillas(data) { fs.writeFileSync(PLT_FILE, JSON.stringify(data, null, 2) + '\n', 'utf-8'); }
 
-const nextMenuId      = botones    => (botones.length    ? Math.max(...botones.map(b => Number(b.id_menu) || 0))      : 0) + 1;
-const nextPlantillaId = plantillas => (plantillas.length ? Math.max(...plantillas.map(p => Number(p.id_plantilla) || 0)) : 0) + 1;
+const nextMenuId = botones => (botones.length ? Math.max(...botones.map(b => Number(b.id_menu) || 0)) : 0) + 1;
 
 // Plantilla vinculada a un id_menu (vía plantilla.id_menu[]).
 function plantillaDeMenu(id_menu, plantillas) {
@@ -54,8 +29,8 @@ const esCustom = p => !!p && /^btn-/.test(p.tipo || '');
 
 // Menú jerárquico (padre/hijos)
 // El menú se modela como árbol: cada ítem tiene `padre` (id_menu de otro ítem;
-// 0 = nivel principal). Un ítem con hijos se muestra como desplegable. No hay
-// ítems especiales: cualquier ítem puede ser padre de otros.
+// 0 = nivel principal / "sin grupo"). Un ítem con hijos se muestra como
+// desplegable. No hay ítems especiales: cualquier ítem puede ser padre de otros.
 
 // Título del padre de un botón, o null si cuelga de la raíz.
 function padreTituloDe(boton, botones) {
@@ -83,70 +58,30 @@ function validarPadre(botones, padre, idPropio) {
   return id;
 }
 
+// Orden único: el `orden` de los ítems es único y contiguo (1..N). Al fijar un
+// ítem en una posición se "inserta y corre" el resto (no se intercambia) y luego
+// se reindexa todo a 1..N. Llamado sin (idMover, destino) solo normaliza.
+function reordenarBotones(botones, idMover, destino) {
+  const ordenados = botones.slice().sort((a, b) => (a.orden || 0) - (b.orden || 0));
+  if (idMover != null && destino != null) {
+    const i = ordenados.findIndex(b => b.id_menu === idMover);
+    if (i !== -1) {
+      const [item] = ordenados.splice(i, 1);
+      const pos = Math.min(Math.max(Number(destino) || 1, 1), ordenados.length + 1) - 1;
+      ordenados.splice(pos, 0, item);
+    }
+  }
+  ordenados.forEach((b, idx) => { b.orden = idx + 1; });
+}
+
 // páginas personalizadas (btn-*)
-// Shell físico html/<tipo>/index.html: un cascarón que hidrata la plantilla
-// activa de ese tipo vía bootstrapPage (igual que las páginas del sistema).
-function shellHtml(tipo, titulo) {
-  const t = String(titulo || 'SISGRA S.R.L.').replace(/</g, '&lt;');
-  return `<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${t} — SISGRA S.R.L.</title>
-  <meta name="description" content="">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="icon" href="/img/sdesigra.png">
-  <link rel="stylesheet" href="/css/base.css">
-  <link rel="stylesheet" href="/css/layout.css">
-  <link rel="stylesheet" href="/css/components.css">
-</head>
-<body>
-<!-- SHELL — página personalizada "${tipo}", controlada desde el admin -->
-<div id="plantilla-root">
-  <div style="padding:6rem 2rem;text-align:center;color:#94a3b8;font-family:'Inter',system-ui,sans-serif;letter-spacing:.15em;text-transform:uppercase;font-size:.75rem;">Cargando…</div>
-</div>
-<script type="module">
-  import { bootstrapPage } from '/services/page-bootstrap.js';
-  bootstrapPage('${tipo}', 'plantilla-root');
-</script>
-</body>
-</html>
-`;
-}
-
-function escribirShellCustom(tipo, titulo) {
-  const dir = path.join(HTML_DIR, tipo);
-  try {
-    fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(path.join(dir, 'index.html'), shellHtml(tipo, titulo), 'utf-8');
-  } catch (e) { console.warn('[navController] No se pudo escribir el shell custom:', e.message); }
-}
-
+// Al eliminar un ítem que apunta a una página personalizada (btn-*) se borra
+// también su shell físico html/<tipo>/index.html. (Los ítems nuevos ya no crean
+// páginas automáticamente; las páginas se gestionan desde el panel de Plantillas.)
 function borrarShellCustom(tipo) {
   const dir = path.join(HTML_DIR, tipo);
   try { if (fs.existsSync(dir)) fs.rmSync(dir, { recursive: true, force: true }); }
   catch (e) { console.warn('[navController] No se pudo borrar el shell custom:', e.message); }
-}
-
-// Crea la plantilla custom (btn-N) + su shell físico. Devuelve el tipo.
-function crearPlantillaCustom(pltData, id_menu, titulo) {
-  const now  = new Date().toISOString();
-  const tipo = `btn-${id_menu}`;
-  pltData.plantillas.push({
-    id_plantilla: nextPlantillaId(pltData.plantillas),
-    tipo,
-    nombre: (titulo || 'Página').trim() + ' — página personalizada',
-    descripcion: 'Página personalizada generada automáticamente.',
-    activa: true,
-    id_menu: [id_menu],
-    id_modulos: [GLOBAL_NAV_ID, GLOBAL_FOOTER_ID],
-    contenedores: [[GLOBAL_NAV_ID], [GLOBAL_FOOTER_ID]],
-    creado_en: now,
-    editado_en: now,
-  });
-  escribirShellCustom(tipo, titulo);
-  return tipo;
 }
 
 // controllers
@@ -171,8 +106,9 @@ exports.listarBotones = (_req, res) => {
 };
 
 // POST /api/nav/botones  [auth]
-// Body: { titulo, padre?, orden?, activo? }. Crea siempre la página propia del
-// ítem (plantilla btn-N + shell), que se edita desde el panel de Plantillas.
+// Body: { titulo, padre?, orden?, activo? }. Crea SOLO el ítem de menú: ya no se
+// genera una plantilla/página automáticamente (la página se vincula aparte desde
+// el panel de Plantillas). El ítem nace sin href.
 exports.crearBoton = (req, res) => {
   const { titulo, padre, orden, activo } = req.body || {};
   if (!titulo || !titulo.trim()) return res.status(400).json({ error: 'El campo "titulo" es obligatorio' });
@@ -182,20 +118,18 @@ exports.crearBoton = (req, res) => {
   if (padreId === null) return res.status(400).json({ error: 'El "padre" indicado no existe' });
 
   const id_menu = nextMenuId(data.botones);
-  const pltData = readPlantillas();
-  const tipo = crearPlantillaCustom(pltData, id_menu, titulo.trim());
-  savePlantillas(pltData);
-
   const nuevo = {
     id_menu,
     titulo: titulo.trim(),
     padre:  padreId,
     menu:   'CE',
-    href:   customHref(tipo),
-    orden:  orden ?? (data.botones.length + 1),
+    href:   null,                      // sin página: ya no se auto-genera una plantilla
+    orden:  data.botones.length + 1,   // por defecto al final; reordenarBotones lo normaliza
     activo: activo !== undefined ? activo : true,
   };
   data.botones.push(nuevo);
+  // Si pidieron una posición puntual, insertar y correr; si no, queda al final.
+  reordenarBotones(data.botones, id_menu, orden != null ? Number(orden) : null);
   saveNav(data);
 
   res.status(201).json({ ok: true, boton: { ...nuevo, padreTitulo: padreTituloDe(nuevo, data.botones) } });
@@ -209,7 +143,7 @@ exports.actualizarBoton = (req, res) => {
   const b = data.botones.find(x => x.id_menu === id);
   if (!b) return res.status(404).json({ error: 'Ítem no encontrado' });
 
-  ['titulo', 'orden', 'activo'].forEach(f => {
+  ['titulo', 'activo'].forEach(f => {
     if (req.body[f] !== undefined) b[f] = req.body[f];
   });
 
@@ -217,6 +151,11 @@ exports.actualizarBoton = (req, res) => {
     const padreId = validarPadre(data.botones, req.body.padre, id);
     if (padreId === null) return res.status(400).json({ error: 'Padre inválido: no existe o crea un ciclo' });
     b.padre = padreId;
+  }
+
+  // El orden es único: fijar la posición "inserta y corre" y reindexa 1..N.
+  if (req.body.orden !== undefined) {
+    reordenarBotones(data.botones, id, Number(req.body.orden));
   }
 
   saveNav(data);
@@ -250,6 +189,8 @@ exports.eliminarBoton = (req, res) => {
   data.botones = data.botones.filter(x => x.id_menu !== id);
   // Subir los hijos del ítem borrado al nivel principal (no perderlos).
   data.botones.forEach(x => { if ((x.padre || 0) === id) x.padre = 0; });
+  // Mantener el orden único y contiguo tras quitar el ítem.
+  reordenarBotones(data.botones, null, null);
   saveNav(data);
 
   res.json({ ok: true, plantillaEliminada });

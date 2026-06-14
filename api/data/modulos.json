@@ -8,7 +8,7 @@
         "logoSrc": "/img/sisgra_blanco.png",
         "logoSrcHref": "/",
         "ctaLabel": "Contáctese",
-        "ctaHref": "https://wa.me/548101220065",
+        "ctaHref": "#contacto",
         "items": [
           {
             "tipo": "dropdown",
@@ -88,11 +88,16 @@
       "data": {
         "formTitulo": "Solicite un presupuesto",
         "formDesc": "Cuéntenos sobre su organización. Un asesor se comunicará para recomendarle la mejor solución.",
-        "whatsapp": "548101220065",
+        "whatsapp": "543418610863",
         "whatsappText": "Consultar por WhatsApp",
         "formLabel": "Complete el formulario",
         "btnEnviar": "Enviar consulta",
         "brandImg": "/img/sisgra_blanco.png",
+        "contactoTelefono": {
+          "tipo": "Teléfono",
+          "valor": "(+54 341) 421-9570",
+          "href": "tel:+543414219570"
+        },
         "copyright": "© 2026 SISGRA S.R.L. — Todos los derechos reservados"
       },
       "design": {},
@@ -104,7 +109,14 @@
       "id_modulo": 3,
       "tipo": "footer-full",
       "nombre": "Footer completo — global",
-      "data": {},
+      "data": {
+        "whatsapp": "543418610863",
+        "contactoTelefono": {
+          "tipo": "Teléfono",
+          "valor": "(+54 341) 421-9570",
+          "href": "tel:+543414219570"
+        }
+      },
       "design": {},
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
@@ -115,10 +127,10 @@
       "tipo": "hero",
       "nombre": "Hero 1",
       "data": {
-        "badge": "INFRAESTRUCTURA DE ELITE",
-        "titulo1": "hola",
-        "titulo2": "marce",
-        "descripcion": "Descripción del hero. Editá este texto haciendo clic directamente sobre él.",
+        "badge": "INTEGRANDO EL FUTURO",
+        "titulo1": "Conectamos el futuro",
+        "titulo2": "de su empresa.",
+        "descripcion": "Integramos infraestructura física crítica e ingeniería de software para las empresas líderes de Rosario y la región. 25 años de trayectoria y más de 500 clientes nos respaldan.",
         "boton_primario": "Ver Soluciones",
         "boton_secundario": "Conocer más",
         "stat1_numero": "+25",
@@ -286,7 +298,7 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-11T18:38:14.773Z",
+      "editado_en": "2026-06-14T21:29:13.926Z",
       "id_pagina": 1
     },
     {
@@ -296,7 +308,7 @@
       "data": {
         "eyebrow": "Excelencia Corporativa",
         "titulo": "Liderando la industria\ndesde el año 1999.",
-        "descripcion": "En SISGRA, entendemos que la infraestructura crítica no permite errores. Nos dedicamos a integrar soluciones que garantizan la continuidad operativa y la escalabilidad técnica de su negocio.",
+        "descripcion": "En SISGRA entendemos que la infraestructura crítica no permite errores. Como empresa pionera del Polo Tecnológico Rosario (Zona i), logramos la convergencia entre la infraestructura física y la ingeniería de software, garantizando la continuidad operativa y la escalabilidad técnica de su negocio.",
         "imagen": "/img/img1.png"
       },
       "design": {
@@ -523,7 +535,17 @@
           {
             "iconType": "camera",
             "titulo": "Video Vigilancia IP (CCTV)",
-            "desc": "Sistemas 4K con análisis de video inteligente."
+            "desc": "Cámaras 4K con análisis de video inteligente y monitoreo en tiempo real."
+          },
+          {
+            "iconType": "shield",
+            "titulo": "Alarmas contra Intrusión e Incendio",
+            "desc": "Sensores y centrales para protección perimetral y detección temprana."
+          },
+          {
+            "iconType": "check",
+            "titulo": "Control de Acceso Escalable",
+            "desc": "Desde unas pocas puertas hasta miles de puntos de entrada seguros en red."
           }
         ],
         "imagenUrl": "/img/seguridadelectronica.png",
@@ -607,27 +629,26 @@
           {
             "iconType": "chart",
             "titulo": "Software Logístico a Medida",
-            "desc": "Optimización de flujos de inventario, trazabilidad y gestión de depósitos inteligentes."
+            "desc": "Sistemas WMS, control del flujo de camiones, posicionamiento de contenedores y gestión de depósitos para terminales graneleras y puertos."
           },
           {
             "iconType": "database",
-            "titulo": "ERP / CRM",
-            "desc": "Sistemas centralizados para el control total de operaciones comerciales."
+            "titulo": "Sistemas de Gestión Propios",
+            "desc": "Plataformas propias: Tifon ERP (gestión integral para PyMEs), PlusAgro (gestión agropecuaria) y Qnet (logística de turnos y flotas)."
           },
           {
             "iconType": "gear",
-            "titulo": "IoT & Automatización",
-            "desc": "Integración entre hardware y software inteligente basado en datos."
+            "titulo": "Integración OT / IT e IoT",
+            "desc": "Interfaces en C/C++ que conectan PLCs, balanzas y maquinaria de planta con plataformas de datos en la nube."
           }
         ],
         "btnCta": "Consultar Desarrollo",
         "btnCtaHref": "#",
-        "editorLabel": "SISGRA_CORE_V2.0 / LOGISTICS_MODULE",
+        "editorLabel": "SISGRA_CORE / LOGISTICS_WMS",
         "codeRows": [
-          "class SecuritySystem {",
-          "public function connectDevices() {",
-          "return SUCCESS;",
-          "}"
+          "def asignar_turno(camion, terminal):",
+          "    ruta = optimizar_picking(camion)",
+          "    return terminal.confirmar(ruta)"
         ]
       },
       "design": {
@@ -1566,9 +1587,9 @@
       "nombre": "Nosotros",
       "id_pagina": 1,
       "data": {
-        "eyebrow": "Excelencia Corporativa",
+        "eyebrow": "Quiénes somos",
         "titulo": "Liderando la industria\ndesde el año 1999.",
-        "descripcion": "En SISGRA, entendemos que la infraestructura crítica no permite errores. Cada proyecto atraviesa un riguroso proceso de planificación, ejecución certificada y soporte post-instalación que garantiza resultados duraderos para su organización.",
+        "descripcion": "SISGRA S.R.L. nació en 1999 en Rosario y es hoy una de las empresas pioneras del Polo Tecnológico Rosario (Zona i). Nos especializamos en la convergencia entre la infraestructura física crítica —cableado estructurado, fibra óptica y seguridad electrónica— y la ingeniería de software, ofreciéndoles a más de 500 clientes una solución integral de un solo proveedor. Cada proyecto atraviesa un riguroso proceso de planificación, ejecución certificada y soporte post-instalación que garantiza la continuidad operativa y la escalabilidad técnica de su organización.",
         "imagen": "/img/img1.png"
       },
       "design": {
@@ -1607,7 +1628,7 @@
           {
             "etiqueta": "Empresa",
             "tipo": "text",
-            "requerido": false
+            "requerido": true
           },
           {
             "etiqueta": "Email",
@@ -1617,12 +1638,12 @@
           {
             "etiqueta": "Teléfono",
             "tipo": "tel",
-            "requerido": false
+            "requerido": true
           },
           {
             "etiqueta": "Mensaje",
             "tipo": "textarea",
-            "requerido": false
+            "requerido": true
           }
         ]
       },
@@ -1650,6 +1671,46 @@
       "alerta": false,
       "creado_en": "2026-06-11T19:11:00.554Z",
       "editado_en": "2026-06-11T19:11:12.005Z"
+    },
+    {
+      "id_modulo": 44,
+      "tipo": "spacer",
+      "nombre": "Espaciador 2",
+      "id_pagina": "all",
+      "data": {
+        "height": 120
+      },
+      "design": {
+        "bg": "#ffffff",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-14T20:38:49.435Z",
+      "editado_en": "2026-06-14T20:38:58.196Z"
+    },
+    {
+      "id_modulo": 45,
+      "tipo": "spacer",
+      "nombre": "Espaciador 3",
+      "id_pagina": "all",
+      "data": {
+        "height": 180
+      },
+      "design": {
+        "bg": "#ffffff",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-14T20:54:20.122Z",
+      "editado_en": "2026-06-14T20:54:38.354Z"
     }
   ]
 }

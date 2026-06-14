@@ -24,7 +24,7 @@
       "padre": 0,
       "menu": "CE",
       "href": null,
-      "orden": 3,
+      "orden": 4,
       "activo": true
     },
     {
@@ -33,7 +33,7 @@
       "padre": 10,
       "menu": "CE",
       "href": "/html/cableado_estructurado",
-      "orden": 3,
+      "orden": 5,
       "activo": true
     },
     {
@@ -42,7 +42,7 @@
       "padre": 10,
       "menu": "CE",
       "href": "/html/fibra_optica",
-      "orden": 4,
+      "orden": 6,
       "activo": true
     },
     {
@@ -51,7 +51,7 @@
       "padre": 10,
       "menu": "CE",
       "href": "/html/seguridad",
-      "orden": 5,
+      "orden": 7,
       "activo": true
     },
     {
@@ -60,7 +60,7 @@
       "padre": 0,
       "menu": "CE",
       "href": "/html/soporte_it",
-      "orden": 6,
+      "orden": 8,
       "activo": true
     },
     {
@@ -69,7 +69,7 @@
       "padre": 0,
       "menu": "CE",
       "href": "/html/desarrollo",
-      "orden": 7,
+      "orden": 9,
       "activo": true
     },
     {
@@ -78,8 +78,8 @@
       "padre": 0,
       "menu": "CE",
       "href": "/html/btn-8",
-      "orden": 9,
-      "activo": true
+      "orden": 10,
+      "activo": false
     },
     {
       "id_menu": 9,
@@ -88,15 +88,6 @@
       "menu": "CE",
       "href": "/html/btn-9",
       "orden": 2,
-      "activo": true
-    },
-    {
-      "id_menu": 11,
-      "titulo": "Contáctese",
-      "padre": 0,
-      "menu": "CE",
-      "href": "/html/btn-11",
-      "orden": 10,
       "activo": true
     }
   ]

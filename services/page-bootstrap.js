@@ -237,6 +237,8 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
     bindMobileDrawer();
     bindContactForm();
     bindFormularioModules(tipo);
+    bindNavContacto(tipo);
+    bindServiciosDetalle();
     applyGlobalContactoSEO(tipo);
     hydrateBlogList();
     hydrateBlogCards();
@@ -349,6 +351,194 @@ function bindFormularioModules(tipo) {
       }
     });
   });
+}
+
+// Botón "Contáctese" del navbar (CTA): si su href es '#contacto', en vez de
+// navegar abre un modal con un formulario. El formulario es CONFIGURABLE desde el
+// admin: se renderiza a partir del primer módulo de tipo 'formulario' (editás sus
+// campos/labels desde el catálogo de módulos). Los envíos van a POST /api/contactos
+// (el backend los guarda en contactos_log.json estado "pendiente" hasta que se
+// defina el endpoint externo). Si el CTA tiene cualquier otra URL, navega normal.
+let _contactoModalPromise = null;
+function bindNavContacto(tipo) {
+  const triggers = Array.from(document.querySelectorAll('a.btn-contact, a.nav-mobile-cta'))
+    .filter(a => (a.getAttribute('href') || '').trim() === '#contacto');
+  if (!triggers.length) return;
+
+  // Prefetch del modal (trae la config del módulo) para que esté listo al click.
+  _contactoModalPromise = _contactoModalPromise || buildContactoModal(tipo);
+  triggers.forEach(a => a.addEventListener('click', async e => {
+    e.preventDefault();
+    const modal = await _contactoModalPromise;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }));
+}
+
+// Config del formulario de contacto: el primer módulo 'formulario' del catálogo
+// (editable desde el admin). Si no hay ninguno, usa campos por defecto.
+async function fetchContactoFormConfig() {
+  const fallback = {
+    titulo: 'Contáctese',
+    descripcion: 'Complete el formulario y un asesor se comunicará a la brevedad.',
+    btn: 'Enviar consulta',
+    successMsg: '✓ Recibimos su consulta. Le responderemos a la brevedad.',
+    campos: [
+      { etiqueta: 'Nombre',   tipo: 'text',     requerido: true },
+      { etiqueta: 'Empresa',  tipo: 'text',     requerido: true },
+      { etiqueta: 'Email',    tipo: 'email',    requerido: true },
+      { etiqueta: 'Teléfono', tipo: 'tel',      requerido: true },
+      { etiqueta: 'Mensaje',  tipo: 'textarea', requerido: true },
+    ],
+  };
+  try {
+    const r = await fetch(`${API_BASE}/modulos`, { cache: 'no-store' });
+    if (!r.ok) throw 0;
+    const data = await r.json();
+    const list = Array.isArray(data) ? data : (data.modulos || []);
+    const mod = list.find(m => m.tipo === 'formulario');
+    if (mod && mod.data && Array.isArray(mod.data.campos) && mod.data.campos.length) {
+      return { ...fallback, ...mod.data };
+    }
+  } catch (_) { /* sin API/módulo: fallback */ }
+  return fallback;
+}
+
+// Crea (una sola vez) el modal del formulario de contacto y lo cablea. Estilos
+// inline porque el sitio público no carga el CSS de modales del admin.
+async function buildContactoModal(tipo) {
+  const cfg = await fetchContactoFormConfig();
+  const inputStyle = 'width:100%;box-sizing:border-box;padding:.7rem .85rem;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;font-size:.9rem;color:#0f172a;background:#fff;outline:none;';
+  const labelStyle = 'display:block;font-size:.72rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#334155;margin-bottom:.35rem;';
+  const slug = t => String(t || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'campo';
+  const camposHtml = (cfg.campos || []).map((c, i) => {
+    const name = slug(c.etiqueta) || `campo_${i}`;
+    const req  = c.requerido ? ' required' : '';
+    const star = c.requerido ? ' <span style="color:#ef4444;">*</span>' : '';
+    const input = c.tipo === 'textarea'
+      ? `<textarea name="${name}" data-etiqueta="${esc(c.etiqueta)}" rows="4" style="${inputStyle}resize:vertical;"${req}></textarea>`
+      : `<input name="${name}" data-etiqueta="${esc(c.etiqueta)}" type="${esc(c.tipo || 'text')}" style="${inputStyle}"${req}>`;
+    return `<div style="margin-bottom:1rem;"><label style="${labelStyle}">${esc(c.etiqueta)}${star}</label>${input}</div>`;
+  }).join('');
+
+  const modal = document.createElement('div');
+  modal.id = 'nav-contacto-modal';
+  modal.style.cssText = "position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(10,29,55,.7);padding:1rem;font-family:'Inter',system-ui,sans-serif;";
+  modal.innerHTML = `
+    <div role="dialog" aria-modal="true" style="background:#fff;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;border-radius:12px;box-shadow:0 25px 60px rgba(0,0,0,.35);">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid #e2e8f0;">
+        <h3 style="margin:0;font-size:1.15rem;font-weight:900;color:#0A1D37;letter-spacing:-.02em;">${esc(cfg.titulo || 'Contáctese')}</h3>
+        <button type="button" data-contacto-close aria-label="Cerrar" style="border:none;background:none;font-size:1.6rem;line-height:1;color:#94a3b8;cursor:pointer;">&times;</button>
+      </div>
+      <form data-contacto-form style="padding:1.5rem;">
+        <p style="margin:0 0 1.25rem;color:#475569;font-size:.9rem;line-height:1.5;">${esc(cfg.descripcion || '')}</p>
+        ${camposHtml}
+        <button type="submit" style="width:100%;background:#2563eb;color:#fff;border:none;cursor:pointer;padding:.85rem 1.5rem;font-size:.72rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;border-radius:6px;font-family:inherit;">${esc(cfg.btn || 'Enviar consulta')}</button>
+        <div data-contacto-ok style="display:none;margin-top:1rem;padding:.75rem 1rem;background:#dcfce7;color:#166534;border-radius:6px;font-size:.875rem;">${esc(cfg.successMsg || '✓ Recibimos su consulta.')}</div>
+        <div data-contacto-err style="display:none;margin-top:1rem;padding:.75rem 1rem;background:#fee2e2;color:#991b1b;border-radius:6px;font-size:.875rem;">No se pudo enviar el formulario. Intentá de nuevo en unos minutos.</div>
+      </form>
+    </div>`;
+  document.body.appendChild(modal);
+
+  const close = () => { modal.style.display = 'none'; document.body.style.overflow = ''; };
+  modal.querySelector('[data-contacto-close]').addEventListener('click', close);
+  modal.addEventListener('click', e => { if (e.target === modal) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.style.display === 'flex') close(); });
+
+  const form = modal.querySelector('[data-contacto-form]');
+  const ok   = modal.querySelector('[data-contacto-ok]');
+  const err  = modal.querySelector('[data-contacto-err]');
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    const campos = {};
+    form.querySelectorAll('input[name],textarea[name]').forEach(el => {
+      campos[el.dataset.etiqueta || el.name] = el.value;
+    });
+    ok.style.display = 'none';
+    err.style.display = 'none';
+    try {
+      const r = await fetch(`${API_BASE}/contactos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ campos, pagina: tipo || window.location.pathname, formulario: 'navbar' }),
+      });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      form.reset();
+      ok.style.display = '';
+    } catch (_) {
+      err.style.display = '';
+    }
+  });
+
+  return modal;
+}
+
+// ── Servicios: popup "Ver Detalles" ─────────────────────────────────────────
+// Cada tarjeta de la sección de servicios que tenga contenido de detalle
+// (título/descripción/imagen) lleva un `data-svc-detalle` con ese contenido.
+// Al hacer click en "Ver Detalles" abrimos un popup en vez de navegar. Si la
+// tarjeta no tiene detalle, el enlace navega normalmente a su URL.
+function bindServiciosDetalle() {
+  const links = document.querySelectorAll('.services-section a.card-link[data-svc-detalle]');
+  links.forEach(a => {
+    a.addEventListener('click', e => {
+      let d;
+      try { d = JSON.parse(a.getAttribute('data-svc-detalle')); } catch (_) { return; }
+      if (!d || !(d.titulo || d.descripcion || d.imagen)) return;
+      e.preventDefault();
+      openServiciosDetalle(d);
+    });
+  });
+}
+
+let _svcDetalleModal = null;
+function ensureServiciosDetalleModal() {
+  if (_svcDetalleModal) return _svcDetalleModal;
+  const modal = document.createElement('div');
+  modal.id = 'svc-detalle-modal';
+  modal.style.cssText = "position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(10,29,55,.7);padding:1rem;font-family:'Inter',system-ui,sans-serif;";
+  modal.innerHTML = `
+    <div role="dialog" aria-modal="true" style="background:#fff;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;border-radius:14px;box-shadow:0 25px 60px rgba(0,0,0,.35);">
+      <div style="position:relative;">
+        <img data-svc-img alt="" style="display:none;width:100%;max-height:280px;object-fit:cover;border-radius:14px 14px 0 0;"/>
+        <button type="button" data-svc-close aria-label="Cerrar" style="position:absolute;top:.75rem;right:.75rem;width:36px;height:36px;border:none;border-radius:50%;background:rgba(10,29,55,.55);color:#fff;font-size:1.2rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;">&times;</button>
+      </div>
+      <div style="padding:1.85rem 1.9rem 2rem;">
+        <h3 data-svc-titulo style="font-size:1.6rem;font-weight:900;letter-spacing:-.02em;color:#0A1D37;margin:0 0 .9rem;"></h3>
+        <p data-svc-desc style="font-size:.975rem;line-height:1.65;color:#475569;margin:0 0 1.6rem;white-space:pre-line;"></p>
+        <a data-svc-cta style="display:none;align-items:center;gap:.6rem;background:#2563eb;color:#fff;padding:.8rem 1.7rem;font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;text-decoration:none;border-radius:7px;"></a>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  const close = () => { modal.style.display = 'none'; document.body.style.overflow = ''; };
+  modal.querySelector('[data-svc-close]').addEventListener('click', close);
+  modal.addEventListener('click', e => { if (e.target === modal) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.style.display === 'flex') close(); });
+  _svcDetalleModal = modal;
+  return modal;
+}
+
+function openServiciosDetalle(d) {
+  const modal = ensureServiciosDetalleModal();
+  const img = modal.querySelector('[data-svc-img]');
+  if (d.imagen) { img.src = d.imagen; img.style.display = ''; } else { img.removeAttribute('src'); img.style.display = 'none'; }
+  modal.querySelector('[data-svc-titulo]').textContent = d.titulo || '';
+  modal.querySelector('[data-svc-desc]').textContent = d.descripcion || '';
+  const cta = modal.querySelector('[data-svc-cta]');
+  if (d.enlace && d.enlace !== '#') {
+    cta.href = d.enlace;
+    cta.style.display = 'inline-flex';
+    cta.textContent = (d.linkText || 'Ver más') + ' ';
+    const arrow = document.createElement('i');
+    arrow.className = 'fa-solid fa-arrow-right';
+    cta.appendChild(arrow);
+  } else {
+    cta.style.display = 'none';
+  }
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
 }
 
 // Hidratar [data-blog-list] desde /api/data/blog
