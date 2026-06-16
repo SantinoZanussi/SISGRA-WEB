@@ -156,39 +156,54 @@ function modulesForTipo(_tipo) {
 const pageKey = s => String(s ?? '').replace(/^\//, '').replace(/\.html$/, '') || 'index';
 
 // Tipo select populate
-// Llena el <select> de "HTML destino" mostrando SOLO el nombre de la página y
-// agrupando las que pertenecen a un grupo del navbar (p.ej. "Instalaciones")
-// dentro de un <optgroup>. El grupo sale de navbar.json (campo `grupo`), unido a
-// cada página por su slug (href ↔ file). Las páginas que no están en el menú
-// (Artículo, Perfil de Cliente) aparecen sueltas.
+// Llena el <select> de "HTML destino" a partir de los ÍTEMS DEL NAVBAR (así las
+// pestañas recién creadas aparecen como destino). Cada ítem del menú es una
+// página posible: si ya tiene una plantilla vinculada (por id_menu) se usa su
+// tipo; si no, es una página personalizada nueva → `btn-{id_menu}`. Los ítems
+// con hijos (desplegables, p.ej. "Instalaciones") se muestran como <optgroup> con
+// sus hijos adentro. Al final se agregan las páginas del sistema que no están en
+// el menú (Artículo, Perfil de Cliente). El id_menu viaja en `data-idmenu` para
+// que crearPlantilla vincule la página con su pestaña.
 function populateTipoSelect() {
   const sel = document.getElementById('np-tipo');
   if (!sel) return;
 
-  // slug de página → título del contenedor padre del navbar (null si el ítem es
-  // de nivel principal o no está en el menú). El menú es jerárquico: cada ítem
-  // tiene `padre` (id_menu de su contenedor; 0 = suelto) — ver page-bootstrap.
   const botones = e3.navbar || [];
-  const grupoPorPagina = {};
-  botones.forEach(b => {
-    if (!b.href) return;   // los contenedores (encabezados de submenú) no tienen href
-    const padre = botones.find(x => x.id_menu === (b.padre || 0));
-    grupoPorPagina[pageKey(b.href)] = padre?.titulo || null;
-  });
-  const grupoDe = t => grupoPorPagina[pageKey(t.file)] ?? null;
+  // tipo de un ítem: el de su plantilla vinculada, o btn-{id_menu} si no tiene.
+  const plantillaDeMenu = idm => (e3.plantillas || []).find(p => (p.id_menu || []).includes(idm));
+  const tipoDeItem = b => { const p = plantillaDeMenu(b.id_menu); return p ? p.tipo : `btn-${b.id_menu}`; };
 
-  const opt = t => `<option value="${t.value}">${escAttr(t.label)}</option>`;
+  const hijosDe = id => botones.filter(b => (b.padre || 0) === id).sort((a, b) => (a.orden || 0) - (b.orden || 0));
+  const top     = botones.filter(b => (b.padre || 0) === 0).sort((a, b) => (a.orden || 0) - (b.orden || 0));
+
+  const opt = (tipo, label, idmenu) =>
+    `<option value="${escAttr(tipo)}"${idmenu != null ? ` data-idmenu="${idmenu}"` : ''}>${escAttr(label)}</option>`;
+
+  const emitidos = new Set();   // tipos ya agregados (evita duplicar con TIPOS_HTML)
   let html = '<option value="">— Seleccionar página destino —</option>';
-  const emitidos = new Set();
+
+  top.forEach(b => {
+    const hijos = hijosDe(b.id_menu);
+    if (hijos.length) {
+      // Contenedor desplegable → optgroup; sus hijos son las páginas.
+      const inner = hijos.map(h => {
+        const tipo = tipoDeItem(h); emitidos.add(tipo);
+        return opt(tipo, h.titulo, h.id_menu);
+      }).join('');
+      html += `<optgroup label="${escAttr(b.titulo)}">${inner}</optgroup>`;
+    } else {
+      const tipo = tipoDeItem(b); emitidos.add(tipo);
+      html += opt(tipo, b.titulo, b.id_menu);
+    }
+  });
+
+  // Páginas del sistema que no están en el menú (Artículo, Perfil de Cliente).
   TIPOS_HTML.forEach(t => {
     if (emitidos.has(t.value)) return;
-    const grupo = grupoDe(t);
-    if (!grupo) { html += opt(t); emitidos.add(t.value); return; }
-    // Primer miembro del grupo: emitir todo el grupo junto, en orden de TIPOS_HTML.
-    const miembros = TIPOS_HTML.filter(x => grupoDe(x) === grupo);
-    html += `<optgroup label="${escAttr(grupo)}">${miembros.map(opt).join('')}</optgroup>`;
-    miembros.forEach(x => emitidos.add(x.value));
+    emitidos.add(t.value);
+    html += opt(t.value, t.label, null);
   });
+
   sel.innerHTML = html;
 }
 
@@ -427,11 +442,12 @@ function renderSidebarList() {
 }
 
 // Modal
-function openNuevaModal(preTipo = '') {
+async function openNuevaModal(preTipo = '') {
   document.getElementById('np-name').value = '';
   document.getElementById('np-desc').value = '';
-  // Repoblamos acá para reflejar los grupos del navbar ya cargado (en initE3
-  // el navbar todavía puede estar vacío).
+  // Releemos el navbar al abrir para reflejar las pestañas recién creadas en el
+  // selector de "HTML destino" (si no, quedaba con la copia vieja de e3.navbar).
+  try { const nav = await api('GET', '/data/navbar'); e3.navbar = nav.botones || e3.navbar; } catch (_) {}
   populateTipoSelect();
   const tipoSel = document.getElementById('np-tipo');
   if (tipoSel) tipoSel.value = preTipo;
@@ -441,12 +457,19 @@ function openNuevaModal(preTipo = '') {
 
 async function crearPlantilla() {
   const nombre = document.getElementById('np-name').value.trim();
-  const tipo = document.getElementById('np-tipo')?.value || '';
+  const sel = document.getElementById('np-tipo');
+  const tipo = sel?.value || '';
+  // La opción lleva el id_menu de su pestaña del navbar (data-idmenu): se manda
+  // para vincular la página con esa pestaña (y, en custom btn-*, el backend le
+  // pone el href para que el menú la enlace).
+  const idmenu = sel?.selectedOptions?.[0]?.dataset?.idmenu;
   const descripcion = document.getElementById('np-desc').value.trim();
   if (!nombre) return notif('El nombre es requerido', 'error');
   if (!tipo) return notif('Seleccioná el HTML destino', 'error');
   try {
-    const { plantilla } = await api('POST', '/plantillas', { nombre, tipo, descripcion });
+    const body = { nombre, tipo, descripcion };
+    if (idmenu) body.id_menu = [Number(idmenu)];
+    const { plantilla } = await api('POST', '/plantillas', body);
     e3.plantillas.push(plantilla);
     document.getElementById('modal-nueva-plantilla').classList.remove('open');
     renderOverview(); renderSidebarList();
@@ -1534,17 +1557,25 @@ function _navInfoDePlantilla(id_plantilla) {
   const item   = idMenu != null ? _navbar.find(b => b.id_menu === idMenu) : null;
   const padre  = item?.padre ? _navbar.find(b => b.id_menu === item.padre) : null;
   return {
+    item,   // null si la plantilla no existe o no corresponde a un ítem del navbar
     titulo: item?.titulo || p?.nombre || String(id_plantilla),
     grupo:  padre?.titulo || '',
     orden:  item?.orden ?? 999,
   };
 }
 
-/* Ítem(s) del navbar a los que pertenece un módulo (o '' si no tiene). */
+/* Ítem(s) del navbar a los que pertenece un módulo (o '' si no tiene ninguno
+   válido). Solo cuenta plantillas que resuelven a un ítem REAL del navbar: una
+   referencia a una plantilla inexistente o sin ítem (ej: id_pagina viejo) se
+   ignora en vez de mostrar el id crudo (ej: «13»). */
 function _paginaLabel(id_pagina) {
   const pags = _paginasDe(id_pagina);
   if (pags === 'all') return 'Todas las páginas';
-  return pags.map(id => _navInfoDePlantilla(id).titulo).join(', ');
+  return pags
+    .map(id => _navInfoDePlantilla(id))
+    .filter(nav => nav.item)
+    .map(nav => nav.titulo)
+    .join(', ');
 }
 
 /* Badge "a dónde pertenece": muestra la página asignada del módulo en el editor. */
@@ -1575,7 +1606,16 @@ function _renderPaginaChecks(box, value, onChange) {
   const pags    = _paginasDe(value);
   const esTodas = pags === 'all';
   const ids     = esTodas ? [] : pags;
+  // Solo plantillas que correspondan a un ÍTEM REAL del navbar: las que tienen un
+  // id_menu que resuelve a un botón existente. Las páginas del sistema sin ítem
+  // (Artículo, Perfil de Cliente) o borradores sin asignar no son ítems del
+  // navbar, así que no se listan acá.
+  const esItemNavbar = p => {
+    const idMenu = (p.id_menu || [])[0];
+    return idMenu != null && _navbar.some(b => b.id_menu === idMenu);
+  };
   const items   = _plantillas
+    .filter(esItemNavbar)
     .map(p => ({ p, nav: _navInfoDePlantilla(p.id_plantilla) }))
     .sort((a, b) => a.nav.orden - b.nav.orden);
   box.innerHTML = [
@@ -2028,19 +2068,7 @@ window.openModVer = function(id) {
   const editorContent = document.getElementById('modulos-content-body');
   if (editorContent) editorContent.innerHTML = '';
 
-  if (m.tipo === 'services') {
-    if (titleEl) titleEl.textContent = m.nombre || sec.label;
-    if (noteEl) {
-      noteEl.style.display = '';
-      noteEl.textContent = 'Cada tarjeta de este módulo. Editá el ícono y su color, los textos, el enlace de “Ver Detalles” y el detalle que se abre en un popup.';
-    }
-    if (addBtn) {
-      addBtn.style.display = '';
-      addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Agregar tarjeta';
-      addBtn.onclick = () => _addServicioCard(m);
-    }
-    _renderServiciosCardsVer(m);
-  } else if (cfg) {
+  if (cfg) {
     if (titleEl) titleEl.textContent = cfg.title;
     if (noteEl) {
       noteEl.style.display = '';
@@ -2055,7 +2083,11 @@ window.openModVer = function(id) {
     if (addBtn) {
       addBtn.style.display = '';
       addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Nuevo';
-      addBtn.onclick = () => nuevaVarianteDeModulo(m.tipo, esTodas ? 'all' : m.id_pagina);
+      // Servicios: el "Nuevo" abre el editor con un BORRADOR (sin crear nada hasta
+      // "Guardar cambios"). El resto de los tipos crea la variante al instante.
+      addBtn.onclick = () => m.tipo === 'services'
+        ? _openNuevoServiciosModulo(m.tipo, esTodas ? 'all' : m.id_pagina)
+        : nuevaVarianteDeModulo(m.tipo, esTodas ? 'all' : m.id_pagina);
     }
     _renderModVerLista(m.tipo);
   }
@@ -2092,8 +2124,15 @@ function _renderModVerLista(tipo) {
     </div>`;
   }).join('')}</div>`;
   body.querySelectorAll('[data-ver-edit]').forEach(b => b.addEventListener('click', () => {
-    _closeModVer();
-    window.openModEditor(b.dataset.verEdit);
+    const mod = _mods.find(x => x.id_modulo === Number(b.dataset.verEdit));
+    // Las "cards" (services) se editan tarjeta por tarjeta en el segundo modal,
+    // sin cerrar la lista (se vuelve con "Volver"). El resto abre el editor normal.
+    if (mod && mod.tipo === 'services') {
+      window.openServiciosCards(b.dataset.verEdit);
+    } else {
+      _closeModVer();
+      window.openModEditor(b.dataset.verEdit);
+    }
   }));
   body.querySelectorAll('[data-ver-del]').forEach(b => b.addEventListener('click', async () => {
     await window.eliminarModulo(b.dataset.verDel);
@@ -2114,6 +2153,9 @@ document.getElementById('modulos-view-close')?.addEventListener('click', _closeM
 
 const _svcSaveTimers = {};
 function _saveServiciosModulo(m, immediate) {
+  // Borrador sin persistir (flujo "Nuevo"): los cambios viven en memoria y se
+  // guardan recién al tocar "Guardar cambios". No hay PUT hasta entonces.
+  if (m._isNew) return;
   clearTimeout(_svcSaveTimers[m.id_modulo]);
   const doSave = async () => {
     try {
@@ -2151,60 +2193,338 @@ function _servicioCardRowHTML(c, i) {
       <button type="button" class="svc-link-pen" data-svc-arrow title="Editar la URL de destino (la flechita)"><i class="fa-solid fa-arrow-right"></i><i class="fa-solid fa-pen"></i></button>
       <button type="button" class="svc-link-pen${_hasDetalle(c) ? ' has-detalle' : ''}" data-svc-detalle title="Editar el detalle (título, descripción, imagen)"><i class="fa-solid fa-pen"></i></button>
     </div>
-    <div class="svc-enlace-hint" data-svc-hint>${enlace || '<span class="svc-muted">sin enlace de destino</span>'}</div>
   </div>`;
 }
 
-function _renderServiciosCardsVer(m) {
-  const body = document.getElementById('modulos-view-body');
+/* ── NIVEL 2: lista de tarjetas (services/cards) ──────────────────────────────
+   Se abre al tocar "Editar" en una variante del modal "Ver", encima de la lista
+   de variantes (se vuelve con "Volver"). Muestra cada tarjeta como una fila;
+   "Editar" abre el editor de UNA tarjeta (nivel 3) y "Nuevo" un modal chico. */
+let _curCardsMod = null;     // módulo cuyas tarjetas se están listando (para "Nuevo")
+
+function _closeModCards() {
+  // Al volver, refrescamos la lista de variantes del modal "Ver" que quedó
+  // abierto detrás: así se ven los módulos recién creados con "Nuevo".
+  const tipo = _curCardsMod?.tipo;
+  window.__svc?.closeModal('modulos-cards-modal');
+  const body = document.getElementById('modulos-cards-body');
+  if (body) body.innerHTML = '';
+  _curCardsMod = null;
+  const verModal = document.getElementById('modulos-view-modal');
+  if (tipo && verModal?.classList.contains('open') && !MOD_CONTENT_CONFIG[tipo]) {
+    _renderModVerLista(tipo);
+  }
+}
+
+// Acepta un id (módulo existente del catálogo) o directamente un objeto módulo
+// (borrador del flujo "Nuevo", todavía sin persistir → m._isNew).
+window.openServiciosCards = function(idOrMod) {
+  const m = (idOrMod && typeof idOrMod === 'object')
+    ? idOrMod
+    : _mods.find(x => x.id_modulo === Number(idOrMod));
+  if (!m) return;
+  const sec = SECTIONS[m.tipo];
+  if (!sec) { window.__svc.showNotif('Tipo de módulo desconocido: ' + m.tipo, 'error'); return; }
+  _curCardsMod = m;
+
+  const titleEl = document.getElementById('modulos-cards-title');
+  const pagEl   = document.getElementById('modulos-cards-pagina');
+  const noteEl  = document.getElementById('modulos-cards-note');
+  const addBtn  = document.getElementById('modulos-cards-add-btn');
+  const footer  = document.getElementById('modulos-cards-footer');
+  const esTodas = GLOBAL_TIPOS_MOD.has(m.tipo) || m.id_pagina === 'all';
+
+  if (titleEl) titleEl.textContent = m._isNew ? `Nuevo — ${m.nombre || sec.label}` : (m.nombre || sec.label);
+  if (pagEl)   pagEl.innerHTML = _paginaBadgeHTML(esTodas ? 'all' : m.id_pagina);
+  if (noteEl)  noteEl.textContent = m._isNew
+    ? 'Módulo nuevo (todavía sin guardar). Cargá las tarjetas y asigná los ítems del navbar, después tocá “Guardar cambios”.'
+    : 'Las tarjetas de este módulo. Tocá “Editar” para modificar una, o “Nuevo” para agregar otra.';
+  if (addBtn)  addBtn.onclick = () => _openNuevaCardModal(m);
+  // El footer con "Guardar cambios" solo aparece al crear un módulo nuevo.
+  if (footer)  footer.style.display = m._isNew ? '' : 'none';
+
+  _renderCardsPaginaSelect(m);
+  _renderCardsLista(m);
+  window.__svc?.openModal('modulos-cards-modal');
+};
+
+/* Flujo "Nuevo": arma un BORRADOR de módulo de servicios en memoria (sin POST) y
+   abre el editor de tarjetas. El módulo se crea recién al tocar "Guardar cambios"
+   (_saveCardsDraft). Si se cierra/cancela antes, no se persiste nada. */
+function _openNuevoServiciosModulo(tipo, id_pagina) {
+  const sec = SECTIONS[tipo];
+  if (!sec) return;
+  const draft = {
+    _isNew: true,
+    id_modulo: null,
+    tipo,
+    nombre: sec.label,
+    id_pagina: id_pagina === 'all' ? 'all'
+      : (Array.isArray(id_pagina) ? [...id_pagina] : (id_pagina ?? null)),
+    data:   JSON.parse(JSON.stringify(sec.defaultData   || {})),
+    design: JSON.parse(JSON.stringify(sec.defaultDesign || {})),
+  };
+  draft.data.cards = Array.isArray(draft.data.cards) ? draft.data.cards : [];
+  window.openServiciosCards(draft);
+}
+
+/* "Guardar cambios" del editor de tarjetas. Para un borrador (módulo nuevo) hace
+   el POST que lo crea; para un módulo existente no hace falta (ya se autoguarda),
+   simplemente cierra. */
+async function _saveCardsDraft() {
+  const m = _curCardsMod;
+  if (!m) return;
+  if (!m._isNew) { _closeModCards(); return; }
+  const btn = document.getElementById('modulos-cards-save');
+  if (btn) btn.disabled = true;
+  try {
+    const res = await window.__svc.apiPost('/modulos', {
+      tipo:      m.tipo,
+      nombre:    m.nombre,
+      id_pagina: m.id_pagina ?? null,
+      data:      m.data,
+      design:    m.design,
+    });
+    _mods.push(res.modulo);
+    _modUsos[res.modulo.id_modulo] = 0;
+    _curCardsMod = res.modulo;   // el borrador pasa a ser un módulo real
+    window.__svc.showNotif('Módulo creado', 'success');
+    _closeModCards();            // refresca la lista "Ver" detrás
+    renderModCatalog();
+  } catch (e) {
+    window.__svc.showNotif('Error: ' + e.message, 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+document.getElementById('modulos-cards-save')?.addEventListener('click', _saveCardsDraft);
+document.getElementById('modulos-cards-cancel')?.addEventListener('click', _closeModCards);
+
+/* Preview del módulo de servicios (mismo modal visual que los demás módulos).
+   Apuntamos los globales _curMod* al módulo de tarjetas en edición (misma
+   referencia de data/design → las ediciones del preview se reflejan en `m`). */
+let _previewFromCards = false;
+function openCardsPreview() {
+  const m = _curCardsMod;
+  if (!m) return;
+  _curModId   = m.id_modulo;     // null si es un borrador
+  _curModType = m.tipo;
+  _curModData = m;               // misma ref: m.data === _curModData.data
+  _previewFromCards = true;
+  openPreviewModal();
+}
+
+/* Guardar desde el preview cuando se abrió desde el editor de tarjetas. Para un
+   borrador no persiste (lo hace después "Guardar cambios"); para un módulo real
+   hace el PUT completo (data + design + página). */
+async function _saveCardsFromPreview() {
+  const m = _curCardsMod;
+  if (!m) return;
+  if (m._isNew) {
+    _renderCardsLista(m);
+    window.__svc.showNotif('Cambios aplicados al borrador', 'success');
+    return;
+  }
+  try {
+    const res = await window.__svc.apiPut(`/modulos/${m.id_modulo}`, {
+      nombre:    m.nombre,
+      alerta:    m.alerta === true,
+      id_pagina: m.id_pagina ?? null,
+      data:      m.data,
+      design:    m.design,
+    });
+    const idx = _mods.findIndex(x => x.id_modulo === m.id_modulo);
+    if (idx !== -1) _mods[idx] = res.modulo;
+    _renderCardsLista(m);
+    window.__svc.showNotif('Módulo guardado', 'success');
+  } catch (e) {
+    window.__svc.showNotif('Error: ' + e.message, 'error');
+  }
+}
+
+document.getElementById('modulos-cards-preview-btn')?.addEventListener('click', openCardsPreview);
+
+/* Lista de "Ítems del navbar" dentro del editor de tarjetas: permite asignar a
+   qué ítem(s) del navbar pertenece este módulo de servicios. Reusa la misma
+   checklist que el editor de módulo y persiste el cambio (PUT /modulos/:id). */
+function _renderCardsPaginaSelect(m) {
+  const box  = document.getElementById('modulos-cards-pagina-select');
+  const hint = document.getElementById('modulos-cards-pagina-hint');
+  const pagEl = document.getElementById('modulos-cards-pagina');
+  if (!box) return;
+
+  if (GLOBAL_TIPOS_MOD.has(m.tipo)) {
+    box.innerHTML = '<label class="mod-pag-check is-disabled"><input type="checkbox" checked disabled/> 🌐 Todas las páginas (global)</label>';
+    if (hint) hint.textContent = 'Módulo global: se muestra en todas las páginas del sitio.';
+    return;
+  }
+
+  _renderPaginaChecks(box, m.id_pagina, async (v) => {
+    m.id_pagina = v;
+    const esTodas = v === 'all';
+    if (pagEl) pagEl.innerHTML = _paginaBadgeHTML(esTodas ? 'all' : v);
+    // Borrador: solo se actualiza en memoria; se persiste al "Guardar cambios".
+    if (m._isNew) return;
+    try {
+      const res = await window.__svc.apiPut(`/modulos/${m.id_modulo}`, { id_pagina: v });
+      const idx = _mods.findIndex(x => x.id_modulo === m.id_modulo);
+      if (idx !== -1) _mods[idx].id_pagina = res?.modulo?.id_pagina ?? v;
+      renderModCatalog();
+    } catch (e) {
+      window.__svc.showNotif('Error al asignar ítem: ' + e.message, 'error');
+    }
+  });
+  if (hint) hint.textContent = 'Marcá a qué ítem(s) del navbar pertenece este módulo (ej: «Fibra Óptica»), o «Todas las páginas».';
+}
+
+document.getElementById('modulos-cards-close')?.addEventListener('click', _closeModCards);
+document.getElementById('modulos-cards-back')?.addEventListener('click', _closeModCards);
+
+/* Lista de tarjetas en filas (mismo formato que las variantes). */
+function _renderCardsLista(m) {
+  const body = document.getElementById('modulos-cards-body');
   if (!body) return;
   m.data = m.data || {};
   const cards = Array.isArray(m.data.cards) ? m.data.cards : (m.data.cards = []);
   if (!cards.length) {
-    body.innerHTML = `<div class="mod-cat-empty">Este módulo no tiene tarjetas todavía. Tocá <b>Agregar tarjeta</b>.</div>`;
+    body.innerHTML = `<div class="mod-cat-empty">Este módulo no tiene tarjetas todavía. Tocá <b>Nuevo</b> para crear la primera.</div>`;
     return;
   }
-  body.innerHTML = `<div class="svc-cards-list">${cards.map((c, i) => _servicioCardRowHTML(c, i)).join('')}</div>`;
-  _bindServiciosCardRows(m);
+  body.innerHTML = `<div class="blog-grid">${cards.map((c, i) => {
+    const icon  = serviceCardIcon(c);
+    const color = c.iconoColor || '#2563eb';
+    const desc  = (c.descripcion || '').replace(/\s+/g, ' ').trim().slice(0, 120) || 'Sin descripción.';
+    return `<div class="blog-item">
+      <div class="blog-info">
+        <div class="mod-row-headline">
+          <span class="card-row-ico"><i class="fa-solid ${escAttr(icon)}" style="color:${escAttr(color)}"></i></span>
+          <span class="blog-title-text">${escAttr(c.titulo || '(sin título)')}</span>
+        </div>
+        <div class="blog-excerpt">${escAttr(desc)}</div>
+      </div>
+      <div class="blog-actions">
+        <button type="button" class="btn-edit-small" data-card-edit="${i}">Editar</button>
+        <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" data-card-del="${i}">Eliminar</button>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+  body.querySelectorAll('[data-card-edit]').forEach(b =>
+    b.addEventListener('click', () => openCardEditor(m, Number(b.dataset.cardEdit))));
+  body.querySelectorAll('[data-card-del]').forEach(b =>
+    b.addEventListener('click', () => {
+      if (!confirm('¿Eliminar esta tarjeta?')) return;
+      m.data.cards.splice(Number(b.dataset.cardDel), 1);
+      _saveServiciosModulo(m, true);
+      _renderCardsLista(m);
+      renderModCatalog();
+    }));
 }
 
-function _bindServiciosCardRows(m) {
-  const body  = document.getElementById('modulos-view-body');
+/* ── NIVEL 3: editor de UNA tarjeta ───────────────────────────────────────────
+   Reutiliza la fila visual completa (ícono, título, descripción, enlace, detalle)
+   pero mostrando una sola tarjeta, con su propio botón "Guardar". */
+let _curCardEdit = null;     // { m, i } de la tarjeta en edición
+
+function openCardEditor(m, i) {
+  const card = m.data?.cards?.[i];
+  if (!card) return;
+  _curCardEdit = { m, i };
+  const titleEl = document.getElementById('modulos-card-edit-title');
+  if (titleEl) titleEl.textContent = card.titulo || 'Tarjeta';
+  const body = document.getElementById('modulos-card-edit-body');
+  if (body) {
+    body.innerHTML = `<div class="svc-cards-list">${_servicioCardRowHTML(card, i)}</div>`;
+    _bindSingleCardRow(m, i);
+  }
+  window.__svc?.openModal('modulos-card-edit-modal');
+}
+
+function _bindSingleCardRow(m, i) {
+  const body = document.getElementById('modulos-card-edit-body');
   if (!body) return;
-  const cards = m.data.cards;
-  body.querySelectorAll('.svc-card-row').forEach(row => {
-    const i = Number(row.dataset.svcI);
-    const card = cards[i];
-    if (!card) return;
-    row.querySelectorAll('[data-svc-f]').forEach(inp => {
-      inp.addEventListener('input', () => { card[inp.dataset.svcF] = inp.value; _saveServiciosModulo(m); });
+  const card = m.data.cards[i];
+  const row  = body.querySelector('.svc-card-row');
+  if (!row || !card) return;
+  row.querySelectorAll('[data-svc-f]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      card[inp.dataset.svcF] = inp.value;
+      _saveServiciosModulo(m);
+      if (inp.dataset.svcF === 'titulo') {
+        const t = document.getElementById('modulos-card-edit-title');
+        if (t) t.textContent = inp.value || 'Tarjeta';
+      }
     });
-    row.querySelector('[data-svc-icon]')?.addEventListener('click', e => _openIconPicker(e.currentTarget, m, i));
-    row.querySelector('[data-svc-arrow]')?.addEventListener('click', e => _openEnlaceEditor(e.currentTarget, m, i));
-    row.querySelector('[data-svc-detalle]')?.addEventListener('click', () => _openCardDetalle(m, i));
-    row.querySelector('[data-svc-del]')?.addEventListener('click', () => {
-      cards.splice(i, 1);
-      _saveServiciosModulo(m, true);
-      _renderServiciosCardsVer(m);
-      renderModCatalog();
-    });
+  });
+  row.querySelector('[data-svc-icon]')?.addEventListener('click', e => _openIconPicker(e.currentTarget, m, i));
+  row.querySelector('[data-svc-arrow]')?.addEventListener('click', e => _openEnlaceEditor(e.currentTarget, m, i));
+  row.querySelector('[data-svc-detalle]')?.addEventListener('click', () => _openCardDetalle(m, i));
+  row.querySelector('[data-svc-del]')?.addEventListener('click', () => {
+    if (!confirm('¿Eliminar esta tarjeta?')) return;
+    m.data.cards.splice(i, 1);
+    _saveServiciosModulo(m, true);
+    _closeCardEditor();
+    _renderCardsLista(m);
+    renderModCatalog();
   });
 }
 
-function _addServicioCard(m) {
+function _closeCardEditor() {
+  window.__svc?.closeModal('modulos-card-edit-modal');
+  const body = document.getElementById('modulos-card-edit-body');
+  if (body) body.innerHTML = '';
+  _curCardEdit = null;
+}
+
+function _saveCardEditor() {
+  if (!_curCardEdit) { _closeCardEditor(); return; }
+  const { m } = _curCardEdit;
+  _saveServiciosModulo(m, true);   // guardado inmediato
+  _closeCardEditor();
+  _renderCardsLista(m);            // refresca la lista (título/descripción)
+  renderModCatalog();
+  window.__svc?.showNotif('Tarjeta guardada', 'success');
+}
+
+document.getElementById('modulos-card-edit-close')?.addEventListener('click', _closeCardEditor);
+document.getElementById('modulos-card-edit-back')?.addEventListener('click', _closeCardEditor);
+document.getElementById('modulos-card-edit-cancel')?.addEventListener('click', _closeCardEditor);
+document.getElementById('modulos-card-edit-save')?.addEventListener('click', _saveCardEditor);
+
+/* ── Modal chico: agregar una tarjeta a la lista ──────────────────────────── */
+function _openNuevaCardModal(m) {
+  _curCardsMod = m;
+  const inp = document.getElementById('nc-titulo');
+  if (inp) inp.value = '';
+  window.__svc?.openModal('modulos-card-new-modal');
+  setTimeout(() => inp?.focus(), 50);
+}
+
+function _crearNuevaCard() {
+  const m = _curCardsMod;
+  if (!m) return;
+  const inp = document.getElementById('nc-titulo');
+  const titulo = (inp?.value || '').trim() || 'Nueva tarjeta';
   m.data = m.data || {};
   m.data.cards = Array.isArray(m.data.cards) ? m.data.cards : [];
   m.data.cards.push({
     id: 'card-' + Date.now(),
     icono: 'fa-server', iconoColor: '',
-    titulo: 'Nueva tarjeta', descripcion: '',
+    titulo, descripcion: '',
     linkText: 'Ver Detalles', enlace: '',
     detalle: { titulo: '', descripcion: '', imagen: '' },
   });
   _saveServiciosModulo(m, true);
-  _renderServiciosCardsVer(m);
+  window.__svc?.closeModal('modulos-card-new-modal');
+  _renderCardsLista(m);
   renderModCatalog();
+  window.__svc?.showNotif('Tarjeta agregada', 'success');
 }
+
+document.getElementById('nc-crear-btn')?.addEventListener('click', _crearNuevaCard);
+document.getElementById('nc-titulo')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); _crearNuevaCard(); }
+});
 
 function _refreshCardIconPreview(m, i) {
   const row = document.querySelector(`.svc-card-row[data-svc-i="${i}"]`);
@@ -2269,7 +2589,7 @@ function _openEnlaceEditor(anchor, m, i) {
   const pop = _floatPopover(anchor, `
     <div class="svc-pop-form">
       <label class="svc-pop-label">URL de destino de “Ver Detalles”</label>
-      <input class="svc-pop-input" data-en-url value="${escAttr(card.enlace || '')}" placeholder="/html/… o https://…"/>
+      <input class="svc-pop-input" data-en-url value="${escAttr(card.enlace || '')}" placeholder="https://…"/>
       <div class="svc-pop-note">Si la tarjeta tiene detalle cargado, esta URL se usa como botón dentro del popup.</div>
       <button type="button" class="svc-pop-ok" data-en-ok>Guardar</button>
     </div>`, 280);
@@ -2785,7 +3105,8 @@ function openPreviewModal() {
   if (!modal || !iframe) return;
 
   const titleEl = document.getElementById('mpm-title');
-  if (titleEl) titleEl.innerHTML = `${sec.icon || ''} ${escAttr(sec.label)} · #${_curModId}`;
+  const idLbl = _curModId != null ? `· #${_curModId}` : '· nuevo';
+  if (titleEl) titleEl.innerHTML = `${sec.icon || ''} ${escAttr(sec.label)} ${idLbl}`;
 
   // Panel lateral de colores/diseño (reusa el render de campos → live-sync).
   renderModFieldGroup('design', sec.designFields || [], 'mpm-design-fields');
@@ -2801,6 +3122,12 @@ function closePreviewModal() {
   const modal = document.getElementById('mod-preview-modal');
   if (modal) modal.style.display = 'none';
   document.body.style.overflow = '';
+  // Si el preview se abrió desde el editor de tarjetas, refrescamos esa lista
+  // (refleja textos/íconos editados visualmente) y limpiamos el flag.
+  if (_previewFromCards) {
+    _previewFromCards = false;
+    if (_curCardsMod) _renderCardsLista(_curCardsMod);
+  }
 }
 
 /* Duplicar módulo */
@@ -2856,9 +3183,18 @@ async function nuevaVarianteDeModulo(tipo, id_pagina) {
     });
     _mods.push(res.modulo);
     _modUsos[res.modulo.id_modulo] = 0;
-    _closeModVer();
     window.__svc.showNotif('Módulo creado', 'success');
-    openModEditor(res.modulo.id_modulo);
+    // Las "cards" (services) se editan en el segundo modal (tarjeta por tarjeta);
+    // el resto en el editor de campos normal.
+    if (tipo === 'services') {
+      // Refrescamos la lista de variantes del modal "Ver" (abierto detrás) para
+      // que el módulo recién creado aparezca al volver.
+      _renderModVerLista(tipo);
+      openServiciosCards(res.modulo.id_modulo);
+    } else {
+      _closeModVer();
+      openModEditor(res.modulo.id_modulo);
+    }
   } catch (e) {
     window.__svc.showNotif('Error: ' + e.message, 'error');
   }
@@ -2899,7 +3235,10 @@ document.getElementById('modulos-nuevo-btn')?.addEventListener('click', () => wi
 document.getElementById('nm-crear-btn')?.addEventListener('click', crearModuloDesdeModal);
 
 /* Botón: abrir el modal de edición visual (Preview) */
-document.getElementById('modulos-preview-btn')?.addEventListener('click', openPreviewModal);
+document.getElementById('modulos-preview-btn')?.addEventListener('click', () => {
+  _previewFromCards = false;
+  openPreviewModal();
+});
 
 /* Modal: cerrar */
 document.getElementById('mpm-close')?.addEventListener('click', closePreviewModal);
@@ -2910,8 +3249,12 @@ document.addEventListener('keydown', e => {
   if (modal && modal.style.display !== 'none') closePreviewModal();
 });
 
-/* Modal: guardar (deja el modal abierto) */
-document.getElementById('mpm-save')?.addEventListener('click', saveCurrentModule);
+/* Modal: guardar (deja el modal abierto). Según de dónde se abrió el preview,
+   guarda el módulo de tarjetas o el módulo del editor normal. */
+document.getElementById('mpm-save')?.addEventListener('click', () => {
+  if (_previewFromCards) _saveCardsFromPreview();
+  else saveCurrentModule();
+});
 
 // Asigna un valor por "path" con puntos/índices (ej: "cards.0.titulo").
 function _setByPath(obj, path, val) {

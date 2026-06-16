@@ -3,6 +3,22 @@ const path = require('path');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const FILE = path.join(DATA_DIR, 'plantillas.json');
+const NAV_FILE = path.join(DATA_DIR, 'navbar.json');
+
+// Vincula una página personalizada (btn-*) con su pestaña del navbar: si el ítem
+// todavía no tiene href, lo apunta al shell dinámico /p/<tipo> (ver server.js)
+// para que el menú la enlace. Las páginas del sistema no se tocan (ya tienen href).
+function vincularHrefNav(tipo, idMenuArr) {
+  if (!/^btn-/.test(tipo || '') || !Array.isArray(idMenuArr) || !idMenuArr.length) return;
+  let nav;
+  try { nav = JSON.parse(fs.readFileSync(NAV_FILE, 'utf-8')); } catch { return; }
+  let changed = false;
+  idMenuArr.forEach(idm => {
+    const b = (nav.botones || []).find(x => x.id_menu === Number(idm));
+    if (b && !b.href) { b.href = `/p/${tipo}`; changed = true; }
+  });
+  if (changed) fs.writeFileSync(NAV_FILE, JSON.stringify(nav, null, 2) + '\n', 'utf-8');
+}
 
 const TIPOS_BASE = [
   'index', 'blog', 'articulo', 'cliente',
@@ -131,6 +147,8 @@ exports.crear = (req, res) => {
   });
   data.plantillas.push(nueva);
   save(data);
+  // Si es una página personalizada vinculada a una pestaña sin href, enlazarla.
+  vincularHrefNav(nueva.tipo, nueva.id_menu);
   res.status(201).json({ ok: true, plantilla: nueva });
 };
 

@@ -1,26 +1,9 @@
-//  SECTION REGISTRY — usa el HTML/CSS EXACTO del sitio actual.
-//  Cada render genera markup idéntico al de index.html (clases reales:
-//  .hero, .hero-grid, .max-w-7xl, .logos-section, .services-section, etc.)
-//  Cargando css/base.css + css/layout_home.css + css/components.css
-//  + css/pages/home.css el resultado se ve igual a la web actual.
-
-export const TIPOS_HTML = [
-  { value: 'index',      label: 'Inicio',                file: 'index.html' },
-  { value: 'blog',       label: 'Blog',                  file: 'html/blog.html' },
-  { value: 'articulo',   label: 'Artículo',              file: 'html/articulo.html' },
-  { value: 'cableado',   label: 'Cableado Estructurado', file: 'html/cableado_estructurado.html' },
-  { value: 'fibra',      label: 'Fibra Óptica',          file: 'html/fibra_optica.html' },
-  { value: 'seguridad',  label: 'Seguridad Electrónica', file: 'html/seguridad.html' },
-  { value: 'soporte',    label: 'Soporte IT',            file: 'html/soporte_it.html' },
-  { value: 'desarrollo', label: 'Desarrollo de Software',file: 'html/desarrollo.html' },
-  { value: 'cliente',    label: 'Perfil de Cliente',     file: 'html/cliente.html' },
-];
+export const TIPOS_HTML = [];
 
 const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 // Quita una flecha (←/→) inicial del texto de un enlace "volver", para
 // reemplazarla por un icono de Font Awesome en el render.
 const stripArrow = s => String(s ?? '').replace(/^\s*[←→]\s*/, '');
-// css(props) — builds a style=" " attribute from an object, skipping falsy values
 const css = (props) => {
   const p = Object.entries(props).filter(([,v]) => v).map(([k,v]) => `${k}:${v}`);
   return p.length ? ` style="${p.join(';')}"` : '';
@@ -53,9 +36,6 @@ const fldIcon    = (name) => EDIT_MODE ? ` data-iconfield="${esc(name)}"` : '';
 const fldLink    = (name) => EDIT_MODE ? ` data-linkfield="${esc(name)}"` : '';
 const fldDetalle = (name) => EDIT_MODE ? ` data-detallefield="${esc(name)}"` : '';
 
-// Catálogo de iconos (Font Awesome 6 solid) que se pueden asignar a las tarjetas
-// de la sección "servicios". Se reutiliza en el selector de iconos del panel
-// admin (editor.js) para que el catálogo sea único.
 export const SERVICE_ICON_CATALOG = [
   'fa-server', 'fa-headset', 'fa-code', 'fa-laptop-code', 'fa-network-wired', 'fa-ethernet',
   'fa-wifi', 'fa-tower-broadcast', 'fa-satellite-dish', 'fa-database', 'fa-hard-drive', 'fa-cloud',

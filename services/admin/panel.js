@@ -1818,14 +1818,14 @@ function fillNavPadreSelect(sel, selectedPadre, excludeId) {
   if (!sel) return;
   const excluidos = excludeId ? navDescendientes(excludeId).add(excludeId) : new Set();
   const sel0 = Number(selectedPadre) || 0;
-  const opts = [`<option value="0"${sel0 === 0 ? ' selected' : ''}>0 — Sin grupo</option>`];
+  const opts = [`<option value="0"${sel0 === 0 ? ' selected' : ''}>0</option>`];
   navbarItems
     .slice()
     .sort((a, b) => (a.orden || 0) - (b.orden || 0))
     .forEach(b => {
       if (excluidos.has(b.id_menu)) return;
-      const idPlt = b.plantilla ? b.plantilla.id : '—';
-      opts.push(`<option value="${b.id_menu}"${sel0 === b.id_menu ? ' selected' : ''}>[${idPlt}] - ${b.titulo}</option>`);
+      //const idPlt = b.plantilla ? b.plantilla.id : '—';
+      opts.push(`<option value="${b.id_menu}"${sel0 === b.id_menu ? ' selected' : ''}>${b.id_menu && b.plantilla ? b.id_menu : '/'} - ${b.titulo}</option>`);
     });
   sel.innerHTML = opts.join('');
 }

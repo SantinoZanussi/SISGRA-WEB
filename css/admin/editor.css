@@ -479,6 +479,8 @@
    MÓDULO "SERVICIOS" — editor de tarjetas dentro del modal "Ver"
    ─────────────────────────────────────────────────────────────────────────── */
 .svc-cards-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.85rem;}
+/* Ícono al frente de cada fila de la lista de tarjetas (nivel 2). */
+.card-row-ico{display:inline-flex;align-items:center;justify-content:center;width:1.6rem;height:1.6rem;border-radius:.35rem;background:var(--slate-50,#f8fafc);font-size:.8rem;flex-shrink:0;}
 .svc-card-row{border:1px solid var(--slate-200);border-radius:.6rem;background:#fff;padding:1rem;display:flex;flex-direction:column;gap:.55rem;box-shadow:0 1px 2px rgba(15,23,42,.04);}
 .svc-card-top{display:flex;align-items:flex-start;justify-content:space-between;}
 .svc-icon-wrap{display:flex;align-items:center;gap:.4rem;}
@@ -494,7 +496,6 @@
 .svc-link-row{display:flex;align-items:center;gap:.35rem;}
 .svc-link-row .svc-card-linktext{flex:1;}
 .svc-link-pen.has-detalle{border-color:var(--blue-600);color:var(--blue-600);background:#eff6ff;}
-.svc-enlace-hint{font-size:.68rem;color:#475569;word-break:break-all;font-family:'IBM Plex Mono',monospace;}
 .svc-enlace-hint .svc-muted,.svc-muted{color:#94a3b8;font-style:italic;font-family:'Inter',system-ui,sans-serif;}
 
 /* Popover flotante (selector de íconos / editor de URL) */

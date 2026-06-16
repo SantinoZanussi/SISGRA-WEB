@@ -263,19 +263,60 @@
             "titulo": "Instalaciones",
             "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
             "enlace": "/html/cableado_estructurado",
-            "link": ""
-          },
-          {
-            "id": "soporte",
-            "titulo": "Soporte IT",
-            "descripcion": "Mantenimiento integral de infraestructura y asistencia técnica corporativa especializada.",
-            "enlace": "/html/soporte_it"
+            "link": "",
+            "detalle": {
+              "titulo": "",
+              "descripcion": "",
+              "imagen": ""
+            }
           },
           {
             "id": "software",
             "titulo": "Software",
             "descripcion": "Soluciones a medida para optimizar procesos logísticos y gestión de datos empresariales.",
             "enlace": "/html/desarrollo"
+          },
+          {
+            "id": "card-1781630003990",
+            "icono": "fa-server",
+            "iconoColor": "",
+            "titulo": "prueba",
+            "descripcion": "hoola",
+            "linkText": "Ver Detalles",
+            "enlace": "",
+            "detalle": {
+              "titulo": "",
+              "descripcion": "",
+              "imagen": ""
+            }
+          },
+          {
+            "id": "card-1781630009406",
+            "icono": "fa-server",
+            "iconoColor": "",
+            "titulo": "prueba 2",
+            "descripcion": "chau",
+            "linkText": "Ver Detalles",
+            "enlace": "",
+            "detalle": {
+              "titulo": "",
+              "descripcion": "",
+              "imagen": ""
+            }
+          },
+          {
+            "id": "card-1781631130372",
+            "icono": "fa-wifi",
+            "iconoColor": "",
+            "titulo": "prueba 3",
+            "descripcion": "",
+            "linkText": "Ver Detalles",
+            "enlace": "",
+            "detalle": {
+              "titulo": "",
+              "descripcion": "",
+              "imagen": ""
+            }
           }
         ]
       },
@@ -298,8 +339,10 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-14T21:29:13.926Z",
-      "id_pagina": 1
+      "editado_en": "2026-06-16T18:08:19.141Z",
+      "id_pagina": [
+        1
+      ]
     },
     {
       "id_modulo": 8,
@@ -749,57 +792,6 @@
       "id_pagina": 9
     },
     {
-      "id_modulo": 19,
-      "tipo": "services",
-      "nombre": "Servicios - Tipo 2",
-      "data": {
-        "titulo_seccion": "Portafolio de Soluciones",
-        "eyebrow": "Lo que hacemos",
-        "cards": [
-          {
-            "id": "instalaciones",
-            "titulo": "Instalaciones",
-            "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
-            "enlace": "/html/cableado_estructurado",
-            "link": ""
-          },
-          {
-            "id": "soporte",
-            "titulo": "Soporte IT",
-            "descripcion": "Mantenimiento integral de infraestructura y asistencia técnica corporativa especializada.",
-            "enlace": "/html/soporte_it"
-          },
-          {
-            "id": "software",
-            "titulo": "Software",
-            "descripcion": "Soluciones a medida para optimizar procesos logísticos y gestión de datos empresariales.",
-            "enlace": "/html/desarrollo"
-          }
-        ]
-      },
-      "design": {
-        "bg": "",
-        "sectionColor": "",
-        "cardBg": "",
-        "cardTitleColor": "",
-        "cardLinkColor": "",
-        "paddingY": "",
-        "titleSize": "",
-        "cardRadius": "",
-        "cardPadding": "",
-        "gap": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-03T17:13:58.429Z",
-      "editado_en": "2026-06-07T19:49:24.411Z",
-      "id_pagina": null
-    },
-    {
       "id_modulo": 20,
       "tipo": "desarrollo-hero",
       "nombre": "Hero 6 Tipo 2",
@@ -1096,7 +1088,7 @@
       },
       "alerta": false,
       "creado_en": "2026-06-04T18:25:55.031Z",
-      "editado_en": "2026-06-04T18:25:55.032Z",
+      "editado_en": "2026-06-16T17:03:26.047Z",
       "id_pagina": 1
     },
     {
@@ -1252,42 +1244,6 @@
       "alerta": false,
       "creado_en": "2026-06-08T17:49:17.073Z",
       "editado_en": "2026-06-11T18:42:39.614Z",
-      "id_pagina": null
-    },
-    {
-      "id_modulo": 32,
-      "tipo": "cliente-header",
-      "nombre": "Header 3 tipo 2",
-      "data": {
-        "backLabel": "← Volver al Inicio",
-        "backHref": "/",
-        "empresaLogo": "",
-        "empresaNombre": "Nombre de la empresa",
-        "titulo": "Caso de éxito",
-        "lead": "Descripción del proyecto o caso de éxito.",
-        "sector": "",
-        "ubicacion": "",
-        "anio": ""
-      },
-      "design": {
-        "bg": "",
-        "paddingY": "",
-        "eyebrowColor": "",
-        "titleColor": "",
-        "titleSize": "",
-        "leadColor": "",
-        "metaColor": "",
-        "backLinkColor": "",
-        "logoMaxHeight": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-08T17:49:37.106Z",
-      "editado_en": "2026-06-11T18:42:58.126Z",
       "id_pagina": null
     },
     {
@@ -1465,95 +1421,6 @@
       "editado_en": "2026-06-11T17:40:55.009Z"
     },
     {
-      "id_modulo": 38,
-      "tipo": "cliente-header",
-      "nombre": "Header 3 tipo 3",
-      "id_pagina": null,
-      "data": {
-        "backLabel": "← Volver al Inicio",
-        "backHref": "/index.html",
-        "empresaLogo": "/img/clients/syngenta.png",
-        "empresaNombre": "Prueba",
-        "titulo": "Para plantilla de prueba",
-        "lead": "Resumen breve del proyecto prueba.",
-        "sector": "",
-        "ubicacion": "",
-        "anio": "",
-        "__colores": {
-          "empresaNombre": "#fb609e"
-        }
-      },
-      "design": {
-        "bg": "",
-        "paddingY": "",
-        "eyebrowColor": "",
-        "titleColor": "",
-        "titleSize": "",
-        "leadColor": "",
-        "metaColor": "",
-        "backLinkColor": "",
-        "logoMaxHeight": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-11T17:42:45.273Z",
-      "editado_en": "2026-06-11T18:43:12.843Z"
-    },
-    {
-      "id_modulo": 39,
-      "tipo": "services",
-      "nombre": "Cards",
-      "id_pagina": 1,
-      "data": {
-        "titulo_seccion": "Portafolio de Soluciones",
-        "eyebrow": "Lo que hacemos",
-        "cards": [
-          {
-            "id": "instalaciones",
-            "titulo": "Instalaciones",
-            "descripcion": "Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas TIA/EIA para entornos corporativos exigentes.",
-            "enlace": "/html/cableado_estructurado"
-          },
-          {
-            "id": "soporte",
-            "titulo": "Soporte IT",
-            "descripcion": "Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.",
-            "enlace": "/html/soporte_it"
-          },
-          {
-            "id": "software",
-            "titulo": "Desarrollo de Software",
-            "descripcion": "Soluciones digitales a medida: sistemas de gestión logística, control de inventario y procesos empresariales integrados.",
-            "enlace": "/html/desarrollo"
-          }
-        ]
-      },
-      "design": {
-        "bg": "",
-        "sectionColor": "",
-        "cardBg": "",
-        "cardTitleColor": "",
-        "cardLinkColor": "",
-        "paddingY": "",
-        "titleSize": "",
-        "cardRadius": "",
-        "cardPadding": "",
-        "gap": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-11T18:03:45.975Z",
-      "editado_en": "2026-06-11T18:03:45.975Z"
-    },
-    {
       "id_modulo": 40,
       "tipo": "about",
       "nombre": "Nosotros",
@@ -1711,6 +1578,186 @@
       "alerta": false,
       "creado_en": "2026-06-14T20:54:20.122Z",
       "editado_en": "2026-06-14T20:54:38.354Z"
+    },
+    {
+      "id_modulo": 46,
+      "tipo": "hero",
+      "nombre": "Hero lateral",
+      "id_pagina": 1,
+      "data": {
+        "badge": "INFRAESTRUCTURA DE ELITE",
+        "titulo1": "Conectamos el futuro",
+        "titulo2": "de su empresa.",
+        "descripcion": "Diseñamos e implementamos infraestructura tecnológica para las empresas líderes de Argentina. 25 años de trayectoria y más de 500 clientes nos respaldan.",
+        "boton_primario": "Ver Soluciones",
+        "boton_secundario": "Conocer más",
+        "stat1_numero": "+25",
+        "stat1_label": "AÑOS DE EXPERIENCIA",
+        "stat2_numero": "+500",
+        "stat2_label": "Clientes satisfechos"
+      },
+      "design": {
+        "bg": "",
+        "titleColor": "",
+        "accentColor": "",
+        "btnBg": "",
+        "paddingY": "",
+        "titleSize": "",
+        "descSize": "",
+        "btnRadius": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-16T16:46:23.818Z",
+      "editado_en": "2026-06-16T16:46:23.818Z"
+    },
+    {
+      "id_modulo": 47,
+      "tipo": "hero",
+      "nombre": "Hero lateral",
+      "id_pagina": 1,
+      "data": {
+        "badge": "INFRAESTRUCTURA DE ELITE",
+        "titulo1": "Conectamos el futuro",
+        "titulo2": "de su empresa.",
+        "descripcion": "Diseñamos e implementamos infraestructura tecnológica para las empresas líderes de Argentina. 25 años de trayectoria y más de 500 clientes nos respaldan.",
+        "boton_primario": "Ver Soluciones",
+        "boton_secundario": "Conocer más",
+        "stat1_numero": "+25",
+        "stat1_label": "AÑOS DE EXPERIENCIA",
+        "stat2_numero": "+500",
+        "stat2_label": "Clientes satisfechos"
+      },
+      "design": {
+        "bg": "",
+        "titleColor": "",
+        "accentColor": "",
+        "btnBg": "",
+        "paddingY": "",
+        "titleSize": "",
+        "descSize": "",
+        "btnRadius": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-16T16:46:56.745Z",
+      "editado_en": "2026-06-16T16:46:56.745Z"
+    },
+    {
+      "id_modulo": 51,
+      "tipo": "hero",
+      "nombre": "Hero lateral",
+      "id_pagina": 1,
+      "data": {
+        "badge": "INFRAESTRUCTURA DE ELITE",
+        "titulo1": "Conectamos el futuro",
+        "titulo2": "de su empresa.",
+        "descripcion": "Diseñamos e implementamos infraestructura tecnológica para las empresas líderes de Argentina. 25 años de trayectoria y más de 500 clientes nos respaldan.",
+        "boton_primario": "Ver Soluciones",
+        "boton_secundario": "Conocer más",
+        "stat1_numero": "+25",
+        "stat1_label": "AÑOS DE EXPERIENCIA",
+        "stat2_numero": "+500",
+        "stat2_label": "Clientes satisfechos"
+      },
+      "design": {
+        "bg": "",
+        "titleColor": "",
+        "accentColor": "",
+        "btnBg": "",
+        "paddingY": "",
+        "titleSize": "",
+        "descSize": "",
+        "btnRadius": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-16T17:44:39.151Z",
+      "editado_en": "2026-06-16T17:44:39.151Z"
+    },
+    {
+      "id_modulo": 52,
+      "tipo": "cliente-header",
+      "nombre": "Header de cliente",
+      "id_pagina": 12,
+      "data": {
+        "backLabel": "← Volver al Inicio",
+        "backHref": "/index.html",
+        "empresaLogo": "/img/clients/syngenta.png",
+        "empresaNombre": "Nombre de la empresa",
+        "titulo": "Caso de éxito: infraestructura tecnológica a medida",
+        "lead": "Resumen breve del proyecto que SISGRA realizó para este cliente.",
+        "sector": "Industria",
+        "ubicacion": "Rosario, Argentina",
+        "anio": "2025"
+      },
+      "design": {
+        "bg": "",
+        "paddingY": "",
+        "eyebrowColor": "",
+        "titleColor": "",
+        "titleSize": "",
+        "leadColor": "",
+        "metaColor": "",
+        "backLinkColor": "",
+        "logoMaxHeight": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-16T18:37:43.670Z",
+      "editado_en": "2026-06-16T18:37:43.670Z"
+    },
+    {
+      "id_modulo": 53,
+      "tipo": "cliente-header",
+      "nombre": "Header de cliente",
+      "id_pagina": 12,
+      "data": {
+        "backLabel": "← Volver al Inicio",
+        "backHref": "/index.html",
+        "empresaLogo": "/img/clients/syngenta.png",
+        "empresaNombre": "Nombre de la empresa",
+        "titulo": "Caso de éxito: infraestructura tecnológica a medida",
+        "lead": "Resumen breve del proyecto que SISGRA realizó para este cliente.",
+        "sector": "Industria",
+        "ubicacion": "Rosario, Argentina",
+        "anio": "2025"
+      },
+      "design": {
+        "bg": "",
+        "paddingY": "",
+        "eyebrowColor": "",
+        "titleColor": "",
+        "titleSize": "",
+        "leadColor": "",
+        "metaColor": "",
+        "backLinkColor": "",
+        "logoMaxHeight": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-16T18:46:37.332Z",
+      "editado_en": "2026-06-16T18:46:37.332Z"
     }
   ]
 }

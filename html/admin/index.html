@@ -285,6 +285,85 @@
             </div>
           </div>
 
+          <!-- Vista "Tarjetas del módulo" (nivel 2): LISTA de tarjetas en filas.
+               Se abre como segundo modal al tocar "Editar" en una variante del modal "Ver".
+               "Nuevo" abre un modal chico para agregar; "Editar" en una fila abre el
+               editor de una sola tarjeta (nivel 3). -->
+          <div class="modal-overlay" id="modulos-cards-modal">
+            <div class="modal" style="max-width:680px;">
+              <div class="modal-header" style="gap:.75rem;">
+                <span style="display:flex;align-items:center;gap:.6rem;min-width:0;flex:1;flex-wrap:wrap;">
+                  <button type="button" class="btn-edit-small" id="modulos-cards-back"><i class="fa-solid fa-arrow-left"></i> Volver</button>
+                  <span class="modal-title" id="modulos-cards-title">Tarjetas</span>
+                  <span id="modulos-cards-pagina" class="mod-pertenece-wrap"></span>
+                </span>
+                <button class="btn-secondary" id="modulos-cards-preview-btn" style="flex-shrink:0;"><i class="fa-solid fa-eye"></i> Preview</button>
+                <button class="btn-add" id="modulos-cards-add-btn" style="flex-shrink:0;"><i class="fa-solid fa-plus"></i> Nuevo</button>
+                <button class="modal-close" id="modulos-cards-close"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+              <div class="modal-body" style="padding:1rem 1.5rem 1.5rem;">
+                <div id="modulos-cards-note" style="font-size:.7rem;color:#94a3b8;margin-bottom:.85rem;line-height:1.5;"></div>
+                <!-- Ítems del navbar a los que pertenece este módulo (multi) -->
+                <div class="section-card" id="modulos-cards-pagina-card" style="margin-bottom:1rem;">
+                  <div class="section-card-body" style="padding:1rem;">
+                    <label class="form-label">Ítems del navbar</label>
+                    <div class="mod-pag-list" id="modulos-cards-pagina-select"></div>
+                    <div id="modulos-cards-pagina-hint" style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Marcá a qué ítem(s) del navbar pertenece este módulo (ej: «Fibra Óptica»), o «Todas las páginas».</div>
+                  </div>
+                </div>
+                <div id="modulos-cards-body"></div>
+              </div>
+              <!-- Footer: solo aparece al CREAR un módulo nuevo (borrador). El
+                   módulo no se persiste hasta tocar "Guardar cambios". -->
+              <div class="modal-footer" id="modulos-cards-footer" style="display:none;">
+                <button class="btn-secondary" id="modulos-cards-cancel">Cancelar</button>
+                <button class="btn-save" id="modulos-cards-save"><i class="fa-solid fa-check" style="margin-right:.35rem;"></i>Guardar cambios</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Editor de UNA tarjeta (nivel 3): se abre al tocar "Editar" en una
+               fila de la lista de tarjetas. Tiene su propio botón "Guardar". -->
+          <div class="modal-overlay" id="modulos-card-edit-modal">
+            <div class="modal" style="max-width:480px;">
+              <div class="modal-header" style="gap:.75rem;">
+                <span style="display:flex;align-items:center;gap:.6rem;min-width:0;flex:1;flex-wrap:wrap;">
+                  <button type="button" class="btn-edit-small" id="modulos-card-edit-back"><i class="fa-solid fa-arrow-left"></i> Volver</button>
+                  <span class="modal-title" id="modulos-card-edit-title">Tarjeta</span>
+                </span>
+                <button class="modal-close" id="modulos-card-edit-close"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+              <div class="modal-body" style="padding:1rem 1.5rem 1.5rem;">
+                <div id="modulos-card-edit-body"></div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn-secondary" id="modulos-card-edit-cancel">Cancelar</button>
+                <button class="btn-save" id="modulos-card-edit-save"><i class="fa-solid fa-check" style="margin-right:.35rem;"></i>Guardar</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modal chico: agregar una nueva tarjeta a la lista -->
+          <div class="modal-overlay" id="modulos-card-new-modal">
+            <div class="modal" style="max-width:420px;">
+              <div class="modal-header">
+                <span class="modal-title"><i class="fa-solid fa-plus nm-title-ico fa-lg"></i> Nueva tarjeta</span>
+                <button class="modal-close" data-close="modulos-card-new-modal"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+              <div class="modal-body nm-body">
+                <div class="form-group nm-field">
+                  <label class="form-label"><i class="fa-solid fa-heading nm-flbl-ico"></i> Título de la tarjeta</label>
+                  <input class="form-input" id="nc-titulo" placeholder="Ej: Instalaciones">
+                </div>
+                <div class="form-hint">Se agrega a la lista. Después tocá “Editar” para definir el ícono, la descripción y el enlace.</div>
+              </div>
+              <div class="modal-footer">
+                <button class="btn-secondary" data-close="modulos-card-new-modal">Cancelar</button>
+                <button class="btn-save" id="nc-crear-btn"><i class="fa-solid fa-plus" style="margin-right:.35rem;"></i>Agregar</button>
+              </div>
+            </div>
+          </div>
+
           <!-- Modal: edición visual en vivo (preview + lápices + colores) -->
           <div id="mod-preview-modal" class="mpm" style="display:none;">
             <div class="mpm-backdrop" id="mpm-backdrop"></div>
