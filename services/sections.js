@@ -484,13 +484,20 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     render: (data, design) => {
       const d = { ...SECTIONS.services.defaultData, ...data };
       const s = { ...SECTIONS.services.defaultDesign, ...design };
-      return `
-<section id="servicios" class="services-section"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
-  <div class="max-w-7xl">
+      // `soloCard`: variante de una sola tarjeta insertada suelta en una plantilla
+      // → se renderiza SOLO la card, sin el encabezado (título) de la sección.
+      const header = d.soloCard ? '' : `
     <div class="services-header">
       <h2 class="services-title"${css({ color: s.sectionColor, 'font-size': s.titleSize })}>${fld('titulo_seccion', esc(d.titulo_seccion))}</h2>
-    </div>
-    <div class="cards-grid"${css({ gap: s.gap })}>
+    </div>`;
+      // Columnas dinámicas = cantidad de tarjetas del módulo (tope 3, mín 1).
+      // Así un módulo de 1 o 2 cards ocupa todo el ancho en vez de quedar fijo
+      // en 3 columnas (con huecos vacíos). Lo consume home.css vía --cards-cols.
+      const nCols = Math.min(3, Math.max(1, (d.cards || []).length));
+      return `
+<section id="servicios" class="services-section${d.soloCard ? ' services-section--solo' : ''}"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
+  <div class="max-w-7xl">${header}
+    <div class="cards-grid"${css({ gap: s.gap, '--cards-cols': nCols })}>
       ${(d.cards||[]).map((c, i) => {
         const linkText = c.linkText || 'Ver Detalles';
         const det = c.detalle || {};
@@ -1884,8 +1891,11 @@ export function agruparEnContenedores(secciones, contenedores) {
   const grupos = [];
   for (const cont of contenedores) {
     const grupo = [];
-    for (const id of (cont || [])) {
-      const idx = pool.findIndex(s => s && s.id_modulo === id);
+    for (const entry of (cont || [])) {
+      // Módulo INLINE (ej: una card suelta guardada dentro de la plantilla): se
+      // renderiza directo, sin buscarlo en el catálogo.
+      if (entry && typeof entry === 'object' && entry.inline) { grupo.push(entry); continue; }
+      const idx = pool.findIndex(s => s && s.id_modulo === entry);
       if (idx !== -1) { grupo.push(pool[idx]); pool.splice(idx, 1); }
     }
     if (grupo.length) grupos.push(grupo);
@@ -1908,8 +1918,11 @@ function renderContenedor(grupo) {
 // Render de una plantilla respetando sus contenedores. `secciones` es la lista
 // plana ya resuelta; `contenedores` define el agrupado en filas.
 export function renderModulosAgrupados(secciones, contenedores) {
-  if (!secciones?.length) return '<div style="padding:4rem;text-align:center;color:#94a3b8;">Esta plantilla aún no tiene módulos.</div>';
-  return agruparEnContenedores(secciones, contenedores).map(renderContenedor).join('');
+  // No cortamos por `secciones` vacío: un contenedor puede tener SOLO módulos
+  // inline (cards sueltas guardadas en la plantilla, que no están en secciones).
+  const grupos = agruparEnContenedores(secciones, contenedores);
+  if (!grupos.length) return '<div style="padding:4rem;text-align:center;color:#94a3b8;">Esta plantilla aún no tiene módulos.</div>';
+  return grupos.map(renderContenedor).join('');
 }
 
 // Render completo de una plantilla v2: resuelve por id_modulos y arma el HTML.

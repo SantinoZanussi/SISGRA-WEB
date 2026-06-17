@@ -89,6 +89,15 @@
       "href": "/html/btn-9",
       "orden": 2,
       "activo": true
+    },
+    {
+      "id_menu": 11,
+      "titulo": "404",
+      "padre": 0,
+      "menu": "CE",
+      "href": "/p/btn-11",
+      "orden": 11,
+      "activo": true
     }
   ]
 }

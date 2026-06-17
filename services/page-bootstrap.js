@@ -230,7 +230,12 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
       }
     }
 
-    ensurePageCss(tipo, secciones);
+    // Para el CSS sumamos también los módulos INLINE de los contenedores (cards
+    // sueltas guardadas dentro de la plantilla): no están en `secciones` pero su
+    // CSS (ej: el de "services") igual tiene que cargar.
+    const inlineMods = (plantilla.contenedores || [])
+      .flat().filter(x => x && typeof x === 'object' && x.inline);
+    ensurePageCss(tipo, secciones.concat(inlineMods));
     // Render respetando los contenedores (filas de 1 a 3 módulos) de la plantilla.
     root.innerHTML = renderModulosAgrupados(secciones, plantilla.contenedores);
     // Post-render: conectar funcionalidad que estaba en el HTML estático

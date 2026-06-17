@@ -41,9 +41,16 @@ function contsFromPlantilla(tpl) {
 function contsToContenedores() {
   return e3.conts.map(c => c.modulos.slice(0, c.cap));
 }
-// lista plana de ids (orden de fila e índice) — canónica para id_modulos.
-function allModIds() {
+// ¿Entrada de contenedor inline? (card suelta guardada dentro de la plantilla)
+const esInline = x => x && typeof x === 'object' && x.inline === true;
+// Todas las entradas de todos los contenedores (ids numéricos + módulos inline).
+function allContEntries() {
   return contsToContenedores().reduce((acc, m) => acc.concat(m), []);
+}
+// lista plana de ids NUMÉRICOS (orden de fila e índice) — canónica para
+// id_modulos. Los módulos inline no tienen id, así que se excluyen.
+function allModIds() {
+  return allContEntries().filter(x => typeof x === 'number');
 }
 // Mantiene activeTpl.{contenedores,id_modulos} en sync con el working model,
 // por si algún código viejo aún los lee.
@@ -117,8 +124,9 @@ function buildNavItems(botones) {
 // inyectados). Lo usa cssFilesFor para saber qué CSS cargar en el iframe.
 function resolvedMods() {
   const navItems = buildNavItems(e3.navbar);
-  return allModIds().map(id => {
-    const m = modById(id);
+  return allContEntries().map(entry => {
+    if (esInline(entry)) return entry;   // módulo inline: ya trae tipo/data/design
+    const m = modById(entry);
     if (!m) return null;
     return m.tipo === 'nav' ? { ...m, data: { ...m.data, items: navItems } } : m;
   }).filter(Boolean);
@@ -667,13 +675,26 @@ function searchResults(query) {
   const yaUsados = new Set(allModIds());
   const res = [];
   for (const m of e3.modulos) {
+    if (m.data?.soloCard) continue;             // copias inline de una card: no se listan acá
     if (!_modAllowedInActiveTpl(m)) continue;   // solo globales / Todas / asignados a esta plantilla
-    if (yaUsados.has(m.id_modulo)) continue;     // ya está en esta plantilla
-    const hay = `${m.nombre} ${m.tipo} ${SECTIONS[m.tipo]?.label || ''}`.toLowerCase();
-    if (hay.includes(q)) res.push({ id_modulo: m.id_modulo, tipo: m.tipo, label: m.nombre, sub: SECTIONS[m.tipo]?.label || m.tipo });
+    // Resultado de MÓDULO entero (excepto si ya está colocado en esta plantilla).
+    if (!yaUsados.has(m.id_modulo)) {
+      const hay = `${m.nombre} ${m.tipo} ${SECTIONS[m.tipo]?.label || ''}`.toLowerCase();
+      if (hay.includes(q)) res.push({ kind: 'mod', id_modulo: m.id_modulo, tipo: m.tipo, label: m.nombre, sub: SECTIONS[m.tipo]?.label || m.tipo });
+    }
+    // Resultados por TARJETA: cada card de un módulo "services" se puede insertar
+    // suelta (se crea una copia de 1 sola card). No se excluyen por "ya usado":
+    // insertar una card siempre crea una copia nueva.
+    if (m.tipo === 'services' && Array.isArray(m.data?.cards)) {
+      m.data.cards.forEach((c, idx) => {
+        const hay = `${c.titulo || ''} ${c.descripcion || ''}`.toLowerCase();
+        if (hay.includes(q)) res.push({
+          kind: 'card', parentId: m.id_modulo, cardId: c.id || '', cardIndex: idx,
+          tipo: 'services', label: c.titulo || 'Tarjeta', sub: `Tarjeta · ${m.nombre}`,
+        });
+      });
+    }
   }
-  // Solo módulos ya existentes (globales / "Todas las páginas" / asignados a esta
-  // plantilla). Ya NO se ofrece "crear módulo nuevo" desde el buscador.
   return res.slice(0, 40);
 }
 
@@ -700,7 +721,10 @@ function bindSlotSearch(doc) {
     } else if (ev.key === 'Enter') {
       ev.preventDefault();
       const res = searchResults(e3.slotSearch.query);
-      if (res.length) insertarEnContenedor(ci, res[0].id_modulo);
+      if (!res.length) return;
+      const r = res[0];
+      if (r.kind === 'card') insertarCardEnContenedor(ci, r);
+      else insertarEnContenedor(ci, r.id_modulo);
     }
   });
   renderSlotResults(slot, ci);
@@ -717,15 +741,25 @@ function renderSlotResults(slot, ci) {
     box.innerHTML = '<div class="e3-slot-empty">No hay módulos disponibles para esta búsqueda.</div>';
     return;
   }
-  box.innerHTML = res.map((r, i) => `
+  box.innerHTML = res.map((r, i) => {
+    const tag  = r.kind === 'card'
+      ? '<span style="margin-left:.4rem;font-size:.5rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:#2563eb;padding:.05rem .3rem;border-radius:3px;vertical-align:middle;">tarjeta</span>'
+      : '';
+    const meta = r.kind === 'card'
+      ? escAttr(r.sub)
+      : `${escAttr(r.sub)} · #${r.id_modulo}${GLOBAL_TIPOS.has(r.tipo) ? ' · global' : ''}`;
+    return `
     <div class="e3-slot-result" data-res="${i}">
-      <span class="e3-slot-result-name">${escAttr(r.label)}</span>
-      <span class="e3-slot-result-sub">${escAttr(r.sub)} · #${r.id_modulo}${GLOBAL_TIPOS.has(r.tipo) ? ' · global' : ''}</span>
-    </div>`).join('');
+      <span class="e3-slot-result-name">${escAttr(r.label)}${tag}</span>
+      <span class="e3-slot-result-sub">${meta}</span>
+    </div>`;
+  }).join('');
   box.querySelectorAll('[data-res]').forEach(el =>
     el.addEventListener('click', ev => {
       ev.stopPropagation();
-      insertarEnContenedor(ci, res[+el.dataset.res].id_modulo);
+      const r = res[+el.dataset.res];
+      if (r.kind === 'card') insertarCardEnContenedor(ci, r);
+      else insertarEnContenedor(ci, r.id_modulo);
     }));
 }
 
@@ -750,6 +784,36 @@ function insertarEnContenedor(ci, id_modulo) {
   e3.slotSearch = null;
   markDirty(); renderCanvas(); renderProps();
   notif('✓ Módulo insertado');
+}
+
+// Inserta una TARJETA suelta como módulo INLINE dentro del contenedor: una copia
+// de la card (con `soloCard` → se renderiza sin el título de sección) guardada
+// EN LA PLANTILLA, sin crear ningún módulo en el catálogo. Es independiente:
+// editar la tarjeta original no la modifica.
+function insertarCardEnContenedor(ci, r) {
+  const cont = e3.conts[ci];
+  if (!cont) return;
+  if (cont.modulos.length >= cont.cap) {
+    notif('Este contenedor ya está completo', 'error');
+    return;
+  }
+  const parent = modById(r.parentId);
+  if (!parent) { notif('No se encontró el módulo de origen', 'error'); return; }
+  const cards = parent.data?.cards || [];
+  const card  = cards.find(c => (c.id || '') === r.cardId && r.cardId) || cards[r.cardIndex];
+  if (!card) { notif('No se encontró la tarjeta', 'error'); return; }
+  const inline = {
+    inline: true,
+    tipo:   'services',
+    nombre: card.titulo || 'Tarjeta',
+    data:   { ...JSON.parse(JSON.stringify(parent.data || {})), cards: [JSON.parse(JSON.stringify(card))], soloCard: true },
+    design: JSON.parse(JSON.stringify(parent.design || {})),
+  };
+  cont.modulos.push(inline);
+  e3.sel = { ci, mi: cont.modulos.length - 1 };
+  e3.slotSearch = null;
+  markDirty(); renderCanvas(); renderProps();
+  notif('✓ Tarjeta insertada');
 }
 
 // Cierra el buscador del slot al click fuera del iframe (en el panel).
@@ -964,16 +1028,20 @@ function renderCanvas() {
 </div>` : `<div class="e3-slot" data-ci="${ci}" data-mi="${mi}"><div class="e3-slot-inner"><i class="fa-solid fa-plus"></i> Insertar módulo</div></div>`);
         continue;
       }
-      const m = modById(id);
+      const inline = esInline(id);
+      const m = inline ? id : modById(id);
       const inner = m
         ? renderModulo(m.tipo === 'nav' ? { ...m, data: { ...m.data, items: navItems } } : m)
         : `<div style="padding:2rem;background:#fee;color:#900;text-align:center;">Módulo #${id} no está en el catálogo</div>`;
       const tipoLbl = m ? (SECTIONS[m.tipo]?.label || m.tipo) : '—';
       const global = m && GLOBAL_TIPOS.has(m.tipo);
       const isSel = e3.sel && e3.sel.ci === ci && e3.sel.mi === mi;
+      const badge = inline
+        ? `Tarjeta suelta · ${escAttr(tipoLbl)}`
+        : `#${id} · ${escAttr(tipoLbl)}${global ? ' · global' : ''}`;
       slots.push(`
 <div class="e3-sec-wrap ${isSel ? 'e3-selected' : ''}" data-ci="${ci}" data-mi="${mi}">
-  <div class="e3-sec-badge">#${id} · ${escAttr(tipoLbl)}${global ? ' · global' : ''}</div>
+  <div class="e3-sec-badge">${badge}</div>
   <div class="e3-sec-ctrls">
     ${cont.cap > 1 ? `<button data-mact="left" title="Mover a la izquierda"><i class="fa-solid fa-chevron-left"></i></button>
     <button data-mact="right" title="Mover a la derecha"><i class="fa-solid fa-chevron-right"></i></button>` : ''}
@@ -1106,7 +1174,9 @@ function renderProps() {
   const body = document.getElementById('e3-props-body');
   if (!body) return;
   const typeEl = document.getElementById('e3-props-type');
-  const id = e3.sel ? e3.conts[e3.sel.ci]?.modulos?.[e3.sel.mi] : undefined;
+  const entry = e3.sel ? e3.conts[e3.sel.ci]?.modulos?.[e3.sel.mi] : undefined;
+  if (esInline(entry)) { renderInlineCardProps(entry, body, typeEl); return; }
+  const id = entry;
   const sec = (id == null) ? null : modById(id);
   if (!sec) { body.innerHTML = '<div class="props-empty">Click sobre un módulo del canvas para editarlo.</div>'; if (typeEl) typeEl.textContent = 'Propiedades'; return; }
   const def = SECTIONS[sec.tipo];
@@ -1118,6 +1188,27 @@ function renderProps() {
   body.innerHTML = aviso + alertaFieldHTML(sec) + (fields || []).map(f => fieldHTML(f, sec[e3.propsTab]?.[f.name], e3.propsTab)).join('');
   bindFieldEvents(sec);
   bindAlertaField(sec);
+}
+
+// Props de una TARJETA suelta (módulo inline guardado en la plantilla). Edita la
+// única card del módulo inline en vivo (título, descripción, enlace) y re-renderiza.
+function renderInlineCardProps(entry, body, typeEl) {
+  if (typeEl) typeEl.textContent = 'Tarjeta suelta';
+  entry.data = entry.data || {};
+  if (!Array.isArray(entry.data.cards) || !entry.data.cards.length) entry.data.cards = [{}];
+  const card = entry.data.cards[0];
+  body.innerHTML = `
+    <div style="background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;font-size:.62rem;padding:.5rem .6rem;margin-bottom:.6rem;line-height:1.5;border-radius:.3rem;">
+      Tarjeta guardada <b>dentro de esta plantilla</b> (no es un módulo del catálogo). Es una copia independiente: editar la original no la cambia.
+    </div>
+    <div class="props-field"><label class="props-label">Título</label><input class="props-input" type="text" data-icf="titulo" value="${escAttr(card.titulo || '')}"/></div>
+    <div class="props-field"><label class="props-label">Descripción</label><textarea class="props-textarea" data-icf="descripcion" style="min-height:80px;">${escAttr(card.descripcion || '').replace(/&quot;/g,'"')}</textarea></div>
+    <div class="props-field"><label class="props-label">Texto del enlace</label><input class="props-input" type="text" data-icf="linkText" value="${escAttr(card.linkText || '')}"/></div>
+    <div class="props-field"><label class="props-label">URL de destino</label><input class="props-input" type="text" data-icf="enlace" value="${escAttr(card.enlace || '')}" placeholder="/html/… o https://…"/></div>`;
+  body.querySelectorAll('[data-icf]').forEach(inp => {
+    inp.addEventListener('input', () => { card[inp.dataset.icf] = inp.value; markDirty(); });
+    inp.addEventListener('change', () => renderCanvas());   // refresca el preview al salir del campo
+  });
 }
 
 // Check de alerta a nivel sección (módulo). Se persiste dentro de cada
@@ -1730,9 +1821,11 @@ function renderModCatalog() {
   const grid = document.getElementById('modulos-grid');
   if (!grid) return;
 
-  // 1 módulo por sección: el principal de cada tipo, ordenado por id.
+  // 1 módulo por sección: el principal de cada tipo, ordenado por id. Las copias
+  // sueltas de una card (soloCard, insertadas en plantillas) no son módulos de
+  // catálogo: se omiten de esta vista de gestión.
   const byTipo = {};
-  _mods.forEach(m => (byTipo[m.tipo] = byTipo[m.tipo] || []).push(m));
+  _mods.filter(m => !m.data?.soloCard).forEach(m => (byTipo[m.tipo] = byTipo[m.tipo] || []).push(m));
   const principales = Object.values(byTipo)
     .map(_principalDeTipo)
     .sort((a, b) => a.id_modulo - b.id_modulo);
@@ -1773,7 +1866,7 @@ function renderModCatalog() {
       </div>
       <div class="mod-row-pertenece">${pertenece}</div>
       <div class="blog-actions">
-        <button type="button" class="btn-edit-small" onclick="openModVer(${m.id_modulo})">Ver</button>
+        <button type="button" class="btn-edit-small" onclick="openModVer(${m.id_modulo})">Lista</button>
         <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="eliminarModulo(${m.id_modulo})">Eliminar</button>
       </div>
     </div>`;
@@ -2185,7 +2278,7 @@ function _openNuevaCardFlujo() {
 function _renderModVerLista(tipo) {
   const body = document.getElementById('modulos-view-body');
   if (!body) return;
-  const mods = _mods.filter(x => x.tipo === tipo).sort((a, b) => a.id_modulo - b.id_modulo);
+  const mods = _mods.filter(x => x.tipo === tipo && !x.data?.soloCard).sort((a, b) => a.id_modulo - b.id_modulo);
   if (!mods.length) { _closeModVer(); return; }
   body.innerHTML = `<div class="blog-grid">${mods.map(m => {
     const usos  = _modUsos[m.id_modulo] || 0;

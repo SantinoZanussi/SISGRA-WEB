@@ -485,14 +485,18 @@ a.logos-cell:hover::after { opacity: 1; }
 
 @media (min-width: 640px) {
   .cards-grid {
-    grid-template-columns: repeat(2, 1fr);
+    /* La cantidad de columnas la fija el render con la variable --cards-cols
+       (= cantidad de tarjetas del módulo). Acá se topa en 2 para tablet. */
+    grid-template-columns: repeat(min(var(--cards-cols, 3), 2), 1fr);
     gap: 1.75rem;
   }
 }
 
 @media (min-width: 1024px) {
   .cards-grid {
-    grid-template-columns: repeat(3, 1fr);
+    /* En desktop usa tantas columnas como tarjetas tenga el módulo (máx 3),
+       así un módulo de 1 o 2 cards ocupa todo el ancho disponible. */
+    grid-template-columns: repeat(var(--cards-cols, 3), 1fr);
     gap: 2.5rem;
   }
 }

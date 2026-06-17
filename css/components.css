@@ -93,7 +93,7 @@
 }
 
 .service-card:hover .card-icon {
-    transform: scale(1.10);
+    transform: scale(1.03);
 }
 
 .card-icon svg {

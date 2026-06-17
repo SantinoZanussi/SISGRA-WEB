@@ -45,15 +45,25 @@ const TIPOS_VALIDOS = TIPOS_BASE;
 // `id_modulos` se mantiene SIEMPRE como el aplanado de contenedores (lista
 // canónica plana) para no romper alertas, conteo de usos, nav ni el runtime.
 
-// Aplana contenedores → lista plana de ids (en orden de fila e índice).
+// ¿Es una tarjeta/módulo INLINE? (guardado dentro de la plantilla, sin id de
+// catálogo). Ej: una card suelta insertada en un contenedor: { inline:true, ... }.
+function esInline(x) {
+  return x && typeof x === 'object' && x.inline === true;
+}
+
+// Aplana contenedores → lista plana de ids NUMÉRICOS (en orden de fila e índice).
+// Los módulos inline no tienen id, así que no entran en id_modulos.
 function flattenContenedores(conts) {
   return [].concat(...conts.map(c => (Array.isArray(c) ? c.filter(n => Number.isFinite(n)) : [])));
 }
 
-// Coacciona a array-de-arrays-de-números. Devuelve null si no es un array.
+// Normaliza cada contenedor a (ids numéricos | módulos inline). Devuelve null si
+// no es un array. Los inline se preservan tal cual; el resto se coacciona a Number.
 function sanitizeContenedores(conts) {
   if (!Array.isArray(conts)) return null;
-  return conts.map(c => (Array.isArray(c) ? c.map(Number).filter(n => !isNaN(n)) : []));
+  return conts.map(c => (Array.isArray(c)
+    ? c.map(x => (esInline(x) ? x : Number(x))).filter(x => esInline(x) || (typeof x === 'number' && !isNaN(x)))
+    : []));
 }
 
 // Garantiza que la plantilla tenga `contenedores` válido y `id_modulos` en sync.
