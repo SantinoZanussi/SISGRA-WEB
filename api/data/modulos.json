@@ -262,7 +262,7 @@
             "id": "instalaciones",
             "titulo": "Instalaciones",
             "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
-            "enlace": "/html/cableado_estructurado",
+            "enlace": "/html/btn-8",
             "link": "",
             "detalle": {
               "titulo": "",
@@ -339,7 +339,7 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-16T18:08:19.141Z",
+      "editado_en": "2026-06-17T11:57:37.284Z",
       "id_pagina": [
         1
       ]
@@ -744,8 +744,10 @@
       },
       "alerta": false,
       "creado_en": "2026-05-28T00:00:00.000Z",
-      "editado_en": "2026-06-11T18:42:49.426Z",
-      "id_pagina": 12
+      "editado_en": "2026-06-17T11:19:05.603Z",
+      "id_pagina": [
+        12
+      ]
     },
     {
       "id_modulo": 18,
@@ -1758,6 +1760,54 @@
       "alerta": false,
       "creado_en": "2026-06-16T18:46:37.332Z",
       "editado_en": "2026-06-16T18:46:37.332Z"
+    },
+    {
+      "id_modulo": 54,
+      "tipo": "services",
+      "nombre": "Nueva tarjeta",
+      "id_pagina": [
+        1
+      ],
+      "data": {
+        "titulo_seccion": "Portafolio de Soluciones",
+        "eyebrow": "Lo que hacemos",
+        "cards": [
+          {
+            "id": "card-1781695683916",
+            "icono": "fa-server",
+            "iconoColor": "",
+            "titulo": "Nueva tarjeta",
+            "descripcion": "",
+            "linkText": "Ver Detalles",
+            "enlace": "",
+            "detalle": {
+              "titulo": "",
+              "descripcion": "",
+              "imagen": ""
+            }
+          }
+        ]
+      },
+      "design": {
+        "bg": "",
+        "sectionColor": "",
+        "cardBg": "",
+        "cardTitleColor": "",
+        "cardLinkColor": "",
+        "paddingY": "",
+        "titleSize": "",
+        "cardRadius": "",
+        "cardPadding": "",
+        "gap": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-17T11:28:13.962Z",
+      "editado_en": "2026-06-17T11:38:07.101Z"
     }
   ]
 }

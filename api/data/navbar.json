@@ -79,7 +79,7 @@
       "menu": "CE",
       "href": "/html/btn-8",
       "orden": 10,
-      "activo": false
+      "activo": true
     },
     {
       "id_menu": 9,

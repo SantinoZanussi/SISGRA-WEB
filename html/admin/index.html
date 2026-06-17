@@ -335,6 +335,14 @@
               </div>
               <div class="modal-body" style="padding:1rem 1.5rem 1.5rem;">
                 <div id="modulos-card-edit-body"></div>
+                <!-- Destino de la tarjeta: a qué ítem del navbar apunta "Ver Detalles" -->
+                <div class="section-card" id="modulos-card-edit-navcard" style="margin-top:1rem;">
+                  <div class="section-card-body" style="padding:1rem;">
+                    <label class="form-label"><i class="fa-solid fa-diagram-project" style="margin-right:.4rem;"></i>¿A dónde se dirige?</label>
+                    <div class="mod-pag-list" id="modulos-card-edit-nav"></div>
+                    <div style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Elegí el ítem del navbar de esta tarjeta: define a dónde apunta “Ver Detalles” y a qué página pertenece (al armar esa plantilla, la tarjeta aparece al insertar un módulo).</div>
+                  </div>
+                </div>
               </div>
               <div class="modal-footer">
                 <button class="btn-secondary" id="modulos-card-edit-cancel">Cancelar</button>
@@ -380,8 +388,22 @@
                   <iframe id="mpm-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
                 </div>
                 <aside class="mpm-side">
-                  <div class="mpm-side-head"><i class="fa-solid fa-palette"></i> Colores y diseño</div>
-                  <div class="mpm-side-fields" id="mpm-design-fields"></div>
+                  <div class="mpm-side-tabs">
+                    <button type="button" class="mpm-side-tab active" id="mpm-tab-btn-settings" data-mpm-tab="settings"><i class="fa-solid fa-sliders"></i> Ajustes</button>
+                    <button type="button" class="mpm-side-tab" id="mpm-tab-btn-design" data-mpm-tab="design"><i class="fa-solid fa-palette"></i> Colores y diseño</button>
+                  </div>
+                  <div class="mpm-side-fields mpm-tabpane active" id="mpm-settings-fields" data-mpm-pane="settings">
+                    <div class="mf-row">
+                      <label class="mf-label">Nombre del módulo</label>
+                      <input type="text" class="form-input mf-input" id="mpm-nombre" placeholder="Ej: Hero — Fondo Oscuro">
+                    </div>
+                    <div class="mf-row">
+                      <label class="mf-label">Ítems del navbar</label>
+                      <div class="mod-pag-list" id="mpm-nav"></div>
+                      <div id="mpm-nav-hint" style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">A qué ítem(s) del navbar pertenece este módulo.</div>
+                    </div>
+                  </div>
+                  <div class="mpm-side-fields mpm-tabpane" id="mpm-design-fields" data-mpm-pane="design"></div>
                   <div class="mpm-side-tip"><i class="fa-solid fa-pen"></i> Tocá el lápiz al lado de cada texto del preview para editarlo en vivo.</div>
                 </aside>
               </div>

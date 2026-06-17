@@ -1875,60 +1875,32 @@ async function crearModuloDesdeModal() {
   }
 }
 
-/* Vista 2: editor de un módulo del catálogo */
-window.openModEditor = function(id) {
-  const m = _mods.find(x => x.id_modulo === Number(id));
-  if (!m) return;
-  const sec = SECTIONS[m.tipo];
-  if (!sec) { window.__svc.showNotif('Tipo de módulo desconocido: ' + m.tipo, 'error'); return; }
+/* Carga un módulo del catálogo en los globales de edición (_curMod*). */
+function _setCurMod(m) {
+  const sec = SECTIONS[m.tipo] || {};
   _curModId   = m.id_modulo;
   _curModType = m.tipo;
   _curModData = {
     nombre: m.nombre || '',
     alerta: m.alerta === true,
     id_pagina: m.id_pagina ?? null,
-    data:   { ...sec.defaultData,   ...(m.data   || {}) },
-    design: { ...sec.defaultDesign, ...(m.design || {}) },
+    data:   { ...(sec.defaultData   || {}), ...(m.data   || {}) },
+    design: { ...(sec.defaultDesign || {}), ...(m.design || {}) },
   };
+}
 
-  const titleEl = document.getElementById('modulos-editor-title');
-  const nameEl  = document.getElementById('modulos-editor-variant-name');
-  if (titleEl) titleEl.innerHTML = `${sec.icon || ''} ${sec.label} · #${m.id_modulo}`;
-  if (nameEl)  nameEl.textContent  = m.nombre || '';
-
-  const nameInput = document.getElementById('modulos-variant-name-input');
-  if (nameInput) {
-    nameInput.value = m.nombre || '';
-    nameInput.oninput = () => { _curModData.nombre = nameInput.value; };
-  }
-
-  const alertaInput = document.getElementById('modulos-variant-alerta');
-  if (alertaInput) {
-    alertaInput.checked = _curModData.alerta;
-    alertaInput.onchange = () => { _curModData.alerta = alertaInput.checked; };
-  }
-
-  _renderPaginaSelect(_curModData.id_pagina);
-
-  // Solo los campos de CONTENIDO van en el editor. El DISEÑO (colores) y el
-  // PREVIEW viven ahora en el modal de edición visual (botón "Preview").
-  renderModFieldGroup('data', sec.dataFields || [], 'modulos-editor-data-fields');
-  if (m.tipo === 'formulario') renderFormCamposEditor('modulos-editor-data-fields');
-
-  renderModContentCard(m.tipo);
-  // Ocultar la tarjeta de campos técnicos (ej: blog-list): solo se muestra la
-  // lista de contenido (artículos).
-  const dataCard = document.getElementById('modulos-editor-data-card');
-  if (dataCard) dataCard.style.display = MOD_HIDE_DATA_CARD.has(m.tipo) ? 'none' : '';
-  _refreshPaginaBadges();
-
-  // El contenido compartido (#blog-list / #clientes-tbody) debe existir en UN
-  // solo lugar: si el modal "Ver" tenía la lista, la vaciamos.
-  const verBody = document.getElementById('modulos-view-body');
-  if (verBody) verBody.innerHTML = '';
-
-  // El editor es un modal: lo abrimos por encima del catálogo.
-  window.__svc?.openModal('modulos-editor-view');
+/* Vista 2: editor de un módulo del catálogo.
+   Ya no abre el cuestionario de campos: lleva directo al PREVIEW visual
+   (mod-preview-modal), donde el contenido se edita con los lápices y los
+   colores + ítems del navbar viven en el panel lateral. */
+window.openModEditor = function(id) {
+  const m = _mods.find(x => x.id_modulo === Number(id));
+  if (!m) return;
+  const sec = SECTIONS[m.tipo];
+  if (!sec) { window.__svc.showNotif('Tipo de módulo desconocido: ' + m.tipo, 'error'); return; }
+  _setCurMod(m);
+  _previewFromCards = false;
+  openPreviewModal();
 };
 
 /* Gestión de contenido global embebida (blog posts / clientes)
@@ -2077,22 +2049,136 @@ window.openModVer = function(id) {
     if (addBtn) { addBtn.style.display = ''; addBtn.innerHTML = cfg.addLabel; addBtn.onclick = cfg.add; }
     body.innerHTML = cfg.bodyHTML;
     cfg.render();
+  } else if (m.tipo === 'services') {
+    // CARDS: "1 tarjeta = 1 módulo". "Ver" lista cada tarjeta (de todos los
+    // módulos de servicios) como una fila; "Editar" abre el editor de UNA
+    // tarjeta y "Nuevo" crea un módulo de una sola tarjeta.
+    if (titleEl) titleEl.textContent = sec.label;
+    if (noteEl) {
+      noteEl.style.display = '';
+      noteEl.textContent = 'Tus tarjetas. Tocá “Editar” para modificar una (ícono, texto y a dónde se dirige), o “Nuevo” para agregar otra.';
+    }
+    if (addBtn) {
+      addBtn.style.display = '';
+      addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Nuevo';
+      addBtn.onclick = () => _openNuevaCardFlujo();
+    }
+    _renderCardsFlatList();
   } else {
     if (titleEl) titleEl.textContent = sec.label;
     if (noteEl) noteEl.style.display = 'none';
     if (addBtn) {
       addBtn.style.display = '';
       addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Nuevo';
-      // Servicios: el "Nuevo" abre el editor con un BORRADOR (sin crear nada hasta
-      // "Guardar cambios"). El resto de los tipos crea la variante al instante.
-      addBtn.onclick = () => m.tipo === 'services'
-        ? _openNuevoServiciosModulo(m.tipo, esTodas ? 'all' : m.id_pagina)
-        : nuevaVarianteDeModulo(m.tipo, esTodas ? 'all' : m.id_pagina);
+      addBtn.onclick = () => nuevaVarianteDeModulo(m.tipo, esTodas ? 'all' : m.id_pagina);
     }
     _renderModVerLista(m.tipo);
   }
   window.__svc?.openModal('modulos-view-modal');
 };
+
+/* CARDS — lista plana de todas las tarjetas de todos los módulos de servicios.
+   Cada fila es UNA tarjeta (modelo "1 tarjeta = 1 módulo"). */
+function _allServiceCards() {
+  const out = [];
+  _mods.filter(x => x.tipo === 'services')
+       .sort((a, b) => a.id_modulo - b.id_modulo)
+       .forEach(m => {
+         const cards = Array.isArray(m.data?.cards) ? m.data.cards : [];
+         cards.forEach((card, i) => out.push({ m, i, card }));
+       });
+  return out;
+}
+
+function _renderCardsFlatList() {
+  const body = document.getElementById('modulos-view-body');
+  if (!body) return;
+  const all = _allServiceCards();
+  if (!all.length) {
+    body.innerHTML = `<div class="mod-cat-empty">No hay tarjetas todavía. Tocá <b>Nuevo</b> para crear la primera.</div>`;
+    return;
+  }
+  body.innerHTML = `<div class="blog-grid">${all.map(({ m, i, card }) => {
+    const icon  = serviceCardIcon(card);
+    const color = card.iconoColor || '#2563eb';
+    const desc  = (card.descripcion || '').replace(/\s+/g, ' ').trim().slice(0, 120) || 'Sin descripción.';
+    const item  = _cardPerteneceLabel(card);
+    const badge = item
+      ? `<span class="mod-pertenece" title="Ítem del navbar al que pertenece esta tarjeta"><i class="fa-solid fa-diagram-project"></i> ${escAttr(item)}</span>`
+      : `<span class="mod-pertenece is-none" title="Sin ítem asignado"><i class="fa-solid fa-circle-question"></i> Sin asignar</span>`;
+    return `<div class="blog-item">
+      <div class="blog-info">
+        <div class="mod-row-headline">
+          <span class="card-row-ico"><i class="fa-solid ${escAttr(icon)}" style="color:${escAttr(color)}"></i></span>
+          <span class="blog-title-text">${escAttr(card.titulo || '(sin título)')}</span>
+          ${badge}
+        </div>
+        <div class="blog-excerpt">${escAttr(desc)}</div>
+      </div>
+      <div class="blog-actions">
+        <button type="button" class="btn-edit-small" data-cf-edit="${m.id_modulo}:${i}">Editar</button>
+        <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" data-cf-del="${m.id_modulo}:${i}">Eliminar</button>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+
+  body.querySelectorAll('[data-cf-edit]').forEach(b => b.addEventListener('click', () => {
+    const [mid, i] = b.dataset.cfEdit.split(':');
+    const m = _mods.find(x => x.id_modulo === Number(mid));
+    if (m) openCardEditor(m, Number(i));
+  }));
+  body.querySelectorAll('[data-cf-del]').forEach(b => b.addEventListener('click', () => _deleteCardFlat(b.dataset.cfDel)));
+}
+
+/* Elimina una tarjeta de la lista plana. Si el módulo se queda sin tarjetas y no
+   está en uso, se elimina el módulo entero. */
+async function _deleteCardFlat(key) {
+  const [mid, idx] = key.split(':');
+  const m = _mods.find(x => x.id_modulo === Number(mid));
+  if (!m) return;
+  if (!confirm('¿Eliminar esta tarjeta?')) return;
+  m.data = m.data || {};
+  m.data.cards = Array.isArray(m.data.cards) ? m.data.cards : [];
+  m.data.cards.splice(Number(idx), 1);
+  try {
+    if (!m.data.cards.length && (_modUsos[m.id_modulo] || 0) === 0) {
+      await window.__svc.apiDelete(`/modulos/${m.id_modulo}`);
+      _mods = _mods.filter(x => x.id_modulo !== m.id_modulo);
+    } else {
+      await window.__svc.apiPut(`/modulos/${m.id_modulo}`, { data: m.data });
+    }
+    _renderCardsFlatList();
+    renderModCatalog();
+    window.__svc.showNotif('Tarjeta eliminada', 'success');
+  } catch (e) {
+    window.__svc.showNotif('Error: ' + e.message, 'error');
+  }
+}
+
+/* "Nuevo" en la lista de tarjetas: arma un BORRADOR de módulo de servicios con
+   UNA sola tarjeta y abre el editor de tarjeta. Se persiste (POST) al Guardar.
+   id_pagina (pertenece) arranca null: se define al elegir el destino del navbar. */
+function _openNuevaCardFlujo() {
+  const sec = SECTIONS['services'];
+  if (!sec) return;
+  const card = {
+    id: 'card-' + Date.now(),
+    icono: 'fa-server', iconoColor: '',
+    titulo: 'Nueva tarjeta', descripcion: '',
+    linkText: 'Ver Detalles', enlace: '',
+    detalle: { titulo: '', descripcion: '', imagen: '' },
+  };
+  const draft = {
+    _isNew: true,
+    id_modulo: null,
+    tipo: 'services',
+    nombre: 'Nueva tarjeta',
+    id_pagina: null,
+    data:   { ...JSON.parse(JSON.stringify(sec.defaultData || {})), cards: [card] },
+    design: JSON.parse(JSON.stringify(sec.defaultDesign || {})),
+  };
+  openCardEditor(draft, 0);
+}
 
 /* Lista genérica (mismo formato que la del blog): los módulos de esa sección.
    "Editar" cierra este modal y abre el editor del módulo (el otro modal). */
@@ -2159,7 +2245,11 @@ function _saveServiciosModulo(m, immediate) {
   clearTimeout(_svcSaveTimers[m.id_modulo]);
   const doSave = async () => {
     try {
-      await window.__svc.apiPut(`/modulos/${m.id_modulo}`, { data: m.data });
+      // Persistimos también id_pagina: el destino de la tarjeta define a qué
+      // ítem/página pertenece el módulo (para el filtro al insertar en plantillas).
+      const res = await window.__svc.apiPut(`/modulos/${m.id_modulo}`, { data: m.data, id_pagina: m.id_pagina ?? null });
+      const idx = _mods.findIndex(x => x.id_modulo === m.id_modulo);
+      if (idx !== -1 && res?.modulo) _mods[idx] = res.modulo;
     } catch (e) {
       window.__svc.showNotif('Error al guardar: ' + e.message, 'error');
     }
@@ -2431,13 +2521,87 @@ function openCardEditor(m, i) {
   if (!card) return;
   _curCardEdit = { m, i };
   const titleEl = document.getElementById('modulos-card-edit-title');
-  if (titleEl) titleEl.textContent = card.titulo || 'Tarjeta';
+  if (titleEl) titleEl.textContent = m._isNew ? `Nueva tarjeta` : (card.titulo || 'Tarjeta');
   const body = document.getElementById('modulos-card-edit-body');
   if (body) {
     body.innerHTML = `<div class="svc-cards-list">${_servicioCardRowHTML(card, i)}</div>`;
     _bindSingleCardRow(m, i);
   }
+  _renderCardNavSelect(m, i);
   window.__svc?.openModal('modulos-card-edit-modal');
+}
+
+/* Ítems del navbar a los que puede apuntar una tarjeta: botones activos del
+   navbar con un href navegable. */
+function _navDestItems() {
+  return (_navbar || [])
+    .filter(b => b.activo !== false && b.href)
+    .sort((a, b) => (a.orden || 0) - (b.orden || 0));
+}
+
+/* Ítem del navbar (botón) cuyo href coincide con `href`. */
+function _navItemByHref(href) {
+  return href ? (_navbar || []).find(b => b.href === href) : null;
+}
+
+/* id_pagina (pertenece) que corresponde a un href del navbar: la plantilla cuyo
+   id_menu incluye al ítem de ese href. Devuelve [id_plantilla] o null si el href
+   no mapea a un ítem con plantilla (ej: URL personalizada o «Inicio» sin página). */
+function _idPaginaForNavHref(href) {
+  const item = _navItemByHref(href);
+  if (!item) return null;
+  const plt = (_plantillas || []).find(p => (p.id_menu || []).includes(item.id_menu));
+  return plt ? [plt.id_plantilla] : null;
+}
+
+/* Etiqueta del ítem del navbar al que pertenece/apunta una tarjeta (para el
+   badge de la lista). '' si no apunta a ningún ítem (sin enlace / URL libre). */
+function _cardPerteneceLabel(card) {
+  return _navItemByHref(card && card.enlace)?.titulo || '';
+}
+
+/* Selector "¿A dónde se dirige?": elige el ítem del navbar al que apunta el
+   botón "Ver Detalles" de la tarjeta (card.enlace = href del ítem). Incluye la
+   opción "Personalizado" para una URL libre y "Sin enlace". */
+function _renderCardNavSelect(m, i) {
+  const box = document.getElementById('modulos-card-edit-nav');
+  if (!box) return;
+  const card = m.data?.cards?.[i];
+  if (!card) { box.innerHTML = ''; return; }
+  const items = _navDestItems();
+  const cur = card.enlace || '';
+  const isCustom = !!cur && !items.some(b => b.href === cur);
+  box.innerHTML = [
+    `<label class="mod-pag-check"><input type="radio" name="cardnav" data-cn="" ${!cur ? 'checked' : ''}/> — Sin enlace —</label>`,
+    ...items.map(b => {
+      const padre = b.padre ? (_navbar.find(x => x.id_menu === b.padre)?.titulo || '') : '';
+      return `<label class="mod-pag-check"><input type="radio" name="cardnav" data-cn="${escAttr(b.href)}" ${cur === b.href ? 'checked' : ''}/> ${escAttr(b.titulo)}${padre ? ` <span class="mod-pag-grupo">${escAttr(padre)}</span>` : ''}</label>`;
+    }),
+    `<label class="mod-pag-check"><input type="radio" name="cardnav" data-cn="__custom__" ${isCustom ? 'checked' : ''}/> Personalizado (URL)</label>`,
+    `<input type="text" class="form-input" id="modulos-card-edit-customurl" placeholder="https://…" value="${isCustom ? escAttr(cur) : ''}" style="margin-top:.4rem;${isCustom ? '' : 'display:none;'}">`,
+  ].join('');
+  const custom = box.querySelector('#modulos-card-edit-customurl');
+  // Al elegir un ítem del navbar, la tarjeta NO solo apunta ahí ("Ver Detalles"):
+  // además PERTENECE a esa página (m.id_pagina = plantilla del ítem), para que al
+  // armar esa plantilla la tarjeta aparezca al insertar un módulo.
+  box.querySelectorAll('[data-cn]').forEach(r => r.addEventListener('change', () => {
+    const v = r.dataset.cn;
+    if (v === '__custom__') {
+      if (custom) { custom.style.display = ''; custom.focus(); }
+      card.enlace = (custom?.value || '').trim();
+      m.id_pagina = _idPaginaForNavHref(card.enlace);   // URL libre → null
+    } else {
+      if (custom) custom.style.display = 'none';
+      card.enlace = v;   // '' (sin enlace) o el href del ítem del navbar
+      m.id_pagina = _idPaginaForNavHref(v);
+    }
+    _saveServiciosModulo(m);
+  }));
+  custom?.addEventListener('input', () => {
+    card.enlace = custom.value.trim();
+    m.id_pagina = _idPaginaForNavHref(card.enlace);
+    _saveServiciosModulo(m);
+  });
 }
 
 function _bindSingleCardRow(m, i) {
@@ -2459,12 +2623,21 @@ function _bindSingleCardRow(m, i) {
   row.querySelector('[data-svc-icon]')?.addEventListener('click', e => _openIconPicker(e.currentTarget, m, i));
   row.querySelector('[data-svc-arrow]')?.addEventListener('click', e => _openEnlaceEditor(e.currentTarget, m, i));
   row.querySelector('[data-svc-detalle]')?.addEventListener('click', () => _openCardDetalle(m, i));
-  row.querySelector('[data-svc-del]')?.addEventListener('click', () => {
+  row.querySelector('[data-svc-del]')?.addEventListener('click', async () => {
     if (!confirm('¿Eliminar esta tarjeta?')) return;
+    // Borrador sin guardar: simplemente se descarta cerrando el editor.
+    if (m._isNew) { _closeCardEditor(); return; }
     m.data.cards.splice(i, 1);
-    _saveServiciosModulo(m, true);
+    try {
+      if (!m.data.cards.length && (_modUsos[m.id_modulo] || 0) === 0) {
+        await window.__svc.apiDelete(`/modulos/${m.id_modulo}`);
+        _mods = _mods.filter(x => x.id_modulo !== m.id_modulo);
+      } else {
+        await window.__svc.apiPut(`/modulos/${m.id_modulo}`, { data: m.data });
+      }
+      window.__svc.showNotif('Tarjeta eliminada', 'success');
+    } catch (e) { window.__svc.showNotif('Error: ' + e.message, 'error'); }
     _closeCardEditor();
-    _renderCardsLista(m);
     renderModCatalog();
   });
 }
@@ -2473,17 +2646,51 @@ function _closeCardEditor() {
   window.__svc?.closeModal('modulos-card-edit-modal');
   const body = document.getElementById('modulos-card-edit-body');
   if (body) body.innerHTML = '';
+  const nav = document.getElementById('modulos-card-edit-nav');
+  if (nav) nav.innerHTML = '';
   _curCardEdit = null;
+  // Si la lista de tarjetas (modal "Ver") quedó abierta detrás, la refrescamos.
+  const verModal = document.getElementById('modulos-view-modal');
+  if (verModal?.classList.contains('open')) _renderCardsFlatList();
 }
 
-function _saveCardEditor() {
+async function _saveCardEditor() {
   if (!_curCardEdit) { _closeCardEditor(); return; }
   const { m } = _curCardEdit;
-  _saveServiciosModulo(m, true);   // guardado inmediato
-  _closeCardEditor();
-  _renderCardsLista(m);            // refresca la lista (título/descripción)
+  if (m._isNew) {
+    // Nueva tarjeta → crea un módulo de servicios con esta única tarjeta.
+    const card = m.data.cards[0] || {};
+    const nombre = (card.titulo || '').trim() || 'Cards';
+    try {
+      const res = await window.__svc.apiPost('/modulos', {
+        tipo:      m.tipo,
+        nombre,
+        id_pagina: m.id_pagina ?? null,
+        data:      m.data,
+        design:    m.design,
+      });
+      _mods.push(res.modulo);
+      _modUsos[res.modulo.id_modulo] = 0;
+      window.__svc.showNotif('Tarjeta creada', 'success');
+    } catch (e) {
+      window.__svc.showNotif('Error: ' + e.message, 'error');
+      return;
+    }
+  } else {
+    // Para un módulo existente, el módulo ya se autoguarda en cada cambio; el
+    // botón "Guardar" fuerza un guardado inmediato. Solo en módulos de UNA tarjeta
+    // (modelo "1 tarjeta = 1 módulo") sincronizamos el nombre con el título de la
+    // tarjeta; los módulos legacy con varias tarjetas conservan su nombre.
+    const card = m.data.cards[_curCardEdit.i] || {};
+    if (m.data.cards.length === 1 && card.titulo && card.titulo.trim() && m.nombre !== card.titulo.trim()) {
+      m.nombre = card.titulo.trim();
+      try { await window.__svc.apiPut(`/modulos/${m.id_modulo}`, { nombre: m.nombre }); } catch (_) {}
+    }
+    _saveServiciosModulo(m, true);
+    window.__svc.showNotif('Tarjeta guardada', 'success');
+  }
+  _closeCardEditor();          // refresca la lista plana si el modal "Ver" está abierto
   renderModCatalog();
-  window.__svc?.showNotif('Tarjeta guardada', 'success');
 }
 
 document.getElementById('modulos-card-edit-close')?.addEventListener('click', _closeCardEditor);
@@ -3095,6 +3302,44 @@ function scheduleLivePreview() {
   }, 200);
 }
 
+/* Cambia la pestaña activa del panel lateral del Preview ("settings" | "design"). */
+function _switchPreviewTab(tab) {
+  document.querySelectorAll('.mpm-side-tab').forEach(b =>
+    b.classList.toggle('active', b.dataset.mpmTab === tab));
+  document.querySelectorAll('.mpm-side .mpm-tabpane').forEach(p =>
+    p.classList.toggle('active', p.dataset.mpmPane === tab));
+}
+
+/* Pestaña "Ajustes del módulo" del Preview: nombre + ítems del navbar a los que
+   pertenece. Solo se muestra cuando el preview se abre para editar un módulo
+   (no desde el flujo viejo de tarjetas). Los cambios se aplican en memoria y se
+   persisten al tocar "Guardar". Devuelve true si la pestaña queda disponible. */
+function _renderPreviewModuleSettings() {
+  const tabBtn    = document.getElementById('mpm-tab-btn-settings');
+  const nombreInp = document.getElementById('mpm-nombre');
+  const navBox    = document.getElementById('mpm-nav');
+  const hint      = document.getElementById('mpm-nav-hint');
+  const show = !_previewFromCards;
+  if (tabBtn) tabBtn.style.display = show ? '' : 'none';
+  if (!show) return false;
+
+  if (nombreInp) {
+    nombreInp.value = _curModData.nombre || '';
+    nombreInp.oninput = () => { _curModData.nombre = nombreInp.value; };
+  }
+  if (!navBox) return true;
+
+  if (GLOBAL_TIPOS_MOD.has(_curModType)) {
+    navBox.innerHTML = '<label class="mod-pag-check is-disabled"><input type="checkbox" checked disabled/> 🌐 Todas las páginas (global)</label>';
+    _curModData.id_pagina = 'all';
+    if (hint) hint.textContent = 'Módulo global: se muestra en todas las páginas del sitio.';
+    return true;
+  }
+  _renderPaginaChecks(navBox, _curModData.id_pagina, v => { _curModData.id_pagina = v; });
+  if (hint) hint.textContent = 'Marcá a qué ítem(s) del navbar pertenece este módulo (ej: «Fibra Óptica»), o «Todas las páginas».';
+  return true;
+}
+
 /* Abrir / cerrar el modal de edición visual */
 function openPreviewModal() {
   if (!_curModType) return;
@@ -3108,11 +3353,17 @@ function openPreviewModal() {
   const idLbl = _curModId != null ? `· #${_curModId}` : '· nuevo';
   if (titleEl) titleEl.innerHTML = `${sec.icon || ''} ${escAttr(sec.label)} ${idLbl}`;
 
-  // Panel lateral de colores/diseño (reusa el render de campos → live-sync).
+  // Pestaña "Ajustes del módulo" (nombre + ítems del navbar).
+  const hasSettings = _renderPreviewModuleSettings();
+
+  // Pestaña "Colores y diseño" (reusa el render de campos → live-sync).
   renderModFieldGroup('design', sec.designFields || [], 'mpm-design-fields');
-  const sideEmpty = !(sec.designFields || []).length;
-  const sideHead = modal.querySelector('.mpm-side-head');
-  if (sideHead) sideHead.style.display = sideEmpty ? 'none' : '';
+  const hasDesign = !!(sec.designFields || []).length;
+  const designTabBtn = document.getElementById('mpm-tab-btn-design');
+  if (designTabBtn) designTabBtn.style.display = hasDesign ? '' : 'none';
+
+  // Pestaña inicial: "Ajustes" si está disponible; si no, "Colores y diseño".
+  _switchPreviewTab(hasSettings ? 'settings' : 'design');
 
   iframe.srcdoc = _moduleSrcdoc({ editable: true });
   modal.style.display = '';
@@ -3203,7 +3454,9 @@ async function nuevaVarianteDeModulo(tipo, id_pagina) {
 /* Guardar el módulo en edición (lo usan el editor y el modal) */
 async function saveCurrentModule() {
   if (!_curModId) return false;
-  const nombre = document.getElementById('modulos-variant-name-input')?.value?.trim() || _curModData.nombre;
+  const nombre = document.getElementById('mpm-nombre')?.value?.trim()
+    || document.getElementById('modulos-variant-name-input')?.value?.trim()
+    || _curModData.nombre;
   try {
     const res = await window.__svc.apiPut(`/modulos/${_curModId}`, {
       nombre,
@@ -3214,8 +3467,15 @@ async function saveCurrentModule() {
     });
     const idx = _mods.findIndex(m => m.id_modulo === _curModId);
     if (idx !== -1) _mods[idx] = res.modulo;
+    _curModData.nombre = nombre;
     const nameEl = document.getElementById('modulos-editor-variant-name');
     if (nameEl) nameEl.textContent = nombre;
+    // Si la lista de variantes del modal "Ver" quedó abierta detrás, la refrescamos.
+    const verModal = document.getElementById('modulos-view-modal');
+    if (verModal?.classList.contains('open') && !MOD_CONTENT_CONFIG[_curModType] && _curModType !== 'services') {
+      _renderModVerLista(_curModType);
+    }
+    renderModCatalog();
     window.__svc.showNotif('Módulo guardado', 'success');
     return true;
   } catch (e) {
@@ -3239,6 +3499,10 @@ document.getElementById('modulos-preview-btn')?.addEventListener('click', () => 
   _previewFromCards = false;
   openPreviewModal();
 });
+
+/* Pestañas del panel lateral (Ajustes / Colores y diseño) */
+document.querySelectorAll('.mpm-side-tab').forEach(btn =>
+  btn.addEventListener('click', () => _switchPreviewTab(btn.dataset.mpmTab)));
 
 /* Modal: cerrar */
 document.getElementById('mpm-close')?.addEventListener('click', closePreviewModal);
