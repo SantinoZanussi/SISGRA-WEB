@@ -1551,82 +1551,6 @@
       "editado_en": "2026-06-17T17:40:34.363Z"
     },
     {
-      "id_modulo": 54,
-      "tipo": "footer-full",
-      "nombre": "Footer completo",
-      "id_pagina": "all",
-      "data": {
-        "wordmark": "SISGRA",
-        "col1Label": "Servicios",
-        "servicios": [
-          {
-            "label": "Cableado Estructurado",
-            "href": "/html/cableado_estructurado"
-          },
-          {
-            "label": "Fibra Óptica",
-            "href": "/html/fibra_optica"
-          },
-          {
-            "label": "Seguridad Electrónica",
-            "href": "/html/seguridad"
-          },
-          {
-            "label": "Soporte IT",
-            "href": "/html/soporte_it"
-          },
-          {
-            "label": "Desarrollo de Software",
-            "href": "/html/desarrollo"
-          },
-          {
-            "label": "Blog",
-            "href": "/html/blog"
-          }
-        ],
-        "col2Label": "Contacto",
-        "contactoOficina": {
-          "tipo": "Oficina",
-          "valor": "Lamadrid 468<br>(ZONA I) NAVE 2 - Oficina 05 - NODO ROSARIO"
-        },
-        "contactoTelefono": {
-          "tipo": "Teléfono",
-          "valor": "8101220065",
-          "href": "tel:8101220065"
-        },
-        "contactoEmail": {
-          "tipo": "Email",
-          "valor": "info@sisgra.com.ar",
-          "href": "mailto:info@sisgra.com.ar"
-        },
-        "facebookUrl": "https://www.facebook.com/sisgra.srl",
-        "mapaSrc": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3348.9!2d-60.6530!3d-32.9440!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b652f52c9a5e3b%3A0x0!2sLamadrid+468%2C+Rosario%2C+Argentina!5e0!3m2!1ses!2sar!4v1680000000000",
-        "mapaLabel": "Rosario · ARG",
-        "copyright": "© 2026 <span>SISGRA S.R.L.</span> — Todos los derechos reservados"
-      },
-      "design": {
-        "bg": "",
-        "wordmarkBg": "",
-        "wordmarkColor": "",
-        "gridBg": "",
-        "colLabelColor": "",
-        "textColor": "",
-        "linkColor": "",
-        "socialBtnBg": "",
-        "socialBtnColor": "",
-        "bottomBg": "",
-        "copyColor": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-17T17:40:38.209Z",
-      "editado_en": "2026-06-17T17:40:38.209Z"
-    },
-    {
       "id_modulo": 55,
       "tipo": "cableado-hero",
       "nombre": "Hero Cableado",
@@ -1797,6 +1721,27 @@
       "alerta": false,
       "creado_en": "2026-06-17T17:47:34.034Z",
       "editado_en": "2026-06-17T17:47:34.034Z"
+    },
+    {
+      "id_modulo": 59,
+      "tipo": "error-404",
+      "nombre": "Mensaje 404",
+      "id_pagina": [
+        14
+      ],
+      "data": {
+        "eyebrow": "Página no encontrada",
+        "numero": "404",
+        "titulo": "Esta ruta no existe.",
+        "descripcion": "La página que estás buscando fue movida, ya no está disponible o nunca existió. Volvé al inicio para seguir explorando nuestras soluciones de infraestructura tecnológica.",
+        "btnPrimaryLabel": "Volver al inicio",
+        "btnPrimaryHref": "/index.html",
+        "btnSecondaryLabel": "Página anterior"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-18T13:49:51.090Z",
+      "editado_en": "2026-06-18T13:49:51.090Z"
     }
   ]
 }

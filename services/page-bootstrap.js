@@ -77,6 +77,15 @@ function buildNavItems(botones) {
   return items;
 }
 
+// ¿La tarjeta pertenece a (se muestra en) la plantilla dada? Lee card.id_pagina
+// (null | 'all' | id | [ids] de plantilla). "Todas" o sin asignar → siempre.
+function cardEnPlantilla(card, plantillaId) {
+  const p = card && card.id_pagina;
+  if (p === 'all' || p == null || p === '') return true;
+  const ids = (Array.isArray(p) ? p : [p]).map(Number).filter(n => !isNaN(n));
+  return ids.length ? ids.includes(Number(plantillaId)) : true;
+}
+
 export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) {
   const root = document.getElementById(rootId);
   if (!root) {
@@ -229,6 +238,20 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
         }
       }
     }
+
+    // Filtrar las tarjetas de cada módulo de servicios por la página actual: solo
+    // se renderizan las que pertenecen a esta plantilla (card.id_pagina). Una
+    // tarjeta marcada "Todas" o sin pertenencia asignada se muestra siempre. Así
+    // una plantilla solo carga las cards relacionadas a su ítem del menú. Si un
+    // módulo tenía tarjetas pero ninguna pertenece a esta página, no se renderiza
+    // (evita una sección de cards vacía); los módulos sin tarjetas se dejan igual.
+    secciones = secciones.flatMap(sec => {
+      if (sec.type !== 'services' || !Array.isArray(sec.data?.cards)) return [sec];
+      const orig  = sec.data.cards;
+      const cards = orig.filter(c => cardEnPlantilla(c, plantilla.id_plantilla));
+      if (orig.length && !cards.length) return [];
+      return [{ ...sec, data: { ...sec.data, cards } }];
+    });
 
     // Para el CSS sumamos también los módulos INLINE de los contenedores (cards
     // sueltas guardadas dentro de la plantilla): no están en `secciones` pero su

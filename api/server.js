@@ -49,14 +49,11 @@ const contactosRoutes = require("./routes/contactosRoutes");
 app.use("/api/contactos", contactosRoutes);
 
 // Shell genérico para páginas de plantilla "custom" (sin archivo .html físico).
-// /p/:slug hidrata la plantilla cuyo tipo === slug usando page-bootstrap, igual
-// que las páginas del sistema pero servido desde un único shell compartido.
-app.get('/p/:slug', (req, res) => {
-  const slug = String(req.params.slug || '');
-  if (!/^[a-zA-Z0-9_-]+$/.test(slug)) {
-    return res.status(404).sendFile(path.join(PROJECT_ROOT, '404.html'));
-  }
-  res.type('html').send(`<!DOCTYPE html>
+// Shell genérico que hidrata una plantilla (por su `tipo`) con page-bootstrap.
+// Lo usan tanto /p/:slug (páginas custom) como la página 404 (catch-all): no hay
+// archivos .html físicos, todo sale de módulos + plantilla.
+function pageShellHtml(tipo) {
+  return `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -75,10 +72,24 @@ app.get('/p/:slug', (req, res) => {
 </div>
 <script type="module">
   import { bootstrapPage } from '/services/page-bootstrap.js';
-  bootstrapPage('${slug}', 'plantilla-root');
+  bootstrapPage(${JSON.stringify(tipo)}, 'plantilla-root');
 </script>
 </body>
-</html>`);
+</html>`;
+}
+
+// Página 404: ya no hay 404.html físico. Se sirve el shell que hidrata la
+// plantilla activa de tipo "404" (navbar + mensaje 404 + footer), con status 404.
+function render404(res) {
+  res.status(404).type('html').send(pageShellHtml('404'));
+}
+
+// /p/:slug hidrata la plantilla cuyo tipo === slug usando page-bootstrap, igual
+// que las páginas del sistema pero servido desde un único shell compartido.
+app.get('/p/:slug', (req, res) => {
+  const slug = String(req.params.slug || '');
+  if (!/^[a-zA-Z0-9_-]+$/.test(slug)) return render404(res);
+  res.type('html').send(pageShellHtml(slug));
 });
 
 app.use(express.static(PROJECT_ROOT, {
@@ -90,7 +101,7 @@ app.use((req, res) => {
   if (req.path.startsWith('/api/')) {
     return res.status(404).json({ error: 'Endpoint no encontrado', path: req.path });
   }
-  res.status(404).sendFile(path.join(PROJECT_ROOT, '404.html'));
+  render404(res);
 });
 
 function getLocalIPv4() {

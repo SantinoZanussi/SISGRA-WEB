@@ -14,6 +14,7 @@ export const TIPO_CSS = {
   seguridad:  ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/seguridad.css'],
   soporte:    ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/soporte_it.css'],
   desarrollo: ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/desarrollo.css'],
+  '404':      ['/css/base.css', '/css/layout.css', '/css/components.css', '/css/pages/404.css'],
 };
 
 // Cada tipo de módulo → la página cuyo CSS lo estiliza.
@@ -29,6 +30,7 @@ export const TYPE_TO_PAGE = {
   'blog-list': 'blog',
   'articulo-header': 'articulo', 'articulo-body': 'articulo', 'cliente-header': 'cliente', 'cliente-body': 'cliente',
   'footer-full': 'cableado',
+  'error-404': '404',
 };
 
 // Módulos globales: se estilan con los layouts compartidos (nav/footer) o con

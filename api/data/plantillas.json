@@ -414,6 +414,34 @@
       ],
       "creado_en": "2026-06-17T17:50:06.464Z",
       "editado_en": "2026-06-17T17:52:08.884Z"
+    },
+    {
+      "id_plantilla": 14,
+      "tipo": "404",
+      "nombre": "404 — Página no encontrada",
+      "descripcion": "Página de error que se muestra en cualquier ruta inexistente.",
+      "activa": true,
+      "fecha_inicio": "2026-06-18T13:49:51.090Z",
+      "fecha_fin": null,
+      "id_menu": [],
+      "id_modulos": [
+        1,
+        59,
+        3
+      ],
+      "contenedores": [
+        [
+          1
+        ],
+        [
+          59
+        ],
+        [
+          3
+        ]
+      ],
+      "creado_en": "2026-06-18T13:49:51.090Z",
+      "editado_en": "2026-06-18T13:49:51.090Z"
     }
   ]
 }

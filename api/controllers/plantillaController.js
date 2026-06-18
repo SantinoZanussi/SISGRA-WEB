@@ -23,6 +23,7 @@ function vincularHrefNav(tipo, idMenuArr) {
 const TIPOS_BASE = [
   'index', 'blog', 'articulo', 'cliente',
   'cableado', 'fibra', 'seguridad', 'soporte', 'desarrollo',
+  '404',   // página de error: la renderiza el catch-all del server (sin .html físico)
 ];
 
 // Genera el siguiente ID numérico secuencial basado en los existentes

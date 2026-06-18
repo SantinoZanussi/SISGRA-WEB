@@ -1816,63 +1816,107 @@ function _modPreview(m) {
   return '';
 }
 
+/* FAMILIAS de módulos: agrupan varios `tipo` de sección bajo UNA fila del
+   catálogo ("tipo de módulo"). En el catálogo se ve una sola fila por familia
+   (ej: "Hero" en vez de los 7 tipos de hero); "Lista" abre TODAS las variantes
+   de esos tipos. Los tipos que NO figuran acá son su propia familia (una fila
+   por tipo, como antes — ej: "Cards", "Nosotros", "Navbar"). */
+const MOD_FAMILIES = [
+  { id: '__hero',   label: 'Hero',   tipos: ['hero', 'hero-centered', 'cableado-hero', 'fibra-hero', 'seguridad-hero', 'soporte-hero', 'desarrollo-hero'] },
+  { id: '__footer', label: 'Footer', tipos: ['footer', 'footer-full'] },
+  { id: '__header', label: 'Header', tipos: ['articulo-header', 'cliente-header'] },
+];
+const _famByTipo = {};
+MOD_FAMILIES.forEach(f => f.tipos.forEach(t => { _famByTipo[t] = f; }));
+const _familyOf   = tipo => _famByTipo[tipo] || null;
+const _familyById = id   => MOD_FAMILIES.find(f => f.id === id) || null;
+
 function renderModCatalog() {
   _showView('modulos-catalog-view');
   const grid = document.getElementById('modulos-grid');
   if (!grid) return;
 
-  // 1 módulo por sección: el principal de cada tipo, ordenado por id. Las copias
-  // sueltas de una card (soloCard, insertadas en plantillas) no son módulos de
-  // catálogo: se omiten de esta vista de gestión.
-  const byTipo = {};
-  _mods.filter(m => !m.data?.soloCard).forEach(m => (byTipo[m.tipo] = byTipo[m.tipo] || []).push(m));
-  const principales = Object.values(byTipo)
-    .map(_principalDeTipo)
-    .sort((a, b) => a.id_modulo - b.id_modulo);
+  // El catálogo lista TIPOS de módulo: una fila por familia (Hero/Footer/Header)
+  // o, para los demás, una fila por tipo de sección. Las copias sueltas de una
+  // card (soloCard, insertadas en plantillas) no son módulos de catálogo: se
+  // omiten de esta vista de gestión.
+  const visibles = _mods.filter(m => !m.data?.soloCard);
 
-  if (!principales.length) {
+  // Agrupar por clave: familia.id si el tipo pertenece a una familia, si no el
+  // propio tipo. Solo se muestran los tipos/familias que TIENEN al menos un
+  // módulo (no se listan familias vacías: no sirven de nada hasta crear uno; se
+  // crean desde el botón "Nuevo" del catálogo).
+  const groups = new Map();   // key → { key, fam, label, tipos:Set, variants:[] }
+  const ensureGroup = (key, fam, label) => {
+    if (!groups.has(key)) groups.set(key, { key, fam, label, tipos: new Set(), variants: [] });
+    return groups.get(key);
+  };
+  visibles.forEach(m => {
+    const fam = _familyOf(m.tipo);
+    const g   = ensureGroup(fam ? fam.id : m.tipo, fam, fam ? fam.label : (SECTIONS[m.tipo]?.label || m.tipo));
+    g.tipos.add(m.tipo);
+    g.variants.push(m);
+  });
+
+  let list = [...groups.values()];
+  // Orden estable: por el menor id_modulo de sus variantes.
+  list.forEach(g => { g.minId = Math.min(...g.variants.map(v => v.id_modulo)); });
+  list.sort((a, b) => a.minId - b.minId);
+
+  if (!list.length) {
     grid.innerHTML = `<div class="mod-cat-empty">No hay módulos todavía. Tocá <b>Nuevo</b> para crear el primero.</div>`;
     return;
   }
 
+  // Buscador: coincide si el rótulo del tipo o alguna de sus variantes coincide.
   const q = _modQuery.trim().toLowerCase();
-  const matched = principales.filter(m => _modMatches(m, q));
-  if (!matched.length) {
+  if (q) list = list.filter(g => g.label.toLowerCase().includes(q) || g.variants.some(m => _modMatches(m, q)));
+  if (!list.length) {
     grid.innerHTML = `<div class="mod-cat-empty">Ningún módulo coincide con “${escAttr(_modQuery.trim())}”.</div>`;
     return;
   }
 
-  const rows = matched.map(m => {
-    const label    = SECTIONS[m.tipo]?.label || m.tipo;
-    const usos     = _modUsos[m.id_modulo] || 0;
-    const esGlobal = GLOBAL_TIPOS_MOD.has(m.tipo);
-    const esTodas  = esGlobal || m.id_pagina === 'all';
-    const pag      = esTodas ? 'Todas las páginas' : (_paginaLabel(m.id_pagina) || 'Sin asignar');
-    const enUso    = usos > 0 || esGlobal;
+  const rows = list.map(g => {
+    const tiposArr = g.fam ? g.fam.tipos : [...g.tipos];
+    const esGlobal = tiposArr.some(t => GLOBAL_TIPOS_MOD.has(t));
+    const totalUsos = g.variants.reduce((s, m) => s + (_modUsos[m.id_modulo] || 0), 0);
+    const enUso    = totalUsos > 0 || esGlobal;
+    const nVar     = g.variants.length;
     const badge    = enUso
       ? `<span class="mod-row-badge on">En uso</span>`
       : `<span class="mod-row-badge off">Sin usar</span>`;
-    const preview  = _modPreview(m);
-    const desc     = preview || (enUso ? `En uso en ${usos} plantilla${usos !== 1 ? 's' : ''}.` : 'Todavía no se usa en ninguna plantilla.');
-    const pertenece = _paginaBadgeHTML(esTodas ? 'all' : m.id_pagina);
+    // Subtítulo: cantidad de variantes + uso. SIN "pertenece" (ahora se ve dentro
+    // de "Lista", por variante — no en la fila del catálogo).
+    const variantesTxt = `${nVar} ${nVar === 1 ? 'módulo' : 'módulos'}`;
+    const usoTxt = esGlobal ? 'Global · todo el sitio'
+                 : enUso    ? `En uso en ${totalUsos} plantilla${totalUsos !== 1 ? 's' : ''}`
+                            : 'Sin usar todavía';
+    // "Lista": familia → openModVerFamilia(id); tipo suelto → openModVer(principal).
+    // "Eliminar" en todas las filas (borra el módulo principal del tipo/familia,
+    // con confirmación que nombra cuál; si está en uso, eliminarModulo lo impide).
+    const principal = _principalDeTipo(g.variants);
+    const listaAttr = g.fam ? `data-fam="${escAttr(g.fam.id)}"` : `data-mod="${principal.id_modulo}"`;
     return `<div class="blog-item">
       <div class="blog-info">
         <div class="mod-row-headline">
-          <span class="blog-title-text">${escAttr(m.nombre || '(sin nombre)')}</span>
+          <span class="blog-title-text">${escAttr(g.label)}</span>
           ${badge}
         </div>
-        <div class="blog-meta">${escAttr(label)} · ${escAttr(pag)}</div>
-        <div class="blog-excerpt">${escAttr(desc)}</div>
+        <div class="blog-meta">${escAttr(variantesTxt)} · ${escAttr(usoTxt)}</div>
       </div>
-      <div class="mod-row-pertenece">${pertenece}</div>
       <div class="blog-actions">
-        <button type="button" class="btn-edit-small" onclick="openModVer(${m.id_modulo})">Lista</button>
-        <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="eliminarModulo(${m.id_modulo})">Eliminar</button>
+        <button type="button" class="btn-edit-small" data-mod-lista ${listaAttr}>Lista</button>
+        <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" data-mod-del="${principal.id_modulo}">Eliminar</button>
       </div>
     </div>`;
   }).join('');
 
   grid.innerHTML = `<div class="blog-grid">${rows}</div>`;
+  grid.querySelectorAll('[data-mod-lista]').forEach(b => b.addEventListener('click', () => {
+    if (b.dataset.fam) openModVerFamilia(b.dataset.fam);
+    else window.openModVer(Number(b.dataset.mod));
+  }));
+  grid.querySelectorAll('[data-mod-del]').forEach(b => b.addEventListener('click', () => window.eliminarModulo(b.dataset.modDel)));
 }
 
 /* Tipos de sección que todavía NO tienen módulo (para el botón "Nuevo") */
@@ -2061,6 +2105,7 @@ function _closeModVer() {
   window.__svc?.closeModal('modulos-view-modal');
   const body = document.getElementById('modulos-view-body');
   if (body) body.innerHTML = '';
+  _curVerFamilia = null;
 }
 
 /* Lápiz del modal Ver: renombra el módulo desde el encabezado (input inline). */
@@ -2113,6 +2158,7 @@ window.openModVer = function(id) {
   if (!m) return;
   const sec = SECTIONS[m.tipo];
   if (!sec) { window.__svc.showNotif('Tipo de módulo desconocido: ' + m.tipo, 'error'); return; }
+  _curVerFamilia = null;   // viendo un tipo suelto, no una familia
 
   const cfg     = MOD_CONTENT_CONFIG[m.tipo];
   const titleEl = document.getElementById('modulos-view-title');
@@ -2126,12 +2172,18 @@ window.openModVer = function(id) {
   if (pagEl) pagEl.innerHTML = _paginaBadgeHTML(esTodas ? 'all' : m.id_pagina);
 
   const renameBtn = document.getElementById('modulos-view-rename');
-  if (renameBtn) renameBtn.onclick = () => _renameModuloInline(m);
+  if (renameBtn) { renameBtn.style.display = ''; renameBtn.onclick = () => _renameModuloInline(m); }
 
   // El contenido compartido (#blog-list / #clientes-tbody) debe existir en UN
   // solo lugar: limpiamos el del editor para que render() apunte a este modal.
   const editorContent = document.getElementById('modulos-content-body');
   if (editorContent) editorContent.innerHTML = '';
+
+  // Botón "Editar módulo": solo para módulos de contenido compartido (blog /
+  // blog-list / clientes). Abre el Preview, donde está la pestaña "Ítems del
+  // navbar" (igual que el resto de los tipos). El resto se edita por variante.
+  const editBtn = document.getElementById('modulos-view-edit-btn');
+  if (editBtn) editBtn.style.display = 'none';
 
   if (cfg) {
     if (titleEl) titleEl.textContent = cfg.title;
@@ -2140,6 +2192,7 @@ window.openModVer = function(id) {
       noteEl.textContent = 'Este contenido es compartido: los cambios se aplican automáticamente a todas las variantes de este módulo.';
     }
     if (addBtn) { addBtn.style.display = ''; addBtn.innerHTML = cfg.addLabel; addBtn.onclick = cfg.add; }
+    if (editBtn) { editBtn.style.display = ''; editBtn.onclick = () => { _closeModVer(); window.openModEditor(m.id_modulo); }; }
     body.innerHTML = cfg.bodyHTML;
     cfg.render();
   } else if (m.tipo === 'services') {
@@ -2195,7 +2248,7 @@ function _renderCardsFlatList() {
     const icon  = serviceCardIcon(card);
     const color = card.iconoColor || '#2563eb';
     const desc  = (card.descripcion || '').replace(/\s+/g, ' ').trim().slice(0, 120) || 'Sin descripción.';
-    const item  = _cardPerteneceLabel(card);
+    const item  = _cardPaginaLabel(card);
     const badge = item
       ? `<span class="mod-pertenece" title="Ítem del navbar al que pertenece esta tarjeta"><i class="fa-solid fa-diagram-project"></i> ${escAttr(item)}</span>`
       : `<span class="mod-pertenece is-none" title="Sin ítem asignado"><i class="fa-solid fa-circle-question"></i> Sin asignar</span>`;
@@ -2287,6 +2340,8 @@ function _renderModVerLista(tipo) {
       ? '<span class="mod-row-badge on">En uso</span>'
       : '<span class="mod-row-badge off">Sin usar</span>';
     const desc  = _modPreview(m) || (enUso ? `En uso en ${usos} plantilla${usos !== 1 ? 's' : ''}.` : 'Todavía no se usa en ninguna plantilla.');
+    const esTodas   = GLOBAL_TIPOS_MOD.has(m.tipo) || m.id_pagina === 'all';
+    const pertenece = _paginaBadgeHTML(esTodas ? 'all' : m.id_pagina);
     return `<div class="blog-item">
       <div class="blog-info">
         <div class="mod-row-headline">
@@ -2296,6 +2351,7 @@ function _renderModVerLista(tipo) {
         <div class="blog-meta">${escAttr(SECTIONS[m.tipo]?.label || m.tipo)} · #${m.id_modulo}</div>
         <div class="blog-excerpt">${escAttr(desc)}</div>
       </div>
+      <div class="mod-row-pertenece">${pertenece}</div>
       <div class="blog-actions">
         <button type="button" class="btn-edit-small" data-ver-edit="${m.id_modulo}">Editar</button>
         <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" data-ver-del="${m.id_modulo}">Eliminar</button>
@@ -2316,6 +2372,112 @@ function _renderModVerLista(tipo) {
   body.querySelectorAll('[data-ver-del]').forEach(b => b.addEventListener('click', async () => {
     await window.eliminarModulo(b.dataset.verDel);
     _renderModVerLista(tipo);   // refresca la lista (o cierra si no quedan)
+  }));
+}
+
+/* ── FAMILIAS: "Lista" de una familia (Hero/Footer/Header) ────────────────────
+   Usa el mismo modal "Ver" pero lista TODAS las variantes de todos los tipos de
+   la familia. Cada fila muestra a qué ítem(s) pertenece (badge) y permite editar
+   (incluye asignar el ítem) o eliminar. "Nuevo" elige el tipo puntual a crear. */
+let _curVerFamilia = null;   // familia abierta en el modal "Ver" (null = tipo suelto)
+
+window.openModVerFamilia = function(familyId) {
+  const fam = _familyById(familyId);
+  if (!fam) return;
+  _curVerFamilia = fam;
+
+  const titleEl   = document.getElementById('modulos-view-title');
+  const pagEl     = document.getElementById('modulos-view-pagina');
+  const noteEl    = document.getElementById('modulos-view-note');
+  const addBtn    = document.getElementById('modulos-view-add-btn');
+  const renameBtn = document.getElementById('modulos-view-rename');
+  const body      = document.getElementById('modulos-view-body');
+  if (!body) return;
+
+  // Limpiamos el contenido compartido (#blog-list / #clientes-tbody) por si venía
+  // de otra vista, para que no quede colgado en este modal.
+  const editorContent = document.getElementById('modulos-content-body');
+  if (editorContent) editorContent.innerHTML = '';
+
+  const editBtn = document.getElementById('modulos-view-edit-btn');
+  if (editBtn)   editBtn.style.display = 'none';        // las variantes se editan desde la lista
+  if (titleEl)   titleEl.textContent = fam.label;
+  if (pagEl)     pagEl.innerHTML = '';                  // una familia no tiene un único "pertenece"
+  if (renameBtn) renameBtn.style.display = 'none';      // no se renombra una familia
+  if (noteEl) {
+    noteEl.style.display = '';
+    noteEl.textContent = `Variantes de ${fam.label}. Tocá “Editar” para modificar una y asignarle su ítem del navbar, o “Nuevo” para agregar otra.`;
+  }
+  if (addBtn) {
+    addBtn.style.display = '';
+    addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Nuevo';
+    addBtn.onclick = () => _nuevaVarianteFamilia(fam);
+  }
+  _renderModVerListaFamilia(fam);
+  window.__svc?.openModal('modulos-view-modal');
+};
+
+/* Lista de variantes de una familia (todos sus tipos), con badge de pertenencia. */
+function _renderModVerListaFamilia(fam) {
+  const body = document.getElementById('modulos-view-body');
+  if (!body) return;
+  const mods = _mods
+    .filter(m => fam.tipos.includes(m.tipo) && !m.data?.soloCard)
+    .sort((a, b) => a.id_modulo - b.id_modulo);
+  if (!mods.length) {
+    body.innerHTML = `<div class="mod-cat-empty">No hay variantes de ${escAttr(fam.label)} todavía. Tocá <b>Nuevo</b> para crear la primera.</div>`;
+    return;
+  }
+  body.innerHTML = `<div class="blog-grid">${mods.map(m => {
+    const usos    = _modUsos[m.id_modulo] || 0;
+    const enUso   = usos > 0 || GLOBAL_TIPOS_MOD.has(m.tipo);
+    const badge   = enUso
+      ? '<span class="mod-row-badge on">En uso</span>'
+      : '<span class="mod-row-badge off">Sin usar</span>';
+    const esTodas = GLOBAL_TIPOS_MOD.has(m.tipo) || m.id_pagina === 'all';
+    const pertenece = _paginaBadgeHTML(esTodas ? 'all' : m.id_pagina);
+    const desc    = _modPreview(m) || (enUso ? `En uso en ${usos} plantilla${usos !== 1 ? 's' : ''}.` : 'Todavía no se usa en ninguna plantilla.');
+    return `<div class="blog-item">
+      <div class="blog-info">
+        <div class="mod-row-headline">
+          <span class="blog-title-text">${escAttr(m.nombre || '(sin nombre)')}</span>
+          ${badge}
+        </div>
+        <div class="blog-meta">${escAttr(SECTIONS[m.tipo]?.label || m.tipo)} · #${m.id_modulo}</div>
+        <div class="blog-excerpt">${escAttr(desc)}</div>
+      </div>
+      <div class="mod-row-pertenece">${pertenece}</div>
+      <div class="blog-actions">
+        <button type="button" class="btn-edit-small" data-fam-edit="${m.id_modulo}">Editar</button>
+        <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" data-fam-del="${m.id_modulo}">Eliminar</button>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+  body.querySelectorAll('[data-fam-edit]').forEach(b => b.addEventListener('click', () => {
+    _closeModVer();
+    window.openModEditor(b.dataset.famEdit);
+  }));
+  body.querySelectorAll('[data-fam-del]').forEach(b => b.addEventListener('click', async () => {
+    await window.eliminarModulo(b.dataset.famDel);
+    if (_curVerFamilia) _renderModVerListaFamilia(_curVerFamilia);   // refresca (o muestra vacío)
+  }));
+}
+
+/* "Nuevo" en una familia: si tiene un solo tipo, lo crea directo; si tiene varios
+   (ej: Hero), abre un mini-selector del tipo puntual anclado al botón. */
+function _nuevaVarianteFamilia(fam) {
+  const tipos = fam.tipos.filter(t => SECTIONS[t]);
+  if (tipos.length <= 1) { if (tipos[0]) nuevaVarianteDeModulo(tipos[0], null); return; }
+  const addBtn = document.getElementById('modulos-view-add-btn');
+  if (!addBtn) return;
+  const html = `<div class="svc-pop-form" style="gap:.3rem;">
+    <div class="svc-pop-label" style="margin-bottom:.25rem;">¿Qué tipo de ${escAttr(fam.label.toLowerCase())} querés crear?</div>
+    ${tipos.map(t => `<button type="button" class="btn-edit-small" data-fam-newtipo="${escAttr(t)}" style="width:100%;text-align:left;">${escAttr(SECTIONS[t]?.label || t)}</button>`).join('')}
+  </div>`;
+  const pop = _floatPopover(addBtn, html, 280);
+  pop.el.querySelectorAll('[data-fam-newtipo]').forEach(b => b.addEventListener('click', () => {
+    pop.close();
+    nuevaVarianteDeModulo(b.dataset.famNewtipo, null);
   }));
 }
 
@@ -2621,6 +2783,7 @@ function openCardEditor(m, i) {
     _bindSingleCardRow(m, i);
   }
   _renderCardNavSelect(m, i);
+  _renderCardPerteneceSelect(m, i);
   window.__svc?.openModal('modulos-card-edit-modal');
 }
 
@@ -2653,6 +2816,18 @@ function _cardPerteneceLabel(card) {
   return _navItemByHref(card && card.enlace)?.titulo || '';
 }
 
+/* Etiqueta de "pertenece" de una tarjeta para la lista: usa la pertenencia
+   explícita por tarjeta (card.id_pagina); si no está definida, cae al ítem
+   derivado del destino (enlace) para no perder el rótulo de datos viejos. */
+function _cardPaginaLabel(card) {
+  const pags = _paginasDe(card && card.id_pagina);
+  if (pags === 'all') return 'Todas las páginas';
+  if (pags.length) {
+    return pags.map(id => _navInfoDePlantilla(id)).filter(n => n.item).map(n => n.titulo).join(', ');
+  }
+  return _cardPerteneceLabel(card);   // fallback: derivar del destino
+}
+
 /* Selector "¿A dónde se dirige?": elige el ítem del navbar al que apunta el
    botón "Ver Detalles" de la tarjeta (card.enlace = href del ítem). Incluye la
    opción "Personalizado" para una URL libre y "Sin enlace". */
@@ -2674,25 +2849,45 @@ function _renderCardNavSelect(m, i) {
     `<input type="text" class="form-input" id="modulos-card-edit-customurl" placeholder="https://…" value="${isCustom ? escAttr(cur) : ''}" style="margin-top:.4rem;${isCustom ? '' : 'display:none;'}">`,
   ].join('');
   const custom = box.querySelector('#modulos-card-edit-customurl');
-  // Al elegir un ítem del navbar, la tarjeta NO solo apunta ahí ("Ver Detalles"):
-  // además PERTENECE a esa página (m.id_pagina = plantilla del ítem), para que al
-  // armar esa plantilla la tarjeta aparezca al insertar un módulo.
+  // En módulos de UNA sola tarjeta (modelo "1 tarjeta = 1 módulo") el destino
+  // define también la pertenencia del módulo (m.id_pagina = plantilla del ítem),
+  // para que al armar esa plantilla la tarjeta aparezca al insertar un módulo. En
+  // módulos MULTI-tarjeta la pertenencia es por tarjeta ("¿En qué página(s) se
+  // muestra?", card.id_pagina) y el destino no la toca.
+  const syncPertenenciaModulo = href => {
+    if ((m.data?.cards?.length || 0) <= 1) m.id_pagina = _idPaginaForNavHref(href);
+  };
   box.querySelectorAll('[data-cn]').forEach(r => r.addEventListener('change', () => {
     const v = r.dataset.cn;
     if (v === '__custom__') {
       if (custom) { custom.style.display = ''; custom.focus(); }
       card.enlace = (custom?.value || '').trim();
-      m.id_pagina = _idPaginaForNavHref(card.enlace);   // URL libre → null
+      syncPertenenciaModulo(card.enlace);   // URL libre → null
     } else {
       if (custom) custom.style.display = 'none';
       card.enlace = v;   // '' (sin enlace) o el href del ítem del navbar
-      m.id_pagina = _idPaginaForNavHref(v);
+      syncPertenenciaModulo(v);
     }
     _saveServiciosModulo(m);
   }));
   custom?.addEventListener('input', () => {
     card.enlace = custom.value.trim();
-    m.id_pagina = _idPaginaForNavHref(card.enlace);
+    syncPertenenciaModulo(card.enlace);
+    _saveServiciosModulo(m);
+  });
+}
+
+/* Selector "¿En qué página(s) se muestra?" de UNA tarjeta: a qué ítem(s) del
+   navbar pertenece la tarjeta (card.id_pagina). Reusa la misma checklist que la
+   pertenencia de módulo. Al renderizar una plantilla, solo se muestran las
+   tarjetas que pertenecen a ese ítem (o las marcadas "Todas" / sin asignar). */
+function _renderCardPerteneceSelect(m, i) {
+  const box = document.getElementById('modulos-card-edit-pertenece');
+  if (!box) return;
+  const card = m.data?.cards?.[i];
+  if (!card) { box.innerHTML = ''; return; }
+  _renderPaginaChecks(box, card.id_pagina, v => {
+    card.id_pagina = v;
     _saveServiciosModulo(m);
   });
 }

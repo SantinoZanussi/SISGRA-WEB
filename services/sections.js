@@ -611,6 +611,59 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
+  //  ERROR 404 — bloque de "página no encontrada" (número, título, texto, botones).
+  //  Es el contenido central del 404 (el navbar y el footer son módulos aparte).
+  'error-404': {
+    label: 'Mensaje 404',
+    description: 'Bloque de página no encontrada: número 404, título, texto y botones.',
+    icon: `<i class="fa-solid fa-triangle-exclamation"></i>`,
+    validTipos: ['404'],
+    defaultData: {
+      eyebrow: 'Página no encontrada',
+      numero: '404',
+      titulo: 'Esta ruta no existe.',
+      descripcion: 'La página que estás buscando fue movida, ya no está disponible o nunca existió. Volvé al inicio para seguir explorando nuestras soluciones de infraestructura tecnológica.',
+      btnPrimaryLabel: 'Volver al inicio',
+      btnPrimaryHref: '/index.html',
+      btnSecondaryLabel: 'Página anterior',
+    },
+    defaultDesign: { bg: '', paddingY: '' },
+    dataFields: [
+      { name: 'eyebrow',           label: 'Eyebrow',                type: 'text' },
+      { name: 'numero',            label: 'Número',                 type: 'text' },
+      { name: 'titulo',            label: 'Título',                 type: 'text' },
+      { name: 'descripcion',       label: 'Descripción',            type: 'textarea' },
+      { name: 'btnPrimaryLabel',   label: 'Botón principal — texto',type: 'text' },
+      { name: 'btnPrimaryHref',    label: 'Botón principal — link', type: 'text' },
+      { name: 'btnSecondaryLabel', label: 'Botón secundario — texto (vacío = oculto)', type: 'text' },
+    ],
+    designFields: [
+      { name: 'bg',       label: 'Color de fondo',   type: 'color' },
+      { name: 'paddingY', label: 'Padding vertical', type: 'text', placeholder: 'ej: 5rem' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['error-404'].defaultData, ...data };
+      const s = { ...SECTIONS['error-404'].defaultDesign, ...design };
+      const secondary = (d.btnSecondaryLabel || '').trim()
+        ? `<a href="javascript:history.length>1?history.back():location.assign('/index.html')" class="err404-btn err404-btn-secondary">${fld('btnSecondaryLabel', esc(d.btnSecondaryLabel))}</a>`
+        : '';
+      return `
+<section class="err404-section"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
+  <div class="err404-bg" aria-hidden="true"></div>
+  <div class="err404-card">
+    <div class="err404-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</div>
+    <div class="err404-number" aria-hidden="true">${fld('numero', esc(d.numero))}</div>
+    <h1 class="err404-title">${fld('titulo', esc(d.titulo))}</h1>
+    <p class="err404-desc">${fld('descripcion', esc(d.descripcion))}</p>
+    <div class="err404-actions">
+      <a href="${esc(d.btnPrimaryHref || '/index.html')}" class="err404-btn err404-btn-primary">${fld('btnPrimaryLabel', esc(d.btnPrimaryLabel))}</a>
+      ${secondary}
+    </div>
+  </div>
+</section>`;
+    },
+  },
+
   //  FORMULARIO — campos configurables desde el panel; los envíos se guardan
   //  en el backend (contactos) hasta que se defina el endpoint de destino.
   formulario: {

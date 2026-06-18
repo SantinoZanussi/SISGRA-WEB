@@ -275,6 +275,7 @@
                   <span id="modulos-view-pagina" class="mod-pertenece-wrap"></span>
                   <button type="button" class="mod-rename-btn" id="modulos-view-rename" title="Cambiar el nombre del módulo"><i class="fa-solid fa-pen"></i></button>
                 </span>
+                <button class="btn-secondary" id="modulos-view-edit-btn" style="display:none;flex-shrink:0;"><i class="fa-solid fa-pen-to-square"></i> Editar módulo</button>
                 <button class="btn-add" id="modulos-view-add-btn" style="display:none;flex-shrink:0;"><i class="fa-solid fa-plus"></i> Agregar</button>
                 <button class="modal-close" id="modulos-view-close"><i class="fa-solid fa-xmark"></i></button>
               </div>
@@ -340,7 +341,16 @@
                   <div class="section-card-body" style="padding:1rem;">
                     <label class="form-label"><i class="fa-solid fa-diagram-project" style="margin-right:.4rem;"></i>¿A dónde se dirige?</label>
                     <div class="mod-pag-list" id="modulos-card-edit-nav"></div>
-                    <div style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Elegí el ítem del navbar de esta tarjeta: define a dónde apunta “Ver Detalles” y a qué página pertenece (al armar esa plantilla, la tarjeta aparece al insertar un módulo).</div>
+                    <div style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Elegí el ítem del navbar al que apunta el botón “Ver Detalles” de esta tarjeta.</div>
+                  </div>
+                </div>
+                <!-- Pertenece a: a qué ítem(s) del navbar pertenece esta tarjeta.
+                     Filtra el render: en cada plantilla solo se muestran las cards de ese ítem. -->
+                <div class="section-card" id="modulos-card-edit-pertenececard" style="margin-top:1rem;">
+                  <div class="section-card-body" style="padding:1rem;">
+                    <label class="form-label"><i class="fa-solid fa-location-dot" style="margin-right:.4rem;"></i>¿En qué página(s) se muestra?</label>
+                    <div class="mod-pag-list" id="modulos-card-edit-pertenece"></div>
+                    <div style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Marcá a qué ítem(s) del navbar pertenece esta tarjeta. Al renderizar una página, solo se cargan las tarjetas de ese ítem. Si no marcás ninguno, se muestra en todas.</div>
                   </div>
                 </div>
               </div>
