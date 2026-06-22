@@ -192,50 +192,57 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
       }
     }
 
-    // Para articulo.html: si hay ?id= en la URL, inyectar el post real
+    // Para articulo.html: el detalle de un post se muestra con ?id= en la URL.
+    // La plantilla "articulo" NO es una página navegable por sí misma: sin un
+    // post válido solo se vería su contenido placeholder ("Título del artículo…"),
+    // que es lo que se percibe como "me manda a la plantilla del artículo literal".
+    // Por eso, igual que el perfil de cliente, si no hay id o el post no existe
+    // redirigimos al blog en vez de renderizar la plantilla vacía.
     if (tipo === 'articulo' && !opts.clienteId) {
       const postId = new URLSearchParams(window.location.search).get('id');
-      if (postId) {
-        // Detectar de dónde viene el usuario para el botón "Volver"
-        const fromBlog = document.referrer.includes('blog.html');
-        const backLabel = fromBlog ? '← Volver al Blog'   : '← Volver al Inicio';
-        const backHref  = fromBlog ? '/html/blog'     : '/index.html';
-        try {
-          const br = await fetch(`${API_BASE}/data/blog?t=${Date.now()}`, { cache: 'no-store' });
-          if (br.ok) {
-            const blogData = await br.json();
-            const post = (blogData.posts || []).find(p => p.id === postId);
-            if (post) {
-              if (post.titulo) document.title = `${post.titulo} — SISGRA`;
-              secciones = secciones.map(sec => {
-                if (sec.type === 'articulo-header') {
-                  return { ...sec, data: {
-                    ...sec.data,
-                    backLabel,
-                    backHref,
-                    badge:  post.categoria || sec.data.badge,
-                    titulo: post.titulo    || sec.data.titulo,
-                    lead:   post.extracto  || sec.data.lead,
-                    fecha:  post.fecha     || '',
-                  }};
-                }
-                if (sec.type === 'articulo-body') {
-                  return { ...sec, data: {
-                    ...sec.data,
-                    // Portada del post como imagen destacada al inicio del artículo
-                    // (si el post tiene imagen cargada).
-                    featuredImageUrl: post.imagen || '',
-                    featuredImageAlt: post.titulo || '',
-                    contentHtml:      post.contenido || sec.data.contentHtml,
-                  }};
-                }
-                return sec;
-              });
+      if (!postId) { window.location.replace('/html/blog'); return; }
+
+      // Detectar de dónde viene el usuario para el botón "Volver". La ruta del
+      // blog es /html/blog (antes era blog.html); por eso chequeamos el path nuevo.
+      const fromBlog = document.referrer.includes('/html/blog');
+      const backLabel = fromBlog ? '← Volver al Blog'   : '← Volver al Inicio';
+      const backHref  = fromBlog ? '/html/blog'         : '/index.html';
+      try {
+        const br = await fetch(`${API_BASE}/data/blog?t=${Date.now()}`, { cache: 'no-store' });
+        if (br.ok) {
+          const blogData = await br.json();
+          const post = (blogData.posts || []).find(p => p.id === postId);
+          // Post inexistente (link viejo, borrado o id mal formado): al blog,
+          // nunca al placeholder de la plantilla.
+          if (!post) { window.location.replace('/html/blog'); return; }
+          if (post.titulo) document.title = `${post.titulo} — SISGRA`;
+          secciones = secciones.map(sec => {
+            if (sec.type === 'articulo-header') {
+              return { ...sec, data: {
+                ...sec.data,
+                backLabel,
+                backHref,
+                badge:  post.categoria || sec.data.badge,
+                titulo: post.titulo    || sec.data.titulo,
+                lead:   post.extracto  || sec.data.lead,
+                fecha:  post.fecha     || '',
+              }};
             }
-          }
-        } catch (e) {
-          console.warn('[bootstrap] No se pudo cargar el post:', e.message);
+            if (sec.type === 'articulo-body') {
+              return { ...sec, data: {
+                ...sec.data,
+                // Portada del post como imagen destacada al inicio del artículo
+                // (si el post tiene imagen cargada).
+                featuredImageUrl: post.imagen || '',
+                featuredImageAlt: post.titulo || '',
+                contentHtml:      post.contenido || sec.data.contentHtml,
+              }};
+            }
+            return sec;
+          });
         }
+      } catch (e) {
+        console.warn('[bootstrap] No se pudo cargar el post:', e.message);
       }
     }
 
