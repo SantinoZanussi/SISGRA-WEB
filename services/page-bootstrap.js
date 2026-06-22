@@ -222,10 +222,10 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
                 if (sec.type === 'articulo-body') {
                   return { ...sec, data: {
                     ...sec.data,
-                    // La portada (post.imagen) es solo para la card del index/blog,
-                    // NO se muestra al principio del artículo.
-                    featuredImageUrl: '',
-                    featuredImageAlt: '',
+                    // Portada del post como imagen destacada al inicio del artículo
+                    // (si el post tiene imagen cargada).
+                    featuredImageUrl: post.imagen || '',
+                    featuredImageAlt: post.titulo || '',
                     contentHtml:      post.contenido || sec.data.contentHtml,
                   }};
                 }
@@ -586,7 +586,9 @@ async function hydrateBlogList() {
       }
       list.innerHTML = posts.map(p => `
         <article class="blog-row-card">
-          <div class="blog-row-icon"><i class="fa-solid ${blogCategoriaIcon(p.categoria)}" aria-hidden="true"></i></div>
+          ${p.imagen
+            ? `<div class="blog-row-icon" style="width:120px;height:120px;border-radius:18px;overflow:hidden;flex:0 0 auto;"><img src="${esc(p.imagen)}" alt="${esc(p.titulo||'')}" style="width:100%;height:100%;object-fit:cover;display:block;"></div>`
+            : `<div class="blog-row-icon"><i class="fa-solid ${blogCategoriaIcon(p.categoria)}" aria-hidden="true"></i></div>`}
           <div class="blog-row-body">
             <div class="blog-row-meta">
               <span class="blog-row-tag">${esc(p.categoria||'')}</span>

@@ -1859,6 +1859,350 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     },
   },
 
+  //  ───────────────────────────────────────────────────────────────────────
+  //  MÓDULOS DE CONTENIDO REUTILIZABLES — autoestilados con su propio <style>
+  //  (clases con prefijo .sg-*). No dependen de ninguna hoja de /css/pages, así
+  //  que se pueden insertar en CUALQUIER página. Colores configurables por
+  //  designFields con fallbacks a la paleta del sitio (navy #0A1D37 / azul #3b82f6).
+  //  ───────────────────────────────────────────────────────────────────────
+
+  //  FRANJA DE MÉTRICAS — cifras destacadas (años, clientes, uptime, tiempos…)
+  'stats-band': {
+    label: 'Franja de métricas',
+    description: 'Banda horizontal con cifras destacadas (años, clientes, uptime, tiempos de respuesta).',
+    icon: `<i class="fa-solid fa-chart-simple"></i>`,
+    validTipos: ['*'],
+    defaultData: {
+      eyebrow: 'SISGRA EN NÚMEROS',
+      titulo: 'Resultados que respaldan cada proyecto',
+      stat1_num: '+25',     stat1_label: 'Años de trayectoria',
+      stat2_num: '+500',    stat2_label: 'Clientes activos',
+      stat3_num: '99.9%',   stat3_label: 'Disponibilidad garantizada',
+      stat4_num: '< 45 min',stat4_label: 'Respuesta ante incidencias',
+    },
+    defaultDesign: { bg: '#0A1D37', eyebrowColor: '', titleColor: '', numColor: '', labelColor: '', accentColor: '', paddingY: '' },
+    dataFields: [
+      { name: 'eyebrow',     label: 'Eyebrow',                 type: 'text' },
+      { name: 'titulo',      label: 'Título (vacío = oculto)', type: 'text' },
+      { name: 'stat1_num',   label: 'Métrica 1 — número',      type: 'text' },
+      { name: 'stat1_label', label: 'Métrica 1 — etiqueta',    type: 'text' },
+      { name: 'stat2_num',   label: 'Métrica 2 — número',      type: 'text' },
+      { name: 'stat2_label', label: 'Métrica 2 — etiqueta',    type: 'text' },
+      { name: 'stat3_num',   label: 'Métrica 3 — número',      type: 'text' },
+      { name: 'stat3_label', label: 'Métrica 3 — etiqueta',    type: 'text' },
+      { name: 'stat4_num',   label: 'Métrica 4 — número',      type: 'text' },
+      { name: 'stat4_label', label: 'Métrica 4 — etiqueta',    type: 'text' },
+    ],
+    designFields: [
+      { name: 'bg',           label: 'Fondo de la franja', type: 'color' },
+      { name: 'eyebrowColor', label: 'Color eyebrow',      type: 'color' },
+      { name: 'titleColor',   label: 'Color título',       type: 'color' },
+      { name: 'numColor',     label: 'Color de números',   type: 'color' },
+      { name: 'labelColor',   label: 'Color de etiquetas', type: 'color' },
+      { name: 'accentColor',  label: 'Color de acento',    type: 'color' },
+      { name: 'paddingY',     label: 'Padding vertical',   type: 'text', placeholder: 'ej: 4rem' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['stats-band'].defaultData, ...data };
+      const s = { ...SECTIONS['stats-band'].defaultDesign, ...design };
+      const bg      = s.bg || '#0A1D37';
+      const accent  = s.accentColor || '#3b82f6';
+      const num     = s.numColor || '#ffffff';
+      const title   = s.titleColor || '#ffffff';
+      const label   = s.labelColor || 'rgba(255,255,255,.65)';
+      const eyebrow = s.eyebrowColor || accent;
+      const stats = [['stat1_num','stat1_label'],['stat2_num','stat2_label'],['stat3_num','stat3_label'],['stat4_num','stat4_label']]
+        .map(([nf,lf]) => ({ nf, lf, num: d[nf], label: d[lf] })).filter(x => x.num);
+      const cols = Math.max(1, stats.length);
+      return `
+<style>
+.sg-stats{background:${bg};padding:${s.paddingY || '4rem'} 1.5rem;}
+.sg-stats .sg-in{max-width:1200px;margin:0 auto;}
+.sg-stats .sg-head{text-align:center;margin-bottom:2.4rem;}
+.sg-stats .sg-eyebrow{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:${eyebrow};margin:0 0 .6rem;}
+.sg-stats .sg-title{font-size:clamp(1.5rem,3vw,2.1rem);font-weight:900;letter-spacing:-.02em;color:${title};margin:0;}
+.sg-stats .sg-grid{display:grid;grid-template-columns:repeat(${cols},1fr);gap:1.25rem;}
+.sg-stats .sg-stat{text-align:center;padding:1rem .75rem;position:relative;}
+.sg-stats .sg-stat:not(:last-child)::after{content:"";position:absolute;right:0;top:18%;height:64%;width:1px;background:rgba(255,255,255,.14);}
+.sg-stats .sg-num{font-size:clamp(2rem,5vw,3rem);font-weight:900;letter-spacing:-.03em;line-height:1;color:${num};}
+.sg-stats .sg-lbl{margin-top:.65rem;font-size:.8rem;letter-spacing:.03em;color:${label};line-height:1.4;}
+@media(max-width:720px){.sg-stats .sg-grid{grid-template-columns:repeat(2,1fr);}.sg-stats .sg-stat:nth-child(2n)::after{display:none;}}
+</style>
+<section class="sg-stats">
+  <div class="sg-in">
+    ${(d.eyebrow || d.titulo) ? `<div class="sg-head">
+      ${d.eyebrow ? `<p class="sg-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</p>` : ''}
+      ${d.titulo ? `<h2 class="sg-title">${fld('titulo', esc(d.titulo))}</h2>` : ''}
+    </div>` : ''}
+    <div class="sg-grid">
+      ${stats.map(x => `
+        <div class="sg-stat">
+          <div class="sg-num">${fld(x.nf, esc(x.num))}</div>
+          <div class="sg-lbl">${fld(x.lf, esc(x.label))}</div>
+        </div>`).join('')}
+    </div>
+  </div>
+</section>`;
+    },
+  },
+
+  //  PASOS DEL PROCESO — secuencia numerada (cómo trabajamos)
+  'process-steps': {
+    label: 'Pasos del proceso',
+    description: 'Secuencia de pasos numerados (ej: relevamiento → diseño → ejecución certificada → soporte).',
+    icon: `<i class="fa-solid fa-list-ol"></i>`,
+    validTipos: ['*'],
+    defaultData: {
+      eyebrow: 'CÓMO TRABAJAMOS',
+      titulo: 'Un proceso probado de punta a punta',
+      intro: 'Cada proyecto atraviesa etapas claras para garantizar resultados certificados, sin sorpresas y con soporte posterior.',
+      paso1_titulo: 'Relevamiento', paso1_desc: 'Visitamos y analizamos su infraestructura actual para entender necesidades, riesgos y objetivos.',
+      paso2_titulo: 'Diseño e ingeniería', paso2_desc: 'Proyectamos la solución bajo normas internacionales, con la mejor relación costo-beneficio.',
+      paso3_titulo: 'Ejecución certificada', paso3_desc: 'Implementamos con técnicos especializados y certificamos cada punto con instrumental de medición.',
+      paso4_titulo: 'Soporte y mantenimiento', paso4_desc: 'Acompañamos con monitoreo, mantenimiento preventivo y respuesta rápida ante incidencias.',
+      paso5_titulo: '', paso5_desc: '',
+    },
+    defaultDesign: { bg: '#f8fafc', eyebrowColor: '', titleColor: '', textColor: '', accentColor: '', cardBg: '', paddingY: '' },
+    dataFields: [
+      { name: 'eyebrow',      label: 'Eyebrow',               type: 'text' },
+      { name: 'titulo',       label: 'Título',                type: 'text' },
+      { name: 'intro',        label: 'Introducción',          type: 'textarea' },
+      { name: 'paso1_titulo', label: 'Paso 1 — Título',       type: 'text' },
+      { name: 'paso1_desc',   label: 'Paso 1 — Descripción',  type: 'textarea' },
+      { name: 'paso2_titulo', label: 'Paso 2 — Título',       type: 'text' },
+      { name: 'paso2_desc',   label: 'Paso 2 — Descripción',  type: 'textarea' },
+      { name: 'paso3_titulo', label: 'Paso 3 — Título',       type: 'text' },
+      { name: 'paso3_desc',   label: 'Paso 3 — Descripción',  type: 'textarea' },
+      { name: 'paso4_titulo', label: 'Paso 4 — Título',       type: 'text' },
+      { name: 'paso4_desc',   label: 'Paso 4 — Descripción',  type: 'textarea' },
+      { name: 'paso5_titulo', label: 'Paso 5 — Título (vacío = oculto)', type: 'text' },
+      { name: 'paso5_desc',   label: 'Paso 5 — Descripción',  type: 'textarea' },
+    ],
+    designFields: [
+      { name: 'bg',           label: 'Fondo de sección',  type: 'color' },
+      { name: 'eyebrowColor', label: 'Color eyebrow',     type: 'color' },
+      { name: 'titleColor',   label: 'Color título',      type: 'color' },
+      { name: 'textColor',    label: 'Color texto',       type: 'color' },
+      { name: 'accentColor',  label: 'Color de acento',   type: 'color' },
+      { name: 'cardBg',       label: 'Fondo de tarjetas', type: 'color' },
+      { name: 'paddingY',     label: 'Padding vertical',  type: 'text', placeholder: 'ej: 5rem' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['process-steps'].defaultData, ...data };
+      const s = { ...SECTIONS['process-steps'].defaultDesign, ...design };
+      const accent  = s.accentColor || '#2563eb';
+      const title   = s.titleColor || '#0A1D37';
+      const text    = s.textColor || '#475569';
+      const eyebrow = s.eyebrowColor || accent;
+      const cardBg  = s.cardBg || '#ffffff';
+      const pasos = [1,2,3,4,5]
+        .map(n => ({ tf: `paso${n}_titulo`, df: `paso${n}_desc`, titulo: d[`paso${n}_titulo`], desc: d[`paso${n}_desc`] }))
+        .filter(p => p.titulo);
+      const cols = Math.min(4, Math.max(1, pasos.length));
+      return `
+<style>
+.sg-steps{background:${s.bg || '#f8fafc'};padding:${s.paddingY || '5rem'} 1.5rem;}
+.sg-steps .sg-in{max-width:1200px;margin:0 auto;}
+.sg-steps .sg-head{max-width:680px;margin:0 0 2.6rem;}
+.sg-steps .sg-eyebrow{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:${eyebrow};margin:0 0 .6rem;}
+.sg-steps .sg-title{font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:900;letter-spacing:-.02em;color:${title};margin:0 0 .8rem;}
+.sg-steps .sg-intro{font-size:1rem;line-height:1.6;color:${text};margin:0;}
+.sg-steps .sg-grid{display:grid;grid-template-columns:repeat(${cols},1fr);gap:1.25rem;}
+.sg-steps .sg-step{background:${cardBg};border:1px solid #e2e8f0;border-radius:12px;padding:1.6rem 1.4rem;position:relative;overflow:hidden;}
+.sg-steps .sg-step::before{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:${accent};}
+.sg-steps .sg-step-num{font-size:2.2rem;font-weight:900;line-height:1;color:${accent};opacity:.25;letter-spacing:-.04em;}
+.sg-steps .sg-step-t{font-size:1.05rem;font-weight:800;color:${title};margin:.7rem 0 .5rem;}
+.sg-steps .sg-step-d{font-size:.9rem;line-height:1.55;color:${text};margin:0;}
+@media(max-width:980px){.sg-steps .sg-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:620px){.sg-steps .sg-grid{grid-template-columns:1fr;}}
+</style>
+<section class="sg-steps">
+  <div class="sg-in">
+    <div class="sg-head">
+      ${d.eyebrow ? `<p class="sg-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</p>` : ''}
+      ${d.titulo ? `<h2 class="sg-title">${fld('titulo', esc(d.titulo))}</h2>` : ''}
+      ${d.intro ? `<p class="sg-intro">${fld('intro', esc(d.intro))}</p>` : ''}
+    </div>
+    <div class="sg-grid">
+      ${pasos.map((p, i) => `
+        <div class="sg-step">
+          <div class="sg-step-num">${String(i + 1).padStart(2, '0')}</div>
+          <h3 class="sg-step-t">${fld(p.tf, esc(p.titulo))}</h3>
+          <p class="sg-step-d">${fld(p.df, esc(p.desc))}</p>
+        </div>`).join('')}
+    </div>
+  </div>
+</section>`;
+    },
+  },
+
+  //  GRILLA DE CARACTERÍSTICAS — ícono + título + descripción (lista flexible)
+  'feature-grid': {
+    label: 'Grilla de características',
+    description: 'Grilla de capacidades con ícono, título y descripción. Cantidad de ítems flexible.',
+    icon: `<i class="fa-solid fa-grip"></i>`,
+    validTipos: ['*'],
+    defaultData: {
+      eyebrow: 'LO QUE INCLUYE',
+      titulo: 'Capacidades técnicas',
+      intro: '',
+      features: [
+        { iconType: 'shield', titulo: 'Certificación bajo norma', desc: 'Trabajamos según estándares internacionales para garantizar calidad y escalabilidad.' },
+        { iconType: 'gear',   titulo: 'Soluciones a medida',      desc: 'Cada proyecto se diseña según las necesidades reales de su organización.' },
+        { iconType: 'check',  titulo: 'Resultados verificables',  desc: 'Entregamos documentación y mediciones de cada punto implementado.' },
+      ],
+    },
+    defaultDesign: { bg: '#ffffff', eyebrowColor: '', titleColor: '', textColor: '', accentColor: '', cardBg: '', cardBorderColor: '', paddingY: '', cols: '' },
+    dataFields: [
+      { name: 'eyebrow',  label: 'Eyebrow',            type: 'text' },
+      { name: 'titulo',   label: 'Título',             type: 'text' },
+      { name: 'intro',    label: 'Introducción',       type: 'textarea' },
+      { name: 'features', label: 'Características',      type: 'features-icon' },
+    ],
+    designFields: [
+      { name: 'bg',              label: 'Fondo de sección',  type: 'color' },
+      { name: 'eyebrowColor',    label: 'Color eyebrow',     type: 'color' },
+      { name: 'titleColor',      label: 'Color título',      type: 'color' },
+      { name: 'textColor',       label: 'Color texto',       type: 'color' },
+      { name: 'accentColor',     label: 'Color de acento',   type: 'color' },
+      { name: 'cardBg',          label: 'Fondo de tarjetas', type: 'color' },
+      { name: 'cardBorderColor', label: 'Borde de tarjetas', type: 'color' },
+      { name: 'cols',            label: 'Columnas (2-4)',    type: 'text', placeholder: 'ej: 3' },
+      { name: 'paddingY',        label: 'Padding vertical',  type: 'text', placeholder: 'ej: 5rem' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['feature-grid'].defaultData, ...data };
+      const s = { ...SECTIONS['feature-grid'].defaultDesign, ...design };
+      const accent  = s.accentColor || '#2563eb';
+      const title   = s.titleColor || '#0A1D37';
+      const text    = s.textColor || '#475569';
+      const eyebrow = s.eyebrowColor || accent;
+      const cardBg  = s.cardBg || '#f8fafc';
+      const cardBd  = s.cardBorderColor || '#e2e8f0';
+      const ICONS = {
+        location: 'fa-location-dot', lightning: 'fa-bolt', shield: 'fa-shield-halved',
+        check: 'fa-circle-check', camera: 'fa-video', gear: 'fa-gear',
+        lock: 'fa-lock', chart: 'fa-chart-column', database: 'fa-database',
+      };
+      const icon = t => ICONS[t] || 'fa-circle-check';
+      const features = Array.isArray(d.features) ? d.features : [];
+      const want = Math.min(4, Math.max(2, Number(s.cols) || (features.length >= 4 ? 3 : features.length || 3)));
+      return `
+<style>
+.sg-fgrid{background:${s.bg || '#ffffff'};padding:${s.paddingY || '5rem'} 1.5rem;}
+.sg-fgrid .sg-in{max-width:1200px;margin:0 auto;}
+.sg-fgrid .sg-head{max-width:680px;margin:0 0 2.6rem;}
+.sg-fgrid .sg-eyebrow{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:${eyebrow};margin:0 0 .6rem;}
+.sg-fgrid .sg-title{font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:900;letter-spacing:-.02em;color:${title};margin:0 0 .8rem;}
+.sg-fgrid .sg-intro{font-size:1rem;line-height:1.6;color:${text};margin:0;}
+.sg-fgrid .sg-grid{display:grid;grid-template-columns:repeat(${want},1fr);gap:1.25rem;}
+.sg-fgrid .sg-card{background:${cardBg};border:1px solid ${cardBd};border-radius:12px;padding:1.7rem 1.5rem;transition:transform .2s,box-shadow .2s;}
+.sg-fgrid .sg-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(10,29,55,.08);}
+.sg-fgrid .sg-ico{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:${accent}1a;color:${accent};font-size:1.25rem;margin-bottom:1.1rem;}
+.sg-fgrid .sg-ct{font-size:1.05rem;font-weight:800;color:${title};margin:0 0 .5rem;}
+.sg-fgrid .sg-cd{font-size:.9rem;line-height:1.55;color:${text};margin:0;}
+@media(max-width:980px){.sg-fgrid .sg-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:620px){.sg-fgrid .sg-grid{grid-template-columns:1fr;}}
+</style>
+<section class="sg-fgrid">
+  <div class="sg-in">
+    <div class="sg-head">
+      ${d.eyebrow ? `<p class="sg-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</p>` : ''}
+      ${d.titulo ? `<h2 class="sg-title">${fld('titulo', esc(d.titulo))}</h2>` : ''}
+      ${d.intro ? `<p class="sg-intro">${fld('intro', esc(d.intro))}</p>` : ''}
+    </div>
+    <div class="sg-grid">
+      ${features.map((f, i) => `
+        <div class="sg-card">
+          <div class="sg-ico"><i class="fa-solid ${esc(icon(f.iconType))}" aria-hidden="true"></i></div>
+          <h3 class="sg-ct">${fld('features.'+i+'.titulo', esc(f.titulo || ''))}</h3>
+          <p class="sg-cd">${fld('features.'+i+'.desc', esc(f.desc || ''))}</p>
+        </div>`).join('')}
+    </div>
+  </div>
+</section>`;
+    },
+  },
+
+  //  PREGUNTAS FRECUENTES — acordeón nativo <details> (sin JS)
+  'faq': {
+    label: 'Preguntas frecuentes',
+    description: 'Acordeón de preguntas y respuestas (FAQ). Hasta 6 pares; los vacíos se ocultan.',
+    icon: `<i class="fa-solid fa-circle-question"></i>`,
+    validTipos: ['*'],
+    defaultData: {
+      eyebrow: 'PREGUNTAS FRECUENTES',
+      titulo: 'Resolvemos tus dudas',
+      q1: '¿Entregan certificación de la instalación?', a1: 'Sí. Cada instalación se mide y certifica con instrumental profesional y se entrega documentación detallada de cada punto.',
+      q2: '¿Trabajan en toda la región?', a2: 'Sí. Tenemos base en Rosario (Zona i) y operamos en plantas industriales, terminales y empresas de toda la región.',
+      q3: '¿Ofrecen soporte posterior?', a3: 'Sí. Brindamos mantenimiento preventivo, monitoreo y respuesta rápida ante incidencias para garantizar la continuidad operativa.',
+      q4: '¿Cómo solicito un presupuesto?', a4: 'Podés escribirnos por WhatsApp o completar el formulario de contacto. Un asesor coordina una visita o reunión técnica sin compromiso.',
+      q5: '', a5: '',
+      q6: '', a6: '',
+    },
+    defaultDesign: { bg: '#ffffff', eyebrowColor: '', titleColor: '', textColor: '', accentColor: '', itemBg: '', borderColor: '', paddingY: '' },
+    dataFields: [
+      { name: 'eyebrow', label: 'Eyebrow',          type: 'text' },
+      { name: 'titulo',  label: 'Título',           type: 'text' },
+      { name: 'q1', label: 'Pregunta 1', type: 'text' }, { name: 'a1', label: 'Respuesta 1', type: 'textarea' },
+      { name: 'q2', label: 'Pregunta 2', type: 'text' }, { name: 'a2', label: 'Respuesta 2', type: 'textarea' },
+      { name: 'q3', label: 'Pregunta 3', type: 'text' }, { name: 'a3', label: 'Respuesta 3', type: 'textarea' },
+      { name: 'q4', label: 'Pregunta 4', type: 'text' }, { name: 'a4', label: 'Respuesta 4', type: 'textarea' },
+      { name: 'q5', label: 'Pregunta 5 (vacía = oculta)', type: 'text' }, { name: 'a5', label: 'Respuesta 5', type: 'textarea' },
+      { name: 'q6', label: 'Pregunta 6 (vacía = oculta)', type: 'text' }, { name: 'a6', label: 'Respuesta 6', type: 'textarea' },
+    ],
+    designFields: [
+      { name: 'bg',           label: 'Fondo de sección',   type: 'color' },
+      { name: 'eyebrowColor', label: 'Color eyebrow',      type: 'color' },
+      { name: 'titleColor',   label: 'Color título',       type: 'color' },
+      { name: 'textColor',    label: 'Color texto',        type: 'color' },
+      { name: 'accentColor',  label: 'Color de acento',    type: 'color' },
+      { name: 'itemBg',       label: 'Fondo de cada ítem', type: 'color' },
+      { name: 'borderColor',  label: 'Color de borde',     type: 'color' },
+      { name: 'paddingY',     label: 'Padding vertical',   type: 'text', placeholder: 'ej: 5rem' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['faq'].defaultData, ...data };
+      const s = { ...SECTIONS['faq'].defaultDesign, ...design };
+      const accent  = s.accentColor || '#2563eb';
+      const title   = s.titleColor || '#0A1D37';
+      const text    = s.textColor || '#475569';
+      const eyebrow = s.eyebrowColor || accent;
+      const itemBg  = s.itemBg || '#f8fafc';
+      const border  = s.borderColor || '#e2e8f0';
+      const items = [1,2,3,4,5,6]
+        .map(n => ({ qf: `q${n}`, af: `a${n}`, q: d[`q${n}`], a: d[`a${n}`] }))
+        .filter(x => x.q);
+      return `
+<style>
+.sg-faq{background:${s.bg || '#ffffff'};padding:${s.paddingY || '5rem'} 1.5rem;}
+.sg-faq .sg-in{max-width:840px;margin:0 auto;}
+.sg-faq .sg-head{text-align:center;margin:0 0 2.4rem;}
+.sg-faq .sg-eyebrow{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:${eyebrow};margin:0 0 .6rem;}
+.sg-faq .sg-title{font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:900;letter-spacing:-.02em;color:${title};margin:0;}
+.sg-faq details{background:${itemBg};border:1px solid ${border};border-radius:10px;margin-bottom:.75rem;overflow:hidden;}
+.sg-faq summary{list-style:none;cursor:pointer;padding:1.1rem 1.3rem;font-size:1rem;font-weight:700;color:${title};display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.sg-faq summary::-webkit-details-marker{display:none;}
+.sg-faq summary .sg-chev{color:${accent};transition:transform .25s;flex-shrink:0;}
+.sg-faq details[open] summary .sg-chev{transform:rotate(180deg);}
+.sg-faq .sg-ans{padding:0 1.3rem 1.2rem;font-size:.94rem;line-height:1.65;color:${text};margin:0;}
+</style>
+<section class="sg-faq">
+  <div class="sg-in">
+    <div class="sg-head">
+      ${d.eyebrow ? `<p class="sg-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</p>` : ''}
+      ${d.titulo ? `<h2 class="sg-title">${fld('titulo', esc(d.titulo))}</h2>` : ''}
+    </div>
+    ${items.map(x => `
+      <details>
+        <summary>${fld(x.qf, esc(x.q))}<i class="fa-solid fa-chevron-down sg-chev" aria-hidden="true"></i></summary>
+        <p class="sg-ans">${fld(x.af, esc(x.a || ''))}</p>
+      </details>`).join('')}
+  </div>
+</section>`;
+    },
+  },
+
 };
 
 //  CAMPOS COMUNES — se agregan a todos los módulos automáticamente

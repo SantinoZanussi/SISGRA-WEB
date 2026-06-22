@@ -655,38 +655,44 @@ function _paginasDe(id_pagina) {
   return (Array.isArray(id_pagina) ? id_pagina : [id_pagina]).map(Number).filter(n => !isNaN(n));
 }
 
-/* ¿El módulo puede usarse en la plantilla que se está editando?
-   Globales (nav/footer/footer-full) y "Todas las páginas" → siempre disponibles.
-   El resto, SOLO si esta plantilla está entre sus páginas asignadas.
-   Los "Sin asignar" no aparecen: así se separan los contenidos por plantilla. */
-function _modAllowedInActiveTpl(m) {
-  if (GLOBAL_TIPOS.has(m.tipo)) return true;
-  const pags = _paginasDe(m.id_pagina);
-  if (pags === 'all') return true;
+/* ¿La asignación (id_pagina) de una VARIANTE la habilita en la plantilla que se
+   está editando? La asignación es SIEMPRE por variante (nunca por tipo). Reglas:
+     • 'all' o SIN asignar → disponible en TODAS las plantillas.
+     • asignada a ítem(s)  → SOLO en las plantillas vinculadas a esos ítems del navbar.
+   Así, al asignar una variante a un ítem del menú, aparece en el buscador de
+   inserción de la plantilla de ese ítem (y no se "esconde" si no tiene asignación). */
+function _idPaginaAllowsActiveTpl(idp) {
+  const pags = _paginasDe(idp);
+  if (pags === 'all') return true;        // "Todas las páginas" → en todos los buscadores
+  if (pags.length === 0) return false;    // SIN asignar a ningún ítem → no se muestra en ninguno
   const tplId = e3.activeTpl?.id_plantilla;
   return tplId != null && pags.includes(Number(tplId));
+}
+function _modAllowedInActiveTpl(m) {
+  return GLOBAL_TIPOS.has(m.tipo) || _idPaginaAllowsActiveTpl(m.id_pagina);
 }
 
 function searchResults(query) {
   const q = (query || '').trim().toLowerCase();
   if (!q) return [];
-  // Módulos ya colocados en esta plantilla: se excluyen para no insertar dos
-  // referencias al MISMO módulo (no se clona).
-  const yaUsados = new Set(allModIds());
   const res = [];
   for (const m of e3.modulos) {
     if (m.data?.soloCard) continue;             // copias inline de una card: no se listan acá
-    if (!_modAllowedInActiveTpl(m)) continue;   // solo globales / Todas / asignados a esta plantilla
-    // Resultado de MÓDULO entero (excepto si ya está colocado en esta plantilla).
-    if (!yaUsados.has(m.id_modulo)) {
+    // Resultado de MÓDULO entero: si esta VARIANTE está asignada a esta plantilla
+    // (o es global / "Todas" / sin asignar). SIN límite de repetición: el mismo
+    // módulo se puede insertar las veces que se quiera en la misma plantilla
+    // (cada ocurrencia es una referencia más en id_modulos/contenedores).
+    if (_modAllowedInActiveTpl(m)) {
       const hay = `${m.nombre} ${m.tipo} ${SECTIONS[m.tipo]?.label || ''}`.toLowerCase();
       if (hay.includes(q)) res.push({ kind: 'mod', id_modulo: m.id_modulo, tipo: m.tipo, label: m.nombre, sub: SECTIONS[m.tipo]?.label || m.tipo });
     }
     // Resultados por TARJETA: cada card de un módulo "services" se puede insertar
-    // suelta (se crea una copia de 1 sola card). No se excluyen por "ya usado":
-    // insertar una card siempre crea una copia nueva.
+    // suelta (copia de 1 sola card). Se filtra por la asignación de CADA tarjeta
+    // (card.id_pagina), no por la del módulo: una card asignada a "Soporte" aparece
+    // en el buscador de Soporte aunque su módulo de origen sea de otra página.
     if (m.tipo === 'services' && Array.isArray(m.data?.cards)) {
       m.data.cards.forEach((c, idx) => {
+        if (!_idPaginaAllowsActiveTpl(c.id_pagina)) return;
         const hay = `${c.titulo || ''} ${c.descripcion || ''}`.toLowerCase();
         if (hay.includes(q)) res.push({
           kind: 'card', parentId: m.id_modulo, cardId: c.id || '', cardIndex: idx,
@@ -720,9 +726,8 @@ function bindSlotSearch(doc) {
       closeSlotSearch();
     } else if (ev.key === 'Enter') {
       ev.preventDefault();
-      const res = searchResults(e3.slotSearch.query);
-      if (!res.length) return;
-      const r = res[0];
+      const r = searchResults(e3.slotSearch.query)[0];
+      if (!r) return;
       if (r.kind === 'card') insertarCardEnContenedor(ci, r);
       else insertarEnContenedor(ci, r.id_modulo);
     }
@@ -1747,7 +1752,7 @@ function _renderPaginaSelect(selected) {
     _curModData.id_pagina = v;
     _refreshPaginaBadges();
   });
-  if (hint) hint.textContent = 'Marcá a qué ítem(s) del navbar pertenece este módulo (ej: «Fibra Óptica»), o «Todas las páginas». El módulo solo se puede insertar en las plantillas marcadas.';
+  if (hint) hint.textContent = 'Marcá a qué ítem(s) del navbar pertenece esta variante: aparecerá en el buscador de inserción de esas plantillas. Marcá «Todas las páginas» para que aparezca en todas. Si no marcás nada, NO aparece en ningún buscador.';
 }
 
 function _showView(id) {
@@ -1835,6 +1840,18 @@ function renderModCatalog() {
   _showView('modulos-catalog-view');
   const grid = document.getElementById('modulos-grid');
   if (!grid) return;
+
+  // Recalcular el uso (en cuántas PLANTILLAS distintas se usa cada módulo) desde
+  // las plantillas actuales en CADA render, para que "En uso / Sin usar" y el resto
+  // de la descripción reflejen altas/bajas/uso sin tener que recargar el panel.
+  // Se cuenta por plantilla distinta (un módulo repetido en la misma plantilla
+  // cuenta 1, no infla el total).
+  _modUsos = {};
+  (_plantillas || []).forEach(p => {
+    new Set((p.id_modulos || []).filter(x => typeof x === 'number')).forEach(id => {
+      _modUsos[id] = (_modUsos[id] || 0) + 1;
+    });
+  });
 
   // El catálogo lista TIPOS de módulo: una fila por familia (Hero/Footer/Header)
   // o, para los demás, una fila por tipo de sección. Las copias sueltas de una
@@ -2003,7 +2020,7 @@ async function crearModuloDesdeModal() {
       design: JSON.parse(JSON.stringify(sec.defaultDesign || {})),
     });
     _mods.push(res.modulo);
-    _modUsos[res.modulo.id_modulo] = 0;
+    renderModCatalog();   // refleja el alta en el catálogo al instante
     window.__svc?.closeModal('modal-nuevo-modulo');
     window.__svc.showNotif('Módulo creado', 'success');
     openModEditor(res.modulo.id_modulo);
@@ -2169,7 +2186,10 @@ window.openModVer = function(id) {
   if (!body) return;
 
   const esTodas = GLOBAL_TIPOS_MOD.has(m.tipo) || m.id_pagina === 'all';
-  if (pagEl) pagEl.innerHTML = _paginaBadgeHTML(esTodas ? 'all' : m.id_pagina);
+  // La asignación de página NO se muestra a nivel TIPO de módulo: solo vive en cada
+  // variante (en su fila de la lista y en su editor). Acá limpiamos el badge del
+  // encabezado para no sugerir que el tipo entero está asignado a una plantilla.
+  if (pagEl) pagEl.innerHTML = '';
 
   const renameBtn = document.getElementById('modulos-view-rename');
   if (renameBtn) { renameBtn.style.display = ''; renameBtn.onclick = () => _renameModuloInline(m); }
@@ -3721,7 +3741,7 @@ async function nuevaVarianteDeModulo(tipo, id_pagina) {
       design: JSON.parse(JSON.stringify(sec.defaultDesign || {})),
     });
     _mods.push(res.modulo);
-    _modUsos[res.modulo.id_modulo] = 0;
+    renderModCatalog();   // refleja el alta en el catálogo al instante
     window.__svc.showNotif('Módulo creado', 'success');
     // Las "cards" (services) se editan en el segundo modal (tarjeta por tarjeta);
     // el resto en el editor de campos normal.

@@ -31,6 +31,46 @@
       "estado": "publicado",
       "imagen": "",
       "contenido": "<h2>Del dato administrativo a la operación en tiempo real</h2>\n<p>La eficiencia logística no depende solo de tener un buen ERP, sino de que ese sistema converse en tiempo real con la operación física: balanzas, PLCs, lectores y terminales de planta.</p>\n<p>Cuando la información administrativa y la operativa viven en silos separados, aparecen los errores de inventario, las demoras en la trazabilidad y los reprocesos manuales.</p>\n<h3>Qué resuelve la integración</h3>\n<ul>\n  <li><strong>Trazabilidad de punta a punta:</strong> cada movimiento de mercadería queda registrado automáticamente.</li>\n  <li><strong>Gestión de depósitos inteligentes (WMS):</strong> optimización de flujos de inventario en terminales graneleras y marítimas.</li>\n  <li><strong>Interfaz hardware-software:</strong> desarrollos a medida que conectan la maquinaria de planta con las plataformas de gestión en la nube.</li>\n</ul>\n<p>El equipo de ingeniería de <strong>SISGRA</strong> desarrolla software logístico a medida y sistemas propietarios que transforman la complejidad operativa en interfaces simples, integrando la infraestructura física con la gestión empresarial.</p>"
+    },
+    {
+      "id": "fibra-inmunidad-electromagnetica",
+      "titulo": "Inmunidad electromagnética: por qué la fibra óptica es clave en plantas industriales",
+      "extracto": "En entornos con maquinaria pesada, la fibra óptica garantiza la pureza de la señal de datos al ser totalmente inmune a las interferencias electromagnéticas.",
+      "categoria": "Fibra Óptica",
+      "fecha": "2026-06-05",
+      "estado": "publicado",
+      "imagen": "",
+      "contenido": "<h2>El problema del ruido eléctrico</h2>\n<p>En una planta industrial conviven motores, variadores de frecuencia y maquinaria de alta potencia que generan campos electromagnéticos capaces de degradar las señales que viajan por cobre. La <strong>fibra óptica</strong>, al transmitir datos mediante luz, es inmune a estas interferencias.</p>\n<h3>Monomodo y multimodo</h3>\n<p>Diseñamos backbones de alta densidad <strong>OM4/OM5</strong> y enlaces monomodo según la distancia y el ancho de banda requerido, asegurando escalabilidad para el crecimiento futuro de la red.</p>\n<ul>\n  <li><strong>Fusión por núcleo:</strong> empalmes de alta precisión con mínima pérdida de inserción.</li>\n  <li><strong>Anillos metropolitanos:</strong> redes redundantes de alta capacidad para entornos urbanos e industriales.</li>\n  <li><strong>Urgencias 24/7:</strong> nuestra división urgenciasfibraoptica.com.ar atiende cortes de alta prioridad.</li>\n</ul>\n<p>En <strong>SISGRA</strong> contamos con más de 15 años de experiencia directa en ingeniería de campo y tendidos de fibra óptica.</p><p><img src=\"/img/empalme-fibraoptica.png\"></p>"
+    },
+    {
+      "id": "videovigilancia-ip-4k-analitica",
+      "titulo": "Videovigilancia IP 4K con analítica: seguridad que se anticipa",
+      "extracto": "Las cámaras IP 4K con análisis de video inteligente permiten detectar eventos automáticamente, transformando la vigilancia reactiva en protección proactiva.",
+      "categoria": "Seguridad",
+      "fecha": "2026-06-09",
+      "estado": "publicado",
+      "imagen": "",
+      "contenido": "<h2>De grabar a entender</h2>\n<p>La videovigilancia tradicional solo registra lo que ocurre. Con <strong>análisis de video inteligente</strong> sobre transmisiones IP en 4K, el sistema identifica comportamientos y eventos específicos sin necesidad de supervisión humana constante.</p>\n<h3>Seguridad integrada a la red</h3>\n<p>Tratamos la seguridad electrónica como un componente más de la capa de red. Al correr sobre infraestructura <strong>Cat 8 y fibra</strong> certificada, garantizamos procesamiento en tiempo real y máxima resiliencia.</p>\n<ul>\n  <li><strong>Control de accesos escalable:</strong> desde una puerta hasta miles de puntos de entrada en red.</li>\n  <li><strong>Detección temprana:</strong> sensores de incendio e intrusión perimetral.</li>\n  <li><strong>Operación continua:</strong> sistemas diseñados para no detenerse.</li></ul><img src=\"/img/camaras-seguridad.png\"><ul>\n</ul>"
+    },
+    {
+      "id": "sla-99-9-soporte-proactivo",
+      "titulo": "SLA 99.9%: cómo el soporte IT proactivo evita el tiempo de inactividad",
+      "extracto": "Monitoreo 24/7, mantenimiento preventivo y backups aislados son la base de un acuerdo de nivel de servicio que mantiene a su empresa siempre operativa.",
+      "categoria": "Soporte IT",
+      "fecha": "2026-06-13",
+      "estado": "publicado",
+      "imagen": "",
+      "contenido": "<h2>La continuidad operativa no es opcional</h2>\n<p>Cada minuto de inactividad tiene un costo. Por eso actuamos como el <strong>departamento de sistemas externo</strong> de su empresa, con monitoreo constante de servidores y terminales para detectar anomalías antes de que afecten la operación.</p>\n<h3>Qué incluye un SLA de SISGRA</h3>\n<ul>\n  <li><strong>99.9% de disponibilidad</strong> garantizada por contrato.</li>\n  <li><strong>Respuesta &lt; 45 minutos</strong> ante incidencias críticas.</li>\n  <li><strong>Backups automatizados y aislados</strong> contra ransomware.</li>\n  <li><strong>Mantenimiento proactivo</strong> que extiende la vida útil de su inversión.</li>\n</ul>\n<p>El resultado: una infraestructura que trabaja para su negocio, no al revés.</p><p><img src=\"/img/servidores-soporteit.png\"></p>"
+    },
+    {
+      "id": "convergencia-it-ot-plc-nube",
+      "titulo": "Convergencia IT/OT: integrar los PLCs industriales con la nube",
+      "extracto": "El software a medida permite que el hardware de planta (PLCs, balanzas) hable el mismo idioma que las plataformas de gestión en la nube.",
+      "categoria": "Software",
+      "fecha": "2026-06-17",
+      "estado": "publicado",
+      "imagen": "",
+      "contenido": "<h2>Cuando el hardware habla con el software</h2>\n<p>La verdadera transformación digital industrial ocurre cuando la <strong>tecnología operativa (OT)</strong> y los sistemas de información (IT) convergen. Desarrollamos interfaces de bajo nivel en <strong>C/C++</strong> para comunicarnos directamente con PLCs y balanzas automatizadas.</p>\n<h3>Del dato de planta a la decisión</h3>\n<p>Esos datos se orquestan en plataformas web modernas con <strong>Python, Ruby y .NET</strong>, habilitando trazabilidad, automatización de depósitos (WMS) y eliminación de procesos en papel.</p>\n<ul>\n  <li><strong>Tifon ERP</strong> — gestión integral para PyMEs.</li>\n  <li><strong>PlusAgro</strong> — gestión agropecuaria.</li>\n  <li><strong>Qnet</strong> — logística de turnos y flotas.</li>\n</ul>"
     }
   ]
 }

@@ -1443,7 +1443,7 @@ window.deletePost = async function(id){
 async function saveBlogPost(){
   const item={titulo:document.getElementById('b-title').value.trim(),categoria:document.getElementById('b-categoria').value,estado:document.getElementById('b-estado').value,fecha:document.getElementById('b-fecha').value,extracto:document.getElementById('b-extracto').value.trim(),contenido:document.getElementById('b-content').innerHTML,imagen:document.getElementById('b-img').value.trim()};
   if(!item.titulo) return showNotif('El título es requerido','error');
-  if(!item.imagen) return showNotif('La imagen de portada es obligatoria','error');
+  //if(!item.imagen) return showNotif('La imagen de portada es obligatoria','error');
   if(state.editingPostId){ await apiPatch('/data/blog/posts/'+state.editingPostId,item); const i=state.blog.posts.findIndex(x=>x.id===state.editingPostId); if(i>-1) state.blog.posts[i]={...state.blog.posts[i],...item}; }
   else { const r=await apiPost('/data/blog/posts',item); state.blog.posts = state.blog.posts||[]; state.blog.posts.unshift(r.item); }
   closeModal('modal-blog'); renderBlogList(); showNotif('✓ Artículo guardado');

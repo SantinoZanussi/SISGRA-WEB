@@ -134,6 +134,45 @@
       "creado_en": "2026-06-01T01:15:25.897Z",
       "editado_en": "2026-06-01T23:20:34.394Z",
       "etiquetas": []
+    },
+    {
+      "id": "img-40c8cb3a-ef64-4030-9d0a-447329175cdd",
+      "nombre": "camaras_seguridad",
+      "filename": "camaras-seguridad.png",
+      "path": "/img/camaras-seguridad.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 2071305,
+      "origen": "subida",
+      "etiquetas": [],
+      "creado_en": "2026-06-20T22:48:08.080Z",
+      "editado_en": "2026-06-20T22:48:20.037Z"
+    },
+    {
+      "id": "img-c66eea3e-718b-49dc-a6a9-db64eaf0b112",
+      "nombre": "empalme_fibraoptica",
+      "filename": "empalme-fibraoptica.png",
+      "path": "/img/empalme-fibraoptica.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 2071733,
+      "origen": "subida",
+      "etiquetas": [],
+      "creado_en": "2026-06-20T22:48:08.091Z",
+      "editado_en": "2026-06-20T22:48:20.785Z"
+    },
+    {
+      "id": "img-35a3ef0f-fe17-4048-ac53-a77982b85cf3",
+      "nombre": "servidores_soporteit",
+      "filename": "servidores-soporteit.png",
+      "path": "/img/servidores-soporteit.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 1891470,
+      "origen": "subida",
+      "etiquetas": [],
+      "creado_en": "2026-06-20T22:48:08.099Z",
+      "editado_en": "2026-06-20T22:48:22.085Z"
     }
   ],
   "labels": [

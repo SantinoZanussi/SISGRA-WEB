@@ -255,17 +255,33 @@
     {
       "id_modulo": 7,
       "tipo": "services",
-      "nombre": "Cards",
+      "nombre": "Cards — Portafolio (Inicio)",
       "data": {
         "titulo_seccion": "Portafolio de Soluciones",
         "eyebrow": "Lo que hacemos",
         "cards": [
           {
             "id": "instalaciones",
+            "icono": "fa-server",
+            "iconoColor": "",
             "titulo": "Instalaciones",
-            "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
-            "enlace": "/",
-            "link": "",
+            "descripcion": "Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas internacionales TIA/EIA.",
+            "linkText": "Ver Detalles",
+            "enlace": "/html/cableado_estructurado",
+            "detalle": {
+              "titulo": "",
+              "descripcion": "",
+              "imagen": ""
+            }
+          },
+          {
+            "id": "soporte",
+            "icono": "fa-headset",
+            "iconoColor": "",
+            "titulo": "Soporte IT",
+            "descripcion": "Monitoreo 24/7, mantenimiento proactivo y backups anti-ransomware con 99.9% de disponibilidad garantizada.",
+            "linkText": "Ver Detalles",
+            "enlace": "/html/soporte_it",
             "detalle": {
               "titulo": "",
               "descripcion": "",
@@ -274,9 +290,17 @@
           },
           {
             "id": "software",
-            "titulo": "Software",
-            "descripcion": "Soluciones a medida para optimizar procesos logísticos y gestión de datos empresariales.",
-            "enlace": "/"
+            "icono": "fa-code",
+            "iconoColor": "",
+            "titulo": "Desarrollo de Software",
+            "descripcion": "Software logístico a medida, ERP/CRM e integración IoT entre el hardware industrial y la nube.",
+            "linkText": "Ver Detalles",
+            "enlace": "/html/desarrollo",
+            "detalle": {
+              "titulo": "",
+              "descripcion": "",
+              "imagen": ""
+            }
           }
         ]
       },
@@ -299,7 +323,7 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-17T16:27:50.931Z",
+      "editado_en": "2026-06-20T22:27:30.302Z",
       "id_pagina": [
         1
       ]
@@ -1208,34 +1232,6 @@
       "editado_en": "2026-06-11T17:40:55.009Z"
     },
     {
-      "id_modulo": 40,
-      "tipo": "about",
-      "nombre": "Nosotros",
-      "id_pagina": 1,
-      "data": {
-        "eyebrow": "Excelencia Corporativa",
-        "titulo": "Liderando la industria\ndesde el año 1999.",
-        "descripcion": "En SISGRA, entendemos que la infraestructura crítica no permite errores. Cada proyecto atraviesa un riguroso proceso de planificación, ejecución certificada y soporte post-instalación que garantiza resultados duraderos para su organización.",
-        "imagen": "/img/img1.png"
-      },
-      "design": {
-        "bg": "",
-        "eyebrowColor": "",
-        "titleColor": "",
-        "textColor": "",
-        "paddingY": "",
-        "titleSize": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-11T18:54:55.851Z",
-      "editado_en": "2026-06-11T18:54:55.851Z"
-    },
-    {
       "id_modulo": 41,
       "tipo": "about",
       "nombre": "Nosotros",
@@ -1267,7 +1263,7 @@
       "id_modulo": 42,
       "tipo": "formulario",
       "nombre": "Formulario de contacto",
-      "id_pagina": 13,
+      "id_pagina": "all",
       "data": {
         "titulo": "Contáctese con nosotros",
         "descripcion": "Complete el formulario y le responderemos a la brevedad.",
@@ -1301,10 +1297,24 @@
           }
         ]
       },
-      "design": {},
+      "design": {
+        "bg": "#f8fafc",
+        "cardBg": "#ffffff",
+        "titleColor": "#0A1D37",
+        "textColor": "#475569",
+        "labelColor": "#334155",
+        "btnBg": "#2563eb",
+        "btnColor": "#ffffff",
+        "paddingY": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
       "alerta": false,
       "creado_en": "2026-06-11T19:03:59.898Z",
-      "editado_en": "2026-06-11T19:03:59.898Z"
+      "editado_en": "2026-06-21T20:23:10.841Z"
     },
     {
       "id_modulo": 43,
@@ -1742,6 +1752,901 @@
       "alerta": false,
       "creado_en": "2026-06-18T13:49:51.090Z",
       "editado_en": "2026-06-18T13:49:51.090Z"
+    },
+    {
+      "id_modulo": 60,
+      "tipo": "hero",
+      "nombre": "Hero — Inicio",
+      "id_pagina": [
+        1
+      ],
+      "data": {
+        "badge": "INTEGRANDO EL FUTURO",
+        "titulo1": "Conectamos el futuro",
+        "titulo2": "de su empresa.",
+        "descripcion": "Somos una empresa integradora de tecnología con base en Rosario, pionera del Polo Tecnológico (Zona i). Unimos la infraestructura física crítica con la ingeniería de software para garantizar la continuidad operativa de las empresas líderes de la región.",
+        "boton_primario": "Ver Soluciones",
+        "boton_secundario": "Conocer más",
+        "stat1_numero": "+25",
+        "stat1_label": "AÑOS DE EXPERIENCIA",
+        "stat2_numero": "+500",
+        "stat2_label": "CLIENTES SATISFECHOS"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T22:27:30.302Z",
+      "editado_en": "2026-06-20T22:27:30.302Z"
+    },
+    {
+      "id_modulo": 61,
+      "tipo": "stats-band",
+      "nombre": "Métricas — SISGRA en números",
+      "id_pagina": [
+        1
+      ],
+      "data": {
+        "eyebrow": "SISGRA EN NÚMEROS",
+        "titulo": "Resultados que respaldan cada proyecto",
+        "stat1_num": "+25",
+        "stat1_label": "Años de trayectoria",
+        "stat2_num": "+500",
+        "stat2_label": "Clientes activos",
+        "stat3_num": "99.9%",
+        "stat3_label": "Disponibilidad garantizada",
+        "stat4_num": "< 45 min",
+        "stat4_label": "Respuesta ante incidencias"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T22:27:30.302Z",
+      "editado_en": "2026-06-20T22:27:30.302Z"
+    },
+    {
+      "id_modulo": 63,
+      "tipo": "cta",
+      "nombre": "CTA — Solicitar presupuesto",
+      "id_pagina": [
+        1
+      ],
+      "data": {
+        "title": "¿Listo para integrar el futuro de su infraestructura?",
+        "desc": "Analizamos su proyecto sin compromiso y le proponemos la mejor solución para su organización.",
+        "btn": "Solicitar Presupuesto",
+        "href": "https://wa.me/543418610863"
+      },
+      "design": {
+        "bg": "#0A1D37",
+        "btnBg": "#2563eb"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-20T22:27:30.302Z",
+      "editado_en": "2026-06-20T22:27:30.302Z"
+    },
+    {
+      "id_modulo": 64,
+      "tipo": "feature-grid",
+      "nombre": "Cableado — Capacidades",
+      "id_pagina": [
+        4
+      ],
+      "data": {
+        "eyebrow": "LO QUE INCLUYE",
+        "titulo": "Cableado de alto rendimiento",
+        "intro": "Construimos el sistema nervioso de su empresa con infraestructura de cobre certificada.",
+        "features": [
+          {
+            "iconType": "shield",
+            "titulo": "Certificación Categoría 8",
+            "desc": "Infraestructura que opera hasta 2 GHz, lista para las demandas de datos de la próxima década."
+          },
+          {
+            "iconType": "check",
+            "titulo": "Normativa internacional",
+            "desc": "Planificación y ejecución bajo estándares ANSI/TIA-568 para una escalabilidad definitiva."
+          },
+          {
+            "iconType": "gear",
+            "titulo": "Diagnóstico avanzado",
+            "desc": "Verificación de desequilibrio de resistencia PoE según la norma IEEE 802.3bt en cada enlace."
+          },
+          {
+            "iconType": "chart",
+            "titulo": "Certificación Fluke",
+            "desc": "Validación con analizador DSX-8000, cumpliendo los niveles de precisión más exigentes del mercado."
+          }
+        ]
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T22:27:30.302Z",
+      "editado_en": "2026-06-20T22:27:30.302Z"
+    },
+    {
+      "id_modulo": 65,
+      "tipo": "faq",
+      "nombre": "Cableado — FAQ",
+      "id_pagina": [
+        4
+      ],
+      "data": {
+        "eyebrow": "PREGUNTAS FRECUENTES",
+        "titulo": "Resolvemos tus dudas",
+        "q1": "¿Por qué elegir Categoría 8 para mi planta industrial?",
+        "a1": "Permite anchos de banda de 40 Gbps y latencias menores a 1 ms, eliminando cuellos de botella en procesos automatizados.",
+        "q2": "¿Qué estándares de precisión garantizan en sus testeos?",
+        "a2": "Cumplimos con la norma ANSI/TIA-1152-A (Nivel 2G) y la norma internacional IEC 61935-1 Ed. 5.",
+        "q3": "¿Entregan reportes detallados de la instalación?",
+        "a3": "Sí: nuestro instrumental permite el almacenamiento y reporte gráfico de hasta 5.000 pruebas técnicas detalladas.",
+        "q4": "",
+        "a4": "",
+        "q5": "",
+        "a5": "",
+        "q6": "",
+        "a6": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T22:27:30.302Z",
+      "editado_en": "2026-06-20T22:27:30.302Z"
+    },
+    {
+      "id_modulo": 66,
+      "tipo": "feature-grid",
+      "nombre": "Fibra — Capacidades",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "eyebrow": "LO QUE INCLUYE",
+        "titulo": "Fibra óptica profesional",
+        "intro": "Llevamos la velocidad de la luz a su centro de datos, con más de 15 años de experiencia en campo.",
+        "features": [
+          {
+            "iconType": "database",
+            "titulo": "Backbones industriales",
+            "desc": "Redes de columna de alta densidad monomodo y multimodo (OM4/OM5) para entornos complejos."
+          },
+          {
+            "iconType": "location",
+            "titulo": "Anillos metropolitanos",
+            "desc": "Construcción y mantenimiento de anillos de fibra de alta capacidad para áreas urbanas e industriales."
+          },
+          {
+            "iconType": "lightning",
+            "titulo": "Fusión por núcleo",
+            "desc": "Empalmes de alta precisión certificados para la mínima pérdida de inserción en cada enlace."
+          },
+          {
+            "iconType": "check",
+            "titulo": "Respuesta ante emergencias",
+            "desc": "Servicio dedicado de reparación rápida ante cortes de fibra (urgenciasfibraoptica.com.ar)."
+          }
+        ]
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T22:27:30.302Z",
+      "editado_en": "2026-06-20T22:27:30.302Z"
+    },
+    {
+      "id_modulo": 67,
+      "tipo": "faq",
+      "nombre": "Fibra — FAQ",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "eyebrow": "PREGUNTAS FRECUENTES",
+        "titulo": "Resolvemos tus dudas",
+        "q1": "¿Qué ventaja tiene la fibra en entornos con maquinaria eléctrica?",
+        "a1": "Ofrece inmunidad total a interferencias electromagnéticas, garantizando la pureza de la señal de datos.",
+        "q2": "¿Cómo garantizan la calidad de los empalmes?",
+        "a2": "Usamos tecnología de fusión por núcleo y conectorización de precisión bajo estándares de ingeniería de campo.",
+        "q3": "¿Qué sucede si un camión corta un tendido aéreo?",
+        "a3": "Contamos con la división urgenciasfibraoptica.com.ar, dedicada exclusivamente a atender cortes de alta urgencia.",
+        "q4": "",
+        "a4": "",
+        "q5": "",
+        "a5": "",
+        "q6": "",
+        "a6": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T22:27:30.302Z",
+      "editado_en": "2026-06-20T22:27:30.302Z"
+    },
+    {
+      "id_modulo": 68,
+      "tipo": "feature-grid",
+      "nombre": "Seguridad — Capacidades",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "eyebrow": "LO QUE INCLUYE",
+        "titulo": "Seguridad electrónica integral",
+        "intro": "Blindamos su infraestructura tratando la seguridad como un componente más de la red.",
+        "features": [
+          {
+            "iconType": "camera",
+            "titulo": "Videovigilancia IP 4K",
+            "desc": "Monitoreo en ultra alta definición con análisis de video inteligente para protección proactiva."
+          },
+          {
+            "iconType": "shield",
+            "titulo": "Protección industrial",
+            "desc": "Redes de sensores para la detección temprana de incendios e intrusión perimetral."
+          },
+          {
+            "iconType": "lock",
+            "titulo": "Accesos corporativos",
+            "desc": "Control de ingresos escalable, desde sistemas simples hasta redes con miles de puntos de entrada."
+          },
+          {
+            "iconType": "gear",
+            "titulo": "Convergencia de red",
+            "desc": "Integración de la seguridad sobre la infraestructura Cat 8 y fibra para procesamiento en tiempo real."
+          }
+        ]
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T22:27:30.302Z",
+      "editado_en": "2026-06-20T22:27:30.302Z"
+    },
+    {
+      "id_modulo": 69,
+      "tipo": "faq",
+      "nombre": "Seguridad — FAQ",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "eyebrow": "PREGUNTAS FRECUENTES",
+        "titulo": "Resolvemos tus dudas",
+        "q1": "¿Sus sistemas de acceso pueden manejar múltiples sedes?",
+        "a1": "Sí: están diseñados como sistemas corporativos en red, capaces de coordinar miles de puntos de acceso seguros.",
+        "q2": "¿Las cámaras detectan comportamientos automáticamente?",
+        "a2": "Implementamos analíticas de video sobre transmisiones IP para identificar eventos sin intervención humana constante.",
+        "q3": "¿Qué pasa con la seguridad si falla el software?",
+        "a3": "Diseñamos las redes sobre infraestructuras críticas certificadas para garantizar resiliencia y operación continua.",
+        "q4": "",
+        "a4": "",
+        "q5": "",
+        "a5": "",
+        "q6": "",
+        "a6": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T22:27:30.302Z",
+      "editado_en": "2026-06-20T22:27:30.302Z"
+    },
+    {
+      "id_modulo": 70,
+      "tipo": "feature-grid",
+      "nombre": "Soporte — Capacidades",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "eyebrow": "LO QUE INCLUYE",
+        "titulo": "Soporte IT que no se detiene",
+        "intro": "Actuamos como su departamento de sistemas externo para minimizar el tiempo de inactividad.",
+        "features": [
+          {
+            "iconType": "chart",
+            "titulo": "Monitoreo constante",
+            "desc": "Vigilancia 24/7 de servidores y terminales para detectar anomalías antes de que afecten la operación."
+          },
+          {
+            "iconType": "gear",
+            "titulo": "Mantenimiento proactivo",
+            "desc": "Planes que extienden la vida útil de la inversión tecnológica y optimizan costos."
+          },
+          {
+            "iconType": "shield",
+            "titulo": "Protección de datos",
+            "desc": "Backups automatizados y aislados contra amenazas de ransomware."
+          },
+          {
+            "iconType": "check",
+            "titulo": "Diagnóstico especializado",
+            "desc": "Análisis de infraestructuras virtualizadas y Help Desk altamente calificado."
+          }
+        ]
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T22:27:30.302Z",
+      "editado_en": "2026-06-20T22:27:30.302Z"
+    },
+    {
+      "id_modulo": 71,
+      "tipo": "faq",
+      "nombre": "Soporte — FAQ",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "eyebrow": "PREGUNTAS FRECUENTES",
+        "titulo": "Resolvemos tus dudas",
+        "q1": "¿Cuál es su tiempo de respuesta ante una caída del servidor?",
+        "a1": "Garantizamos tiempos de respuesta menores a 45 minutos para incidencias críticas.",
+        "q2": "¿Pueden actuar como mi departamento de sistemas?",
+        "a2": "Sí: funcionamos como socio de outsourcing directo, replicando modelos de éxito para asegurar la continuidad del negocio.",
+        "q3": "¿Cómo aseguran que mis sistemas no se detengan?",
+        "a3": "Ofrecemos Acuerdos de Nivel de Servicio (SLA) que garantizan un 99.9% de disponibilidad.",
+        "q4": "",
+        "a4": "",
+        "q5": "",
+        "a5": "",
+        "q6": "",
+        "a6": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T22:27:30.302Z",
+      "editado_en": "2026-06-20T22:27:30.302Z"
+    },
+    {
+      "id_modulo": 72,
+      "tipo": "feature-grid",
+      "nombre": "Desarrollo — Capacidades",
+      "id_pagina": [
+        8
+      ],
+      "data": {
+        "eyebrow": "LO QUE INCLUYE",
+        "titulo": "Software a medida e integración",
+        "intro": "Transformamos la complejidad operativa en interfaces simples, conectando el hardware con la nube.",
+        "features": [
+          {
+            "iconType": "chart",
+            "titulo": "Software logístico",
+            "desc": "Automatización de depósitos (WMS), trazabilidad de stock y optimización de rutas de picking."
+          },
+          {
+            "iconType": "gear",
+            "titulo": "Integración de hardware",
+            "desc": "Interfaces en C/C++ para comunicación directa con PLCs industriales y balanzas automatizadas."
+          },
+          {
+            "iconType": "database",
+            "titulo": "Sistemas propietarios",
+            "desc": "Soluciones probadas: Tifon ERP (gestión), PlusAgro (agro) y Qnet (turnos y flotas)."
+          },
+          {
+            "iconType": "lightning",
+            "titulo": "Ingeniería multi-lenguaje",
+            "desc": "Python, Ruby y .NET para crear APIs en la nube y plataformas web robustas."
+          }
+        ]
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T22:27:30.302Z",
+      "editado_en": "2026-06-20T22:27:30.302Z"
+    },
+    {
+      "id_modulo": 73,
+      "tipo": "faq",
+      "nombre": "Desarrollo — FAQ",
+      "id_pagina": [
+        8
+      ],
+      "data": {
+        "eyebrow": "PREGUNTAS FRECUENTES",
+        "titulo": "Resolvemos tus dudas",
+        "q1": "¿El software puede leer datos de mis máquinas de planta?",
+        "a1": "Sí: nos especializamos en conectar el hardware físico (PLCs) con las capas lógicas de software.",
+        "q2": "¿Sus sistemas ayudan a eliminar el uso de papel?",
+        "a2": "Absolutamente: automatizamos los procesos administrativos y eliminamos los flujos manuales.",
+        "q3": "¿Desarrollan aplicaciones web integradas a la nube?",
+        "a3": "Sí: usamos lenguajes como Python y Ruby para orquestar datos en plataformas web modernas y escalables.",
+        "q4": "",
+        "a4": "",
+        "q5": "",
+        "a5": "",
+        "q6": "",
+        "a6": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T22:27:30.302Z",
+      "editado_en": "2026-06-20T22:27:30.302Z"
+    },
+    {
+      "id_modulo": 74,
+      "tipo": "feature-grid",
+      "nombre": "Por qué SISGRA — Inicio",
+      "id_pagina": [
+        1
+      ],
+      "data": {
+        "eyebrow": "POR QUÉ SISGRA",
+        "titulo": "La convergencia entre infraestructura y software",
+        "intro": "Desde 1999 integramos el mundo físico y el digital para empresas que no pueden detenerse.",
+        "features": [
+          {
+            "iconType": "shield",
+            "titulo": "25 años de trayectoria",
+            "desc": "Pioneros del Polo Tecnológico Rosario (Zona i), con más de 500 clientes activos."
+          },
+          {
+            "iconType": "gear",
+            "titulo": "Convergencia IT/OT",
+            "desc": "Unimos la infraestructura física crítica con ingeniería de software a medida."
+          },
+          {
+            "iconType": "check",
+            "titulo": "Calidad certificada",
+            "desc": "Trabajamos bajo normas internacionales y certificamos cada instalación."
+          },
+          {
+            "iconType": "chart",
+            "titulo": "Continuidad operativa",
+            "desc": "99.9% de disponibilidad y respuesta ante incidencias en menos de 45 minutos."
+          }
+        ]
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T22:27:30.302Z",
+      "editado_en": "2026-06-20T22:27:30.302Z"
+    },
+    {
+      "id_modulo": 75,
+      "tipo": "articulo-header",
+      "nombre": "Header de artículo",
+      "id_pagina": [
+        2
+      ],
+      "data": {
+        "backLabel": "← Volver al Blog",
+        "backHref": "/html/blog",
+        "badge": "Artículo",
+        "titulo": "Título del artículo",
+        "lead": "Bajada o resumen del artículo. En la página real se reemplaza automáticamente por los datos del post (?id=).",
+        "fecha": ""
+      },
+      "design": {
+        "bg": "",
+        "paddingY": "",
+        "titleColor": "",
+        "titleSize": "",
+        "leadColor": "",
+        "leadSize": "",
+        "backLinkColor": "",
+        "badgeBg": "",
+        "badgeColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-21T04:39:20.660Z"
+    },
+    {
+      "id_modulo": 76,
+      "tipo": "stats-band",
+      "nombre": "Métricas — Cableado",
+      "id_pagina": [
+        4
+      ],
+      "data": {
+        "eyebrow": "SISGRA EN NÚMEROS",
+        "titulo": "Resultados que respaldan cada proyecto",
+        "stat1_num": "+25",
+        "stat1_label": "Años de trayectoria",
+        "stat2_num": "+500",
+        "stat2_label": "Clientes activos",
+        "stat3_num": "99.9%",
+        "stat3_label": "Disponibilidad garantizada",
+        "stat4_num": "< 45 min",
+        "stat4_label": "Respuesta ante incidencias"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 77,
+      "tipo": "process-steps",
+      "nombre": "Proceso — Cableado",
+      "id_pagina": [
+        4
+      ],
+      "data": {
+        "eyebrow": "CÓMO TRABAJAMOS",
+        "titulo": "Un proceso probado de punta a punta",
+        "intro": "Cada proyecto atraviesa etapas claras para garantizar resultados certificados, sin sorpresas y con soporte posterior.",
+        "paso1_titulo": "Relevamiento",
+        "paso1_desc": "Visitamos y analizamos su infraestructura actual para entender necesidades, riesgos y objetivos del proyecto.",
+        "paso2_titulo": "Diseño e ingeniería",
+        "paso2_desc": "Proyectamos la solución bajo normas internacionales, buscando la mejor relación costo-beneficio.",
+        "paso3_titulo": "Ejecución certificada",
+        "paso3_desc": "Implementamos con técnicos especializados y certificamos cada punto con instrumental de medición profesional.",
+        "paso4_titulo": "Soporte y mantenimiento",
+        "paso4_desc": "Acompañamos con monitoreo, mantenimiento preventivo y respuesta rápida ante incidencias.",
+        "paso5_titulo": "",
+        "paso5_desc": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 78,
+      "tipo": "cta",
+      "nombre": "CTA — Cableado",
+      "id_pagina": [
+        4
+      ],
+      "data": {
+        "title": "¿Listo para una red que no se detiene?",
+        "desc": "Analizamos su proyecto sin compromiso y le proponemos la mejor solución para su organización.",
+        "btn": "Solicitar Presupuesto",
+        "href": "https://wa.me/543418610863"
+      },
+      "design": {
+        "bg": "#0A1D37",
+        "btnBg": "#2563eb"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 79,
+      "tipo": "stats-band",
+      "nombre": "Métricas — Fibra Óptica",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "eyebrow": "SISGRA EN NÚMEROS",
+        "titulo": "Resultados que respaldan cada proyecto",
+        "stat1_num": "+25",
+        "stat1_label": "Años de trayectoria",
+        "stat2_num": "+500",
+        "stat2_label": "Clientes activos",
+        "stat3_num": "99.9%",
+        "stat3_label": "Disponibilidad garantizada",
+        "stat4_num": "< 45 min",
+        "stat4_label": "Respuesta ante incidencias"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 80,
+      "tipo": "process-steps",
+      "nombre": "Proceso — Fibra Óptica",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "eyebrow": "CÓMO TRABAJAMOS",
+        "titulo": "Un proceso probado de punta a punta",
+        "intro": "Cada proyecto atraviesa etapas claras para garantizar resultados certificados, sin sorpresas y con soporte posterior.",
+        "paso1_titulo": "Relevamiento",
+        "paso1_desc": "Visitamos y analizamos su infraestructura actual para entender necesidades, riesgos y objetivos del proyecto.",
+        "paso2_titulo": "Diseño e ingeniería",
+        "paso2_desc": "Proyectamos la solución bajo normas internacionales, buscando la mejor relación costo-beneficio.",
+        "paso3_titulo": "Ejecución certificada",
+        "paso3_desc": "Implementamos con técnicos especializados y certificamos cada punto con instrumental de medición profesional.",
+        "paso4_titulo": "Soporte y mantenimiento",
+        "paso4_desc": "Acompañamos con monitoreo, mantenimiento preventivo y respuesta rápida ante incidencias.",
+        "paso5_titulo": "",
+        "paso5_desc": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 81,
+      "tipo": "cta",
+      "nombre": "CTA — Fibra Óptica",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "title": "¿Necesita conectividad de alta velocidad?",
+        "desc": "Analizamos su proyecto sin compromiso y le proponemos la mejor solución para su organización.",
+        "btn": "Solicitar Presupuesto",
+        "href": "https://wa.me/543418610863"
+      },
+      "design": {
+        "bg": "#0A1D37",
+        "btnBg": "#2563eb"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 82,
+      "tipo": "stats-band",
+      "nombre": "Métricas — Seguridad",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "eyebrow": "SISGRA EN NÚMEROS",
+        "titulo": "Resultados que respaldan cada proyecto",
+        "stat1_num": "+25",
+        "stat1_label": "Años de trayectoria",
+        "stat2_num": "+500",
+        "stat2_label": "Clientes activos",
+        "stat3_num": "99.9%",
+        "stat3_label": "Disponibilidad garantizada",
+        "stat4_num": "< 45 min",
+        "stat4_label": "Respuesta ante incidencias"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 83,
+      "tipo": "process-steps",
+      "nombre": "Proceso — Seguridad",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "eyebrow": "CÓMO TRABAJAMOS",
+        "titulo": "Un proceso probado de punta a punta",
+        "intro": "Cada proyecto atraviesa etapas claras para garantizar resultados certificados, sin sorpresas y con soporte posterior.",
+        "paso1_titulo": "Relevamiento",
+        "paso1_desc": "Visitamos y analizamos su infraestructura actual para entender necesidades, riesgos y objetivos del proyecto.",
+        "paso2_titulo": "Diseño e ingeniería",
+        "paso2_desc": "Proyectamos la solución bajo normas internacionales, buscando la mejor relación costo-beneficio.",
+        "paso3_titulo": "Ejecución certificada",
+        "paso3_desc": "Implementamos con técnicos especializados y certificamos cada punto con instrumental de medición profesional.",
+        "paso4_titulo": "Soporte y mantenimiento",
+        "paso4_desc": "Acompañamos con monitoreo, mantenimiento preventivo y respuesta rápida ante incidencias.",
+        "paso5_titulo": "",
+        "paso5_desc": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 84,
+      "tipo": "cta",
+      "nombre": "CTA — Seguridad",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "title": "¿Querés blindar tu infraestructura?",
+        "desc": "Analizamos su proyecto sin compromiso y le proponemos la mejor solución para su organización.",
+        "btn": "Solicitar Presupuesto",
+        "href": "https://wa.me/543418610863"
+      },
+      "design": {
+        "bg": "#0A1D37",
+        "btnBg": "#2563eb"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 85,
+      "tipo": "stats-band",
+      "nombre": "Métricas — Soporte IT",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "eyebrow": "SISGRA EN NÚMEROS",
+        "titulo": "Resultados que respaldan cada proyecto",
+        "stat1_num": "+25",
+        "stat1_label": "Años de trayectoria",
+        "stat2_num": "+500",
+        "stat2_label": "Clientes activos",
+        "stat3_num": "99.9%",
+        "stat3_label": "Disponibilidad garantizada",
+        "stat4_num": "< 45 min",
+        "stat4_label": "Respuesta ante incidencias"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 86,
+      "tipo": "process-steps",
+      "nombre": "Proceso — Soporte IT",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "eyebrow": "CÓMO TRABAJAMOS",
+        "titulo": "Un proceso probado de punta a punta",
+        "intro": "Cada proyecto atraviesa etapas claras para garantizar resultados certificados, sin sorpresas y con soporte posterior.",
+        "paso1_titulo": "Relevamiento",
+        "paso1_desc": "Visitamos y analizamos su infraestructura actual para entender necesidades, riesgos y objetivos del proyecto.",
+        "paso2_titulo": "Diseño e ingeniería",
+        "paso2_desc": "Proyectamos la solución bajo normas internacionales, buscando la mejor relación costo-beneficio.",
+        "paso3_titulo": "Ejecución certificada",
+        "paso3_desc": "Implementamos con técnicos especializados y certificamos cada punto con instrumental de medición profesional.",
+        "paso4_titulo": "Soporte y mantenimiento",
+        "paso4_desc": "Acompañamos con monitoreo, mantenimiento preventivo y respuesta rápida ante incidencias.",
+        "paso5_titulo": "",
+        "paso5_desc": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 87,
+      "tipo": "cta",
+      "nombre": "CTA — Soporte IT",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "title": "¿Tu empresa necesita soporte que no falle?",
+        "desc": "Analizamos su proyecto sin compromiso y le proponemos la mejor solución para su organización.",
+        "btn": "Solicitar Presupuesto",
+        "href": "https://wa.me/543418610863"
+      },
+      "design": {
+        "bg": "#0A1D37",
+        "btnBg": "#2563eb"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 88,
+      "tipo": "stats-band",
+      "nombre": "Métricas — Desarrollo",
+      "id_pagina": [
+        8
+      ],
+      "data": {
+        "eyebrow": "SISGRA EN NÚMEROS",
+        "titulo": "Resultados que respaldan cada proyecto",
+        "stat1_num": "+25",
+        "stat1_label": "Años de trayectoria",
+        "stat2_num": "+500",
+        "stat2_label": "Clientes activos",
+        "stat3_num": "99.9%",
+        "stat3_label": "Disponibilidad garantizada",
+        "stat4_num": "< 45 min",
+        "stat4_label": "Respuesta ante incidencias"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 89,
+      "tipo": "process-steps",
+      "nombre": "Proceso — Desarrollo",
+      "id_pagina": [
+        8
+      ],
+      "data": {
+        "eyebrow": "CÓMO TRABAJAMOS",
+        "titulo": "Un proceso probado de punta a punta",
+        "intro": "Cada proyecto atraviesa etapas claras para garantizar resultados certificados, sin sorpresas y con soporte posterior.",
+        "paso1_titulo": "Relevamiento",
+        "paso1_desc": "Visitamos y analizamos su infraestructura actual para entender necesidades, riesgos y objetivos del proyecto.",
+        "paso2_titulo": "Diseño e ingeniería",
+        "paso2_desc": "Proyectamos la solución bajo normas internacionales, buscando la mejor relación costo-beneficio.",
+        "paso3_titulo": "Ejecución certificada",
+        "paso3_desc": "Implementamos con técnicos especializados y certificamos cada punto con instrumental de medición profesional.",
+        "paso4_titulo": "Soporte y mantenimiento",
+        "paso4_desc": "Acompañamos con monitoreo, mantenimiento preventivo y respuesta rápida ante incidencias.",
+        "paso5_titulo": "",
+        "paso5_desc": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 90,
+      "tipo": "cta",
+      "nombre": "CTA — Desarrollo",
+      "id_pagina": [
+        8
+      ],
+      "data": {
+        "title": "¿Tenés un proyecto de software en mente?",
+        "desc": "Analizamos su proyecto sin compromiso y le proponemos la mejor solución para su organización.",
+        "btn": "Solicitar Presupuesto",
+        "href": "https://wa.me/543418610863"
+      },
+      "design": {
+        "bg": "#0A1D37",
+        "btnBg": "#2563eb"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-20T23:03:42.074Z",
+      "editado_en": "2026-06-20T23:03:42.074Z"
+    },
+    {
+      "id_modulo": 91,
+      "tipo": "formulario",
+      "nombre": "Formulario",
+      "id_pagina": "all",
+      "data": {
+        "titulo": "Contáctese con nosotros",
+        "descripcion": "Complete el formulario y le responderemos a la brevedad.",
+        "btn": "Enviar consulta",
+        "successMsg": "✓ Recibimos su consulta. Le responderemos a la brevedad.",
+        "campos": [
+          {
+            "etiqueta": "Nombre",
+            "tipo": "text",
+            "requerido": true
+          },
+          {
+            "etiqueta": "Empresa",
+            "tipo": "text",
+            "requerido": false
+          },
+          {
+            "etiqueta": "Email",
+            "tipo": "email",
+            "requerido": true
+          },
+          {
+            "etiqueta": "Teléfono",
+            "tipo": "tel",
+            "requerido": false
+          },
+          {
+            "etiqueta": "Mensaje",
+            "tipo": "textarea",
+            "requerido": false
+          }
+        ]
+      },
+      "design": {
+        "bg": "#f8fafc",
+        "cardBg": "#ffffff",
+        "titleColor": "#0A1D37",
+        "textColor": "#475569",
+        "labelColor": "#334155",
+        "btnBg": "#2563eb",
+        "btnColor": "#ffffff",
+        "paddingY": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-21T20:23:21.060Z",
+      "editado_en": "2026-06-21T20:23:21.060Z"
     }
   ]
 }
