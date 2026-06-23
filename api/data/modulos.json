@@ -123,44 +123,6 @@
       "editado_en": "2026-05-27T17:01:08.896Z"
     },
     {
-      "id_modulo": 4,
-      "tipo": "hero",
-      "nombre": "Hero 1",
-      "data": {
-        "badge": "",
-        "titulo1": "ERROR",
-        "titulo2": "404",
-        "descripcion": "",
-        "boton_primario": "",
-        "boton_secundario": "",
-        "stat1_numero": "",
-        "stat1_label": "",
-        "stat2_numero": "",
-        "stat2_label": ""
-      },
-      "design": {
-        "bg": "",
-        "titleColor": "",
-        "accentColor": "",
-        "btnBg": "",
-        "paddingY": "",
-        "titleSize": "",
-        "descSize": "",
-        "btnRadius": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-17T17:51:56.087Z",
-      "id_pagina": [
-        13
-      ]
-    },
-    {
       "id_modulo": 5,
       "tipo": "clientes",
       "nombre": "Clientes",
@@ -255,7 +217,7 @@
     {
       "id_modulo": 7,
       "tipo": "services",
-      "nombre": "Cards — Portafolio (Inicio)",
+      "nombre": "Cards",
       "data": {
         "titulo_seccion": "Portafolio de Soluciones",
         "eyebrow": "Lo que hacemos",
@@ -267,12 +229,15 @@
             "titulo": "Instalaciones",
             "descripcion": "Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas internacionales TIA/EIA.",
             "linkText": "Ver Detalles",
-            "enlace": "/html/cableado_estructurado",
+            "enlace": "/",
             "detalle": {
               "titulo": "",
               "descripcion": "",
               "imagen": ""
-            }
+            },
+            "id_pagina": [
+              1
+            ]
           },
           {
             "id": "soporte",
@@ -286,7 +251,10 @@
               "titulo": "",
               "descripcion": "",
               "imagen": ""
-            }
+            },
+            "id_pagina": [
+              1
+            ]
           },
           {
             "id": "software",
@@ -300,7 +268,28 @@
               "titulo": "",
               "descripcion": "",
               "imagen": ""
-            }
+            },
+            "id_pagina": [
+              1
+            ]
+          },
+          {
+            "id": "card-1782232583856",
+            "icono": "fa-wifi",
+            "iconoColor": "",
+            "titulo": "Nueva tarjeta wifi",
+            "descripcion": "prueba de wifi",
+            "linkText": "Ver Detalles",
+            "enlace": "/html/btn-8",
+            "detalle": {
+              "titulo": "",
+              "descripcion": "",
+              "imagen": ""
+            },
+            "id_pagina": [
+              1,
+              10
+            ]
           }
         ]
       },
@@ -323,10 +312,8 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-20T22:27:30.302Z",
-      "id_pagina": [
-        1
-      ]
+      "editado_en": "2026-06-23T18:37:35.715Z",
+      "id_pagina": "all"
     },
     {
       "id_modulo": 8,
@@ -391,7 +378,7 @@
     {
       "id_modulo": 11,
       "tipo": "articulo-body",
-      "nombre": "Cuerpo de artículo — Artículo principal",
+      "nombre": "cuerpo 1",
       "data": {
         "featuredImageUrl": "/img/chatgptfoto.png",
         "featuredImageAlt": "Infraestructura IT",
@@ -424,7 +411,7 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-22T11:21:29.442Z",
+      "editado_en": "2026-06-23T18:44:49.087Z",
       "id_pagina": [
         2
       ]
@@ -566,53 +553,6 @@
       "id_pagina": 6
     },
     {
-      "id_modulo": 15,
-      "tipo": "soporte-hero",
-      "nombre": "Hero 5",
-      "data": {
-        "badge": "Continuidad Operativa Garantizada",
-        "titulo1": "Soporte",
-        "accent": "IT Integral.",
-        "descripcion": "Minimizamos el tiempo de inactividad de su empresa. Actuamos como su departamento de sistemas externo, brindando soluciones rápidas y escalables.",
-        "features": [
-          {
-            "iconType": "gear",
-            "titulo": "Mantenimiento Preventivo",
-            "desc": "Monitoreo constante de servidores y terminales."
-          },
-          {
-            "iconType": "shield",
-            "titulo": "Seguridad Proactiva",
-            "desc": "Protección de datos y backups automatizados."
-          }
-        ],
-        "dashLabel": "Monitoreo de las actividades",
-        "dashMainValue": "99.9%",
-        "dashStat1Label": "Tiempo de respuesta",
-        "dashStat1Value": "< 45 min",
-        "dashStat2Label": "Vida del Sistema",
-        "dashStat2Value": "OPTIMIZADO",
-        "dashStat2Highlight": true,
-        "btnRemote": "Acceder al Soporte Remoto Inmediato 🎧"
-      },
-      "design": {
-        "bg": "",
-        "titleColor": "",
-        "accentColor": "",
-        "paddingY": "",
-        "titleSize": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-11T18:39:32.168Z",
-      "id_pagina": 7
-    },
-    {
       "id_modulo": 16,
       "tipo": "desarrollo-hero",
       "nombre": "Hero 6",
@@ -667,7 +607,7 @@
     {
       "id_modulo": 18,
       "tipo": "cliente-body",
-      "nombre": "Cuerpo de cliente",
+      "nombre": "Cuerpo 2",
       "data": {
         "featuredImageUrl": "",
         "featuredImageAlt": "",
@@ -705,58 +645,8 @@
       },
       "alerta": false,
       "creado_en": "2026-05-28T00:00:00.000Z",
-      "editado_en": "2026-06-11T18:43:42.776Z",
+      "editado_en": "2026-06-23T18:44:36.545Z",
       "id_pagina": 9
-    },
-    {
-      "id_modulo": 20,
-      "tipo": "desarrollo-hero",
-      "nombre": "Hero 6 Tipo 2",
-      "data": {
-        "badge": "Intelligence Labs",
-        "titulo1": "El mundo del",
-        "accent": "Software.",
-        "descripcion": "Todas las locuras que hacemos en un solo lado",
-        "solutions": [
-          {
-            "iconType": "camera",
-            "titulo": "Software Logístico a Medida",
-            "desc": "Optimización de flujos de inventario, trazabilidad y gestión de depósitos inteligentes."
-          },
-          {
-            "iconType": "database",
-            "titulo": "ERP / CRM",
-            "desc": "Sistemas centralizados para el control total de operaciones comerciales."
-          },
-          {
-            "iconType": "gear",
-            "titulo": "IoT & Automatización",
-            "desc": "Integración entre hardware y software inteligente basado en datos."
-          }
-        ],
-        "btnCta": "Consultar Desarrollo",
-        "btnCtaHref": "#",
-        "editorLabel": "SISGRA INC.",
-        "codeRows": [
-          "print(\"Hola mundo.\");"
-        ]
-      },
-      "design": {
-        "bg": "",
-        "titleColor": "",
-        "accentColor": "",
-        "paddingY": "",
-        "titleSize": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-03T17:14:16.908Z",
-      "editado_en": "2026-06-11T18:39:58.625Z",
-      "id_pagina": null
     },
     {
       "id_modulo": 21,
@@ -856,37 +746,6 @@
       "id_pagina": 1
     },
     {
-      "id_modulo": 23,
-      "tipo": "services",
-      "nombre": "Servicios - Tipo 3",
-      "data": {
-        "titulo_seccion": "Portafolio de Soluciones",
-        "eyebrow": "Lo que hacemos",
-        "cards": []
-      },
-      "design": {
-        "bg": "",
-        "sectionColor": "",
-        "cardBg": "",
-        "cardTitleColor": "",
-        "cardLinkColor": "",
-        "paddingY": "",
-        "titleSize": "",
-        "cardRadius": "",
-        "cardPadding": "",
-        "gap": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-03T17:42:21.258Z",
-      "editado_en": "2026-06-17T16:22:39.872Z",
-      "id_pagina": null
-    },
-    {
       "id_modulo": 24,
       "tipo": "blog",
       "nombre": "Blog / Noticias - Tipo 2",
@@ -935,37 +794,6 @@
       "alerta": false,
       "creado_en": "2026-06-03T17:42:21.258Z",
       "editado_en": "2026-06-04T18:12:38.374Z",
-      "id_pagina": 1
-    },
-    {
-      "id_modulo": 25,
-      "tipo": "services",
-      "nombre": "Servicios - Inicio",
-      "data": {
-        "titulo_seccion": "Portafolio de Soluciones",
-        "eyebrow": "Lo que hacemos",
-        "cards": []
-      },
-      "design": {
-        "bg": "",
-        "sectionColor": "",
-        "cardBg": "",
-        "cardTitleColor": "",
-        "cardLinkColor": "",
-        "paddingY": "",
-        "titleSize": "",
-        "cardRadius": "",
-        "cardPadding": "",
-        "gap": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-04T18:25:55.031Z",
-      "editado_en": "2026-06-17T16:22:34.048Z",
       "id_pagina": 1
     },
     {
@@ -1036,42 +864,6 @@
       "creado_en": "2026-06-04T18:25:55.032Z",
       "editado_en": "2026-06-04T18:25:55.032Z",
       "id_pagina": null
-    },
-    {
-      "id_modulo": 35,
-      "tipo": "hero",
-      "nombre": "Hero 1 tipo 2",
-      "id_pagina": 1,
-      "data": {
-        "badge": "INFRAESTRUCTURA DE ELITE",
-        "titulo1": "Conectamos el futuro",
-        "titulo2": "de su empresa.",
-        "descripcion": "Diseñamos e implementamos infraestructura tecnológica para las empresas líderes de Argentina. 25 años de trayectoria y más de 500 clientes nos respaldan.",
-        "boton_primario": "Ver Soluciones",
-        "boton_secundario": "Conocer más",
-        "stat1_numero": "+25",
-        "stat1_label": "AÑOS DE EXPERIENCIA",
-        "stat2_numero": "+500",
-        "stat2_label": "Clientes satisfechos"
-      },
-      "design": {
-        "bg": "",
-        "titleColor": "",
-        "accentColor": "",
-        "btnBg": "",
-        "paddingY": "",
-        "titleSize": "",
-        "descSize": "",
-        "btnRadius": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-11T17:10:42.055Z",
-      "editado_en": "2026-06-11T18:40:32.994Z"
     },
     {
       "id_modulo": 36,
@@ -1296,286 +1088,6 @@
       "alerta": false,
       "creado_en": "2026-06-14T20:54:20.122Z",
       "editado_en": "2026-06-14T20:54:38.354Z"
-    },
-    {
-      "id_modulo": 46,
-      "tipo": "hero",
-      "nombre": "Hero lateral",
-      "id_pagina": 1,
-      "data": {
-        "badge": "INFRAESTRUCTURA DE ELITE",
-        "titulo1": "Conectamos el futuro",
-        "titulo2": "de su empresa.",
-        "descripcion": "Diseñamos e implementamos infraestructura tecnológica para las empresas líderes de Argentina. 25 años de trayectoria y más de 500 clientes nos respaldan.",
-        "boton_primario": "Ver Soluciones",
-        "boton_secundario": "Conocer más",
-        "stat1_numero": "+25",
-        "stat1_label": "AÑOS DE EXPERIENCIA",
-        "stat2_numero": "+500",
-        "stat2_label": "Clientes satisfechos"
-      },
-      "design": {
-        "bg": "",
-        "titleColor": "",
-        "accentColor": "",
-        "btnBg": "",
-        "paddingY": "",
-        "titleSize": "",
-        "descSize": "",
-        "btnRadius": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-16T16:46:23.818Z",
-      "editado_en": "2026-06-16T16:46:23.818Z"
-    },
-    {
-      "id_modulo": 47,
-      "tipo": "hero",
-      "nombre": "Hero lateral",
-      "id_pagina": 1,
-      "data": {
-        "badge": "INFRAESTRUCTURA DE ELITE",
-        "titulo1": "Conectamos el futuro",
-        "titulo2": "de su empresa.",
-        "descripcion": "Diseñamos e implementamos infraestructura tecnológica para las empresas líderes de Argentina. 25 años de trayectoria y más de 500 clientes nos respaldan.",
-        "boton_primario": "Ver Soluciones",
-        "boton_secundario": "Conocer más",
-        "stat1_numero": "+25",
-        "stat1_label": "AÑOS DE EXPERIENCIA",
-        "stat2_numero": "+500",
-        "stat2_label": "Clientes satisfechos"
-      },
-      "design": {
-        "bg": "",
-        "titleColor": "",
-        "accentColor": "",
-        "btnBg": "",
-        "paddingY": "",
-        "titleSize": "",
-        "descSize": "",
-        "btnRadius": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-16T16:46:56.745Z",
-      "editado_en": "2026-06-16T16:46:56.745Z"
-    },
-    {
-      "id_modulo": 51,
-      "tipo": "hero",
-      "nombre": "Hero lateral",
-      "id_pagina": 1,
-      "data": {
-        "badge": "INFRAESTRUCTURA DE ELITE",
-        "titulo1": "Conectamos el futuro",
-        "titulo2": "de su empresa.",
-        "descripcion": "Diseñamos e implementamos infraestructura tecnológica para las empresas líderes de Argentina. 25 años de trayectoria y más de 500 clientes nos respaldan.",
-        "boton_primario": "Ver Soluciones",
-        "boton_secundario": "Conocer más",
-        "stat1_numero": "+25",
-        "stat1_label": "AÑOS DE EXPERIENCIA",
-        "stat2_numero": "+500",
-        "stat2_label": "Clientes satisfechos"
-      },
-      "design": {
-        "bg": "",
-        "titleColor": "",
-        "accentColor": "",
-        "btnBg": "",
-        "paddingY": "",
-        "titleSize": "",
-        "descSize": "",
-        "btnRadius": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-16T17:44:39.151Z",
-      "editado_en": "2026-06-16T17:44:39.151Z"
-    },
-    {
-      "id_modulo": 55,
-      "tipo": "cableado-hero",
-      "nombre": "Hero Cableado",
-      "id_pagina": 4,
-      "data": {
-        "badge": "Infraestructura Crítica",
-        "titulo1": "Cableado",
-        "accent": "Estructurado.",
-        "descripcion": "Implementamos sistemas de conectividad de alto rendimiento diseñados para soportar las demandas de datos del futuro. No solo conectamos cables; construimos el sistema nervioso de su empresa.",
-        "cards": [
-          {
-            "badge": "Cat 8",
-            "titulo": "Certificación Categoría 8",
-            "desc": "Garantizamos velocidades de hasta 40Gbps con certificaciones Fluke de última generación."
-          },
-          {
-            "badge": "TIA",
-            "titulo": "Normativa TIA/EIA 568",
-            "desc": "Planificación siguiendo estándares internacionales para garantizar escalabilidad definitiva."
-          }
-        ],
-        "panelHeader": "Especificaciones Técnicas",
-        "panelLabel": "Certificación",
-        "panelValue": "100% Norma",
-        "progressPct": 100,
-        "stat1Label": "Latencia",
-        "stat1Value": "&lt; 1ms",
-        "stat2Label": "Ancho B.",
-        "stat2Value": "40 Gbps"
-      },
-      "design": {
-        "bg": "",
-        "titleColor": "",
-        "accentColor": "",
-        "paddingY": "",
-        "titleSize": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-17T17:46:48.249Z",
-      "editado_en": "2026-06-17T17:46:48.249Z"
-    },
-    {
-      "id_modulo": 56,
-      "tipo": "desarrollo-hero",
-      "nombre": "Hero Desarrollo Software",
-      "id_pagina": 8,
-      "data": {
-        "badge": "Intelligence Labs",
-        "titulo1": "Desarrollo de",
-        "accent": "Software.",
-        "descripcion": "Transformamos la complejidad operativa en interfaces simplificadas. Desarrollamos código robusto, escalable y diseñado específicamente para los desafíos logísticos de la industria moderna.",
-        "solutions": [
-          {
-            "iconType": "chart",
-            "titulo": "Software Logístico a Medida",
-            "desc": "Optimización de flujos de inventario, trazabilidad y gestión de depósitos inteligentes."
-          },
-          {
-            "iconType": "database",
-            "titulo": "ERP / CRM",
-            "desc": "Sistemas centralizados para el control total de operaciones comerciales."
-          },
-          {
-            "iconType": "gear",
-            "titulo": "IoT & Automatización",
-            "desc": "Integración entre hardware y software inteligente basado en datos."
-          }
-        ],
-        "btnCta": "Consultar Desarrollo",
-        "btnCtaHref": "#",
-        "editorLabel": "SISGRA_CORE_V2.0 / LOGISTICS_MODULE",
-        "codeRows": [
-          "class SecuritySystem {",
-          "public function connectDevices() {",
-          "return SUCCESS;",
-          "}"
-        ]
-      },
-      "design": {
-        "bg": "",
-        "titleColor": "",
-        "accentColor": "",
-        "paddingY": "",
-        "titleSize": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-17T17:47:01.652Z",
-      "editado_en": "2026-06-17T17:47:01.652Z"
-    },
-    {
-      "id_modulo": 57,
-      "tipo": "hero",
-      "nombre": "Hero lateral",
-      "id_pagina": 1,
-      "data": {
-        "badge": "INFRAESTRUCTURA DE ELITE",
-        "titulo1": "Conectamos el futuro",
-        "titulo2": "de su empresa.",
-        "descripcion": "Diseñamos e implementamos infraestructura tecnológica para las empresas líderes de Argentina. 25 años de trayectoria y más de 500 clientes nos respaldan.",
-        "boton_primario": "Ver Soluciones",
-        "boton_secundario": "Conocer más",
-        "stat1_numero": "+25",
-        "stat1_label": "AÑOS DE EXPERIENCIA",
-        "stat2_numero": "+500",
-        "stat2_label": "Clientes satisfechos"
-      },
-      "design": {
-        "bg": "",
-        "titleColor": "",
-        "accentColor": "",
-        "btnBg": "",
-        "paddingY": "",
-        "titleSize": "",
-        "descSize": "",
-        "btnRadius": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-17T17:47:10.070Z",
-      "editado_en": "2026-06-17T17:47:10.070Z"
-    },
-    {
-      "id_modulo": 58,
-      "tipo": "hero",
-      "nombre": "Hero lateral",
-      "id_pagina": 1,
-      "data": {
-        "badge": "INFRAESTRUCTURA DE ELITE",
-        "titulo1": "Conectamos el futuro",
-        "titulo2": "de su empresa.",
-        "descripcion": "Diseñamos e implementamos infraestructura tecnológica para las empresas líderes de Argentina. 25 años de trayectoria y más de 500 clientes nos respaldan.",
-        "boton_primario": "Ver Soluciones",
-        "boton_secundario": "Conocer más",
-        "stat1_numero": "+25",
-        "stat1_label": "AÑOS DE EXPERIENCIA",
-        "stat2_numero": "+500",
-        "stat2_label": "Clientes satisfechos"
-      },
-      "design": {
-        "bg": "",
-        "titleColor": "",
-        "accentColor": "",
-        "btnBg": "",
-        "paddingY": "",
-        "titleSize": "",
-        "descSize": "",
-        "btnRadius": "",
-        "maxWidth": "",
-        "scale": "",
-        "marginTop": "",
-        "marginBottom": "",
-        "display": ""
-      },
-      "alerta": false,
-      "creado_en": "2026-06-17T17:47:34.034Z",
-      "editado_en": "2026-06-17T17:47:34.034Z"
     },
     {
       "id_modulo": 59,
@@ -2437,52 +1949,31 @@
       "editado_en": "2026-06-20T23:03:42.074Z"
     },
     {
-      "id_modulo": 91,
-      "tipo": "formulario",
-      "nombre": "Formulario",
+      "id_modulo": 92,
+      "tipo": "cliente-header",
+      "nombre": "Header de cliente",
       "id_pagina": "all",
       "data": {
-        "titulo": "Contáctese con nosotros",
-        "descripcion": "Complete el formulario y le responderemos a la brevedad.",
-        "btn": "Enviar consulta",
-        "successMsg": "✓ Recibimos su consulta. Le responderemos a la brevedad.",
-        "campos": [
-          {
-            "etiqueta": "Nombre",
-            "tipo": "text",
-            "requerido": true
-          },
-          {
-            "etiqueta": "Empresa",
-            "tipo": "text",
-            "requerido": false
-          },
-          {
-            "etiqueta": "Email",
-            "tipo": "email",
-            "requerido": true
-          },
-          {
-            "etiqueta": "Teléfono",
-            "tipo": "tel",
-            "requerido": false
-          },
-          {
-            "etiqueta": "Mensaje",
-            "tipo": "textarea",
-            "requerido": false
-          }
-        ]
+        "backLabel": "← Volver al Inicio",
+        "backHref": "/index.html",
+        "empresaLogo": "/img/clients/syngenta.png",
+        "empresaNombre": "Nombre de la empresa",
+        "titulo": "Caso de éxito: infraestructura tecnológica a medida",
+        "lead": "Resumen breve del proyecto que SISGRA realizó para este cliente.",
+        "sector": "Industria",
+        "ubicacion": "Rosario, Argentina",
+        "anio": "2025"
       },
       "design": {
-        "bg": "#f8fafc",
-        "cardBg": "#ffffff",
-        "titleColor": "#0A1D37",
-        "textColor": "#475569",
-        "labelColor": "#334155",
-        "btnBg": "#2563eb",
-        "btnColor": "#ffffff",
+        "bg": "",
         "paddingY": "",
+        "eyebrowColor": "",
+        "titleColor": "",
+        "titleSize": "",
+        "leadColor": "",
+        "metaColor": "",
+        "backLinkColor": "",
+        "logoMaxHeight": "",
         "maxWidth": "",
         "scale": "",
         "marginTop": "",
@@ -2490,8 +1981,57 @@
         "display": ""
       },
       "alerta": false,
-      "creado_en": "2026-06-21T20:23:21.060Z",
-      "editado_en": "2026-06-21T20:23:21.060Z"
+      "creado_en": "2026-06-23T16:26:23.041Z",
+      "editado_en": "2026-06-23T16:36:58.599Z"
+    },
+    {
+      "id_modulo": 95,
+      "tipo": "feature-grid",
+      "nombre": "Grilla de características",
+      "id_pagina": [
+        4
+      ],
+      "data": {
+        "eyebrow": "LO QUE INCLUYE",
+        "titulo": "Capacidades técnicas",
+        "intro": "",
+        "features": [
+          {
+            "iconType": "shield",
+            "titulo": "Certificación bajo norma",
+            "desc": "Trabajamos según estándares internacionales para garantizar calidad y escalabilidad."
+          },
+          {
+            "iconType": "gear",
+            "titulo": "Soluciones a medida",
+            "desc": "Cada proyecto se diseña según las necesidades reales de su organización."
+          },
+          {
+            "iconType": "check",
+            "titulo": "Resultados verificables",
+            "desc": "Entregamos documentación y mediciones de cada punto implementado."
+          }
+        ]
+      },
+      "design": {
+        "bg": "#ffffff",
+        "eyebrowColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "accentColor": "",
+        "cardBg": "",
+        "cardBorderColor": "",
+        "paddingY": "",
+        "cols": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-23T18:40:31.781Z",
+      "editado_en": "2026-06-23T18:40:31.781Z"
     }
   ]
 }

@@ -64,7 +64,7 @@
         Catálogo de Módulos
       </div>
 
-      <!-- PLANTILLAS -->
+      
       <div class="sidebar-section-label" style="display:flex;align-items:center;justify-content:space-between;padding-right:.875rem;">
         <span>Plantillas</span>
         <button class="btn-icon" id="btn-nueva-plantilla" title="Nueva plantilla"><i class="fa-solid fa-plus"></i></button>
@@ -97,7 +97,6 @@
       </div>
     </aside>
  
-    <!-- MAIN -->
     <main class="main">
       <div class="topbar">
         <div class="topbar-left">
@@ -118,13 +117,11 @@
  
       <div class="content-area">
  
-        <!-- DASHBOARD -->
         <div class="panel active" id="panel-dashboard">
           <div class="page-header">
             <div class="page-title">Dashboard</div>
             <div class="page-desc">Resumen general del sitio y estado del contenido.</div>
           </div>
-          <!-- Banner de plantillas vencidas (oculto por defecto, se muestra con JS) -->
           <div class="dash-vencidas-banner" id="dash-vencidas-banner" style="display:none;">
             <i class="fa-solid fa-triangle-exclamation"></i>
             <div class="dash-vencidas-banner-text" id="dash-vencidas-text"></div>
@@ -161,10 +158,8 @@
           </div>
         </div>
  
-        <!-- MÓDULOS -->
         <div class="panel" id="panel-modulos">
 
-          <!-- Vista 1: catálogo de tipos -->
           <div id="modulos-catalog-view">
             <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;">
               <div>
@@ -180,7 +175,6 @@
             <div id="modulos-grid"></div>
           </div>
 
-          <!-- Vista 2: variantes de un tipo -->
           <div id="modulos-variants-view" style="display:none;">
             <div class="page-header" style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
               <button class="btn-secondary" id="modulos-variants-back-btn" style="padding:.5rem 1rem;font-size:.75rem;flex-shrink:0;"><i class="fa-solid fa-arrow-left fa-lg"></i> Volver</button>
@@ -200,7 +194,6 @@
             </div>
           </div>
 
-          <!-- Vista 3: editor de módulo (modal estilo "Editar artículo") -->
           <div class="modal-overlay" id="modulos-editor-view">
             <div class="modal" style="max-width:680px;">
               <div class="modal-header">
@@ -212,14 +205,12 @@
               </div>
               <div class="modal-body">
                 <div style="display:grid;gap:1rem;align-items:start;">
-                          <!-- Nombre de la variante -->             
               <div class="section-card">
                 <div class="section-card-body" style="padding:1rem;">
                   <label class="form-label">Nombre de la variante</label>
                   <input type="text" class="form-input" id="modulos-variant-name-input" placeholder="Ej: Hero — Fondo Oscuro">
                 </div>
               </div>
-              <!-- Ítems del navbar a los que pertenece el módulo (multi) -->
               <div class="section-card">
                 <div class="section-card-body" style="padding:1rem;">
                   <label class="form-label">Ítems del navbar</label>
@@ -227,7 +218,6 @@
                   <div id="modulos-variant-pagina-hint" style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Marcá a qué ítem(s) del navbar pertenece este módulo (ej: «Fibra Óptica»), o «Todas las páginas».</div>
                 </div>
               </div>
-              <!-- Check de alerta de la variante -->
               <div class="section-card">
                 <div class="section-card-body" style="padding:1rem;">
                   <label style="display:flex;align-items:center;gap:.6rem;cursor:pointer;">
@@ -237,12 +227,10 @@
                   <div style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Si está activo, los módulos agregados con esta variante dispararán una alerta (ID 1) cuando su plantilla venza.</div>
                 </div>
               </div>
-              <!-- Campos de contenido -->
               <div class="section-card" id="modulos-editor-data-card">
                 <div class="section-card-header"><span class="section-card-title">Contenido</span><span id="modulos-editor-data-pagina" class="mod-pertenece-wrap"></span></div>
                 <div class="section-card-body" id="modulos-editor-data-fields" style="padding:1rem;display:flex;flex-direction:column;gap:.875rem;"></div>
               </div>
-              <!-- Gestión de contenido global (blog / clientes) — se aplica a todas las variantes -->
               <div class="section-card" id="modulos-editor-content-card" style="display:none;">
                 <div class="section-card-header" style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;">
                   <span style="display:flex;align-items:center;gap:.6rem;min-width:0;flex-wrap:wrap;">
@@ -254,7 +242,6 @@
                 <div style="font-size:.7rem;color:#94a3b8;padding:.6rem 1rem 0;line-height:1.5;">Este contenido es compartido: los cambios se aplican automáticamente a todas las variantes de este módulo.</div>
                 <div class="section-card-body" id="modulos-content-body" style="padding:1rem;"></div>
               </div>
-              <!-- El diseño (colores) y el preview viven en el modal de edición visual (botón Preview). -->
                 </div>
               </div>
               <div class="modal-footer">
@@ -265,8 +252,6 @@
             </div>
           </div>
 
-          <!-- Vista "Ver módulo": SOLO la lista de contenido del módulo.
-               Desde acá, "Editar" abre el modal de edición correspondiente. -->
           <div class="modal-overlay" id="modulos-view-modal">
             <div class="modal" style="max-width:680px;">
               <div class="modal-header" style="gap:.75rem;">
@@ -275,7 +260,6 @@
                   <span id="modulos-view-pagina" class="mod-pertenece-wrap"></span>
                   <button type="button" class="mod-rename-btn" id="modulos-view-rename" title="Cambiar el nombre del módulo"><i class="fa-solid fa-pen"></i></button>
                 </span>
-                <button class="btn-secondary" id="modulos-view-edit-btn" style="display:none;flex-shrink:0;"><i class="fa-solid fa-pen-to-square"></i> Editar módulo</button>
                 <button class="btn-add" id="modulos-view-add-btn" style="display:none;flex-shrink:0;"><i class="fa-solid fa-plus"></i> Agregar</button>
                 <button class="modal-close" id="modulos-view-close"><i class="fa-solid fa-xmark"></i></button>
               </div>
@@ -304,6 +288,16 @@
               </div>
               <div class="modal-body" style="padding:1rem 1.5rem 1.5rem;">
                 <div id="modulos-cards-note" style="font-size:.7rem;color:#94a3b8;margin-bottom:.85rem;line-height:1.5;"></div>
+                <!-- Título editable de la sección (titulo_seccion = por defecto) + override por página -->
+                <div class="form-group" style="margin-bottom:1rem;">
+                  <label class="form-label"><i class="fa-solid fa-heading" style="margin-right:.4rem;"></i>Título de la sección (por defecto)</label>
+                  <input class="form-input" id="modulos-cards-titulo" placeholder="Ej: Portafolio de Soluciones">
+                  <div style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Se usa en las páginas que no tengan un título propio abajo.</div>
+                  <details style="margin-top:.6rem;" id="modulos-cards-titulos-details">
+                    <summary style="cursor:pointer;font-size:.72rem;font-weight:700;color:var(--sisgra-blue);">Título distinto por ítem del menú</summary>
+                    <div id="modulos-cards-titulos-por-pagina" style="margin-top:.5rem;"></div>
+                  </details>
+                </div>
                 <!-- Ítems del navbar a los que pertenece este módulo (multi) -->
                 <div class="section-card" id="modulos-cards-pagina-card" style="margin-bottom:1rem;">
                   <div class="section-card-body" style="padding:1rem;">
@@ -336,21 +330,20 @@
               </div>
               <div class="modal-body" style="padding:1rem 1.5rem 1.5rem;">
                 <div id="modulos-card-edit-body"></div>
+                <!-- Pertenencia de la tarjeta: en qué página(s) del menú se muestra -->
+                <div class="section-card" id="modulos-card-edit-pertenececard" style="margin-top:1rem;">
+                  <div class="section-card-body" style="padding:1rem;">
+                    <label class="form-label"><i class="fa-solid fa-location-dot" style="margin-right:.4rem;"></i>¿En qué páginas se muestra?</label>
+                    <div class="mod-pag-list" id="modulos-card-edit-pertenece"></div>
+                    <div style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">La tarjeta solo aparece en las páginas (ítems del navbar) marcadas. «Todas las páginas» = en todas. Al insertar el módulo «Cards» en una página, se muestran únicamente las tarjetas asignadas a ese ítem.</div>
+                  </div>
+                </div>
                 <!-- Destino de la tarjeta: a qué ítem del navbar apunta "Ver Detalles" -->
                 <div class="section-card" id="modulos-card-edit-navcard" style="margin-top:1rem;">
                   <div class="section-card-body" style="padding:1rem;">
                     <label class="form-label"><i class="fa-solid fa-diagram-project" style="margin-right:.4rem;"></i>¿A dónde se dirige?</label>
                     <div class="mod-pag-list" id="modulos-card-edit-nav"></div>
-                    <div style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Elegí el ítem del navbar al que apunta el botón “Ver Detalles” de esta tarjeta.</div>
-                  </div>
-                </div>
-                <!-- Pertenece a: a qué ítem(s) del navbar pertenece esta tarjeta.
-                     Filtra el render: en cada plantilla solo se muestran las cards de ese ítem. -->
-                <div class="section-card" id="modulos-card-edit-pertenececard" style="margin-top:1rem;">
-                  <div class="section-card-body" style="padding:1rem;">
-                    <label class="form-label"><i class="fa-solid fa-location-dot" style="margin-right:.4rem;"></i>¿En qué página(s) se muestra?</label>
-                    <div class="mod-pag-list" id="modulos-card-edit-pertenece"></div>
-                    <div style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Marcá a qué ítem(s) del navbar pertenece esta tarjeta. Al renderizar una página, solo se cargan las tarjetas de ese ítem. Si no marcás ninguno, se muestra en todas.</div>
+                    <div style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">Elegí el ítem del navbar de esta tarjeta: define a dónde apunta “Ver Detalles” (el botón de la tarjeta).</div>
                   </div>
                 </div>
               </div>

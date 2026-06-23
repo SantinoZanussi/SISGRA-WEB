@@ -7,6 +7,13 @@
       "runtimeArgs": ["server.js"],
       "cwd": "api",
       "port": 3000
+    },
+    {
+      "name": "static",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["http-server", ".", "-p", "5501", "-c-1"],
+      "port": 5501,
+      "autoPort": true
     }
   ]
 }

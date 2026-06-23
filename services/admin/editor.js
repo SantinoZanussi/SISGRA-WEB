@@ -43,6 +43,16 @@ function contsToContenedores() {
 }
 // ¿Entrada de contenedor inline? (card suelta guardada dentro de la plantilla)
 const esInline = x => x && typeof x === 'object' && x.inline === true;
+
+// ¿Esta card pertenece a esta plantilla? Misma lógica que el sitio público
+// (page-bootstrap.cardEnPlantilla): 'all'/sin asignar → siempre; [ids] → solo si
+// la plantilla está en la lista. Filtra las tarjetas del módulo "Cards" por página.
+function _cardEnPlantilla(card, plantillaId) {
+  const p = card && card.id_pagina;
+  if (p === 'all' || p == null || p === '') return true;
+  const ids = (Array.isArray(p) ? p : [p]).map(Number).filter(n => !isNaN(n));
+  return ids.length ? ids.includes(Number(plantillaId)) : true;
+}
 // Todas las entradas de todos los contenedores (ids numéricos + módulos inline).
 function allContEntries() {
   return contsToContenedores().reduce((acc, m) => acc.concat(m), []);
@@ -686,20 +696,9 @@ function searchResults(query) {
       const hay = `${m.nombre} ${m.tipo} ${SECTIONS[m.tipo]?.label || ''}`.toLowerCase();
       if (hay.includes(q)) res.push({ kind: 'mod', id_modulo: m.id_modulo, tipo: m.tipo, label: m.nombre, sub: SECTIONS[m.tipo]?.label || m.tipo });
     }
-    // Resultados por TARJETA: cada card de un módulo "services" se puede insertar
-    // suelta (copia de 1 sola card). Se filtra por la asignación de CADA tarjeta
-    // (card.id_pagina), no por la del módulo: una card asignada a "Soporte" aparece
-    // en el buscador de Soporte aunque su módulo de origen sea de otra página.
-    if (m.tipo === 'services' && Array.isArray(m.data?.cards)) {
-      m.data.cards.forEach((c, idx) => {
-        if (!_idPaginaAllowsActiveTpl(c.id_pagina)) return;
-        const hay = `${c.titulo || ''} ${c.descripcion || ''}`.toLowerCase();
-        if (hay.includes(q)) res.push({
-          kind: 'card', parentId: m.id_modulo, cardId: c.id || '', cardIndex: idx,
-          tipo: 'services', label: c.titulo || 'Tarjeta', sub: `Tarjeta · ${m.nombre}`,
-        });
-      });
-    }
+    // El módulo "Cards" se inserta entero: al renderizarse muestra SOLO las
+    // tarjetas asignadas a la página actual (card.id_pagina). Ya NO se insertan
+    // tarjetas sueltas desde el buscador.
   }
   return res.slice(0, 40);
 }
@@ -1035,8 +1034,19 @@ function renderCanvas() {
       }
       const inline = esInline(id);
       const m = inline ? id : modById(id);
-      const inner = m
-        ? renderModulo(m.tipo === 'nav' ? { ...m, data: { ...m.data, items: navItems } } : m)
+      // El preview del módulo "Cards" refleja lo del sitio público para esta página:
+      // filtra las cards asignadas a esta plantilla y usa el título por página.
+      let mRender = m;
+      if (m && m.tipo === 'services') {
+        const tplId = e3.activeTpl?.id_plantilla;
+        const titulo = (m.data?.titulos_por_pagina || {})[tplId] || m.data?.titulo_seccion;
+        const cards = Array.isArray(m.data?.cards)
+          ? m.data.cards.filter(c => _cardEnPlantilla(c, tplId))
+          : m.data?.cards;
+        mRender = { ...m, data: { ...m.data, cards, titulo_seccion: titulo } };
+      }
+      const inner = mRender
+        ? renderModulo(mRender.tipo === 'nav' ? { ...mRender, data: { ...mRender.data, items: navItems } } : mRender)
         : `<div style="padding:2rem;background:#fee;color:#900;text-align:center;">Módulo #${id} no está en el catálogo</div>`;
       const tipoLbl = m ? (SECTIONS[m.tipo]?.label || m.tipo) : '—';
       const global = m && GLOBAL_TIPOS.has(m.tipo);
@@ -2264,7 +2274,8 @@ function _renderCardsFlatList() {
     body.innerHTML = `<div class="mod-cat-empty">No hay tarjetas todavía. Tocá <b>Nuevo</b> para crear la primera.</div>`;
     return;
   }
-  body.innerHTML = `<div class="blog-grid">${all.map(({ m, i, card }) => {
+  body.innerHTML = `<div class="blog-grid">
+  ${all.map(({ m, i, card }) => {
     const icon  = serviceCardIcon(card);
     const color = card.iconoColor || '#2563eb';
     const desc  = (card.descripcion || '').replace(/\s+/g, ' ').trim().slice(0, 120) || 'Sin descripción.';
@@ -2543,7 +2554,8 @@ function _servicioCardRowHTML(c, i) {
   const color = c.iconoColor || '#2563eb';
   const desc  = escAttr(c.descripcion || '').replace(/&quot;/g, '"');
   const enlace = c.enlace ? escAttr(c.enlace) : '';
-  return `<div class="svc-card-row" data-svc-i="${i}">
+  return `
+  <div class="svc-card-row" data-svc-i="${i}">
     <div class="svc-card-top">
       <div class="svc-icon-wrap">
         <span class="svc-icon-preview"><i class="fa-solid ${escAttr(icon)}" style="color:${escAttr(color)}"></i></span>
@@ -2608,10 +2620,63 @@ window.openServiciosCards = function(idOrMod) {
   // El footer con "Guardar cambios" solo aparece al crear un módulo nuevo.
   if (footer)  footer.style.display = m._isNew ? '' : 'none';
 
+  // Título editable de la sección (titulo_seccion = por defecto) + override por página.
+  const tituloInp = document.getElementById('modulos-cards-titulo');
+  if (tituloInp) {
+    m.data = m.data || {};
+    tituloInp.value = m.data.titulo_seccion || '';
+    tituloInp.oninput = () => {
+      m.data.titulo_seccion = tituloInp.value;
+      _refreshTitulosPlaceholders(m);   // actualiza el placeholder "(por defecto)" de cada página
+      if (!m._isNew) _saveServiciosModulo(m);
+    };
+  }
+  _renderCardsTitulosPorPagina(m);
+
   _renderCardsPaginaSelect(m);
   _renderCardsLista(m);
   window.__svc?.openModal('modulos-cards-modal');
 };
+
+/* Plantillas que son ítems del navbar (para el editor de título por página). */
+function _plantillasNavbar() {
+  const esItem = p => { const idm = (p.id_menu || [])[0]; return idm != null && _navbar.some(b => b.id_menu === idm); };
+  return _plantillas.filter(esItem)
+    .map(p => ({ id_plantilla: p.id_plantilla, ..._navInfoDePlantilla(p.id_plantilla) }))
+    .sort((a, b) => a.orden - b.orden);
+}
+
+/* Editor de "título por página": un input por ítem del menú. Vacío = usa el
+   título por defecto (titulo_seccion). Se guarda en m.data.titulos_por_pagina
+   (objeto { id_plantilla: titulo }). */
+function _renderCardsTitulosPorPagina(m) {
+  const box = document.getElementById('modulos-cards-titulos-por-pagina');
+  if (!box) return;
+  m.data = m.data || {};
+  const map = m.data.titulos_por_pagina = m.data.titulos_por_pagina || {};
+  const def = m.data.titulo_seccion || '(título por defecto)';
+  const items = _plantillasNavbar();
+  box.innerHTML = items.map(it => `
+    <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;">
+      <label style="flex:0 0 40%;font-size:.7rem;color:var(--slate-600);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escAttr(it.titulo)}${it.grupo ? ` <span class="mod-pag-grupo">${escAttr(it.grupo)}</span>` : ''}</label>
+      <input class="form-input" data-tpp="${it.id_plantilla}" value="${escAttr(map[it.id_plantilla] || '')}" placeholder="${escAttr(def)}" style="flex:1;font-size:.78rem;">
+    </div>`).join('') || '<div style="font-size:.7rem;color:#94a3b8;">No hay ítems del navbar.</div>';
+  box.querySelectorAll('[data-tpp]').forEach(inp => inp.addEventListener('input', () => {
+    const id = inp.dataset.tpp;
+    const v = inp.value.trim();
+    if (v) map[id] = v; else delete map[id];
+    if (!m._isNew) _saveServiciosModulo(m);
+  }));
+}
+
+/* Actualiza solo los placeholders (cuando cambia el título por defecto) sin
+   pisar lo que el usuario está tipeando en cada input. */
+function _refreshTitulosPlaceholders(m) {
+  const box = document.getElementById('modulos-cards-titulos-por-pagina');
+  if (!box) return;
+  const def = m.data?.titulo_seccion || '(título por defecto)';
+  box.querySelectorAll('[data-tpp]').forEach(inp => { inp.placeholder = def; });
+}
 
 /* Flujo "Nuevo": arma un BORRADOR de módulo de servicios en memoria (sin POST) y
    abre el editor de tarjetas. El módulo se crea recién al tocar "Guardar cambios"

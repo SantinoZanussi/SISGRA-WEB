@@ -1593,7 +1593,7 @@ function renderClientesList(){
       : 'background:#fef3c7;color:#92400e;';
     const perfilLabel = c.estado_perfil==='publicado' ? 'Publicado' : 'Borrador';
     const verLink = c.estado_perfil==='publicado'
-      ? `<a href="/html/cliente?id=${c.id}" target="_blank" class="btn-edit-small" style="text-decoration:none;">Ver ↗</a>`
+      ? `<a href="/html/cliente/?id=${c.id}" target="_blank" class="btn-edit-small" style="text-decoration:none;">Ver ↗</a>`
       : '';
     return `<tr>
       <td>${c.nombre||''}</td>

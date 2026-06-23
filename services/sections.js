@@ -9,12 +9,7 @@ const css = (props) => {
   return p.length ? ` style="${p.join(';')}"` : '';
 };
 
-// Modo edición visual + color por palabra
-// fld() envuelve cada texto editable. En modo edición agrega data-field para
-// que el modal le ponga un lápiz. Si el campo tiene un color asignado
-// (FIELD_COLORS, que viene de data.__colores), se aplica ese color por palabra
-// TAMBIÉN en el sitio público. Si un campo no tiene color y no es modo edición,
-// fld devuelve el texto plano → markup idéntico al original.
+
 let EDIT_MODE = false;
 let FIELD_COLORS = {};
 export function setEditMode(v) { EDIT_MODE = !!v; }
@@ -24,14 +19,9 @@ const fld = (name, value) => {
   if (EDIT_MODE) return `<span class="ed-f" data-field="${name}"${c ? ` style="color:${c}"` : ''}>${value}</span>`;
   return c ? `<span data-fc="${name}" style="color:${c}">${value}</span>` : value;
 };
-// fldImg(name) — atributo para marcar una <img> como editable en el preview del
-// panel: en modo edición agrega data-imgfield para que al hacer click se abra el
-// selector de imágenes. En el sitio público no agrega nada (markup idéntico).
+
 const fldImg = (name) => EDIT_MODE ? ` data-imgfield="${esc(name)}"` : '';
-// Marcadores extra del editor visual (solo en EDIT_MODE), manejados por ED_SCRIPT:
-// - fldIcon: lápiz para elegir ícono + color de una tarjeta (name = path a la card).
-// - fldLink: lápiz para editar la URL de destino (name = path al campo enlace).
-// - fldDetalle: lápiz para abrir el modal de detalle (name = path a la card).
+
 const fldIcon    = (name) => EDIT_MODE ? ` data-iconfield="${esc(name)}"` : '';
 const fldLink    = (name) => EDIT_MODE ? ` data-linkfield="${esc(name)}"` : '';
 const fldDetalle = (name) => EDIT_MODE ? ` data-detallefield="${esc(name)}"` : '';
@@ -46,10 +36,9 @@ export const SERVICE_ICON_CATALOG = [
   'fa-rocket', 'fa-lightbulb', 'fa-cubes', 'fa-boxes-stacked', 'fa-warehouse', 'fa-building',
   'fa-handshake', 'fa-headphones', 'fa-phone', 'fa-envelope', 'fa-globe', 'fa-location-dot',
 ];
-// Iconos por defecto para tarjetas heredadas (sin `icono` propio): se mapean por
-// su `id` original para no perder el ícono que ya mostraban en el sitio.
+
 export const SERVICE_LEGACY_ICONS = { instalaciones: 'fa-server', soporte: 'fa-headset', software: 'fa-code' };
-// Clase de ícono efectiva de una tarjeta de servicio.
+
 export const serviceCardIcon = (c) => (c && c.icono) || SERVICE_LEGACY_ICONS[c && c.id] || 'fa-table-cells-large';
 
 export const SECTIONS = {
@@ -62,12 +51,9 @@ export const SECTIONS = {
       logoSrc: '/img/sisgra_blanco.png',
       logoSrcHref: '/',
       ctaLabel: 'Contáctese',
-      // '#contacto' = abre el formulario de contacto en un modal (ver
-      // bindNavContacto en page-bootstrap.js). Cualquier otra URL navega normal.
+      
       ctaHref: '#contacto',
-      // Los enlaces del menú vienen de "Items del navbar": el backend los
-      // sincroniza en data.items desde navbar.json. Estos valores por defecto
-      // solo se usan como vista previa en la librería de módulos.
+      
       items: [
         { tipo: 'dropdown', titulo: 'Instalaciones', children: [
           { titulo: 'Cableado Estructurado', href: '/html/cableado_estructurado' },
@@ -100,8 +86,7 @@ export const SECTIONS = {
       const d = { ...SECTIONS.nav.defaultData, ...data };
       const s = { ...SECTIONS.nav.defaultDesign, ...design };
 
-      // Los enlaces del menú provienen de "Items del navbar" (data.items),
-      // que el backend sincroniza desde navbar.json. Es la única fuente.
+      
       const items = Array.isArray(d.items) ? d.items : [];
 
       const linksHtml = items.map(item => {
@@ -120,7 +105,7 @@ export const SECTIONS = {
         return `<a href="${esc(item.href || '#')}" class="nav-link">${esc(item.titulo)}</a>`;
       }).join('');
 
-      // Mobile drawer links — dropdowns se despliegan como sección + hijos
+      
       const mobileLinksHtml = items.map(item => {
         if (item.tipo === 'dropdown') {
           const children = (item.children || []).map(c => `<a href="${esc(c.href)}">${esc(c.titulo)}</a>`).join('');
@@ -168,8 +153,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  HERO — copia exacta de renderHeroP1 del index.html actual
-  //  Campos idénticos a hero.json (titulo1, titulo2, stat1_numero, etc.)
+  
   hero: {
     label: 'Hero lateral',
     description: 'Hero con stats laterales (igual al index actual)',
@@ -610,10 +594,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
 </section>`;
     },
   },
-
-  //  ERROR 404 — bloque de "página no encontrada" (número, título, texto, botones).
-  //  Es el contenido central del 404 (el navbar y el footer son módulos aparte).
-  'error-404': {
+'error-404': {
     label: 'Mensaje 404',
     description: 'Bloque de página no encontrada: número 404, título, texto y botones.',
     icon: `<i class="fa-solid fa-triangle-exclamation"></i>`,
@@ -1859,14 +1840,6 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     },
   },
 
-  //  ───────────────────────────────────────────────────────────────────────
-  //  MÓDULOS DE CONTENIDO REUTILIZABLES — autoestilados con su propio <style>
-  //  (clases con prefijo .sg-*). No dependen de ninguna hoja de /css/pages, así
-  //  que se pueden insertar en CUALQUIER página. Colores configurables por
-  //  designFields con fallbacks a la paleta del sitio (navy #0A1D37 / azul #3b82f6).
-  //  ───────────────────────────────────────────────────────────────────────
-
-  //  FRANJA DE MÉTRICAS — cifras destacadas (años, clientes, uptime, tiempos…)
   'stats-band': {
     label: 'Franja de métricas',
     description: 'Banda horizontal con cifras destacadas (años, clientes, uptime, tiempos de respuesta).',
@@ -1946,8 +1919,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     },
   },
 
-  //  PASOS DEL PROCESO — secuencia numerada (cómo trabajamos)
-  'process-steps': {
+    'process-steps': {
     label: 'Pasos del proceso',
     description: 'Secuencia de pasos numerados (ej: relevamiento → diseño → ejecución certificada → soporte).',
     icon: `<i class="fa-solid fa-list-ol"></i>`,
@@ -2202,6 +2174,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
 </section>`;
     },
   },
+
 
 };
 

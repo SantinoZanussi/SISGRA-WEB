@@ -253,11 +253,16 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
     // módulo tenía tarjetas pero ninguna pertenece a esta página, no se renderiza
     // (evita una sección de cards vacía); los módulos sin tarjetas se dejan igual.
     secciones = secciones.flatMap(sec => {
-      if (sec.type !== 'services' || !Array.isArray(sec.data?.cards)) return [sec];
+      if (sec.type !== 'services') return [sec];
+      // Título por página: si esta plantilla tiene uno propio, se usa; si no, el
+      // título por defecto (titulo_seccion).
+      const tpp    = sec.data?.titulos_por_pagina || {};
+      const titulo = tpp[plantilla.id_plantilla] || sec.data?.titulo_seccion;
+      if (!Array.isArray(sec.data?.cards)) return [{ ...sec, data: { ...sec.data, titulo_seccion: titulo } }];
       const orig  = sec.data.cards;
       const cards = orig.filter(c => cardEnPlantilla(c, plantilla.id_plantilla));
       if (orig.length && !cards.length) return [];
-      return [{ ...sec, data: { ...sec.data, cards } }];
+      return [{ ...sec, data: { ...sec.data, cards, titulo_seccion: titulo } }];
     });
 
     // Para el CSS sumamos también los módulos INLINE de los contenedores (cards
@@ -603,7 +608,7 @@ async function hydrateBlogList() {
             </div>
             <h3 class="blog-row-title">${esc(p.titulo||'')}</h3>
             <p class="blog-row-excerpt">${esc(p.extracto||'')}</p>
-            <a href="/html/articulo?id=${esc(p.id)}" class="blog-row-link">Leer artículo completo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+            <a href="/html/articulo/?id=${esc(p.id)}" class="blog-row-link">Leer artículo completo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
           </div>
         </article>`).join('');
     });
@@ -659,7 +664,7 @@ async function hydrateBlogCards() {
             <span class="blog-tag"${(ds.tagBg || ds.tagColor) ? ` style="${st('background', ds.tagBg)}${st('color', ds.tagColor)}"` : ''}>${esc(p.categoria || '')}</span>
             <h3 class="blog-card-title"${ds.cardTitle ? ` style="color:${ds.cardTitle};"` : ''}>${esc(p.titulo || '')}</h3>
             <p class="blog-card-desc"${ds.cardText ? ` style="color:${ds.cardText};"` : ''}>${esc(p.extracto || '')}</p>
-            <a href="${p.id ? `/html/articulo?id=${esc(p.id)}` : '/html/blog'}" class="blog-card-link"${ds.linkColor ? ` style="color:${ds.linkColor};"` : ''}>Leer Artículo <i class="fa-solid fa-arrow-right fa-lg" style="color: var(--blue-500);" aria-hidden="true"></i></a>
+            <a href="${p.id ? `/html/articulo/?id=${esc(p.id)}` : '/html/blog'}" class="blog-card-link"${ds.linkColor ? ` style="color:${ds.linkColor};"` : ''}>Leer Artículo <i class="fa-solid fa-arrow-right fa-lg" style="color: var(--blue-500);" aria-hidden="true"></i></a>
           </div>
         </article>`;
       }).join('');
@@ -687,7 +692,7 @@ async function hydrateClientesTrack() {
         ? `<img src="${esc(c.imagen)}" alt="${esc(c.nombre)}">`
         : `<div class="logos-cell-text">${esc(c.nombre)}</div>`;
       if (c.estado_perfil === 'publicado') {
-        return `<a href="/html/cliente?id=${esc(c.id)}" class="logos-cell logos-cell-link" title="Ver caso: ${esc(c.nombre)}">${inner}</a>`;
+        return `<a href="/html/cliente/?id=${esc(c.id)}" class="logos-cell logos-cell-link" title="Ver caso: ${esc(c.nombre)}">${inner}</a>`;
       }
       return `<div class="logos-cell">${inner}</div>`;
     };
