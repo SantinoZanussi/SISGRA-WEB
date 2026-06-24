@@ -1,13 +1,14 @@
 {
   // Live Server: NO recargar las pestañas abiertas cuando se guardan datos.
-  // El admin escribe archivos .json en api/data/ al guardar; sin esto, Live Server
-  // recarga todas las pestañas (incluida la del sitio público), y las que están en
-  // segundo plano quedan en "pantalla en blanco" hasta que se las vuelve a enfocar.
-  // El sitio público igualmente se refresca solo al re-enfocar la pestaña
-  // (ver el listener visibilitychange en services/page-bootstrap.js).
-  // Los cambios de código (HTML/CSS/JS) siguen recargando normalmente.
+  // Sin esto, cada escritura del admin (JSON, imágenes, shells HTML de botones)
+  // dispara un reload completo que borra el estado del panel.
+  // Los cambios de código (HTML/CSS/JS) en carpetas no listadas siguen recargando.
   "liveServer.settings.ignoreFiles": [
     "**/*.json",
-    "api/data/**"
+    "api/data/**",
+    "img/**",
+    "html/btn-*/**",
+    "html/cliente/**",
+    "html/cliente-*/**"
   ]
 }

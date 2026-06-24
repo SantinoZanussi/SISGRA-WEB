@@ -1,7 +1,4 @@
-// Bridge entre los servicios ESM (api/ui/store/templates) y el script clásico
-// del panel: expone todo bajo window.__svc para que panel.js pueda usarlo.
-// También hace auto-login si hay token guardado en sessionStorage.
-
+// expone los servicios esm bajo window.__svc para el panel.js clásico
 import { apiGet, apiPut, apiPost, apiPatch, apiDelete } from '../api.js';
 import { showNotif, openModal, closeModal } from '../ui.js';
 import { setAuthToken } from '../store.js';
@@ -9,8 +6,7 @@ import { heroSectionToHeroJson, heroJsonToSectionData, saveTemplateToLive } from
 
 window.__svc = { apiGet, apiPut, apiPost, apiPatch, apiDelete, showNotif, openModal, closeModal, setAuthToken, heroSectionToHeroJson, heroJsonToSectionData, saveTemplateToLive };
 
-// Auto-login: if a session token is stored (e.g. after a Live Server reload),
-// restore the session without forcing the user to log in again.
+// restaura la sesion si hay token guardado (p.ej. tras un reload)
 const _storedToken = sessionStorage.getItem('sisgra_token');
 if(_storedToken){
   setAuthToken(_storedToken);

@@ -1,9 +1,6 @@
-// POPULATE
-// Renderiza los datos del state en los formularios del panel
 import { state } from './store.js';
 import { setVal } from './ui.js';
 
-// Dispatcher principal
 export function populatePanel(id) {
   switch (id) {
     case 'home':      populateHome();      break;
@@ -17,7 +14,6 @@ export function populatePanel(id) {
   }
 }
 
-// Home / Hero
 function populateHome() {
   const d = state.hero || {};
   const fields = [
@@ -25,7 +21,6 @@ function populateHome() {
     'boton_primario','boton_secundario',
     'stat1_numero','stat1_label','stat2_numero','stat2_label',
     'plantilla',
-    // Plantilla 2
     'p2_eyebrow','p2_titulo','p2_subtitulo','p2_descripcion',
     'p2_boton_primario','p2_boton_secundario',
     'p2_tag1','p2_tag2','p2_tag3',
@@ -36,14 +31,12 @@ function populateHome() {
   fields.forEach(f => setVal(`hero-${f}`, d[f]));
 }
 
-// Nosotros
 function populateNosotros() {
   const d = state.nosotros || {};
   ['eyebrow','titulo','descripcion','anio_fundacion','empleados','ciudad','imagen']
     .forEach(f => setVal(`nosotros-${f}`, d[f]));
 }
 
-// Clientes
 export function populateClientes() {
   setVal('clientes-carrusel_activo', state.clientes?.carrusel_activo);
   setVal('clientes-auto_scroll',     state.clientes?.auto_scroll);
@@ -65,7 +58,6 @@ export function populateClientes() {
   `).join('');
 }
 
-// Blog
 export function populateBlog() {
   setVal('blog-visible',        state.blog?.visible);
   setVal('blog-titulo_seccion', state.blog?.titulo_seccion || '');
@@ -92,7 +84,6 @@ export function populateBlog() {
     </div>
   `).join('');
 
-  // Actualiza el stat del dashboard
   const countEl = document.getElementById('dash-blog-count');
   const subEl   = document.getElementById('dash-blog-sub');
   if (countEl) countEl.textContent = posts.length;
@@ -102,7 +93,6 @@ export function populateBlog() {
   }
 }
 
-// Contacto
 function populateContacto() {
   const d = state.contacto || {};
   [
@@ -112,13 +102,11 @@ function populateContacto() {
   setVal('contacto-formulario_activo', d.formulario_activo);
 }
 
-// SEO
 function populateSEO() {
   const seo   = state.seo || {};
   const pages = ['home','cableado','fibra','seguridad','soporte','desarrollo'];
   const container = document.getElementById('seo-tabs-content');
 
-  // Solo renderiza si está vacío
   if (!container.innerHTML.trim()) {
     container.innerHTML = pages.map((p, i) => {
       const d = seo[p] || {};
@@ -148,7 +136,6 @@ function populateSEO() {
         </div>`;
     }).join('');
   } else {
-    // Si ya existe, solo actualiza los valores
     pages.forEach(p => {
       const d = seo[p] || {};
       setVal(`seo-${p}-title`, d.title || '');
@@ -157,7 +144,6 @@ function populateSEO() {
   }
 }
 
-// Páginas de servicio
 function populateServiceEditor(key) {
   const data      = state.paginas?.[key] || {};
   const container = document.getElementById('svc-editor-' + key);
@@ -201,7 +187,6 @@ function populateServiceEditor(key) {
   `;
 }
 
-// Utilidad
 function escHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')

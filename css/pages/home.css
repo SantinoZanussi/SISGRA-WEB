@@ -431,24 +431,24 @@ a.logos-cell:hover::after { opacity: 1; }
    SERVICES SECTION
 ================================================ */
 .services-section {
-  /* padding-top: 5rem; */
-  padding-bottom: 6rem;
+  /* padding-top: 5rem;
+  padding-bottom: 6rem; */
   background-color: var(--white);
 }
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
   .services-section {
-    /* padding-top: 8rem; */
+    padding-top: 8rem;
     padding-bottom: 10rem;
   }
 }
 
 @media (min-width: 1024px) {
   .services-section {
-    /* padding-top: 12rem; */
+    padding-top: 12rem;
     padding-bottom: 17rem;
   }
-}
+} */
 
 .services-header {
   display: flex;

@@ -25,7 +25,7 @@ export async function doLogin() {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
 
-    // Importamos init dinámicamente para evitar dependencias circulares
+    // import dinámico para evitar dependencias circulares
     const { initApp } = await import('./app.js');
     initApp();
   } catch (e) {

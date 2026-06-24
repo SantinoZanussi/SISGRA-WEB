@@ -1,4 +1,3 @@
-// Notificaciones
 export function showNotif(msg, type = 'success') {
   const n = document.getElementById('save-notif');
   n.className = `save-notif ${type}`;
@@ -8,7 +7,6 @@ export function showNotif(msg, type = 'success') {
   n._t = setTimeout(() => n.classList.remove('show'), 3500);
 }
 
-// Valor de input / textarea / checkbox
 export function setVal(id, val) {
   const el = document.getElementById(id);
   if (!el) return;
@@ -23,7 +21,6 @@ export function getVal(id) {
   return el.value;
 }
 
-// Modales
 export function openModal(id) {
   const el = document.getElementById(id);
   if (el) el.classList.add('open');

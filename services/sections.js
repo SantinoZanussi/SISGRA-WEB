@@ -1,8 +1,7 @@
 export const TIPOS_HTML = [];
 
 const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-// Quita una flecha (←/→) inicial del texto de un enlace "volver", para
-// reemplazarla por un icono de Font Awesome en el render.
+// quita la flecha inicial de un enlace "volver" (se reemplaza por un icono fa)
 const stripArrow = s => String(s ?? '').replace(/^\s*[←→]\s*/, '');
 const css = (props) => {
   const p = Object.entries(props).filter(([,v]) => v).map(([k,v]) => `${k}:${v}`);
@@ -15,14 +14,11 @@ let FIELD_COLORS = {};
 export function setEditMode(v) { EDIT_MODE = !!v; }
 export function setFieldColors(map) { FIELD_COLORS = map || {}; }
 
-// Registro de módulos del catálogo (id_modulo → módulo), para que un módulo
-// pueda RESOLVER y renderizar a otros por id (lo usa la "Grilla", que inyecta
-// módulos por referencia viva). Se setea antes de renderizar — en el bootstrap
-// público y en el editor — igual que setEditMode/setFieldColors.
+// registro id_modulo→módulo para que un módulo resuelva y renderice a otros por id
+// (lo usa la grilla, que inyecta módulos por referencia viva)
 let MODULE_REGISTRY = new Map();
 export function setModuleRegistry(mods) { MODULE_REGISTRY = indexarModulos(mods); }
-// Guarda de recursión: ids de Grillas que están en pleno render (evita ciclos /
-// que una Grilla se inyecte a sí misma).
+// guarda de recursión: grillas en pleno render, evita ciclos
 const GRILLA_RENDER_STACK = new Set();
 const fld = (name, value) => {
   const c = FIELD_COLORS[name];
@@ -237,7 +233,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  HERO CENTRADO — copia exacta de renderHeroP2
   'hero-centered': {
     label: 'Hero centrado',
     description: 'Hero centrado con métricas y tags',
@@ -322,8 +317,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  CLIENTES — copia exacta de la sección clientes del index actual
-  //  Estructura: <section class="logos-section">…<div class="logos-track">…
   clientes: {
     label: 'Clientes',
     description: 'Carrusel de logos de clientes',
@@ -378,7 +371,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  BLOG — copia exacta de la sección blog del index actual
   blog: {
     label: 'Blog / Noticias',
     description: 'Grid de tarjetas de artículos',
@@ -414,8 +406,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     render: (data, design) => {
       const d = { ...SECTIONS.blog.defaultData, ...data };
       const s = { ...SECTIONS.blog.defaultDesign, ...design };
-      // El grid se hidrata en vivo desde /api/data/blog (posts publicados).
-      // Los colores de diseño se pasan por data-* y los aplica hydrateBlogCards().
+      // el grid se hidrata en vivo desde /api/data/blog; los colores van por data-* y los aplica hydrateBlogCards()
       const dataAttrs = [
         `data-blog-cards`,
         `data-limit="3"`,
@@ -442,7 +433,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  SERVICIOS — copia exacta de la sección servicios del index actual
   services: {
     label: 'Cards',
     description: 'Grid de tarjetas de servicios',
@@ -478,15 +468,12 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     render: (data, design) => {
       const d = { ...SECTIONS.services.defaultData, ...data };
       const s = { ...SECTIONS.services.defaultDesign, ...design };
-      // `soloCard`: variante de una sola tarjeta insertada suelta en una plantilla
-      // → se renderiza SOLO la card, sin el encabezado (título) de la sección.
+      // soloCard: tarjeta suelta insertada en una plantilla, se renderiza sin el encabezado
       const header = d.soloCard ? '' : `
     <div class="services-header">
       <h2 class="services-title"${css({ color: s.sectionColor, 'font-size': s.titleSize })}>${fld('titulo_seccion', esc(d.titulo_seccion))}</h2>
     </div>`;
-      // Columnas dinámicas = cantidad de tarjetas del módulo (tope 3, mín 1).
-      // Así un módulo de 1 o 2 cards ocupa todo el ancho en vez de quedar fijo
-      // en 3 columnas (con huecos vacíos). Lo consume home.css vía --cards-cols.
+      // columnas = nº de cards (1-3); home.css lo lee vía --cards-cols
       const nCols = Math.min(3, Math.max(1, (d.cards || []).length));
       // ${header}
       return `
@@ -514,7 +501,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  NOSOTROS — copia exacta de la sección about del index actual
   about: {
     label: 'Nosotros',
     description: 'Sección "Sobre nosotros" con texto e imagen',
@@ -564,7 +550,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  CTA — copia de renderExtraSections cta del index actual
   cta: {
     label: 'Call to Action',
     description: 'Banda con título y botón de contacto',
@@ -656,8 +641,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  FORMULARIO — campos configurables desde el panel; los envíos se guardan
-  //  en el backend (contactos) hasta que se defina el endpoint de destino.
   formulario: {
     label: 'Formulario',
     description: 'Formulario personalizable. Los envíos quedan guardados para mandarse al endpoint que se configure.',
@@ -727,7 +710,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  SPACER
   spacer: {
     label: 'Espaciador',
     description: 'Espacio en blanco',
@@ -744,11 +726,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  FOOTER (index) — replica el look del footer-full de las otras páginas
-  //  (wordmark "SISGRA" + grid Servicios/Contacto/Mapa + copyright), pero con el
-  //  CTA "Solicite un presupuesto" + WhatsApp integrado en la banda del wordmark.
-  //  Estilos en un <style> acotado (clases .sgf-*) porque el index carga
-  //  layout_home.css y NO layout.css (donde viven las clases de footer-full).
+  // estilos inline (.sgf-*) porque el index carga layout_home.css y no layout.css
   footer: {
     label: 'Footer (index)',
     description: 'Pie del index: wordmark + CTA presupuesto/WhatsApp, y grid Servicios / Contacto / Mapa',
@@ -886,9 +864,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  MÓDULOS ESPECÍFICOS DE CABLEADO ESTRUCTURADO
-  //  Usan las clases reales de css/pages/cableado.css y css/layout.css
-
   'cableado-hero': {
     label: 'Hero Cableado',
     description: 'Hero principal de cableado: badge + título partido + grid (cards / dark-panel)',
@@ -994,9 +969,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  MÓDULOS ESPECÍFICOS DE FIBRA ÓPTICA
-  //  Usan las clases reales de css/pages/fibra_optica.css y css/layout.css
-
   'fibra-hero': {
     label: 'Hero Fibra Óptica',
     description: 'Hero de fibra: layout 2 cols (imagen+badge / texto+features)',
@@ -1082,8 +1054,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
 </section>`;
     },
   },
-
-  //  MÓDULOS ESPECÍFICOS DE SEGURIDAD ELECTRÓNICA
 
   'seguridad-hero': {
     label: 'Hero Seguridad',
@@ -1173,8 +1143,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
 </section>`;
     },
   },
-
-  //  MÓDULOS ESPECÍFICOS DE SOPORTE IT
 
   'soporte-hero': {
     label: 'Hero Soporte IT',
@@ -1289,8 +1257,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  MÓDULOS ESPECÍFICOS DE DESARROLLO DE SOFTWARE
-
   'desarrollo-hero': {
     label: 'Hero Desarrollo Software',
     description: 'Hero desarrollo: texto + code editor mock',
@@ -1394,8 +1360,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     },
   },
 
-  //  MÓDULOS BLOG (lista de artículos cargada dinámicamente)
-
   'blog-list': {
     label: 'Lista de artículos',
     description: 'Lista de artículos publicados (carga desde /api/data/blog)',
@@ -1450,8 +1414,6 @@ ${blCss ? `<style>${blCss}</style>` : ''}
 </section>`;
     },
   },
-
-  //  MÓDULOS ARTÍCULO (vista detalle)
 
   'articulo-header': {
     label: 'Header artículo',
@@ -1557,7 +1519,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     render: (data, design) => {
       const d = { ...SECTIONS['articulo-body'].defaultData, ...data };
       const s = { ...SECTIONS['articulo-body'].defaultDesign, ...design };
-      // contentHtml is INTENTIONALLY rendered as raw HTML (no escape) — editor users can paste rich content
+      // contentHtml se renderiza como html crudo a propósito (el editor permite pegar contenido rico)
       return `
 <main class="article-container"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl article-grid">
@@ -1580,9 +1542,6 @@ ${blCss ? `<style>${blCss}</style>` : ''}
 </main>`;
     },
   },
-
-  //  MÓDULOS CLIENTE (caso de éxito / perfil de cliente)
-  //  Diseño propio en css/pages/cliente.css (clases cl-*)
 
   'cliente-header': {
     label: 'Header de cliente',
@@ -1707,7 +1666,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     render: (data, design) => {
       const d = { ...SECTIONS['cliente-body'].defaultData, ...data };
       const s = { ...SECTIONS['cliente-body'].defaultDesign, ...design };
-      // contentHtml es HTML enriquecido (incluye imágenes) — se renderiza sin escapar
+      // contentHtml es html enriquecido (incluye imágenes), se renderiza sin escapar
       const fichaRows = [
         ['Empresa',   'empresa',   d.empresa],
         ['Sector',    'sector',    d.sector],
@@ -1739,10 +1698,6 @@ ${blCss ? `<style>${blCss}</style>` : ''}
 </main>`;
     },
   },
-
-  //  FOOTER COMPLETO (compartido por todas las páginas secundarias:
-  //  cableado, fibra, seguridad, soporte, desarrollo, blog, articulo)
-  //  Usa las clases reales de css/layout.css
 
   'footer-full': {
     label: 'Footer completo',
@@ -2019,28 +1974,25 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     },
   },
 
-  //  GRILLA DE CARACTERÍSTICAS — ícono + título + descripción (lista flexible)
-  // GRILLA — contenedor con encabezado (título + descripción) y, debajo, una
-  // lista de SLOTS que inyectan otros módulos por referencia viva (id_modulo),
-  // igual que se inyectan módulos en las plantillas. Las cards inyectadas se
-  // muestran "desnudas" (soloCard, sin su título de sección). Si no hay `modulos`,
-  // cae al render legacy de `features` (ícono+título+desc) para no romper datos
-  // viejos. La clave de tipo sigue siendo `feature-grid` por compatibilidad.
+  // contenedor con encabezado + slots que inyectan módulos por id (referencia viva)
+  // las cards inyectadas se muestran "desnudas" (soloCard); sin `modulos` cae al render legacy de `features`
+  // la clave de tipo sigue siendo `feature-grid` por compatibilidad
   'feature-grid': {
     label: 'Grilla',
     description: 'Encabezado (título + descripción) + módulos inyectados debajo (como un contenedor). Sin módulos, muestra una grilla de características con ícono.',
     icon: `<i class="fa-solid fa-grip"></i>`,
     validTipos: ['*'],
     defaultData: {
-      eyebrow: 'LO QUE INCLUYE',
-      titulo: 'Capacidades técnicas',
+      eyebrow: 'TITULO 2',
+      titulo: 'TITULO 1',
       intro: '',
       modulos: [],
-      features: [
-        { iconType: 'shield', titulo: 'Certificación bajo norma', desc: 'Trabajamos según estándares internacionales para garantizar calidad y escalabilidad.' },
-        { iconType: 'gear',   titulo: 'Soluciones a medida',      desc: 'Cada proyecto se diseña según las necesidades reales de su organización.' },
-        { iconType: 'check',  titulo: 'Resultados verificables',  desc: 'Entregamos documentación y mediciones de cada punto implementado.' },
-      ],
+      // features: [
+      //   { iconType: 'shield', titulo: 'Certificación bajo norma', desc: 'Trabajamos según estándares internacionales para garantizar calidad y escalabilidad.' },
+      //   { iconType: 'gear',   titulo: 'Soluciones a medida',      desc: 'Cada proyecto se diseña según las necesidades reales de su organización.' },
+      //   { iconType: 'check',  titulo: 'Resultados verificables',  desc: 'Entregamos documentación y mediciones de cada punto implementado.' },
+      // ],
+      features: [],
     },
     defaultDesign: { bg: '#ffffff', eyebrowColor: '', titleColor: '', textColor: '', accentColor: '', cardBg: '', cardBorderColor: '', paddingY: '', cols: '' },
     dataFields: [
@@ -2076,9 +2028,8 @@ ${blCss ? `<style>${blCss}</style>` : ''}
       };
       const icon = t => ICONS[t] || 'fa-circle-check';
 
-      // Encabezado: se arma PRIMERO (antes de renderizar hijos, que resetean
-      // FIELD_COLORS al pasar por renderModulo). Si la Grilla está inyectada "a
-      // secas" en otra (__bare), no muestra su propio encabezado.
+      // encabezado primero: los hijos resetean FIELD_COLORS al pasar por renderModulo
+      // si está inyectada a secas (__bare), no muestra su propio encabezado
       const headHtml = d.__bare ? '' : `
     <div class="sg-head">
       ${d.eyebrow ? `<p class="sg-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</p>` : ''}
@@ -2086,22 +2037,19 @@ ${blCss ? `<style>${blCss}</style>` : ''}
       ${d.intro ? `<p class="sg-intro">${fld('intro', esc(d.intro))}</p>` : ''}
     </div>`;
 
-      // MODO GRILLA (nuevo): slots de módulos inyectados por id (referencia viva).
+      // modo grilla: slots de módulos inyectados por id (referencia viva)
       const ids = Array.isArray(d.modulos) ? d.modulos.filter(x => x != null) : [];
       let bodyHtml, gridCss;
       if (ids.length) {
         const cols = Math.min(4, Math.max(1, Number(s.cols) || 1));
-        // Los hijos son referencias: se renderizan SIN modo edición (se editan en
-        // su propio módulo) y clonados (para no mutar el catálogo, ej: soloCard).
+        // hijos por referencia: se renderizan sin modo edición y clonados (no mutar el catálogo)
         const prevEdit = EDIT_MODE;
         const cells = ids.map(id => {
           const m = MODULE_REGISTRY.get(id);
           if (!m) return '';
           if (GRILLA_RENDER_STACK.has(id)) return '';   // ciclo: cortar
           const clone = JSON.parse(JSON.stringify(m));
-          // Se inyecta "a secas": cada módulo se renderiza SIN su propio título/
-          // encabezado (la Grilla aporta el título+descripción). __bare es la versión
-          // genérica de soloCard (que es el equivalente del módulo de cards).
+          // __bare: se renderiza sin su título/encabezado (versión genérica de soloCard)
           clone.data = { ...(clone.data || {}), __bare: true };
           if (clone.tipo === 'services') clone.data.soloCard = true;
           GRILLA_RENDER_STACK.add(id);
@@ -2116,7 +2064,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
 @media(max-width:980px){.sg-fgrid .sg-grid{grid-template-columns:1fr;}}`;
         bodyHtml = `<div class="sg-grid">${cells}</div>`;
       } else {
-        // MODO LEGACY: grilla de características inline (ícono + título + desc).
+        // modo legacy: grilla de características inline (ícono + título + desc)
         const features = Array.isArray(d.features) ? d.features : [];
         const want = Math.min(4, Math.max(2, Number(s.cols) || (features.length >= 4 ? 3 : features.length || 3)));
         gridCss = `.sg-fgrid .sg-grid{display:grid;grid-template-columns:repeat(${want},1fr);gap:1.25rem;}
@@ -2155,10 +2103,6 @@ ${gridCss}
     },
   },
 
-  //  ÍTEMS REUTILIZABLES (1 ítem = 1 módulo). Se renderizan "desnudos" (sin
-  //  encabezado de sección) para inyectarse dentro de una "Grilla".
-
-  //  CARACTERÍSTICA — una tarjeta ícono + título + descripción.
   'feature-item': {
     label: 'Característica',
     description: 'Una característica suelta (ícono + título + descripción) para inyectar en una Grilla.',
@@ -2206,7 +2150,6 @@ ${gridCss}
     },
   },
 
-  //  PREGUNTA FRECUENTE — un acordeón <details> suelto.
   'faq-item': {
     label: 'Pregunta frecuente',
     description: 'Una pregunta/respuesta suelta (acordeón) para inyectar en una Grilla.',
@@ -2251,8 +2194,7 @@ ${gridCss}
     },
   },
 
-  //  PASO DEL PROCESO — una tarjeta de paso suelta. El número se toma de un
-  //  contador CSS que la Grilla incrementa por celda (.grilla-cell).
+  // el número real lo pone un contador css de la grilla (.grilla-cell)
   'process-step-item': {
     label: 'Paso del proceso',
     description: 'Un paso suelto (número + título + descripción) para inyectar en una Grilla.',
@@ -2294,7 +2236,6 @@ ${gridCss}
     },
   },
 
-  //  PREGUNTAS FRECUENTES — acordeón nativo <details> (sin JS)
   'faq': {
     label: 'Preguntas frecuentes (legacy)',
     description: 'Acordeón de preguntas y respuestas (FAQ). Hasta 6 pares; los vacíos se ocultan.',
@@ -2376,8 +2317,7 @@ ${gridCss}
 
 };
 
-//  CAMPOS COMUNES — se agregan a todos los módulos automáticamente
-
+// campos de diseño comunes a todos los módulos
 Object.values(SECTIONS).forEach(sec => {
   sec.defaultDesign = sec.defaultDesign || {};
   Object.assign(sec.defaultDesign, { maxWidth: '', scale: '', marginTop: '', marginBottom: '', display: '' });
@@ -2390,9 +2330,6 @@ Object.values(SECTIONS).forEach(sec => {
   );
 });
 
-//  HELPERS
-
-// Envuelve el HTML de un módulo en un <div> con márgenes/display si el design lo pide.
 function wrapDesign(html, design) {
   const d = design || {};
   const s = [
@@ -2405,7 +2342,7 @@ function wrapDesign(html, design) {
   return s ? `<div style="${s}">${html}</div>` : html;
 }
 
-// Render de un módulo v2: { tipo, data, design }. Tolera el viejo `type` (v1).
+// render de un módulo v2; tolera el viejo `type` (v1)
 export function renderModulo(mod) {
   const tipo = mod.tipo || mod.type;
   const def = SECTIONS[tipo];
@@ -2416,12 +2353,12 @@ export function renderModulo(mod) {
   return out;
 }
 
-// Compat: render de una "sección" v1 ({ type, data, design }). Lo usa el editor actual.
+// compat: render de una sección v1; lo usa el editor actual
 export function renderSection(sec) {
   return renderModulo({ tipo: sec.type, data: sec.data, design: sec.design });
 }
 
-// Indexa el catálogo de módulos por id_modulo (acepta array o { modulos: [...] }).
+// indexa el catálogo por id_modulo (acepta array o { modulos: [...] })
 function indexarModulos(modulos) {
   const arr = Array.isArray(modulos) ? modulos : (modulos?.modulos || []);
   const map = new Map();
@@ -2429,9 +2366,8 @@ function indexarModulos(modulos) {
   return map;
 }
 
-// Resuelve plantilla.id_modulos contra el catálogo → array ordenado de módulos,
-// CLONADOS para poder inyectarles datos dinámicos por instancia (cliente/artículo)
-// sin mutar el catálogo. El orden y los repetidos de id_modulos se respetan.
+// resuelve plantilla.id_modulos contra el catálogo, clonando para no mutar el catálogo
+// y poder inyectar datos por instancia (cliente/artículo); respeta orden y repetidos
 export function resolverModulos(plantilla, modulos) {
   const byId = indexarModulos(modulos);
   return (plantilla?.id_modulos || [])
@@ -2445,14 +2381,11 @@ export function renderModulos(mods) {
   return mods.map(renderModulo).join('');
 }
 
-// Contenedores (filas de módulos)
-// Un contenedor es una fila con 1 a 3 módulos lado a lado. La plantilla guarda
-// `contenedores: [[id,id],[id],...]`. Acá reagrupamos la lista YA resuelta y
-// mutada (nav/cliente/artículo) en sus filas, casando por id_modulo y
-// consumiendo en orden — así toleramos módulos faltantes o ids repetidos.
+// reagrupa la lista plana ya resuelta en filas (contenedores: [[id,id],[id],...]),
+// casando por id_modulo y consumiendo en orden; tolera faltantes o ids repetidos
 export function agruparEnContenedores(secciones, contenedores) {
   if (!Array.isArray(contenedores) || !contenedores.length) {
-    // Sin contenedores (datos viejos): cada módulo en su propia fila 1x1.
+    // sin contenedores (datos viejos): cada módulo en su propia fila 1x1
     return (secciones || []).map(s => [s]);
   }
   const pool = (secciones || []).slice();
@@ -2460,21 +2393,19 @@ export function agruparEnContenedores(secciones, contenedores) {
   for (const cont of contenedores) {
     const grupo = [];
     for (const entry of (cont || [])) {
-      // Módulo INLINE (ej: una card suelta guardada dentro de la plantilla): se
-      // renderiza directo, sin buscarlo en el catálogo.
+      // módulo inline (card suelta en la plantilla): se renderiza directo, sin catálogo
       if (entry && typeof entry === 'object' && entry.inline) { grupo.push(entry); continue; }
       const idx = pool.findIndex(s => s && s.id_modulo === entry);
       if (idx !== -1) { grupo.push(pool[idx]); pool.splice(idx, 1); }
     }
     if (grupo.length) grupos.push(grupo);
   }
-  // Defensa: módulos que quedaron sin contenedor → filas 1x1 al final.
+  // módulos sin contenedor van como filas 1x1 al final
   pool.forEach(s => grupos.push([s]));
   return grupos;
 }
 
-// Render de un contenedor: 1 módulo = ancho completo (idéntico a antes);
-// 2 o 3 módulos = grid de columnas iguales (.cont-row colapsa a 1 col en mobile).
+// 1 módulo = ancho completo; 2-3 = grid de columnas iguales (colapsa a 1 en mobile)
 function renderContenedor(grupo) {
   if (!grupo.length) return '';
   if (grupo.length === 1) return renderModulo(grupo[0]);
@@ -2483,17 +2414,13 @@ function renderContenedor(grupo) {
   return `<div class="cont-row cont-row-${n}" style="grid-template-columns:repeat(${n},minmax(0,1fr));">${celdas}</div>`;
 }
 
-// Render de una plantilla respetando sus contenedores. `secciones` es la lista
-// plana ya resuelta; `contenedores` define el agrupado en filas.
 export function renderModulosAgrupados(secciones, contenedores) {
-  // No cortamos por `secciones` vacío: un contenedor puede tener SOLO módulos
-  // inline (cards sueltas guardadas en la plantilla, que no están en secciones).
+  // no cortamos por `secciones` vacío: un contenedor puede tener solo módulos inline
   const grupos = agruparEnContenedores(secciones, contenedores);
   if (!grupos.length) return '<div style="padding:4rem;text-align:center;color:#94a3b8;">Esta plantilla aún no tiene módulos.</div>';
   return grupos.map(renderContenedor).join('');
 }
 
-// Render completo de una plantilla v2: resuelve por id_modulos y arma el HTML.
 export function renderPlantilla(plantilla, modulos) {
   return renderModulos(resolverModulos(plantilla, modulos));
 }

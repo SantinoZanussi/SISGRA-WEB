@@ -48,7 +48,7 @@
       "size": 86671,
       "origen": "existente",
       "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-01T01:15:25.897Z"
+      "editado_en": "2026-06-24T17:04:02.486Z"
     },
     {
       "id": "img-e25fa458-964f-4c3f-a8c1-8c6fc62a6569",
@@ -173,6 +173,71 @@
       "etiquetas": [],
       "creado_en": "2026-06-20T22:48:08.099Z",
       "editado_en": "2026-06-20T22:48:22.085Z"
+    },
+    {
+      "id": "img-963dcac8-8aee-406f-b63f-eab2928a1d5f",
+      "nombre": "programacion",
+      "filename": "programacion.png",
+      "path": "/img/programacion.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 1667983,
+      "origen": "subida",
+      "etiquetas": [],
+      "creado_en": "2026-06-24T17:07:36.871Z",
+      "editado_en": "2026-06-24T17:12:31.943Z"
+    },
+    {
+      "id": "img-6f4707c0-5ed6-40e6-a067-ee38e8e10515",
+      "nombre": "cámaras",
+      "filename": "camaras.png",
+      "path": "/img/camaras.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 2027780,
+      "origen": "subida",
+      "etiquetas": [],
+      "creado_en": "2026-06-24T17:11:57.290Z",
+      "editado_en": "2026-06-24T17:12:31.384Z"
+    },
+    {
+      "id": "img-56686d0f-a574-4255-8ec2-51ffd024aeff",
+      "nombre": "medición",
+      "filename": "medicion.png",
+      "path": "/img/medicion.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 1959886,
+      "origen": "subida",
+      "etiquetas": [],
+      "creado_en": "2026-06-24T17:15:28.539Z",
+      "editado_en": "2026-06-24T17:15:42.740Z"
+    },
+    {
+      "id": "img-c02f6b17-a161-4304-91bb-e951f86654e7",
+      "nombre": "instalación",
+      "filename": "instalacion.png",
+      "path": "/img/instalacion.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 2144404,
+      "origen": "subida",
+      "etiquetas": [],
+      "creado_en": "2026-06-24T17:25:38.112Z",
+      "editado_en": "2026-06-24T17:35:46.859Z"
+    },
+    {
+      "id": "img-10343b25-70ce-49d1-8d68-13e7d097333e",
+      "nombre": "soporte",
+      "filename": "soporte.png",
+      "path": "/img/soporte.png",
+      "locked": true,
+      "mime": "image/png",
+      "size": 2060431,
+      "origen": "subida",
+      "etiquetas": [],
+      "creado_en": "2026-06-24T17:40:33.740Z",
+      "editado_en": "2026-06-24T17:40:48.887Z"
     }
   ],
   "labels": [

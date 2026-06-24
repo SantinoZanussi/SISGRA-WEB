@@ -1,10 +1,5 @@
-// Selector modal de imágenes (global). Reemplaza pegar rutas a mano: abre un
-// popup con toda la galería + el mismo buscador/filtros de la sección Imágenes,
-// y permite además pegar una URL externa.
-//
-// Uso:  const ruta = await window.__imgPicker.open({ current, allowUrl });
-//       (resuelve con la ruta elegida, o null si se cancela)
-
+// selector modal de imágenes (window.__imgPicker.open): galería + filtros + url externa
+// resuelve con la ruta elegida, o null si se cancela
 import { fetchAssets, matchAsset, indexLabels, tagDotsHTML, createFilterBar, escAttr } from './asset-shared.js';
 
 const S = { assets: [], labelIndex: {}, resolve: null, filterBar: null, current: '' };
@@ -70,11 +65,9 @@ function ensureModal() {
     </div>`;
   document.body.appendChild(ov);
 
-  // Montar la barra de filtros
   S.filterBar = createFilterBar({ onChange: renderGrid });
   ov.querySelector('#imgpicker-filters').appendChild(S.filterBar.el);
 
-  // Cierres
   ov.addEventListener('click', e => { if (e.target === ov) close(null); });
   ov.querySelector('#imgpicker-close').addEventListener('click', () => close(null));
   ov.querySelector('#imgpicker-cancel').addEventListener('click', () => close(null));
@@ -96,7 +89,6 @@ async function open({ current = '', allowUrl = true } = {}) {
   const urlRow = ov.querySelector('#imgpicker-url').parentElement;
   urlRow.style.display = allowUrl ? 'flex' : 'none';
   const urlInput = ov.querySelector('#imgpicker-url');
-  // Si la ruta actual no está en la galería, mostrarla como URL externa
   urlInput.value = '';
   S.filterBar.reset();
 

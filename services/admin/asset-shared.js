@@ -1,14 +1,10 @@
-// Lógica compartida de la galería de imágenes: carga de assets+etiquetas,
-// filtrado tipo Finder (texto + categorías + colores) y una barra de filtros
-// reutilizable. La usan tanto la sección "Imágenes" (assets.js) como el
-// selector modal de imágenes (image-picker.js).
-
+// galería compartida (la usan assets.js y image-picker.js): carga de assets+etiquetas,
+// filtrado tipo finder y una barra de filtros reutilizable
 import { apiGet } from '../api.js';
 
 export const escAttr = s => String(s ?? '')
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 
-// Grupos de etiquetas y su orden/etiqueta visible
 export const GRUPOS = [
   { key: 'color',     label: 'Colores' },
   { key: 'modulo',    label: 'Módulos' },
@@ -17,18 +13,17 @@ export const GRUPOS = [
 ];
 export const GRUPO_NOMBRES = Object.fromEntries(GRUPOS.map(g => [g.key, g.label]));
 
-// GET /api/assets → { assets, labels }
+// GET /api/assets devuelve { assets, labels }
 export async function fetchAssets() {
   const res = await apiGet('/assets');
   return { assets: res.assets || [], labels: res.labels || [] };
 }
 
-// Índice id → label
 export function indexLabels(labels) {
   return Object.fromEntries((labels || []).map(l => [l.id, l]));
 }
 
-// Filtro puro: ¿el asset pasa los filtros activos? (texto + etiquetas en AND)
+// ¿el asset pasa los filtros? (texto + etiquetas en and)
 export function matchAsset(asset, filters) {
   const text = (filters?.text || '').trim().toLowerCase();
   if (text) {
@@ -43,7 +38,6 @@ export function matchAsset(asset, filters) {
   return true;
 }
 
-// Puntitos de color de las etiquetas asignadas a un asset (para las tarjetas)
 export function tagDotsHTML(asset, labelIndex) {
   const tags = (asset.etiquetas || []).map(id => labelIndex[id]).filter(Boolean);
   if (!tags.length) return '';
@@ -53,10 +47,8 @@ export function tagDotsHTML(asset, labelIndex) {
   }</div>`;
 }
 
-// Barra de filtros reutilizable
-// createFilterBar({ onChange }) → { el, render(labels), getFilters(), reset() }
-// `el` es un contenedor que contiene un buscador de texto + chips agrupados
-// (colores como puntos, categorías como pills). Cada cambio dispara onChange().
+// barra de filtros reutilizable: buscador de texto + chips agrupados (colores/categorías)
+// cada cambio dispara onChange(filters)
 export function createFilterBar({ onChange, placeholder = 'Buscar imágenes…' } = {}) {
   const filters = { text: '', labelIds: new Set() };
   let labels = [];

@@ -7,10 +7,9 @@ import { doLogin, doLogout } from './auth.js';
 import { saveCliente, editCliente, deleteCliente, nuevoCliente } from './clientes.js';
 import { saveBlog, editPost, deletePost, nuevoBlog } from './blog.js';
 
-// Exponer funciones que se llaman desde innerHTML (onclick=)
+// se llaman desde los onclick= del innerHTML
 window.__admin = { editCliente, deleteCliente, editPost, deletePost };
 
-// Nombres de paneles
 const PANEL_NAMES = {
   dashboard:    'Dashboard',
   home:         'Inicio — Hero',
@@ -26,7 +25,6 @@ const PANEL_NAMES = {
   seo:          'SEO & Meta',
 };
 
-// Navegación
 function showPanel(id) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
@@ -34,7 +32,6 @@ function showPanel(id) {
   const panel = document.getElementById('panel-' + id);
   if (panel) panel.classList.add('active');
 
-  // Marcar sidebar activo: busca el elemento con data-panel
   const sideEl = document.querySelector(`.sidebar-item[data-panel="${id}"]`);
   if (sideEl) sideEl.classList.add('active');
 
@@ -43,7 +40,6 @@ function showPanel(id) {
   populatePanel(id);
 }
 
-// Inicialización
 export async function initApp() {
   setApiStatus('loading');
   document.getElementById('dash-date').textContent =
@@ -104,43 +100,35 @@ function renderDashboard() {
   if (clientesEl) clientesEl.textContent = state.clientes?.clientes?.length || 0;
 }
 
-// Registrar eventos
 function bindEvents() {
-  // Auth
   document.getElementById('login-btn').addEventListener('click', doLogin);
   document.getElementById('l-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
   document.getElementById('logout-btn').addEventListener('click', doLogout);
 
-  // Guardar
   document.getElementById('btn-guardar').addEventListener('click', saveCurrentPanel);
 
-  // Sidebar: todos los .sidebar-item
   document.querySelectorAll('.sidebar-item').forEach(item => {
     item.addEventListener('click', () => showPanel(item.dataset.panel));
   });
 
-  // Clientes
   document.getElementById('abrir-modal-cliente').addEventListener('click', nuevoCliente);
   document.getElementById('guardar-cliente-btn').addEventListener('click', saveCliente);
 
-  // Cerrar modal clientes (hay 2 botones con mismo id → usamos querySelectorAll)
+  // 2 botones con el mismo id, por eso querySelectorAll
   document.querySelectorAll('#cerrar-modal-cliente').forEach(b =>
     b.addEventListener('click', () => closeModal('modal-cliente'))
   );
 
-  // Blog
   document.getElementById('abrir-modal-blog').addEventListener('click', nuevoBlog);
   document.getElementById('guardar-blog').addEventListener('click', saveBlog);
   document.querySelectorAll('#cerrar-modal-blog').forEach(b =>
     b.addEventListener('click', () => closeModal('modal-blog'))
   );
 
-  // Accesos rápidos del dashboard
   document.getElementById('nuevo-post').addEventListener('click',    () => { showPanel('blog');     nuevoBlog(); });
   document.getElementById('nuevo-cliente').addEventListener('click', () => { showPanel('clientes'); nuevoCliente(); });
   document.getElementById('editar-hero').addEventListener('click',   () => showPanel('home'));
 
-  // Rich editor
   const richCommands = ['bold','italic','underline','insertUnorderedList'];
   richCommands.forEach(cmd => {
     const btn = document.getElementById(cmd);
@@ -154,7 +142,6 @@ function bindEvents() {
   if (fmtH2) fmtH2.addEventListener('click', () => document.execCommand('formatBlock', false, 'h2'));
   if (fmtP)  fmtP.addEventListener('click',  () => document.execCommand('formatBlock', false, 'p'));
 
-  // SEO tabs
   const seoPages = ['home','cableado','fibra','seguridad','soporte','desarrollo'];
   seoPages.forEach(p => {
     const btn = document.getElementById(`boton-seo-${p}`);
@@ -169,18 +156,15 @@ function bindEvents() {
     });
   });
 
-  // Panel hero: preview de plantilla
   document.addEventListener('change', e => {
     if (e.target.id === 'hero-plantilla') updateHeroPreviewHint(e.target.value);
   });
 
-  // Click fuera de modal cierra
   document.querySelectorAll('.modal-overlay').forEach(o => {
     o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
   });
 }
 
-// Preview hint de plantilla hero
 function updateHeroPreviewHint(val) {
   const p1 = document.getElementById('hero-plantilla-1-fields');
   const p2 = document.getElementById('hero-plantilla-2-fields');
@@ -188,10 +172,9 @@ function updateHeroPreviewHint(val) {
   if (p2) p2.style.display = val === '2' ? 'block' : 'none';
 }
 
-// Arranque
 bindEvents();
 
-// Auto-login si hay token guardado en sessionStorage
+// auto-login si hay token guardado
 import { authToken } from './store.js';
 if (authToken) {
   document.getElementById('login-screen').style.display = 'none';

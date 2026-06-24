@@ -78,8 +78,8 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-04T16:50:42.578Z",
-      "id_pagina": 1
+      "editado_en": "2026-06-24T16:58:45.497Z",
+      "id_pagina": "all"
     },
     {
       "id_modulo": 2,
@@ -270,7 +270,7 @@
               "imagen": ""
             },
             "id_pagina": [
-              1
+              6
             ]
           },
           {
@@ -287,7 +287,6 @@
               "imagen": ""
             },
             "id_pagina": [
-              1,
               10
             ]
           }
@@ -312,7 +311,7 @@
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-23T18:37:35.715Z",
+      "editado_en": "2026-06-24T16:48:11.481Z",
       "id_pagina": "all"
     },
     {
@@ -1180,146 +1179,6 @@
       "editado_en": "2026-06-20T22:27:30.302Z"
     },
     {
-      "id_modulo": 65,
-      "tipo": "faq",
-      "nombre": "Cableado — FAQ",
-      "id_pagina": [
-        4
-      ],
-      "data": {
-        "eyebrow": "PREGUNTAS FRECUENTES",
-        "titulo": "Resolvemos tus dudas",
-        "q1": "¿Por qué elegir Categoría 8 para mi planta industrial?",
-        "a1": "Permite anchos de banda de 40 Gbps y latencias menores a 1 ms, eliminando cuellos de botella en procesos automatizados.",
-        "q2": "¿Qué estándares de precisión garantizan en sus testeos?",
-        "a2": "Cumplimos con la norma ANSI/TIA-1152-A (Nivel 2G) y la norma internacional IEC 61935-1 Ed. 5.",
-        "q3": "¿Entregan reportes detallados de la instalación?",
-        "a3": "Sí: nuestro instrumental permite el almacenamiento y reporte gráfico de hasta 5.000 pruebas técnicas detalladas.",
-        "q4": "",
-        "a4": "",
-        "q5": "",
-        "a5": "",
-        "q6": "",
-        "a6": ""
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T22:27:30.302Z",
-      "editado_en": "2026-06-20T22:27:30.302Z"
-    },
-    {
-      "id_modulo": 67,
-      "tipo": "faq",
-      "nombre": "Fibra — FAQ",
-      "id_pagina": [
-        5
-      ],
-      "data": {
-        "eyebrow": "PREGUNTAS FRECUENTES",
-        "titulo": "Resolvemos tus dudas",
-        "q1": "¿Qué ventaja tiene la fibra en entornos con maquinaria eléctrica?",
-        "a1": "Ofrece inmunidad total a interferencias electromagnéticas, garantizando la pureza de la señal de datos.",
-        "q2": "¿Cómo garantizan la calidad de los empalmes?",
-        "a2": "Usamos tecnología de fusión por núcleo y conectorización de precisión bajo estándares de ingeniería de campo.",
-        "q3": "¿Qué sucede si un camión corta un tendido aéreo?",
-        "a3": "Contamos con la división urgenciasfibraoptica.com.ar, dedicada exclusivamente a atender cortes de alta urgencia.",
-        "q4": "",
-        "a4": "",
-        "q5": "",
-        "a5": "",
-        "q6": "",
-        "a6": ""
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T22:27:30.302Z",
-      "editado_en": "2026-06-20T22:27:30.302Z"
-    },
-    {
-      "id_modulo": 69,
-      "tipo": "faq",
-      "nombre": "Seguridad — FAQ",
-      "id_pagina": [
-        6
-      ],
-      "data": {
-        "eyebrow": "PREGUNTAS FRECUENTES",
-        "titulo": "Resolvemos tus dudas",
-        "q1": "¿Sus sistemas de acceso pueden manejar múltiples sedes?",
-        "a1": "Sí: están diseñados como sistemas corporativos en red, capaces de coordinar miles de puntos de acceso seguros.",
-        "q2": "¿Las cámaras detectan comportamientos automáticamente?",
-        "a2": "Implementamos analíticas de video sobre transmisiones IP para identificar eventos sin intervención humana constante.",
-        "q3": "¿Qué pasa con la seguridad si falla el software?",
-        "a3": "Diseñamos las redes sobre infraestructuras críticas certificadas para garantizar resiliencia y operación continua.",
-        "q4": "",
-        "a4": "",
-        "q5": "",
-        "a5": "",
-        "q6": "",
-        "a6": ""
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T22:27:30.302Z",
-      "editado_en": "2026-06-20T22:27:30.302Z"
-    },
-    {
-      "id_modulo": 71,
-      "tipo": "faq",
-      "nombre": "Soporte — FAQ",
-      "id_pagina": [
-        7
-      ],
-      "data": {
-        "eyebrow": "PREGUNTAS FRECUENTES",
-        "titulo": "Resolvemos tus dudas",
-        "q1": "¿Cuál es su tiempo de respuesta ante una caída del servidor?",
-        "a1": "Garantizamos tiempos de respuesta menores a 45 minutos para incidencias críticas.",
-        "q2": "¿Pueden actuar como mi departamento de sistemas?",
-        "a2": "Sí: funcionamos como socio de outsourcing directo, replicando modelos de éxito para asegurar la continuidad del negocio.",
-        "q3": "¿Cómo aseguran que mis sistemas no se detengan?",
-        "a3": "Ofrecemos Acuerdos de Nivel de Servicio (SLA) que garantizan un 99.9% de disponibilidad.",
-        "q4": "",
-        "a4": "",
-        "q5": "",
-        "a5": "",
-        "q6": "",
-        "a6": ""
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T22:27:30.302Z",
-      "editado_en": "2026-06-20T22:27:30.302Z"
-    },
-    {
-      "id_modulo": 73,
-      "tipo": "faq",
-      "nombre": "Desarrollo — FAQ",
-      "id_pagina": [
-        8
-      ],
-      "data": {
-        "eyebrow": "PREGUNTAS FRECUENTES",
-        "titulo": "Resolvemos tus dudas",
-        "q1": "¿El software puede leer datos de mis máquinas de planta?",
-        "a1": "Sí: nos especializamos en conectar el hardware físico (PLCs) con las capas lógicas de software.",
-        "q2": "¿Sus sistemas ayudan a eliminar el uso de papel?",
-        "a2": "Absolutamente: automatizamos los procesos administrativos y eliminamos los flujos manuales.",
-        "q3": "¿Desarrollan aplicaciones web integradas a la nube?",
-        "a3": "Sí: usamos lenguajes como Python y Ruby para orquestar datos en plataformas web modernas y escalables.",
-        "q4": "",
-        "a4": "",
-        "q5": "",
-        "a5": "",
-        "q6": "",
-        "a6": ""
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T22:27:30.302Z",
-      "editado_en": "2026-06-20T22:27:30.302Z"
-    },
-    {
       "id_modulo": 75,
       "tipo": "articulo-header",
       "nombre": "Header de artículo",
@@ -1379,33 +1238,6 @@
       "editado_en": "2026-06-20T23:03:42.074Z"
     },
     {
-      "id_modulo": 77,
-      "tipo": "process-steps",
-      "nombre": "Proceso — Cableado",
-      "id_pagina": [
-        4
-      ],
-      "data": {
-        "eyebrow": "CÓMO TRABAJAMOS",
-        "titulo": "Un proceso probado de punta a punta",
-        "intro": "Cada proyecto atraviesa etapas claras para garantizar resultados certificados, sin sorpresas y con soporte posterior.",
-        "paso1_titulo": "Relevamiento",
-        "paso1_desc": "Visitamos y analizamos su infraestructura actual para entender necesidades, riesgos y objetivos del proyecto.",
-        "paso2_titulo": "Diseño e ingeniería",
-        "paso2_desc": "Proyectamos la solución bajo normas internacionales, buscando la mejor relación costo-beneficio.",
-        "paso3_titulo": "Ejecución certificada",
-        "paso3_desc": "Implementamos con técnicos especializados y certificamos cada punto con instrumental de medición profesional.",
-        "paso4_titulo": "Soporte y mantenimiento",
-        "paso4_desc": "Acompañamos con monitoreo, mantenimiento preventivo y respuesta rápida ante incidencias.",
-        "paso5_titulo": "",
-        "paso5_desc": ""
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T23:03:42.074Z",
-      "editado_en": "2026-06-20T23:03:42.074Z"
-    },
-    {
       "id_modulo": 78,
       "tipo": "cta",
       "nombre": "CTA — Cableado",
@@ -1444,33 +1276,6 @@
         "stat3_label": "Disponibilidad garantizada",
         "stat4_num": "< 45 min",
         "stat4_label": "Respuesta ante incidencias"
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T23:03:42.074Z",
-      "editado_en": "2026-06-20T23:03:42.074Z"
-    },
-    {
-      "id_modulo": 80,
-      "tipo": "process-steps",
-      "nombre": "Proceso — Fibra Óptica",
-      "id_pagina": [
-        5
-      ],
-      "data": {
-        "eyebrow": "CÓMO TRABAJAMOS",
-        "titulo": "Un proceso probado de punta a punta",
-        "intro": "Cada proyecto atraviesa etapas claras para garantizar resultados certificados, sin sorpresas y con soporte posterior.",
-        "paso1_titulo": "Relevamiento",
-        "paso1_desc": "Visitamos y analizamos su infraestructura actual para entender necesidades, riesgos y objetivos del proyecto.",
-        "paso2_titulo": "Diseño e ingeniería",
-        "paso2_desc": "Proyectamos la solución bajo normas internacionales, buscando la mejor relación costo-beneficio.",
-        "paso3_titulo": "Ejecución certificada",
-        "paso3_desc": "Implementamos con técnicos especializados y certificamos cada punto con instrumental de medición profesional.",
-        "paso4_titulo": "Soporte y mantenimiento",
-        "paso4_desc": "Acompañamos con monitoreo, mantenimiento preventivo y respuesta rápida ante incidencias.",
-        "paso5_titulo": "",
-        "paso5_desc": ""
       },
       "design": {},
       "alerta": false,
@@ -1523,33 +1328,6 @@
       "editado_en": "2026-06-20T23:03:42.074Z"
     },
     {
-      "id_modulo": 83,
-      "tipo": "process-steps",
-      "nombre": "Proceso — Seguridad",
-      "id_pagina": [
-        6
-      ],
-      "data": {
-        "eyebrow": "CÓMO TRABAJAMOS",
-        "titulo": "Un proceso probado de punta a punta",
-        "intro": "Cada proyecto atraviesa etapas claras para garantizar resultados certificados, sin sorpresas y con soporte posterior.",
-        "paso1_titulo": "Relevamiento",
-        "paso1_desc": "Visitamos y analizamos su infraestructura actual para entender necesidades, riesgos y objetivos del proyecto.",
-        "paso2_titulo": "Diseño e ingeniería",
-        "paso2_desc": "Proyectamos la solución bajo normas internacionales, buscando la mejor relación costo-beneficio.",
-        "paso3_titulo": "Ejecución certificada",
-        "paso3_desc": "Implementamos con técnicos especializados y certificamos cada punto con instrumental de medición profesional.",
-        "paso4_titulo": "Soporte y mantenimiento",
-        "paso4_desc": "Acompañamos con monitoreo, mantenimiento preventivo y respuesta rápida ante incidencias.",
-        "paso5_titulo": "",
-        "paso5_desc": ""
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T23:03:42.074Z",
-      "editado_en": "2026-06-20T23:03:42.074Z"
-    },
-    {
       "id_modulo": 84,
       "tipo": "cta",
       "nombre": "CTA — Seguridad",
@@ -1595,33 +1373,6 @@
       "editado_en": "2026-06-20T23:03:42.074Z"
     },
     {
-      "id_modulo": 86,
-      "tipo": "process-steps",
-      "nombre": "Proceso — Soporte IT",
-      "id_pagina": [
-        7
-      ],
-      "data": {
-        "eyebrow": "CÓMO TRABAJAMOS",
-        "titulo": "Un proceso probado de punta a punta",
-        "intro": "Cada proyecto atraviesa etapas claras para garantizar resultados certificados, sin sorpresas y con soporte posterior.",
-        "paso1_titulo": "Relevamiento",
-        "paso1_desc": "Visitamos y analizamos su infraestructura actual para entender necesidades, riesgos y objetivos del proyecto.",
-        "paso2_titulo": "Diseño e ingeniería",
-        "paso2_desc": "Proyectamos la solución bajo normas internacionales, buscando la mejor relación costo-beneficio.",
-        "paso3_titulo": "Ejecución certificada",
-        "paso3_desc": "Implementamos con técnicos especializados y certificamos cada punto con instrumental de medición profesional.",
-        "paso4_titulo": "Soporte y mantenimiento",
-        "paso4_desc": "Acompañamos con monitoreo, mantenimiento preventivo y respuesta rápida ante incidencias.",
-        "paso5_titulo": "",
-        "paso5_desc": ""
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T23:03:42.074Z",
-      "editado_en": "2026-06-20T23:03:42.074Z"
-    },
-    {
       "id_modulo": 87,
       "tipo": "cta",
       "nombre": "CTA — Soporte IT",
@@ -1660,33 +1411,6 @@
         "stat3_label": "Disponibilidad garantizada",
         "stat4_num": "< 45 min",
         "stat4_label": "Respuesta ante incidencias"
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T23:03:42.074Z",
-      "editado_en": "2026-06-20T23:03:42.074Z"
-    },
-    {
-      "id_modulo": 89,
-      "tipo": "process-steps",
-      "nombre": "Proceso — Desarrollo",
-      "id_pagina": [
-        8
-      ],
-      "data": {
-        "eyebrow": "CÓMO TRABAJAMOS",
-        "titulo": "Un proceso probado de punta a punta",
-        "intro": "Cada proyecto atraviesa etapas claras para garantizar resultados certificados, sin sorpresas y con soporte posterior.",
-        "paso1_titulo": "Relevamiento",
-        "paso1_desc": "Visitamos y analizamos su infraestructura actual para entender necesidades, riesgos y objetivos del proyecto.",
-        "paso2_titulo": "Diseño e ingeniería",
-        "paso2_desc": "Proyectamos la solución bajo normas internacionales, buscando la mejor relación costo-beneficio.",
-        "paso3_titulo": "Ejecución certificada",
-        "paso3_desc": "Implementamos con técnicos especializados y certificamos cada punto con instrumental de medición profesional.",
-        "paso4_titulo": "Soporte y mantenimiento",
-        "paso4_desc": "Acompañamos con monitoreo, mantenimiento preventivo y respuesta rápida ante incidencias.",
-        "paso5_titulo": "",
-        "paso5_desc": ""
       },
       "design": {},
       "alerta": false,
@@ -1754,14 +1478,24 @@
       "id_modulo": 93,
       "tipo": "feature-grid",
       "nombre": "Grilla test",
-      "id_pagina": "all",
+      "id_pagina": [
+        1
+      ],
       "data": {
         "eyebrow": "LO QUE INCLUYE",
         "titulo": "Capacidades técnicas",
         "intro": "",
         "modulos": [
+          7,
+          45,
+          96,
+          97,
+          98,
+          99,
+          43,
           95,
-          7
+          100,
+          101
         ],
         "features": [
           {
@@ -1799,15 +1533,15 @@
       },
       "alerta": false,
       "creado_en": "2026-06-24T11:59:41.439Z",
-      "editado_en": "2026-06-24T12:20:52.619Z"
+      "editado_en": "2026-06-24T17:22:51.869Z"
     },
     {
       "id_modulo": 94,
       "tipo": "feature-item",
-      "nombre": "Característica",
-      "id_pagina": null,
+      "nombre": "Característica 1",
+      "id_pagina": "all",
       "data": {
-        "iconType": "check",
+        "iconType": "fa-server",
         "titulo": "Nueva característica",
         "desc": "Descripción de la característica."
       },
@@ -1825,13 +1559,171 @@
       },
       "alerta": false,
       "creado_en": "2026-06-24T12:05:22.912Z",
-      "editado_en": "2026-06-24T12:05:22.912Z"
+      "editado_en": "2026-06-24T16:20:10.212Z"
     },
     {
       "id_modulo": 95,
       "tipo": "faq-item",
-      "nombre": "Pregunta frecuente",
+      "nombre": "Pregunta 2",
+      "id_pagina": [
+        1
+      ],
+      "data": {
+        "pregunta": "¿Nueva pregunta? 2",
+        "respuesta": "Respuesta a la pregunta."
+      },
+      "design": {
+        "itemBg": "",
+        "borderColor": "",
+        "accentColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-24T12:05:29.319Z",
+      "editado_en": "2026-06-24T16:45:40.306Z"
+    },
+    {
+      "id_modulo": 96,
+      "tipo": "process-step-item",
+      "nombre": "Paso del proceso1",
+      "id_pagina": [
+        2
+      ],
+      "data": {
+        "numero": "01",
+        "titulo": "Nuevo paso",
+        "desc": "Descripción del paso."
+      },
+      "design": {
+        "cardBg": "",
+        "accentColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-24T12:05:36.934Z",
+      "editado_en": "2026-06-24T17:24:48.383Z"
+    },
+    {
+      "id_modulo": 97,
+      "tipo": "process-step-item",
+      "nombre": "Paso del proceso2",
       "id_pagina": "all",
+      "data": {
+        "numero": "02",
+        "titulo": "Nuevo paso",
+        "desc": "Descripción del paso."
+      },
+      "design": {
+        "cardBg": "",
+        "accentColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-24T12:05:59.892Z",
+      "editado_en": "2026-06-24T16:23:18.521Z"
+    },
+    {
+      "id_modulo": 98,
+      "tipo": "process-step-item",
+      "nombre": "Paso del proceso3",
+      "id_pagina": "all",
+      "data": {
+        "numero": "03",
+        "titulo": "Nuevo paso",
+        "desc": "Descripción del paso."
+      },
+      "design": {
+        "cardBg": "",
+        "accentColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-24T16:17:53.291Z",
+      "editado_en": "2026-06-24T16:23:03.112Z"
+    },
+    {
+      "id_modulo": 99,
+      "tipo": "process-step-item",
+      "nombre": "Paso del proceso4",
+      "id_pagina": "all",
+      "data": {
+        "numero": "04",
+        "titulo": "Nuevo paso",
+        "desc": "Descripción del paso."
+      },
+      "design": {
+        "cardBg": "",
+        "accentColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-24T16:18:01.425Z",
+      "editado_en": "2026-06-24T16:22:23.326Z"
+    },
+    {
+      "id_modulo": 100,
+      "tipo": "faq-item",
+      "nombre": "Pregunta 1",
+      "id_pagina": [
+        1
+      ],
+      "data": {
+        "pregunta": "¿Nueva pregunta? 1",
+        "respuesta": "Respuesta a la pregunta."
+      },
+      "design": {
+        "itemBg": "",
+        "borderColor": "",
+        "accentColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-24T16:18:10.187Z",
+      "editado_en": "2026-06-24T16:45:47.865Z"
+    },
+    {
+      "id_modulo": 101,
+      "tipo": "faq-item",
+      "nombre": "Pregunta 3",
+      "id_pagina": [
+        12
+      ],
       "data": {
         "pregunta": "¿Nueva pregunta?",
         "respuesta": "Respuesta a la pregunta."
@@ -1849,20 +1741,22 @@
         "display": ""
       },
       "alerta": false,
-      "creado_en": "2026-06-24T12:05:29.319Z",
-      "editado_en": "2026-06-24T12:09:05.490Z"
+      "creado_en": "2026-06-24T16:18:42.884Z",
+      "editado_en": "2026-06-24T17:14:45.984Z"
     },
     {
-      "id_modulo": 96,
-      "tipo": "process-step-item",
-      "nombre": "Paso del proceso",
-      "id_pagina": null,
+      "id_modulo": 102,
+      "tipo": "feature-item",
+      "nombre": "Característica2",
+      "id_pagina": "all",
       "data": {
-        "titulo": "Nuevo paso",
-        "desc": "Descripción del paso."
+        "iconType": "fa-headset",
+        "titulo": "Nueva característica",
+        "desc": "Descripción de la característica."
       },
       "design": {
         "cardBg": "",
+        "cardBorderColor": "",
         "accentColor": "",
         "titleColor": "",
         "textColor": "",
@@ -1873,20 +1767,22 @@
         "display": ""
       },
       "alerta": false,
-      "creado_en": "2026-06-24T12:05:36.934Z",
-      "editado_en": "2026-06-24T12:05:49.023Z"
+      "creado_en": "2026-06-24T16:19:15.064Z",
+      "editado_en": "2026-06-24T16:20:02.047Z"
     },
     {
-      "id_modulo": 97,
-      "tipo": "process-step-item",
-      "nombre": "Paso del proceso",
-      "id_pagina": null,
+      "id_modulo": 103,
+      "tipo": "feature-item",
+      "nombre": "Característica3",
+      "id_pagina": "all",
       "data": {
-        "titulo": "Nuevo paso",
-        "desc": "Descripción del paso."
+        "iconType": "fa-code",
+        "titulo": "Nueva característica",
+        "desc": "Descripción de la característica."
       },
       "design": {
         "cardBg": "",
+        "cardBorderColor": "",
         "accentColor": "",
         "titleColor": "",
         "textColor": "",
@@ -1897,8 +1793,74 @@
         "display": ""
       },
       "alerta": false,
-      "creado_en": "2026-06-24T12:05:59.892Z",
-      "editado_en": "2026-06-24T12:05:59.892Z"
+      "creado_en": "2026-06-24T16:19:24.392Z",
+      "editado_en": "2026-06-24T16:19:54.612Z"
+    },
+    {
+      "id_modulo": 104,
+      "tipo": "feature-item",
+      "nombre": "Característica4",
+      "id_pagina": "all",
+      "data": {
+        "iconType": "fa-laptop-code",
+        "titulo": "Nueva característica",
+        "desc": "Descripción de la característica."
+      },
+      "design": {
+        "cardBg": "",
+        "cardBorderColor": "",
+        "accentColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-24T16:19:41.127Z",
+      "editado_en": "2026-06-24T16:19:48.843Z"
+    },
+    {
+      "id_modulo": 105,
+      "tipo": "feature-grid",
+      "nombre": "Grilla test 2",
+      "id_pagina": "all",
+      "data": {
+        "eyebrow": "TITULO 2",
+        "titulo": "TITULO 1",
+        "intro": "",
+        "modulos": [
+          95,
+          100,
+          101,
+          102,
+          94,
+          103,
+          104
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#ffffff",
+        "eyebrowColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "accentColor": "",
+        "cardBg": "",
+        "cardBorderColor": "",
+        "paddingY": "",
+        "cols": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-24T17:37:08.806Z",
+      "editado_en": "2026-06-24T17:43:46.805Z"
     }
   ]
 }

@@ -1,4 +1,3 @@
-/* STATE */
 const state = {
   templates: [
     {
@@ -27,7 +26,6 @@ const state = {
   editingClienteId: null,
 };
  
-/* SECTION TYPE REGISTRY */
 const SECTION_TYPES = [
   {
     group: 'Navegación',
@@ -67,7 +65,6 @@ const apiPost = (...args) => window.__svc?.apiPost(...args);
 const apiPatch = (...args) => window.__svc?.apiPatch(...args);
 const apiDelete = (...args) => window.__svc?.apiDelete(...args);
 
-/* Preview de imágenes por path/URL */
 function updateImgPreview(inputId, previewId) {
   const input = document.getElementById(inputId);
   const preview = document.getElementById(previewId);
@@ -83,7 +80,6 @@ function bindImgPreview(inputId, previewId) {
   input.addEventListener('input', () => updateImgPreview(inputId, previewId));
 }
 
-/* Inserta un botón "Elegir imagen" junto al input que abre el selector modal */
 function attachImgPicker(inputId, previewId) {
   const input = document.getElementById(inputId);
   if (!input || input.dataset.pickerWired) return;
@@ -100,7 +96,6 @@ function attachImgPicker(inputId, previewId) {
   input.insertAdjacentElement('afterend', btn);
 }
  
-/* HELPERS */
 function uid(){ return 's' + Date.now().toString(36) + Math.random().toString(36).slice(2,5); }
 
 let _autoSaveTimer = null;
@@ -115,7 +110,6 @@ function showNotif(msg, type='success'){ window.__svc?.showNotif(msg, type); }
 function openModal(id){ window.__svc?.openModal(id); }
 function closeModal(id){ window.__svc?.closeModal(id); }
  
-/* NAVIGATION */
 function showPanel(id){
   try { sessionStorage.setItem('sisgra_panel', id); } catch(_){}
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
@@ -135,11 +129,12 @@ function showPanel(id){
   };
   document.getElementById('topbar-title').textContent = NAMES[id] || id;
 
-  if (id === 'navbar'  && typeof loadNavbarItems  === 'function') loadNavbarItems();
-  if (id === 'modulos' && typeof window.loadModulos === 'function') window.loadModulos();
-  if (id === 'seo'     && typeof buildSeoTabs      === 'function') buildSeoTabs();
+  if (id === 'navbar'    && typeof loadNavbarItems          === 'function') loadNavbarItems();
+  if (id === 'modulos'   && typeof window.loadModulos        === 'function') window.loadModulos();
+  if (id === 'seo'       && typeof buildSeoTabs              === 'function') buildSeoTabs();
+  if (id === 'plantillas'&& typeof window.reloadPlantillas   === 'function') window.reloadPlantillas();
  
-  // The editor panel has no padding so we override content-area
+  // el panel editor no tiene padding, lo sobreescribimos
   const ca = document.querySelector('.content-area');
   if(id === 'tpl-editor'){
     ca.style.padding = '0';
@@ -150,7 +145,6 @@ function showPanel(id){
   }
 }
  
-/* SIDEBAR TEMPLATES */
 function renderSidebarTemplates(){
   const el = document.getElementById('sidebar-tpl-list');
   el.innerHTML = state.templates.map(t => `
@@ -169,7 +163,6 @@ function renderSidebarTemplates(){
   });
 }
  
-/* TEMPLATE OVERVIEW */
 function renderTemplateOverview(){
   const list = document.getElementById('tpl-overview-list');
   list.innerHTML = state.templates.map((t,i) => `
@@ -224,7 +217,6 @@ window.openTemplateEditorFromList = function(id){
   openTemplateEditor(id);
 };
  
-/* SECTION HTML RENDERERS */
 function renderSectionHTML(sec){
   const d = sec.data || {};
   switch(sec.type){
@@ -397,7 +389,6 @@ function renderSectionHTML(sec){
   }
 }
  
-/* DESIGN DEFAULTS PER SECTION TYPE */
 const DESIGN_DEFAULTS = {
   hero: {
     bgFrom:'#0A1D37', bgTo:'#1e3a8a', bgAngle:'135',
@@ -452,7 +443,6 @@ function getDesign(sec){
   return Object.assign({}, defaults, sec.design || {});
 }
  
-/* DESIGN UPDATE (live apply to canvas) */
 window.designUpdate = function(el, secId, tplId){
   const field = el.dataset.field;
   const val = el.value;
@@ -464,30 +454,25 @@ window.designUpdate = function(el, secId, tplId){
   sec.design[field] = val;
   scheduleAutoSave();
 
-  // Sync paired color text/native inputs
   const pair = document.querySelector(`[data-field="${field}"][data-sec-design="${secId}"]`);
   if(pair && pair !== el) pair.value = val;
- 
-  // Re-render section
+
   const sectionEl = document.querySelector(`.section-slot[data-sec-id="${secId}"] .section-render`);
   if(sectionEl){
     sectionEl.innerHTML = renderSectionHTML(sec);
     attachInlineEdits(sec, sectionEl, tplId);
   }
- 
-  // Update range val display
+
   if(el.type === 'range'){
     const valEl = el.parentElement?.querySelector('.range-val');
     if(valEl) valEl.textContent = val + (el.dataset.unit||'');
   }
 };
  
-/* BUILD DESIGN PANEL PER TYPE */
 function buildDesignPanel(sec, tplId){
   const d = getDesign(sec);
   const sid = sec.id;
  
-  // Helper generators
   const colorRow = (label, field, val) => `
     <div class="color-swatch-item">
       <span class="color-swatch-label">${label}</span>
@@ -749,7 +734,6 @@ function buildDesignPanel(sec, tplId){
   }
 }
  
-/* helper: convert any color string to #rrggbb for color input */
 function toHexSafe(val){
   if(!val) return '#000000';
   if(/^#[0-9a-fA-F]{6}$/.test(val)) return val;
@@ -757,10 +741,10 @@ function toHexSafe(val){
     const [,r,g,b] = val.match(/#(.)(.)(.)/);
     return '#'+r+r+g+g+b+b;
   }
-  // fallback for rgba / named
+  // rgba / nombrados: el browser los resuelve a #rrggbb
   const ctx = document.createElement('canvas').getContext('2d');
   ctx.fillStyle = val;
-  return ctx.fillStyle; // browser resolves to #rrggbb
+  return ctx.fillStyle;
 }
  
 window.designPill = function(el, field, val, secId, tplId){
@@ -779,7 +763,6 @@ window.designPill = function(el, field, val, secId, tplId){
   }
 };
  
-/* PROPS PANEL (tabbed: Contenido + Diseño) */
 function buildPropsPanel(secId, tpl){
   const panel = document.getElementById('props-panel-body');
   if(!panel) return;
@@ -791,7 +774,6 @@ function buildPropsPanel(secId, tpl){
   const d = sec.data || {};
   const typeInfo = SECTION_TYPES.flatMap(g=>g.items).find(i=>i.type===sec.type);
  
-  // Content fields
   const fieldMap = {
     nav: [['logo','Logo/Marca',''],['links','Links (separados por coma)','textarea'],['cta','Texto botón CTA','']],
     hero: [['badge','Badge superior',''],['h1','Título línea 1',''],['h2','Título línea 2 (acento)',''],['desc','Descripción','textarea'],['btn1','Botón primario',''],['btn2','Botón secundario',''],['stat1_num','Estadística 1 — número',''],['stat1_lbl','Estadística 1 — etiqueta',''],['stat2_num','Estadística 2 — número',''],['stat2_lbl','Estadística 2 — etiqueta','']],
@@ -817,7 +799,6 @@ function buildPropsPanel(secId, tpl){
  
   const designFields = buildDesignPanel(sec, tpl.id);
  
-  // Remember active tab
   const activeTab = panel.dataset.activeTab || 'content';
  
   panel.innerHTML = `
@@ -857,7 +838,6 @@ window.propsUpdate = function(el){
   if(!sec) return;
   sec.data[field] = el.value;
   scheduleAutoSave();
-  // Re-render just this section's inner HTML
   const sectionEl = document.querySelector(`.section-slot[data-sec-id="${secId}"] .section-render`);
   if(sectionEl){
     const active = document.activeElement;
@@ -866,11 +846,9 @@ window.propsUpdate = function(el){
   }
 };
  
-/* INLINE EDITING (contenteditable → state) */
 function attachInlineEdits(sec, container, tplId){
   container.querySelectorAll('[contenteditable="true"]').forEach(el=>{
     el.addEventListener('focus', ()=>{
-      // Suppress section click while editing
       el.dataset.editing = '1';
     });
     el.addEventListener('blur', ()=>{
@@ -883,18 +861,16 @@ function attachInlineEdits(sec, container, tplId){
       if(!s) return;
       s.data[field] = el.innerText.trim();
       scheduleAutoSave();
-      // Sync props panel
       const propEl = document.querySelector(`.props-input[data-sec="${sid}"][data-field="${field}"], .props-textarea[data-sec="${sid}"][data-field="${field}"]`);
       if(propEl) propEl.value = s.data[field];
     });
-    // Prevent Enter creating block elements
+    // enter no debe crear bloques nuevos
     el.addEventListener('keydown', e=>{
       if(e.key==='Enter'){ e.preventDefault(); el.blur(); }
     });
   });
 }
  
-/* OPEN TEMPLATE EDITOR */
 function openTemplateEditor(tplId){
   const tpl = state.templates.find(t=>t.id===tplId);
   if(!tpl) return;
@@ -910,7 +886,6 @@ function openTemplateEditor(tplId){
  
   const inner = document.getElementById('tpl-editor-inner');
   inner.innerHTML = `
-    <!-- TOP BAR -->
     <div style="background:var(--white);border-bottom:1px solid var(--slate-200);padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-shrink:0;">
       <div style="display:flex;align-items:center;gap:.75rem;">
         <span style="font-size:.5rem;font-weight:900;letter-spacing:.3em;text-transform:uppercase;background:var(--sisgra-blue);color:#fff;padding:.2rem .6rem;">Plantilla</span>
@@ -919,7 +894,6 @@ function openTemplateEditor(tplId){
         <span style="font-size:.5rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;padding:.2rem .6rem;${tpl.status==='active'?'background:#dcfce7;color:#166534;':'background:#fef3c7;color:#92400e;'}">${tpl.status==='active'?'Activa':'Borrador'}</span>
       </div>
       <div style="display:flex;align-items:center;gap:.75rem;">
-        <!-- Viewport toggle -->
         <div class="viewport-switch">
           <button class="vp-btn ${state.viewport==='desktop'?'active':''}" onclick="setViewport('desktop')">🖥 Escritorio</button>
           <button class="vp-btn ${state.viewport==='tablet'?'active':''}" onclick="setViewport('tablet')">⬜ Tablet</button>
@@ -930,10 +904,8 @@ function openTemplateEditor(tplId){
       </div>
     </div>
  
-    <!-- EDITOR SHELL -->
     <div class="editor-shell" id="editor-shell">
- 
-      <!-- LEFT: section tray -->
+
       <div class="section-tray">
         <div class="tray-header">Módulos</div>
         <input class="tray-search" id="tray-search" placeholder="Buscar sección..."/>
@@ -953,7 +925,6 @@ function openTemplateEditor(tplId){
         </div>
       </div>
  
-      <!-- CENTER: page canvas -->
       <div class="page-canvas-wrap">
         <div class="canvas-ruler">
           <span class="ruler-label">Vista previa de página</span>
@@ -962,9 +933,7 @@ function openTemplateEditor(tplId){
         </div>
         <div class="canvas-scroll">
           <div class="page-frame ${state.viewport}" id="page-frame">
-            <div class="page-sections" id="page-sections">
-              <!-- Sections rendered here -->
-            </div>
+            <div class="page-sections" id="page-sections"></div>
           </div>
         </div>
       </div>
@@ -976,7 +945,6 @@ function openTemplateEditor(tplId){
   initTraySearch();
 }
  
-/* RENDER PAGE SECTIONS */
 function renderPageSections(tplId){
   const tpl = state.templates.find(t=>t.id===tplId);
   const container = document.getElementById('page-sections');
@@ -1035,7 +1003,6 @@ function renderPageSections(tplId){
   initSectionReorder(tplId);
 }
  
-/* SECTION REORDER (drag handle) */
 let dragReorderSrcId = null;
  
 function initSectionReorder(tplId){
@@ -1088,7 +1055,6 @@ function initSectionReorder(tplId){
   });
 }
  
-/* SECTION OPERATIONS */
 window.moveSectionUp = function(tplId, secId){
   const tpl = state.templates.find(t=>t.id===tplId);
   const idx = tpl.sections.findIndex(s=>s.id===secId);
@@ -1186,13 +1152,11 @@ window.saveTpl = async function(id){
   }
 };
  
-/* VIEWPORT SWITCH */
 window.setViewport = function(vp){
   state.viewport = vp;
   const frame = document.getElementById('page-frame');
   if(!frame) return;
   frame.className = `page-frame ${vp}`;
-  // Update buttons
   document.querySelectorAll('.vp-btn').forEach(b=>{
     b.classList.toggle('active', b.textContent.toLowerCase().includes(vp==='desktop'?'escr':vp==='tablet'?'tab':'móv'));
   });
@@ -1201,7 +1165,6 @@ window.setViewport = function(vp){
   if(lbl) lbl.textContent = labels[vp]||'';
 };
  
-/* TRAY DRAG DROP (add new section to page) */
 let dragNewType = null;
  
 function initTrayDragDrop(tplId){
@@ -1289,7 +1252,6 @@ function getDefaultData(type){
   return defaults[type] || {};
 }
  
-/* TRAY SEARCH */
 function initTraySearch(){
   const input = document.getElementById('tray-search');
   if(!input) return;
@@ -1313,7 +1275,6 @@ function initTraySearch(){
   });
 }
  
-/* SELECTED SECTION HIGHLIGHT STYLE */
 const selectedStyle = document.createElement('style');
 selectedStyle.textContent = `
   .section-slot { outline: 2px solid transparent; outline-offset: 0; transition: outline-color .15s; position: relative; }
@@ -1322,7 +1283,6 @@ selectedStyle.textContent = `
 `;
 document.head.appendChild(selectedStyle);
  
-/* CREATE TEMPLATE */
 function handleCreateTemplate(){
   const name   = document.getElementById('np-name').value.trim();
   const desc   = document.getElementById('np-desc').value.trim();
@@ -1449,7 +1409,6 @@ async function saveBlogPost(){
   closeModal('modal-blog'); renderBlogList(); showNotif('✓ Artículo guardado');
 }
  
-/* AUTH */
 function doLogin(){
   const u = document.getElementById('l-user').value.trim();
   const p = document.getElementById('l-pass').value.trim();
@@ -1471,7 +1430,6 @@ function doLogin(){
   });
 }
  
-/* HERO ↔ HERO.JSON MAPPERS */
 function heroSectionToHeroJson(sec, base){
   const d=sec.data||{};
   if(sec.type==='hero') return {...base,plantilla:'1',badge:d.badge||'',titulo1:d.h1||'',titulo2:d.h2||'',descripcion:d.desc||'',boton_primario:d.btn1||'',boton_secundario:d.btn2||'',stat1_numero:d.stat1_num||'',stat1_label:d.stat1_lbl||'',stat2_numero:d.stat2_num||'',stat2_label:d.stat2_lbl||''};
@@ -1486,7 +1444,6 @@ function heroJsonToSectionData(h){
   };
 }
 
-/* SEO */
 // Las pestañas de SEO se generan dinámicamente desde las plantillas existentes
 // (ver buildSeoTabs). La clave SEO de cada página = su `tipo` de plantilla, con
 // index→home (igual que el resolutor del sitio público en page-bootstrap.js).
@@ -1572,14 +1529,12 @@ function renderSEOTab(page){
     </div>`;
 }
  
-/* CANVAS REFRESH */
 function refreshCanvas(){
   if(document.getElementById('panel-tpl-editor')?.classList.contains('active') && state.currentTplId){
     renderPageSections(state.currentTplId);
   }
 }
 
-/* CLIENTS LIST + SAVE */
 function renderClientesList(){
   const tbody = document.getElementById('clientes-tbody');
   if(!tbody) return;
@@ -1705,7 +1660,6 @@ window.deleteCliente = async function(id){
   } catch(e){ showNotif('Error al eliminar','error'); }
 };
 
-/* TEMPLATE RENAME */
 window.renameTpl = function(id){
   const tpl = state.templates.find(t=>t.id===id);
   if(!tpl) return;
@@ -1720,7 +1674,6 @@ window.renameTpl = function(id){
   }
 };
 
-/* NAVBAR ITEMS */
 let navbarItems = [];
 
 async function loadNavbarItems() {
@@ -1854,7 +1807,6 @@ window.editarNavItem = function(id_menu) {
   window.__svc.openModal('modal-editar-navbar');
 };
 
-/* INIT */
 function initApp(){
   document.getElementById('dash-date').textContent =
     new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'}) + ' · ' +
@@ -2111,7 +2063,6 @@ function initApp(){
 document.getElementById('login-btn').addEventListener('click', doLogin);
 document.getElementById('l-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
 
-/* Sidebar responsive del admin */
 (function(){
   const toggle  = document.getElementById('admin-sidebar-toggle');
   const sidebar = document.getElementById('admin-sidebar');
@@ -2140,7 +2091,6 @@ document.getElementById('l-pass').addEventListener('keydown', e=>{ if(e.key==='E
   });
 })();
 
-/* Sidebar collapse (desktop) */
 (function(){
   const btn = document.getElementById('sidebar-collapse-btn');
   if(!btn) return;

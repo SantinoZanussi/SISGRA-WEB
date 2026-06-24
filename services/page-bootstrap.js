@@ -1,24 +1,11 @@
-// Renderiza la plantilla activa de un tipo dentro de #root y conecta
-// funcionalidad común (mobile drawer, form submit, contacto/SEO globales).
-//
-// Uso desde una página HTML:
-//   <div id="plantilla-root"></div>
-//   <script type="module">
-//     import { bootstrapPage } from '/services/page-bootstrap.js';
-//     bootstrapPage('index', 'plantilla-root');
-//   </script>
-
+// renderiza la plantilla activa de un tipo en #root y conecta la funcionalidad común
+// (mobile drawer, form submit, contacto/seo globales)
 import { resolverModulos, renderModulosAgrupados, setModuleRegistry } from './sections.js';
 import { cssFilesFor } from './css-pages.js';
 
 const API_BASE = `http://${window.location.hostname}:3000/api`;
 
-// Inyecta en el <head> los <link> de CSS que falten para los módulos de la
-// plantilla. El HTML de cada página trae un set base, pero los módulos de otra
-// página (o las páginas nuevas btn-*) necesitan su hoja de /css/pages/ propia.
-// Calcularlo en runtime cubre también módulos agregados después de generar el
-// HTML. Usa la misma cssFilesFor que el editor para no divergir.
-// Carga Font Awesome (iconos del sitio) una sola vez, si no está ya presente.
+// carga font awesome una sola vez si no está presente
 const FONT_AWESOME_HREF = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css';
 function ensureFontAwesome() {
   if (document.querySelector('link[data-fa]')) return;
@@ -31,6 +18,7 @@ function ensureFontAwesome() {
   document.head.appendChild(l);
 }
 
+// inyecta los <link> de css que falten para los módulos de la plantilla (mismo cssFilesFor que el editor)
 function ensurePageCss(tipo, mods) {
   const have = new Set(
     Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(l => l.getAttribute('href'))
@@ -44,12 +32,8 @@ function ensurePageCss(tipo, mods) {
   });
 }
 
-// Construye los items del nav (dropdowns + links) desde navbar.json. Reemplaza
-// el armado embebido en cada plantilla (el viejo syncNavEnPlantillas del backend).
-// Se omite el item "home" (href "/") porque el logo ya enlaza al inicio.
-// Menú jerárquico (padre/hijos): cada ítem tiene `padre` (id del contenedor padre,
-// 0 = nivel principal). Un contenedor (encabezado de submenú) es un ítem con hijos
-// y sin destino propio. Se arma: desplegables (con hijos) + links sueltos.
+// arma los items del nav desde navbar.json (jerárquico padre/hijos): desplegables + links sueltos
+// omite el item home (href "/") porque el logo ya enlaza al inicio
 function buildNavItems(botones) {
   const all = botones || [];
   const visibles = b => b.activo !== false && b.href !== '/';
@@ -77,9 +61,8 @@ function buildNavItems(botones) {
   return items;
 }
 
-// Módulos que las "Grillas" (tipo feature-grid con data.modulos) inyectan por id,
-// resueltos contra el catálogo y de forma recursiva (una Grilla puede inyectar
-// otra). Se usa solo para sumar su CSS — el render los resuelve vía el registro.
+// módulos que las grillas inyectan por id, resueltos recursivamente (grilla dentro de grilla)
+// solo para sumar su css; el render los resuelve vía el registro
 function expandGrillaInjected(secciones, modulos, seen = new Set()) {
   const out = [];
   (secciones || []).forEach(sec => {
@@ -97,8 +80,8 @@ function expandGrillaInjected(secciones, modulos, seen = new Set()) {
   return out;
 }
 
-// ¿La tarjeta pertenece a (se muestra en) la plantilla dada? Lee card.id_pagina
-// (null | 'all' | id | [ids] de plantilla). "Todas" o sin asignar → siempre.
+// ¿la tarjeta se muestra en esta plantilla? lee card.id_pagina (null|'all'|id|[ids])
+// "todas" o sin asignar: siempre
 function cardEnPlantilla(card, plantillaId) {
   const p = card && card.id_pagina;
   if (p === 'all' || p == null || p === '') return true;
@@ -116,8 +99,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
 
   async function loadAndRender() {
   try {
-    // cache:'no-store' + cache-buster ?t= → fuerza fetch fresh siempre.
-    // Sin esto el browser cachea la plantilla y los cambios del editor no se ven hasta refresh duro.
+    // cache:'no-store' + ?t= fuerza fetch fresco; sin esto el browser cachea la plantilla
     const bust = `t=${Date.now()}`;
     const [r, modR, navR] = await Promise.all([
       fetch(`${API_BASE}/plantillas/activa/${tipo}?${bust}`, { cache: 'no-store' }),
@@ -135,16 +117,15 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
     const modulos = modR.ok ? (await modR.json()).modulos  || [] : [];
     const navbar  = navR.ok ? (await navR.json()).botones  || [] : [];
 
-    // Resolver los módulos por id_modulos (clonados) e inyectar los items del nav
-    // desde navbar.json. `secciones` es el array de módulos resueltos; se le agrega
-    // el alias `.type` para que el código de inyección dinámica de abajo siga igual.
+    // resuelve los módulos por id_modulos (clonados) e inyecta los items del nav
+    // el alias .type es para que la inyección dinámica de abajo siga funcionando
     let secciones = resolverModulos(plantilla, modulos);
     secciones.forEach(m => {
       m.type = m.tipo;
       if (m.tipo === 'nav') m.data = { ...m.data, items: buildNavItems(navbar) };
     });
 
-    // Para cliente.html: si se pasa clienteId, inyectar datos del cliente
+    // cliente.html: si viene clienteId, inyecta los datos del cliente
     if (opts.clienteId) {
       try {
         const cr = await fetch(`${API_BASE}/data/clientes?t=${Date.now()}`, { cache: 'no-store' });
@@ -157,7 +138,6 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
           }
           if (cliente.nombre) document.title = `${cliente.nombre} — SISGRA`;
           secciones = secciones.map(sec => {
-            // Header dedicado de cliente (cliente-header) o el viejo articulo-header
             if (sec.type === 'cliente-header') {
               return { ...sec, data: {
                 ...sec.data,
@@ -184,7 +164,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
                 anio:             cliente.anio      || sec.data.anio || '',
               }};
             }
-            // Compatibilidad: plantillas viejas que aún usan articulo-header/body
+            // compat: plantillas viejas que aún usan articulo-header/body
             if (sec.type === 'articulo-header') {
               return { ...sec, data: {
                 ...sec.data,
@@ -212,18 +192,13 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
       }
     }
 
-    // Para articulo.html: el detalle de un post se muestra con ?id= en la URL.
-    // La plantilla "articulo" NO es una página navegable por sí misma: sin un
-    // post válido solo se vería su contenido placeholder ("Título del artículo…"),
-    // que es lo que se percibe como "me manda a la plantilla del artículo literal".
-    // Por eso, igual que el perfil de cliente, si no hay id o el post no existe
-    // redirigimos al blog en vez de renderizar la plantilla vacía.
+    // articulo.html: el detalle se muestra con ?id=. sin post válido redirige al blog
+    // (en vez de renderizar el placeholder de la plantilla vacía)
     if (tipo === 'articulo' && !opts.clienteId) {
       const postId = new URLSearchParams(window.location.search).get('id');
       if (!postId) { window.location.replace('/html/blog'); return; }
 
-      // Detectar de dónde viene el usuario para el botón "Volver". La ruta del
-      // blog es /html/blog (antes era blog.html); por eso chequeamos el path nuevo.
+      // detecta el origen para el botón "volver" (la ruta del blog es /html/blog)
       const fromBlog = document.referrer.includes('/html/blog');
       const backLabel = fromBlog ? '← Volver al Blog'   : '← Volver al Inicio';
       const backHref  = fromBlog ? '/html/blog'         : '/index.html';
@@ -232,8 +207,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
         if (br.ok) {
           const blogData = await br.json();
           const post = (blogData.posts || []).find(p => p.id === postId);
-          // Post inexistente (link viejo, borrado o id mal formado): al blog,
-          // nunca al placeholder de la plantilla.
+          // post inexistente (link viejo/borrado): al blog, nunca al placeholder
           if (!post) { window.location.replace('/html/blog'); return; }
           if (post.titulo) document.title = `${post.titulo} — SISGRA`;
           secciones = secciones.map(sec => {
@@ -251,8 +225,6 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
             if (sec.type === 'articulo-body') {
               return { ...sec, data: {
                 ...sec.data,
-                // Portada del post como imagen destacada al inicio del artículo
-                // (si el post tiene imagen cargada).
                 featuredImageUrl: post.imagen || '',
                 featuredImageAlt: post.titulo || '',
                 contentHtml:      post.contenido || sec.data.contentHtml,
@@ -266,16 +238,11 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
       }
     }
 
-    // Filtrar las tarjetas de cada módulo de servicios por la página actual: solo
-    // se renderizan las que pertenecen a esta plantilla (card.id_pagina). Una
-    // tarjeta marcada "Todas" o sin pertenencia asignada se muestra siempre. Así
-    // una plantilla solo carga las cards relacionadas a su ítem del menú. Si un
-    // módulo tenía tarjetas pero ninguna pertenece a esta página, no se renderiza
-    // (evita una sección de cards vacía); los módulos sin tarjetas se dejan igual.
+    // filtra las cards de cada módulo services por la página actual (card.id_pagina)
+    // si el módulo tenía cards y ninguna es de esta página, no se renderiza
     secciones = secciones.flatMap(sec => {
       if (sec.type !== 'services') return [sec];
-      // Título por página: si esta plantilla tiene uno propio, se usa; si no, el
-      // título por defecto (titulo_seccion).
+      // título por página si existe; si no, el titulo_seccion por defecto
       const tpp    = sec.data?.titulos_por_pagina || {};
       const titulo = tpp[plantilla.id_plantilla] || sec.data?.titulo_seccion;
       if (!Array.isArray(sec.data?.cards)) return [{ ...sec, data: { ...sec.data, titulo_seccion: titulo } }];
@@ -285,27 +252,33 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
       return [{ ...sec, data: { ...sec.data, cards, titulo_seccion: titulo } }];
     });
 
-    // Para el CSS sumamos también los módulos INLINE de los contenedores (cards
-    // sueltas guardadas dentro de la plantilla): no están en `secciones` pero su
-    // CSS (ej: el de "services") igual tiene que cargar.
+    // filtra los módulos inyectados en grillas por su id_pagina (no mostrar en otra página)
+    secciones = secciones.map(sec => {
+      if ((sec.tipo || sec.type) !== 'feature-grid') return sec;
+      const ids = Array.isArray(sec.data?.modulos) ? sec.data.modulos : [];
+      if (!ids.length) return sec;
+      const allowed = ids.filter(id => {
+        const m = modulos.find(x => x.id_modulo === id);
+        return !m || cardEnPlantilla(m, plantilla.id_plantilla);
+      });
+      if (allowed.length === ids.length) return sec;
+      return { ...sec, data: { ...sec.data, modulos: allowed } };
+    });
+
+    // suma el css de los módulos inline de los contenedores (cards sueltas, no están en secciones)
     const inlineMods = (plantilla.contenedores || [])
       .flat().filter(x => x && typeof x === 'object' && x.inline);
-    // …y los módulos que las "Grillas" inyectan por id (referencia viva): tampoco
-    // están en `secciones`, pero su CSS (ej: el de las cards en una página interna)
-    // igual tiene que cargar. Se expande de forma recursiva (grilla → grilla → …).
+    // y el css de los módulos que las grillas inyectan por id (resuelto recursivo)
     const grillaInjected = expandGrillaInjected(secciones, modulos);
-    // El registro permite que el render de una Grilla resuelva sus módulos por id.
-    // A los módulos de cards (services) les filtramos las tarjetas por la página
-    // actual (igual que el render directo): así una Grilla que inyecta cards muestra
-    // SOLO las asignadas a este ítem/plantilla, no todas.
+    // el registro permite que una grilla resuelva sus módulos por id;
+    // a las cards (services) les filtra las tarjetas por la página, igual que el render directo
     const modulosReg = modulos.map(m => (m.tipo === 'services' && Array.isArray(m.data?.cards))
       ? { ...m, data: { ...m.data, cards: m.data.cards.filter(c => cardEnPlantilla(c, plantilla.id_plantilla)) } }
       : m);
     setModuleRegistry(modulosReg);
     ensurePageCss(tipo, secciones.concat(inlineMods, grillaInjected));
-    // Render respetando los contenedores (filas de 1 a 3 módulos) de la plantilla.
     root.innerHTML = renderModulosAgrupados(secciones, plantilla.contenedores);
-    // Post-render: conectar funcionalidad que estaba en el HTML estático
+    // post-render: reconecta la funcionalidad que vivía en el html estático
     bindMobileDrawer();
     bindContactForm();
     bindFormularioModules(tipo);
@@ -315,6 +288,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
     hydrateBlogList();
     hydrateBlogCards();
     hydrateClientesTrack();
+    hydrateFaqItems();
   } catch (e) {
     root.innerHTML = `<div style="padding:4rem;text-align:center;color:#900;font-family:sans-serif;">
       Error cargando la plantilla: ${e.message}
@@ -324,16 +298,15 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
 
   await loadAndRender();
 
-  // Re-render al volver a enfocar la pestaña: refleja los cambios guardados desde
-  // el admin SIN recargar la página (evita la pantalla en blanco que deja el
-  // live-reload del dev server al recargar pestañas en segundo plano).
+  // re-render al re-enfocar la pestaña: refleja cambios del admin sin recargar
+  // (evita la pantalla en blanco del live-reload al recargar pestañas en segundo plano)
   if (!window.__sisgraVisBound) {
     window.__sisgraVisBound = true;
     let lastRender = Date.now();
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState !== 'visible') return;
       if (Date.now() - lastRender < 1200) return;
-      // No re-renderizar si el usuario está escribiendo en un formulario (no perder lo tipeado).
+      // no re-renderizar si el usuario está escribiendo en un formulario
       const ae = document.activeElement;
       if (root.contains(ae) && /^(INPUT|TEXTAREA)$/.test(ae.tagName || '')) return;
       if ([...root.querySelectorAll('input,textarea')].some(el => el.value && el.value.trim())) return;
@@ -343,7 +316,6 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
   }
 }
 
-// Mobile nav toggle (busca .nav-mobile-toggle + .nav-mobile-drawer)
 function bindMobileDrawer() {
   const toggle = document.querySelector('.nav-mobile-toggle');
   const drawer = document.querySelector('.nav-mobile-drawer');
@@ -362,7 +334,7 @@ function bindMobileDrawer() {
   });
 }
 
-// Form submit del footer (envía email via Gmail)
+// form del footer: abre gmail con la consulta
 let _contactoData = {};
 function bindContactForm() {
   const submit = document.querySelector('.btn-submit');
@@ -392,8 +364,7 @@ function bindContactForm() {
   });
 }
 
-// Módulo Formulario: manda los campos a la API. El backend los guarda en
-// contactos_log.json (estado "pendiente") hasta que se defina el endpoint externo.
+// módulo formulario: postea los campos a la api (se guardan en contactos_log.json como "pendiente")
 function bindFormularioModules(tipo) {
   document.querySelectorAll('form[data-form-modulo]').forEach(form => {
     if (form.dataset.fmBound) return;
@@ -425,19 +396,15 @@ function bindFormularioModules(tipo) {
   });
 }
 
-// Botón "Contáctese" del navbar (CTA): si su href es '#contacto', en vez de
-// navegar abre un modal con un formulario. El formulario es CONFIGURABLE desde el
-// admin: se renderiza a partir del primer módulo de tipo 'formulario' (editás sus
-// campos/labels desde el catálogo de módulos). Los envíos van a POST /api/contactos
-// (el backend los guarda en contactos_log.json estado "pendiente" hasta que se
-// defina el endpoint externo). Si el CTA tiene cualquier otra URL, navega normal.
+// cta "contáctese" del navbar: si href es #contacto abre un modal en vez de navegar
+// el formulario es configurable (primer módulo 'formulario' del catálogo); los envíos van a POST /api/contactos
 let _contactoModalPromise = null;
 function bindNavContacto(tipo) {
   const triggers = Array.from(document.querySelectorAll('a.btn-contact, a.nav-mobile-cta'))
     .filter(a => (a.getAttribute('href') || '').trim() === '#contacto');
   if (!triggers.length) return;
 
-  // Prefetch del modal (trae la config del módulo) para que esté listo al click.
+  // prefetch del modal para que esté listo al click
   _contactoModalPromise = _contactoModalPromise || buildContactoModal(tipo);
   triggers.forEach(a => a.addEventListener('click', async e => {
     e.preventDefault();
@@ -447,8 +414,7 @@ function bindNavContacto(tipo) {
   }));
 }
 
-// Config del formulario de contacto: el primer módulo 'formulario' del catálogo
-// (editable desde el admin). Si no hay ninguno, usa campos por defecto.
+// config del form de contacto: el primer módulo 'formulario' del catálogo, o campos por defecto
 async function fetchContactoFormConfig() {
   const fallback = {
     titulo: 'Contáctese',
@@ -476,8 +442,7 @@ async function fetchContactoFormConfig() {
   return fallback;
 }
 
-// Crea (una sola vez) el modal del formulario de contacto y lo cablea. Estilos
-// inline porque el sitio público no carga el CSS de modales del admin.
+// crea una vez el modal de contacto; estilos inline porque el sitio público no carga el css del admin
 async function buildContactoModal(tipo) {
   const cfg = await fetchContactoFormConfig();
   const inputStyle = 'width:100%;box-sizing:border-box;padding:.7rem .85rem;border:1px solid #cbd5e1;border-radius:6px;font-family:inherit;font-size:.9rem;color:#0f172a;background:#fff;outline:none;';
@@ -547,11 +512,8 @@ async function buildContactoModal(tipo) {
   return modal;
 }
 
-// ── Servicios: popup "Ver Detalles" ─────────────────────────────────────────
-// Cada tarjeta de la sección de servicios que tenga contenido de detalle
-// (título/descripción/imagen) lleva un `data-svc-detalle` con ese contenido.
-// Al hacer click en "Ver Detalles" abrimos un popup en vez de navegar. Si la
-// tarjeta no tiene detalle, el enlace navega normalmente a su URL.
+// cada card de servicios con detalle (título/descripción/imagen) lleva data-svc-detalle
+// click en "ver detalles" abre un popup; sin detalle, el enlace navega normal
 function bindServiciosDetalle() {
   const links = document.querySelectorAll('.services-section a.card-link[data-svc-detalle]');
   links.forEach(a => {
@@ -613,7 +575,7 @@ function openServiciosDetalle(d) {
   document.body.style.overflow = 'hidden';
 }
 
-// Hidratar [data-blog-list] desde /api/data/blog
+// hidrata [data-blog-list] desde /api/data/blog
 async function hydrateBlogList() {
   const lists = document.querySelectorAll('[data-blog-list]');
   if (!lists.length) return;
@@ -665,7 +627,7 @@ function blogCategoriaIcon(categoria) {
   return 'fa-newspaper';
 }
 
-// Hidratar [data-blog-cards] (grid del index) desde /api/data/blog
+// hidrata [data-blog-cards] (grid del index) desde /api/data/blog
 async function hydrateBlogCards() {
   const grids = document.querySelectorAll('[data-blog-cards]');
   if (!grids.length) return;
@@ -708,7 +670,7 @@ async function hydrateBlogCards() {
   }
 }
 
-// Hidratar carrusel de clientes con datos en vivo y links a perfiles
+// hidrata el carrusel de clientes con datos en vivo + links a perfiles
 async function hydrateClientesTrack() {
   const tracks = document.querySelectorAll('[data-clientes-track]');
   if (!tracks.length) return;
@@ -729,15 +691,52 @@ async function hydrateClientesTrack() {
       return `<div class="logos-cell">${inner}</div>`;
     };
 
-    // Triplicar para el loop infinito del carrusel (igual que el render estático)
+    // triplicado para el loop infinito del carrusel
     const cells = [...clientes, ...clientes, ...clientes].map(makeCell).join('');
     tracks.forEach(track => { track.innerHTML = cells; });
   } catch (e) {
-    // Falla silenciosamente — queda el contenido estático del template
+    // falla en silencio: queda el contenido estático del template
   }
 }
 
-// Aplicar contacto + SEO globales (datos transversales a todas las plantillas)
+// anima los acordeones <details> de faq (apertura y cierre suaves)
+function hydrateFaqItems() {
+  document.querySelectorAll('.sg-faqitem details, .sg-faq details').forEach(det => {
+    if (det.__faqBound) return;
+    det.__faqBound = true;
+    const body = det.querySelector('.sg-ans');
+    if (!body) return;
+    // wrapper animado para height/opacidad; el details sigue siendo nativo
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'overflow:hidden;transition:max-height .32s ease,opacity .26s ease;';
+    body.parentNode.insertBefore(wrap, body);
+    wrap.appendChild(body);
+    if (det.open) { wrap.style.maxHeight = body.scrollHeight + 'px'; wrap.style.opacity = '1'; }
+    else           { wrap.style.maxHeight = '0'; wrap.style.opacity = '0'; }
+    det.querySelector('summary')?.addEventListener('click', ev => {
+      ev.preventDefault();
+      if (det.open) {
+        wrap.style.maxHeight = '0';
+        wrap.style.opacity = '0';
+        const onEnd = e => {
+          if (e.propertyName !== 'max-height') return;
+          wrap.removeEventListener('transitionend', onEnd);
+          det.removeAttribute('open');
+        };
+        wrap.addEventListener('transitionend', onEnd);
+      } else {
+        // abrir: open + animar con raf para que el browser pinte primero
+        det.setAttribute('open', '');
+        requestAnimationFrame(() => {
+          wrap.style.maxHeight = body.scrollHeight + 'px';
+          wrap.style.opacity = '1';
+        });
+      }
+    });
+  });
+}
+
+// aplica contacto + seo globales (datos transversales a todas las plantillas)
 async function applyGlobalContactoSEO(tipo) {
   try {
     const [contacto, seo] = await Promise.all([
@@ -752,9 +751,7 @@ async function applyGlobalContactoSEO(tipo) {
       }
     }
     if (seo) {
-      // Clave SEO: del tipo de la plantilla (index→home, igual que el admin). Si no
-      // hay datos guardados para esa clave, caemos al mapeo por ruta (compatibilidad
-      // con las páginas estándar).
+      // clave seo del tipo (index = home); si no hay datos, cae al mapeo por ruta
       const byPath = () => {
         const path = window.location.pathname.toLowerCase();
         if (path.endsWith('/blog.html')) return 'blog';

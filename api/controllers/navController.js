@@ -6,7 +6,6 @@ const NAV_FILE = path.join(DATA_DIR, 'navbar.json');
 const PLT_FILE = path.join(DATA_DIR, 'plantillas.json');
 const HTML_DIR = path.join(__dirname, '..', '..', 'html');
 
-// data helpers
 function readNav() {
   if (!fs.existsSync(NAV_FILE)) return { botones: [] };
   try { return JSON.parse(fs.readFileSync(NAV_FILE, 'utf-8')); } catch { return { botones: [] }; }
@@ -27,12 +26,11 @@ function plantillaDeMenu(id_menu, plantillas) {
 }
 const esCustom = p => !!p && /^btn-/.test(p.tipo || '');
 
-// Menú jerárquico (padre/hijos)
-// El menú se modela como árbol: cada ítem tiene `padre` (id_menu de otro ítem;
-// 0 = nivel principal / "sin grupo"). Un ítem con hijos se muestra como
-// desplegable. No hay ítems especiales: cualquier ítem puede ser padre de otros.
+// el menú es un árbol: cada ítem tiene padre (id_menu de otro; 0 = nivel principal)
+// un ítem con hijos se muestra como desplegable; cualquiera puede ser padre
 
-// Título del padre de un botón, o null si cuelga de la raíz.
+// título del padre de un botón, o null si cuelga de la raíz
+
 function padreTituloDe(boton, botones) {
   if (!boton.padre) return null;
   const p = botones.find(b => b.id_menu === boton.padre);
@@ -74,17 +72,13 @@ function reordenarBotones(botones, idMover, destino) {
   ordenados.forEach((b, idx) => { b.orden = idx + 1; });
 }
 
-// páginas personalizadas (btn-*)
-// Al eliminar un ítem que apunta a una página personalizada (btn-*) se borra
-// también su shell físico html/<tipo>/index.html. (Los ítems nuevos ya no crean
-// páginas automáticamente; las páginas se gestionan desde el panel de Plantillas.)
+// al borrar un ítem que apunta a una página personalizada (btn-*) se borra
+// también su shell físico html/<tipo>/index.html
 function borrarShellCustom(tipo) {
   const dir = path.join(HTML_DIR, tipo);
   try { if (fs.existsSync(dir)) fs.rmSync(dir, { recursive: true, force: true }); }
   catch (e) { console.warn('[navController] No se pudo borrar el shell custom:', e.message); }
 }
-
-// controllers
 
 // GET /api/nav/botones
 // Devuelve todos los ítems con datos derivados para el panel: título del padre,

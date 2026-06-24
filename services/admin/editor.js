@@ -165,7 +165,6 @@ function expandGrillaInjectedMods(mods, seen = new Set()) {
 const escAttr = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
 const notif = (msg, type='success') => window.__svc?.showNotif?.(msg, type) ?? console.log('[e3]', msg);
 
-// API helper
 async function api(method, path, body) {
   const opts = { method, headers: { 'Content-Type': 'application/json' } };
   const t = token();
@@ -184,7 +183,7 @@ function stripListeners(el) {
   return c;
 }
 
-// Module list (todos los módulos disponibles, sin filtro por tipo)
+// todos los módulos disponibles, sin filtrar por tipo
 function modulesForTipo(_tipo) {
   return Object.entries(SECTIONS);
 }
@@ -193,15 +192,10 @@ function modulesForTipo(_tipo) {
 // lista de páginas (file "html/fibra_optica.html"). La raíz "/" se mapea a "index".
 const pageKey = s => String(s ?? '').replace(/^\//, '').replace(/\.html$/, '') || 'index';
 
-// Tipo select populate
-// Llena el <select> de "HTML destino" a partir de los ÍTEMS DEL NAVBAR (así las
-// pestañas recién creadas aparecen como destino). Cada ítem del menú es una
-// página posible: si ya tiene una plantilla vinculada (por id_menu) se usa su
-// tipo; si no, es una página personalizada nueva → `btn-{id_menu}`. Los ítems
-// con hijos (desplegables, p.ej. "Instalaciones") se muestran como <optgroup> con
-// sus hijos adentro. Al final se agregan las páginas del sistema que no están en
-// el menú (Artículo, Perfil de Cliente). El id_menu viaja en `data-idmenu` para
-// que crearPlantilla vincule la página con su pestaña.
+// llena el <select> de "html destino" desde los ítems del navbar: cada ítem es una
+// página posible (usa el tipo de su plantilla vinculada, o btn-{id_menu} si no tiene)
+// los ítems con hijos van como <optgroup>; al final agrega las páginas del sistema
+// el id_menu viaja en data-idmenu para que crearPlantilla vincule la página con su pestaña
 function populateTipoSelect() {
   const sel = document.getElementById('np-tipo');
   if (!sel) return;
@@ -245,7 +239,9 @@ function populateTipoSelect() {
   sel.innerHTML = html;
 }
 
-// Load + render dashboard
+// si es la primera carga, intenta restaurar el panel/template activo previo a un reload
+let _e3RestorePending = true;
+
 async function loadPlantillas() {
   try {
     // También bajamos el navbar para poder rotular cada página personalizada
@@ -258,10 +254,23 @@ async function loadPlantillas() {
     e3.navbar = nav.botones || [];
     renderOverview();
     renderSidebarList();
+    // Restaurar estado post-reload DESPUÉS de que los datos están disponibles.
+    if (_e3RestorePending) {
+      _e3RestorePending = false;
+      try {
+        const panel = sessionStorage.getItem('sisgra_panel');
+        if (panel === 'tpl-editor') {
+          const tplId = Number(sessionStorage.getItem('sisgra_tpl'));
+          if (tplId && e3.plantillas.some(p => p.id_plantilla === tplId)) {
+            openEditor(tplId);
+          }
+        }
+        // 'plantillas' es manejado por showPanel() + reloadPlantillas() (ya cargado arriba)
+      } catch(_) {}
+    }
   } catch (e) { notif('Error cargando plantillas: ' + e.message, 'error'); }
 }
 
-// Helpers de vencimiento
 function isVencida(p) {
   if (!p.activa || !p.fecha_fin) return false;
   return Date.now() > new Date(p.fecha_fin).getTime();
@@ -479,7 +488,6 @@ function renderSidebarList() {
   });
 }
 
-// Modal
 async function openNuevaModal(preTipo = '') {
   document.getElementById('np-name').value = '';
   document.getElementById('np-desc').value = '';
@@ -571,8 +579,8 @@ async function eliminarPlantilla(id) {
   } catch (e) { notif('Error: ' + e.message, 'error'); }
 }
 
-// EDITOR
 async function openEditor(id) {
+  try { sessionStorage.setItem('sisgra_panel', 'tpl-editor'); sessionStorage.setItem('sisgra_tpl', String(id)); } catch(_) {}
   // Bloquear en pantallas móviles (< 1024px)
   if (window.innerWidth < 1024) {
     document.getElementById('e3-mobile-block').classList.add('active');
@@ -603,6 +611,7 @@ async function openEditor(id) {
 
 function backToOverview() {
   if (e3.dirty && !confirm('Hay cambios sin guardar. ¿Salir igual?')) return;
+  try { sessionStorage.setItem('sisgra_panel', 'plantillas'); } catch(_) {}
   e3.slotSearch = null;
   e3.activeTpl = null; e3.conts = []; e3.sel = null; e3.activeCont = null;
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -672,10 +681,8 @@ function renderEditorShell() {
   renderProps();
 }
 
-// BUSCADOR INLINE EN EL SLOT
-// El buscador vive DENTRO del slot vacío clickeado (en el iframe): buscar acá
-// inserta SOLO en ese contenedor. Elegir un resultado inserta el módulo al
-// instante (un módulo por slot, sin chips ni botón "Insertar seleccionados").
+// el buscador vive dentro del slot vacío clickeado: inserta solo en ese contenedor
+// elegir un resultado inserta el módulo al instante (uno por slot)
 /* Páginas asignadas de un módulo, normalizadas: 'all' | [ids].
    `id_pagina` puede ser null, 'all', un id suelto (datos viejos) o un array
    de ids (multi-página). Compartido con el catálogo de módulos de abajo. */
@@ -1211,7 +1218,6 @@ function deleteContenedor(ci) {
 function markDirty() { e3.dirty = true; syncActiveTpl(); document.getElementById('e3-dirty').style.display = 'inline'; }
 function clearDirty() { e3.dirty = false; document.getElementById('e3-dirty').style.display = 'none'; }
 
-// PROPS PANEL
 function renderProps() {
   const body = document.getElementById('e3-props-body');
   if (!body) return;
@@ -1379,7 +1385,6 @@ function contactItemEditorHTML(fieldName, item) {
 function bindFieldEvents(sec) {
   const body = document.getElementById('e3-props-body');
 
-  // Simple fields
   body.querySelectorAll('[data-ef]').forEach(inp => {
     if (inp.dataset.epicker !== undefined) return;
     inp.addEventListener('input', () => {
@@ -1393,7 +1398,6 @@ function bindFieldEvents(sec) {
     });
   });
 
-  // Color pickers
   body.querySelectorAll('[data-epicker]').forEach(picker => {
     picker.addEventListener('input', () => {
       const f = picker.dataset.ef, g = picker.dataset.eg;
@@ -1405,7 +1409,7 @@ function bindFieldEvents(sec) {
     });
   });
 
-  // Campos de imagen: botón "Elegir" → abre el selector modal
+  // campos de imagen: el botón "elegir" abre el selector modal
   body.querySelectorAll('[data-eimg]').forEach(btn => {
     const f = btn.dataset.eimg, g = btn.dataset.eg;
     const input = body.querySelector(`input[data-ef="${f}"][data-eg="${g}"]`);
@@ -1422,10 +1426,9 @@ function bindFieldEvents(sec) {
     });
   });
 
-  // Array editors (cards / spec-cards / logos / clientes / posts / icon-features / emoji-features / links / text-list)
+  // editores de arrays (cards, logos, clientes, posts, features, links, text-list)
   body.querySelectorAll('[data-e3-arr]').forEach(arrWrap => {
     const kind = arrWrap.dataset.e3Arr;
-    // Map kind → sec.data field name + new-item template
     const arrMap = {
       'cards':           { key: 'cards',    newItem: () => ({ titulo: 'Nuevo', descripcion: '', link: '' }) },
       'logos':           { key: 'logos',    newItem: () => ({ nombre: 'Nuevo logo', imagen: '' }) },
@@ -1438,11 +1441,7 @@ function bindFieldEvents(sec) {
     };
     const cfg = arrMap[kind];
     if (!cfg) return;
-    // Detect actual key: spec-cards goes in data.cards; cards-in-services also data.cards
-    // For spec-cards/cards we use 'cards' key. For features (icon|emoji) use 'features'.
-    // For links: in footer-full it's "servicios". This is a known limitation — for now we use the field type.
-    // Better: pass the field name. For now, find a key in sec.data whose value matches val.
-    // Simpler approach: look up by which dataField uses this type.
+    // resuelve el campo real del array por el tipo del dataField del módulo
     const def = SECTIONS[sec.tipo];
     const ownerField = def?.dataFields?.find(df => {
       if (kind === 'cards')          return df.type === 'cards' || df.type === 'spec-cards';
@@ -1489,7 +1488,6 @@ function bindFieldEvents(sec) {
     });
   });
 
-  // Contact-item single object editor
   body.querySelectorAll('[data-e3-contact]').forEach(wrap => {
     const fname = wrap.dataset.e3Contact;
     wrap.querySelectorAll('[data-e3-ckey]').forEach(inp => {
@@ -1502,7 +1500,6 @@ function bindFieldEvents(sec) {
   });
 }
 
-// SAVE
 async function guardarPlantilla() {
   if (!e3.activeTpl) return;
   const pend = pendingContIndex();
@@ -1539,8 +1536,8 @@ async function guardarPlantilla() {
   } catch (e) { notif('Error: ' + e.message, 'error'); }
 }
 
-// Quick access (dashboard card + sidebar link)
 function goToPlantillas() {
+  try { sessionStorage.setItem('sisgra_panel', 'plantillas'); } catch(_) {}
   // Salimos del editor → ninguna plantilla queda "abierta", así el sidebar no
   // resalta una plantilla además de "Ver todas las plantillas" (eran 2 activos).
   e3.activeTpl = null;
@@ -1611,7 +1608,7 @@ function onSidebarLeaveGuard(ev) {
   e3.dirty = false;
 }
 
-// Init: override old plantilla buttons + inject UI
+// reemplaza los botones viejos de plantillas e inyecta la ui del editor e3
 function initE3() {
   populateTipoSelect();
   injectSidebarLink();
@@ -1641,7 +1638,7 @@ function initE3() {
   const dashBtn = stripListeners(document.getElementById('dash-editar-home'));
   if (dashBtn) dashBtn.addEventListener('click', goToPlantillas);
 
-  // Override old globals so any leftover async old code doesn't overwrite our renders
+  // pisa los globals viejos para que código legacy async no sobrescriba nuestros renders
   window.renderSidebarTemplates = renderSidebarList;
   window.renderTemplateOverview = renderOverview;
   window.openTemplateEditor = (id) => openEditor(id);
@@ -3467,7 +3464,6 @@ function renderModFieldGroup(group, fields, containerId) {
     ? fieldHtml + complexNote
     : `<p class="mf-empty">No hay campos sueltos acá. Usá el <b>Preview</b> para editar el contenido visualmente.</p>`;
 
-  // Live sync
   container.querySelectorAll('[data-mf]').forEach(inp => {
     inp.addEventListener('input', () => {
       const field = inp.dataset.mf;
@@ -3930,16 +3926,45 @@ function _renderPreviewGrillaContent() {
     const q = _grillaSearchQuery.trim().toLowerCase();
     if (!q) { results.innerHTML = ''; return; }
     const matches = _mods.filter(m =>
-      m.id_modulo !== _curModId &&     // no inyectarse a sí misma
-      !m.data?.soloCard &&             // copias sueltas de cards: no
+      m.id_modulo !== _curModId &&
+      !m.data?.soloCard &&
       `${m.nombre} ${m.tipo} ${SECTIONS[m.tipo]?.label || ''} ${_tipoAlias(m.tipo)}`.toLowerCase().includes(q)
     ).slice(0, 30);
-    results.innerHTML = matches.length
-      ? matches.map(m => `<div class="grilla-result" data-g-add="${m.id_modulo}">
-          <span class="grilla-slot-name">${escAttr(m.nombre || '(sin nombre)')}</span>
-          <span class="grilla-slot-sub">${escAttr(SECTIONS[m.tipo]?.label || m.tipo)} · #${m.id_modulo}</span>
-        </div>`).join('')
-      : `<div class="grilla-empty">Sin resultados.</div>`;
+    if (!matches.length) { results.innerHTML = `<div class="grilla-empty">Sin resultados.</div>`; return; }
+
+    // Agrupar por tipo: ≥ 2 coincidencias del mismo tipo → un solo resultado de tipo
+    // (agrega todos de una vez, igual a cómo funciona el módulo Cards); tipos con
+    // 1 sola coincidencia → resultado individual.
+    const byTipo = new Map();
+    matches.forEach(m => { if (!byTipo.has(m.tipo)) byTipo.set(m.tipo, []); byTipo.get(m.tipo).push(m); });
+    const grouped = new Set(); // ids cubiertos por un resultado de tipo
+    let html = '';
+    byTipo.forEach((mods, tipo) => {
+      if (mods.length < 2) return;
+      const newIds = mods.map(m => m.id_modulo).filter(id => !ids.includes(id));
+      if (!newIds.length) return;
+      mods.forEach(m => grouped.add(m.id_modulo));
+      const label = SECTIONS[tipo]?.label || tipo;
+      html += `<div class="grilla-result" data-g-addtype="${escAttr(JSON.stringify(newIds))}">
+        <span class="grilla-slot-name">${escAttr(label)}</span>
+        <span class="grilla-slot-sub">${escAttr(label)} · ${mods.length} módulos</span>
+      </div>`;
+    });
+    // Tipos con una sola coincidencia se muestran individualmente
+    matches.forEach(m => {
+      if (grouped.has(m.id_modulo)) return;
+      html += `<div class="grilla-result" data-g-add="${m.id_modulo}">
+        <span class="grilla-slot-name">${escAttr(m.nombre || '(sin nombre)')}</span>
+        <span class="grilla-slot-sub">${escAttr(SECTIONS[m.tipo]?.label || m.tipo)} · #${m.id_modulo}</span>
+      </div>`;
+    });
+    results.innerHTML = html || `<div class="grilla-empty">Sin resultados.</div>`;
+
+    results.querySelectorAll('[data-g-addtype]').forEach(el => el.addEventListener('click', () => {
+      JSON.parse(el.dataset.gAddtype).forEach(id => ids.push(id));
+      _grillaSearchQuery = '';
+      rebuild();
+    }));
     results.querySelectorAll('[data-g-add]').forEach(el => el.addEventListener('click', () => {
       ids.push(Number(el.dataset.gAdd));
       _grillaSearchQuery = '';
@@ -4088,6 +4113,7 @@ document.addEventListener('keydown', e => {
 document.getElementById('mpm-save')?.addEventListener('click', () => {
   if (_previewFromCards) _saveCardsFromPreview();
   else saveCurrentModule();
+  closePreviewModal();
 });
 
 // Asigna un valor por "path" con puntos/índices (ej: "cards.0.titulo").
@@ -4128,10 +4154,8 @@ window.addEventListener('message', async e => {
     }
     return;
   }
-  // Cambio de ícono desde el preview. Dos formas según el campo:
-  //  • Campo "plano" (string fa-*), ej: feature-item.iconType → se escribe el
-  //    propio campo con la clase elegida.
-  //  • Tarjeta de servicios (objeto con icono/iconoColor) → subcampos .icono/.iconoColor.
+  // cambio de ícono desde el preview, según el campo:
+  // campo plano (string fa-*) se escribe directo; tarjeta de servicios usa subcampos .icono/.iconoColor
   if (d.__edicon === true) {
     _curModData.data = _curModData.data || {};
     const target = _getByPath(_curModData.data, d.field);

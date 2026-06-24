@@ -1,7 +1,5 @@
-// Sección "Imágenes" del panel admin.
-// CRUD de assets: subir, renombrar (cambia la ruta), bloquear/desbloquear y eliminar.
-// Autocontenido: maneja su propio panel y navegación para no depender de panel.js.
-
+// sección "imágenes" del panel: crud de assets (subir, renombrar, bloquear, eliminar)
+// autocontenido: maneja su propio panel y navegación, sin depender de panel.js
 import { apiGet, apiPost, apiPatch, apiDelete } from '../api.js';
 import { authToken, API_BASE } from '../store.js';
 import { escAttr, fetchAssets, matchAsset, indexLabels, tagDotsHTML, createFilterBar, GRUPOS, GRUPO_NOMBRES } from './asset-shared.js';
@@ -14,7 +12,6 @@ let labels = [];
 let labelIndex = {};
 let filterBar = null;
 
-// Navegación: mostrar el panel de imágenes
 function showAssetsPanel() {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
@@ -32,7 +29,6 @@ function showAssetsPanel() {
   loadAssets();
 }
 
-// Carga + render
 async function loadAssets() {
   const grid = document.getElementById('assets-grid');
   if (grid) grid.innerHTML = '<div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--slate-400);font-size:.8rem;">Cargando…</div>';
@@ -81,10 +77,6 @@ function renderAssets() {
           ${a.origen === 'existente' ? '<span title="Detectada en la carpeta /img" style="font-size:.5rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;background:var(--slate-100);color:var(--slate-500);padding:.15rem .35rem;border-radius:.25rem;">NATIVO</span>' : ''}
         </div>
         ${tagDotsHTML(a, labelIndex)}
-        <div style="display:flex;gap:1rem;align-items:center;">
-          <code style="flex:1;font-size:.65rem;background:var(--slate-50);border:1px solid var(--slate-200);padding:.25rem .4rem;border-radius:.25rem;color:var(--slate-600);word-break:break-all;font-family:'IBM Plex Mono',monospace;">${escAttr(a.path)}</code>
-          <button class="btn-edit-small" data-act="copy" data-id="${a.id}" title="Copiar ruta" style="flex-shrink:0;"><i class="fa-solid fa-copy"></i></button>
-        </div>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:auto;">
           <button class="btn-edit-small" data-act="tags" data-id="${a.id}"><i class="fa-solid fa-tags"></i> Etiquetas</button>
           <button class="btn-edit-small" data-act="rename" data-id="${a.id}" ${a.locked ? 'disabled style="opacity:.4;cursor:not-allowed;"' : ''}><i class="fa-solid fa-pen"></i> Renombrar</button>
@@ -99,7 +91,6 @@ function renderAssets() {
   });
 }
 
-// Acciones
 async function handleAction(act, id) {
   const asset = assets.find(a => a.id === id);
   if (!asset) return;
@@ -176,7 +167,6 @@ function fallbackCopy(text) {
   document.body.removeChild(ta);
 }
 
-// Subida
 async function uploadFiles(fileList) {
   const files = Array.from(fileList || []).filter(f => f.type.startsWith('image/'));
   if (!files.length) { notif('Seleccioná archivos de imagen', 'error'); return; }
@@ -202,7 +192,6 @@ async function uploadFiles(fileList) {
   notif('✓ Subida completada');
 }
 
-// Lightbox (ver imagen en grande con fondo difuminado)
 function ensureLightbox() {
   if (document.getElementById('assets-lightbox')) return;
   const ov = document.createElement('div');
@@ -222,7 +211,6 @@ function ensureLightbox() {
       <img id="assets-lightbox-img" src="" alt="" style="max-width:90vw;max-height:80vh;object-fit:contain;border-radius:.5rem;box-shadow:0 20px 60px rgba(0,0,0,.5);background:#fff;"/>
       <figcaption style="text-align:center;color:#fff;font-family:'Inter',system-ui,sans-serif;">
         <div id="assets-lightbox-name" style="font-weight:700;font-size:.95rem;"></div>
-        <code id="assets-lightbox-path" style="font-size:.7rem;color:rgba(255,255,255,.7);font-family:'IBM Plex Mono',monospace;"></code>
       </figcaption>
     </figure>`;
   document.body.appendChild(ov);
@@ -240,7 +228,6 @@ function openLightbox(asset) {
   ov.querySelector('#assets-lightbox-img').src = asset.path;
   ov.querySelector('#assets-lightbox-img').alt = asset.nombre || '';
   ov.querySelector('#assets-lightbox-name').textContent = asset.nombre || '';
-  ov.querySelector('#assets-lightbox-path').textContent = asset.path || '';
   ov.style.display = 'flex';
 }
 
@@ -251,7 +238,6 @@ function closeLightbox() {
   ov.querySelector('#assets-lightbox-img').src = '';
 }
 
-// Etiquetas: asignar a una imagen
 function buildOverlay(id, z = 9998) {
   let ov = document.getElementById(id);
   if (ov) return ov;
@@ -322,7 +308,6 @@ function openTagAssign(asset) {
   ov.style.display = 'flex';
 }
 
-// Etiquetas: gestor global (crear / editar / eliminar)
 function openLabelManager() {
   const ov = buildOverlay('assets-labels-overlay', 9999);
   renderLabelManager(ov);
@@ -404,7 +389,6 @@ function renderLabelManager(ov) {
   });
 }
 
-// Recarga solo las etiquetas + reindexa + refresca filtros y grid
 async function refreshLabels() {
   const res = await fetchAssets();
   assets = res.assets;
@@ -414,12 +398,10 @@ async function refreshLabels() {
   renderAssets();
 }
 
-// Init
 function init() {
   document.querySelector('.sidebar-item[data-panel="assets"]')
     ?.addEventListener('click', showAssetsPanel);
 
-  // Barra de filtros Finder (buscador + chips de etiquetas)
   const toolbar = document.getElementById('assets-toolbar');
   if (toolbar) {
     filterBar = createFilterBar({ onChange: renderAssets });
