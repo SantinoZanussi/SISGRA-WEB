@@ -1180,45 +1180,6 @@
       "editado_en": "2026-06-20T22:27:30.302Z"
     },
     {
-      "id_modulo": 64,
-      "tipo": "feature-grid",
-      "nombre": "Cableado — Capacidades",
-      "id_pagina": [
-        4
-      ],
-      "data": {
-        "eyebrow": "LO QUE INCLUYE",
-        "titulo": "Cableado de alto rendimiento",
-        "intro": "Construimos el sistema nervioso de su empresa con infraestructura de cobre certificada.",
-        "features": [
-          {
-            "iconType": "shield",
-            "titulo": "Certificación Categoría 8",
-            "desc": "Infraestructura que opera hasta 2 GHz, lista para las demandas de datos de la próxima década."
-          },
-          {
-            "iconType": "check",
-            "titulo": "Normativa internacional",
-            "desc": "Planificación y ejecución bajo estándares ANSI/TIA-568 para una escalabilidad definitiva."
-          },
-          {
-            "iconType": "gear",
-            "titulo": "Diagnóstico avanzado",
-            "desc": "Verificación de desequilibrio de resistencia PoE según la norma IEEE 802.3bt en cada enlace."
-          },
-          {
-            "iconType": "chart",
-            "titulo": "Certificación Fluke",
-            "desc": "Validación con analizador DSX-8000, cumpliendo los niveles de precisión más exigentes del mercado."
-          }
-        ]
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T22:27:30.302Z",
-      "editado_en": "2026-06-20T22:27:30.302Z"
-    },
-    {
       "id_modulo": 65,
       "tipo": "faq",
       "nombre": "Cableado — FAQ",
@@ -1240,45 +1201,6 @@
         "a5": "",
         "q6": "",
         "a6": ""
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T22:27:30.302Z",
-      "editado_en": "2026-06-20T22:27:30.302Z"
-    },
-    {
-      "id_modulo": 66,
-      "tipo": "feature-grid",
-      "nombre": "Fibra — Capacidades",
-      "id_pagina": [
-        5
-      ],
-      "data": {
-        "eyebrow": "LO QUE INCLUYE",
-        "titulo": "Fibra óptica profesional",
-        "intro": "Llevamos la velocidad de la luz a su centro de datos, con más de 15 años de experiencia en campo.",
-        "features": [
-          {
-            "iconType": "database",
-            "titulo": "Backbones industriales",
-            "desc": "Redes de columna de alta densidad monomodo y multimodo (OM4/OM5) para entornos complejos."
-          },
-          {
-            "iconType": "location",
-            "titulo": "Anillos metropolitanos",
-            "desc": "Construcción y mantenimiento de anillos de fibra de alta capacidad para áreas urbanas e industriales."
-          },
-          {
-            "iconType": "lightning",
-            "titulo": "Fusión por núcleo",
-            "desc": "Empalmes de alta precisión certificados para la mínima pérdida de inserción en cada enlace."
-          },
-          {
-            "iconType": "check",
-            "titulo": "Respuesta ante emergencias",
-            "desc": "Servicio dedicado de reparación rápida ante cortes de fibra (urgenciasfibraoptica.com.ar)."
-          }
-        ]
       },
       "design": {},
       "alerta": false,
@@ -1314,45 +1236,6 @@
       "editado_en": "2026-06-20T22:27:30.302Z"
     },
     {
-      "id_modulo": 68,
-      "tipo": "feature-grid",
-      "nombre": "Seguridad — Capacidades",
-      "id_pagina": [
-        6
-      ],
-      "data": {
-        "eyebrow": "LO QUE INCLUYE",
-        "titulo": "Seguridad electrónica integral",
-        "intro": "Blindamos su infraestructura tratando la seguridad como un componente más de la red.",
-        "features": [
-          {
-            "iconType": "camera",
-            "titulo": "Videovigilancia IP 4K",
-            "desc": "Monitoreo en ultra alta definición con análisis de video inteligente para protección proactiva."
-          },
-          {
-            "iconType": "shield",
-            "titulo": "Protección industrial",
-            "desc": "Redes de sensores para la detección temprana de incendios e intrusión perimetral."
-          },
-          {
-            "iconType": "lock",
-            "titulo": "Accesos corporativos",
-            "desc": "Control de ingresos escalable, desde sistemas simples hasta redes con miles de puntos de entrada."
-          },
-          {
-            "iconType": "gear",
-            "titulo": "Convergencia de red",
-            "desc": "Integración de la seguridad sobre la infraestructura Cat 8 y fibra para procesamiento en tiempo real."
-          }
-        ]
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T22:27:30.302Z",
-      "editado_en": "2026-06-20T22:27:30.302Z"
-    },
-    {
       "id_modulo": 69,
       "tipo": "faq",
       "nombre": "Seguridad — FAQ",
@@ -1374,45 +1257,6 @@
         "a5": "",
         "q6": "",
         "a6": ""
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T22:27:30.302Z",
-      "editado_en": "2026-06-20T22:27:30.302Z"
-    },
-    {
-      "id_modulo": 70,
-      "tipo": "feature-grid",
-      "nombre": "Soporte — Capacidades",
-      "id_pagina": [
-        7
-      ],
-      "data": {
-        "eyebrow": "LO QUE INCLUYE",
-        "titulo": "Soporte IT que no se detiene",
-        "intro": "Actuamos como su departamento de sistemas externo para minimizar el tiempo de inactividad.",
-        "features": [
-          {
-            "iconType": "chart",
-            "titulo": "Monitoreo constante",
-            "desc": "Vigilancia 24/7 de servidores y terminales para detectar anomalías antes de que afecten la operación."
-          },
-          {
-            "iconType": "gear",
-            "titulo": "Mantenimiento proactivo",
-            "desc": "Planes que extienden la vida útil de la inversión tecnológica y optimizan costos."
-          },
-          {
-            "iconType": "shield",
-            "titulo": "Protección de datos",
-            "desc": "Backups automatizados y aislados contra amenazas de ransomware."
-          },
-          {
-            "iconType": "check",
-            "titulo": "Diagnóstico especializado",
-            "desc": "Análisis de infraestructuras virtualizadas y Help Desk altamente calificado."
-          }
-        ]
       },
       "design": {},
       "alerta": false,
@@ -1448,45 +1292,6 @@
       "editado_en": "2026-06-20T22:27:30.302Z"
     },
     {
-      "id_modulo": 72,
-      "tipo": "feature-grid",
-      "nombre": "Desarrollo — Capacidades",
-      "id_pagina": [
-        8
-      ],
-      "data": {
-        "eyebrow": "LO QUE INCLUYE",
-        "titulo": "Software a medida e integración",
-        "intro": "Transformamos la complejidad operativa en interfaces simples, conectando el hardware con la nube.",
-        "features": [
-          {
-            "iconType": "chart",
-            "titulo": "Software logístico",
-            "desc": "Automatización de depósitos (WMS), trazabilidad de stock y optimización de rutas de picking."
-          },
-          {
-            "iconType": "gear",
-            "titulo": "Integración de hardware",
-            "desc": "Interfaces en C/C++ para comunicación directa con PLCs industriales y balanzas automatizadas."
-          },
-          {
-            "iconType": "database",
-            "titulo": "Sistemas propietarios",
-            "desc": "Soluciones probadas: Tifon ERP (gestión), PlusAgro (agro) y Qnet (turnos y flotas)."
-          },
-          {
-            "iconType": "lightning",
-            "titulo": "Ingeniería multi-lenguaje",
-            "desc": "Python, Ruby y .NET para crear APIs en la nube y plataformas web robustas."
-          }
-        ]
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T22:27:30.302Z",
-      "editado_en": "2026-06-20T22:27:30.302Z"
-    },
-    {
       "id_modulo": 73,
       "tipo": "faq",
       "nombre": "Desarrollo — FAQ",
@@ -1508,45 +1313,6 @@
         "a5": "",
         "q6": "",
         "a6": ""
-      },
-      "design": {},
-      "alerta": false,
-      "creado_en": "2026-06-20T22:27:30.302Z",
-      "editado_en": "2026-06-20T22:27:30.302Z"
-    },
-    {
-      "id_modulo": 74,
-      "tipo": "feature-grid",
-      "nombre": "Por qué SISGRA — Inicio",
-      "id_pagina": [
-        1
-      ],
-      "data": {
-        "eyebrow": "POR QUÉ SISGRA",
-        "titulo": "La convergencia entre infraestructura y software",
-        "intro": "Desde 1999 integramos el mundo físico y el digital para empresas que no pueden detenerse.",
-        "features": [
-          {
-            "iconType": "shield",
-            "titulo": "25 años de trayectoria",
-            "desc": "Pioneros del Polo Tecnológico Rosario (Zona i), con más de 500 clientes activos."
-          },
-          {
-            "iconType": "gear",
-            "titulo": "Convergencia IT/OT",
-            "desc": "Unimos la infraestructura física crítica con ingeniería de software a medida."
-          },
-          {
-            "iconType": "check",
-            "titulo": "Calidad certificada",
-            "desc": "Trabajamos bajo normas internacionales y certificamos cada instalación."
-          },
-          {
-            "iconType": "chart",
-            "titulo": "Continuidad operativa",
-            "desc": "99.9% de disponibilidad y respuesta ante incidencias en menos de 45 minutos."
-          }
-        ]
       },
       "design": {},
       "alerta": false,
@@ -1985,16 +1751,18 @@
       "editado_en": "2026-06-23T16:36:58.599Z"
     },
     {
-      "id_modulo": 95,
+      "id_modulo": 93,
       "tipo": "feature-grid",
-      "nombre": "Grilla de características",
-      "id_pagina": [
-        4
-      ],
+      "nombre": "Grilla test",
+      "id_pagina": "all",
       "data": {
         "eyebrow": "LO QUE INCLUYE",
         "titulo": "Capacidades técnicas",
         "intro": "",
+        "modulos": [
+          95,
+          7
+        ],
         "features": [
           {
             "iconType": "shield",
@@ -2015,12 +1783,12 @@
       },
       "design": {
         "bg": "#ffffff",
-        "eyebrowColor": "",
+        "eyebrowColor": "#ff0f0f",
         "titleColor": "",
-        "textColor": "",
-        "accentColor": "",
+        "textColor": "#ff0505",
+        "accentColor": "#f72626",
         "cardBg": "",
-        "cardBorderColor": "",
+        "cardBorderColor": "#1ae0bf",
         "paddingY": "",
         "cols": "",
         "maxWidth": "",
@@ -2030,8 +1798,107 @@
         "display": ""
       },
       "alerta": false,
-      "creado_en": "2026-06-23T18:40:31.781Z",
-      "editado_en": "2026-06-23T18:40:31.781Z"
+      "creado_en": "2026-06-24T11:59:41.439Z",
+      "editado_en": "2026-06-24T12:20:52.619Z"
+    },
+    {
+      "id_modulo": 94,
+      "tipo": "feature-item",
+      "nombre": "Característica",
+      "id_pagina": null,
+      "data": {
+        "iconType": "check",
+        "titulo": "Nueva característica",
+        "desc": "Descripción de la característica."
+      },
+      "design": {
+        "cardBg": "",
+        "cardBorderColor": "",
+        "accentColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-24T12:05:22.912Z",
+      "editado_en": "2026-06-24T12:05:22.912Z"
+    },
+    {
+      "id_modulo": 95,
+      "tipo": "faq-item",
+      "nombre": "Pregunta frecuente",
+      "id_pagina": "all",
+      "data": {
+        "pregunta": "¿Nueva pregunta?",
+        "respuesta": "Respuesta a la pregunta."
+      },
+      "design": {
+        "itemBg": "",
+        "borderColor": "",
+        "accentColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-24T12:05:29.319Z",
+      "editado_en": "2026-06-24T12:09:05.490Z"
+    },
+    {
+      "id_modulo": 96,
+      "tipo": "process-step-item",
+      "nombre": "Paso del proceso",
+      "id_pagina": null,
+      "data": {
+        "titulo": "Nuevo paso",
+        "desc": "Descripción del paso."
+      },
+      "design": {
+        "cardBg": "",
+        "accentColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-24T12:05:36.934Z",
+      "editado_en": "2026-06-24T12:05:49.023Z"
+    },
+    {
+      "id_modulo": 97,
+      "tipo": "process-step-item",
+      "nombre": "Paso del proceso",
+      "id_pagina": null,
+      "data": {
+        "titulo": "Nuevo paso",
+        "desc": "Descripción del paso."
+      },
+      "design": {
+        "cardBg": "",
+        "accentColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-24T12:05:59.892Z",
+      "editado_en": "2026-06-24T12:05:59.892Z"
     }
   ]
 }

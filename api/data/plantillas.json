@@ -4,7 +4,7 @@
       "id_plantilla": 1,
       "tipo": "index",
       "nombre": "Inicio principal",
-      "descripcion": "Plantilla por defecto del home — copia exacta del index.html actual",
+      "descripcion": "Plantilla por defecto del home",
       "activa": true,
       "id_menu": [
         1
@@ -13,7 +13,6 @@
         1,
         60,
         7,
-        74,
         8,
         61,
         5,
@@ -29,9 +28,6 @@
         ],
         [
           7
-        ],
-        [
-          74
         ],
         [
           8
@@ -50,7 +46,7 @@
         ]
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-23T16:47:27.755Z",
+      "editado_en": "2026-06-24T11:51:36.733Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
       "fecha_fin": "2026-06-24T11:38:57.111Z"
     },
@@ -58,7 +54,7 @@
       "id_plantilla": 2,
       "tipo": "blog",
       "nombre": "Blog",
-      "descripcion": "Plantilla por defecto — copia exacta del blog.html actual",
+      "descripcion": "Plantilla para el Blog",
       "activa": true,
       "id_menu": [
         2
@@ -88,7 +84,7 @@
       "id_plantilla": 3,
       "tipo": "articulo",
       "nombre": "Artículo",
-      "descripcion": "Plantilla por defecto — copia exacta del articulo.html actual",
+      "descripcion": "Plantilla para los Artículos",
       "activa": true,
       "id_menu": [],
       "id_modulos": [
@@ -120,7 +116,7 @@
       "id_plantilla": 4,
       "tipo": "cableado",
       "nombre": "Cableado",
-      "descripcion": "Plantilla por defecto — copia exacta del cableado_estructurado.html actual",
+      "descripcion": "Plantilla para el Cableado Estructurado",
       "activa": true,
       "id_menu": [
         3
@@ -128,7 +124,6 @@
       "id_modulos": [
         1,
         12,
-        64,
         77,
         76,
         65,
@@ -141,9 +136,6 @@
         ],
         [
           12
-        ],
-        [
-          64
         ],
         [
           77
@@ -162,7 +154,7 @@
         ]
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-16T17:52:29.758Z",
+      "editado_en": "2026-06-24T11:50:34.511Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
       "fecha_fin": "2026-06-24T11:38:57.111Z"
     },
@@ -170,7 +162,7 @@
       "id_plantilla": 5,
       "tipo": "fibra",
       "nombre": "Fibra Óptica",
-      "descripcion": "Plantilla por defecto — copia exacta del fibra_optica.html actual",
+      "descripcion": "Plantilla para la Fibra Óptica",
       "activa": true,
       "id_menu": [
         4
@@ -178,7 +170,6 @@
       "id_modulos": [
         1,
         13,
-        66,
         80,
         79,
         67,
@@ -191,9 +182,6 @@
         ],
         [
           13
-        ],
-        [
-          66
         ],
         [
           80
@@ -212,7 +200,7 @@
         ]
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-16T17:52:31.517Z",
+      "editado_en": "2026-06-24T11:50:44.846Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
       "fecha_fin": "2026-06-24T11:38:57.111Z"
     },
@@ -220,7 +208,7 @@
       "id_plantilla": 6,
       "tipo": "seguridad",
       "nombre": "Seguridad",
-      "descripcion": "Plantilla por defecto — copia exacta del seguridad.html actual",
+      "descripcion": "Plantilla para la Seguridad",
       "activa": true,
       "id_menu": [
         5
@@ -228,7 +216,6 @@
       "id_modulos": [
         1,
         14,
-        68,
         83,
         82,
         69,
@@ -241,9 +228,6 @@
         ],
         [
           14
-        ],
-        [
-          68
         ],
         [
           83
@@ -262,7 +246,7 @@
         ]
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-16T17:52:32.910Z",
+      "editado_en": "2026-06-24T11:50:56.439Z",
       "fecha_inicio": "2026-06-10T16:24:43.257Z",
       "fecha_fin": "2026-06-24T16:24:43.257Z"
     },
@@ -270,7 +254,7 @@
       "id_plantilla": 7,
       "tipo": "soporte",
       "nombre": "Soporte IT",
-      "descripcion": "Plantilla por defecto — copia exacta del soporte_it.html actual",
+      "descripcion": "Plantilla para el Soporte IT",
       "activa": true,
       "id_menu": [
         6
@@ -278,7 +262,6 @@
       "id_modulos": [
         1,
         37,
-        70,
         86,
         85,
         71,
@@ -291,9 +274,6 @@
         ],
         [
           37
-        ],
-        [
-          70
         ],
         [
           86
@@ -312,7 +292,7 @@
         ]
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-16T17:52:34.678Z",
+      "editado_en": "2026-06-24T11:51:10.134Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
       "fecha_fin": "2026-06-24T11:38:57.111Z"
     },
@@ -320,7 +300,7 @@
       "id_plantilla": 8,
       "tipo": "desarrollo",
       "nombre": "Desarrollo",
-      "descripcion": "Plantilla por defecto — copia exacta del desarrollo.html actual",
+      "descripcion": "Plantilla para el Desarrollo de Software",
       "activa": true,
       "id_menu": [
         7
@@ -328,7 +308,6 @@
       "id_modulos": [
         1,
         16,
-        72,
         89,
         88,
         73,
@@ -342,9 +321,6 @@
         ],
         [
           16
-        ],
-        [
-          72
         ],
         [
           89
@@ -366,7 +342,7 @@
         ]
       ],
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-23T16:55:34.433Z",
+      "editado_en": "2026-06-24T11:51:28.573Z",
       "fecha_inicio": "2026-05-27T11:38:57.111Z",
       "fecha_fin": "2026-06-24T11:38:57.111Z"
     },
@@ -406,7 +382,7 @@
       "id_plantilla": 10,
       "tipo": "btn-8",
       "nombre": "Plantilla TEST",
-      "descripcion": "Página personalizada generada automáticamente.",
+      "descripcion": "Página personalizada generada automáticamente para realizar pruebas.",
       "activa": true,
       "id_menu": [
         8
@@ -419,6 +395,7 @@
         27,
         36,
         3,
+        93,
         7
       ],
       "contenedores": [
@@ -442,11 +419,14 @@
           3
         ],
         [
+          93
+        ],
+        [
           7
         ]
       ],
       "creado_en": "2026-06-03T17:20:07.004Z",
-      "editado_en": "2026-06-23T17:48:04.876Z",
+      "editado_en": "2026-06-24T12:24:01.637Z",
       "fecha_inicio": "2026-06-03T17:40:40.173Z",
       "fecha_fin": "2026-06-24T17:40:40.173Z"
     },
@@ -454,7 +434,7 @@
       "id_plantilla": 12,
       "tipo": "btn-9",
       "nombre": "Nosotros",
-      "descripcion": "Página personalizada generada automáticamente.",
+      "descripcion": "Plantilla para hablar sobre nosotros",
       "activa": true,
       "id_menu": [
         9

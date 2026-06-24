@@ -14,6 +14,16 @@ let EDIT_MODE = false;
 let FIELD_COLORS = {};
 export function setEditMode(v) { EDIT_MODE = !!v; }
 export function setFieldColors(map) { FIELD_COLORS = map || {}; }
+
+// Registro de módulos del catálogo (id_modulo → módulo), para que un módulo
+// pueda RESOLVER y renderizar a otros por id (lo usa la "Grilla", que inyecta
+// módulos por referencia viva). Se setea antes de renderizar — en el bootstrap
+// público y en el editor — igual que setEditMode/setFieldColors.
+let MODULE_REGISTRY = new Map();
+export function setModuleRegistry(mods) { MODULE_REGISTRY = indexarModulos(mods); }
+// Guarda de recursión: ids de Grillas que están en pleno render (evita ciclos /
+// que una Grilla se inyecte a sí misma).
+const GRILLA_RENDER_STACK = new Set();
 const fld = (name, value) => {
   const c = FIELD_COLORS[name];
   if (EDIT_MODE) return `<span class="ed-f" data-field="${name}"${c ? ` style="color:${c}"` : ''}>${value}</span>`;
@@ -478,9 +488,10 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       // Así un módulo de 1 o 2 cards ocupa todo el ancho en vez de quedar fijo
       // en 3 columnas (con huecos vacíos). Lo consume home.css vía --cards-cols.
       const nCols = Math.min(3, Math.max(1, (d.cards || []).length));
+      // ${header}
       return `
 <section id="servicios" class="services-section${d.soloCard ? ' services-section--solo' : ''}"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
-  <div class="max-w-7xl">${header}
+  <div class="max-w-7xl">
     <div class="cards-grid"${css({ gap: s.gap, '--cards-cols': nCols })}>
       ${(d.cards||[]).map((c, i) => {
         const linkText = c.linkText || 'Ver Detalles';
@@ -1903,7 +1914,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
 </style>
 <section class="sg-stats">
   <div class="sg-in">
-    ${(d.eyebrow || d.titulo) ? `<div class="sg-head">
+    ${(!d.__bare && (d.eyebrow || d.titulo)) ? `<div class="sg-head">
       ${d.eyebrow ? `<p class="sg-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</p>` : ''}
       ${d.titulo ? `<h2 class="sg-title">${fld('titulo', esc(d.titulo))}</h2>` : ''}
     </div>` : ''}
@@ -1920,7 +1931,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
   },
 
     'process-steps': {
-    label: 'Pasos del proceso',
+    label: 'Pasos del proceso (legacy)',
     description: 'Secuencia de pasos numerados (ej: relevamiento → diseño → ejecución certificada → soporte).',
     icon: `<i class="fa-solid fa-list-ol"></i>`,
     validTipos: ['*'],
@@ -1990,11 +2001,11 @@ ${blCss ? `<style>${blCss}</style>` : ''}
 </style>
 <section class="sg-steps">
   <div class="sg-in">
-    <div class="sg-head">
+    ${d.__bare ? '' : `<div class="sg-head">
       ${d.eyebrow ? `<p class="sg-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</p>` : ''}
       ${d.titulo ? `<h2 class="sg-title">${fld('titulo', esc(d.titulo))}</h2>` : ''}
       ${d.intro ? `<p class="sg-intro">${fld('intro', esc(d.intro))}</p>` : ''}
-    </div>
+    </div>`}
     <div class="sg-grid">
       ${pasos.map((p, i) => `
         <div class="sg-step">
@@ -2009,15 +2020,22 @@ ${blCss ? `<style>${blCss}</style>` : ''}
   },
 
   //  GRILLA DE CARACTERÍSTICAS — ícono + título + descripción (lista flexible)
+  // GRILLA — contenedor con encabezado (título + descripción) y, debajo, una
+  // lista de SLOTS que inyectan otros módulos por referencia viva (id_modulo),
+  // igual que se inyectan módulos en las plantillas. Las cards inyectadas se
+  // muestran "desnudas" (soloCard, sin su título de sección). Si no hay `modulos`,
+  // cae al render legacy de `features` (ícono+título+desc) para no romper datos
+  // viejos. La clave de tipo sigue siendo `feature-grid` por compatibilidad.
   'feature-grid': {
-    label: 'Grilla de características',
-    description: 'Grilla de capacidades con ícono, título y descripción. Cantidad de ítems flexible.',
+    label: 'Grilla',
+    description: 'Encabezado (título + descripción) + módulos inyectados debajo (como un contenedor). Sin módulos, muestra una grilla de características con ícono.',
     icon: `<i class="fa-solid fa-grip"></i>`,
     validTipos: ['*'],
     defaultData: {
       eyebrow: 'LO QUE INCLUYE',
       titulo: 'Capacidades técnicas',
       intro: '',
+      modulos: [],
       features: [
         { iconType: 'shield', titulo: 'Certificación bajo norma', desc: 'Trabajamos según estándares internacionales para garantizar calidad y escalabilidad.' },
         { iconType: 'gear',   titulo: 'Soluciones a medida',      desc: 'Cada proyecto se diseña según las necesidades reales de su organización.' },
@@ -2039,7 +2057,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
       { name: 'accentColor',     label: 'Color de acento',   type: 'color' },
       { name: 'cardBg',          label: 'Fondo de tarjetas', type: 'color' },
       { name: 'cardBorderColor', label: 'Borde de tarjetas', type: 'color' },
-      { name: 'cols',            label: 'Columnas (2-4)',    type: 'text', placeholder: 'ej: 3' },
+      { name: 'cols',            label: 'Columnas (1-4)',    type: 'text', placeholder: 'ej: 1 (lista) ó 3' },
       { name: 'paddingY',        label: 'Padding vertical',  type: 'text', placeholder: 'ej: 5rem' },
     ],
     render: (data, design) => {
@@ -2057,8 +2075,68 @@ ${blCss ? `<style>${blCss}</style>` : ''}
         lock: 'fa-lock', chart: 'fa-chart-column', database: 'fa-database',
       };
       const icon = t => ICONS[t] || 'fa-circle-check';
-      const features = Array.isArray(d.features) ? d.features : [];
-      const want = Math.min(4, Math.max(2, Number(s.cols) || (features.length >= 4 ? 3 : features.length || 3)));
+
+      // Encabezado: se arma PRIMERO (antes de renderizar hijos, que resetean
+      // FIELD_COLORS al pasar por renderModulo). Si la Grilla está inyectada "a
+      // secas" en otra (__bare), no muestra su propio encabezado.
+      const headHtml = d.__bare ? '' : `
+    <div class="sg-head">
+      ${d.eyebrow ? `<p class="sg-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</p>` : ''}
+      ${d.titulo ? `<h2 class="sg-title">${fld('titulo', esc(d.titulo))}</h2>` : ''}
+      ${d.intro ? `<p class="sg-intro">${fld('intro', esc(d.intro))}</p>` : ''}
+    </div>`;
+
+      // MODO GRILLA (nuevo): slots de módulos inyectados por id (referencia viva).
+      const ids = Array.isArray(d.modulos) ? d.modulos.filter(x => x != null) : [];
+      let bodyHtml, gridCss;
+      if (ids.length) {
+        const cols = Math.min(4, Math.max(1, Number(s.cols) || 1));
+        // Los hijos son referencias: se renderizan SIN modo edición (se editan en
+        // su propio módulo) y clonados (para no mutar el catálogo, ej: soloCard).
+        const prevEdit = EDIT_MODE;
+        const cells = ids.map(id => {
+          const m = MODULE_REGISTRY.get(id);
+          if (!m) return '';
+          if (GRILLA_RENDER_STACK.has(id)) return '';   // ciclo: cortar
+          const clone = JSON.parse(JSON.stringify(m));
+          // Se inyecta "a secas": cada módulo se renderiza SIN su propio título/
+          // encabezado (la Grilla aporta el título+descripción). __bare es la versión
+          // genérica de soloCard (que es el equivalente del módulo de cards).
+          clone.data = { ...(clone.data || {}), __bare: true };
+          if (clone.tipo === 'services') clone.data.soloCard = true;
+          GRILLA_RENDER_STACK.add(id);
+          setEditMode(false);
+          let inner;
+          try { inner = renderModulo(clone); }
+          finally { setEditMode(prevEdit); GRILLA_RENDER_STACK.delete(id); }
+          return `<div class="grilla-cell">${inner}</div>`;
+        }).join('');
+        gridCss = `.sg-fgrid .sg-grid{display:grid;grid-template-columns:repeat(${cols},minmax(0,1fr));gap:1.25rem;}
+.sg-fgrid .grilla-cell{min-width:0;}
+@media(max-width:980px){.sg-fgrid .sg-grid{grid-template-columns:1fr;}}`;
+        bodyHtml = `<div class="sg-grid">${cells}</div>`;
+      } else {
+        // MODO LEGACY: grilla de características inline (ícono + título + desc).
+        const features = Array.isArray(d.features) ? d.features : [];
+        const want = Math.min(4, Math.max(2, Number(s.cols) || (features.length >= 4 ? 3 : features.length || 3)));
+        gridCss = `.sg-fgrid .sg-grid{display:grid;grid-template-columns:repeat(${want},1fr);gap:1.25rem;}
+.sg-fgrid .sg-card{background:${cardBg};border:1px solid ${cardBd};border-radius:12px;padding:1.7rem 1.5rem;transition:transform .2s,box-shadow .2s;}
+.sg-fgrid .sg-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(10,29,55,.08);}
+.sg-fgrid .sg-ico{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:${accent}1a;color:${accent};font-size:1.25rem;margin-bottom:1.1rem;}
+.sg-fgrid .sg-ct{font-size:1.05rem;font-weight:800;color:${title};margin:0 0 .5rem;}
+.sg-fgrid .sg-cd{font-size:.9rem;line-height:1.55;color:${text};margin:0;}
+@media(max-width:980px){.sg-fgrid .sg-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:620px){.sg-fgrid .sg-grid{grid-template-columns:1fr;}}`;
+        bodyHtml = `<div class="sg-grid">
+      ${features.map((f, i) => `
+        <div class="sg-card">
+          <div class="sg-ico"><i class="fa-solid ${esc(icon(f.iconType))}" aria-hidden="true"></i></div>
+          <h3 class="sg-ct">${fld('features.'+i+'.titulo', esc(f.titulo || ''))}</h3>
+          <p class="sg-cd">${fld('features.'+i+'.desc', esc(f.desc || ''))}</p>
+        </div>`).join('')}
+    </div>`;
+      }
+
       return `
 <style>
 .sg-fgrid{background:${s.bg || '#ffffff'};padding:${s.paddingY || '5rem'} 1.5rem;}
@@ -2067,38 +2145,158 @@ ${blCss ? `<style>${blCss}</style>` : ''}
 .sg-fgrid .sg-eyebrow{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:${eyebrow};margin:0 0 .6rem;}
 .sg-fgrid .sg-title{font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:900;letter-spacing:-.02em;color:${title};margin:0 0 .8rem;}
 .sg-fgrid .sg-intro{font-size:1rem;line-height:1.6;color:${text};margin:0;}
-.sg-fgrid .sg-grid{display:grid;grid-template-columns:repeat(${want},1fr);gap:1.25rem;}
-.sg-fgrid .sg-card{background:${cardBg};border:1px solid ${cardBd};border-radius:12px;padding:1.7rem 1.5rem;transition:transform .2s,box-shadow .2s;}
-.sg-fgrid .sg-card:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(10,29,55,.08);}
-.sg-fgrid .sg-ico{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:${accent}1a;color:${accent};font-size:1.25rem;margin-bottom:1.1rem;}
-.sg-fgrid .sg-ct{font-size:1.05rem;font-weight:800;color:${title};margin:0 0 .5rem;}
-.sg-fgrid .sg-cd{font-size:.9rem;line-height:1.55;color:${text};margin:0;}
-@media(max-width:980px){.sg-fgrid .sg-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:620px){.sg-fgrid .sg-grid{grid-template-columns:1fr;}}
+${gridCss}
 </style>
 <section class="sg-fgrid">
-  <div class="sg-in">
-    <div class="sg-head">
-      ${d.eyebrow ? `<p class="sg-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</p>` : ''}
-      ${d.titulo ? `<h2 class="sg-title">${fld('titulo', esc(d.titulo))}</h2>` : ''}
-      ${d.intro ? `<p class="sg-intro">${fld('intro', esc(d.intro))}</p>` : ''}
-    </div>
-    <div class="sg-grid">
-      ${features.map((f, i) => `
-        <div class="sg-card">
-          <div class="sg-ico"><i class="fa-solid ${esc(icon(f.iconType))}" aria-hidden="true"></i></div>
-          <h3 class="sg-ct">${fld('features.'+i+'.titulo', esc(f.titulo || ''))}</h3>
-          <p class="sg-cd">${fld('features.'+i+'.desc', esc(f.desc || ''))}</p>
-        </div>`).join('')}
-    </div>
+  <div class="sg-in">${headHtml}
+    ${bodyHtml}
   </div>
 </section>`;
     },
   },
 
+  //  ÍTEMS REUTILIZABLES (1 ítem = 1 módulo). Se renderizan "desnudos" (sin
+  //  encabezado de sección) para inyectarse dentro de una "Grilla".
+
+  //  CARACTERÍSTICA — una tarjeta ícono + título + descripción.
+  'feature-item': {
+    label: 'Característica',
+    description: 'Una característica suelta (ícono + título + descripción) para inyectar en una Grilla.',
+    icon: `<i class="fa-solid fa-square-check"></i>`,
+    validTipos: ['*'],
+    defaultData: { iconType: 'check', titulo: 'Nueva característica', desc: 'Descripción de la característica.' },
+    defaultDesign: { cardBg: '', cardBorderColor: '', accentColor: '', titleColor: '', textColor: '' },
+    dataFields: [
+      { name: 'titulo', label: 'Título',      type: 'text' },
+      { name: 'desc',   label: 'Descripción', type: 'textarea' },
+    ],
+    designFields: [
+      { name: 'cardBg',          label: 'Fondo de tarjeta', type: 'color' },
+      { name: 'cardBorderColor', label: 'Borde',            type: 'color' },
+      { name: 'accentColor',     label: 'Color de acento',  type: 'color' },
+      { name: 'titleColor',      label: 'Color título',     type: 'color' },
+      { name: 'textColor',       label: 'Color texto',      type: 'color' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['feature-item'].defaultData, ...data };
+      const s = { ...SECTIONS['feature-item'].defaultDesign, ...design };
+      const accent = s.accentColor || '#2563eb';
+      const title  = s.titleColor || '#0A1D37';
+      const text   = s.textColor || '#475569';
+      const cardBg = s.cardBg || '#f8fafc';
+      const cardBd = s.cardBorderColor || '#e2e8f0';
+      const ICONS = {
+        location: 'fa-location-dot', lightning: 'fa-bolt', shield: 'fa-shield-halved',
+        check: 'fa-circle-check', camera: 'fa-video', gear: 'fa-gear',
+        lock: 'fa-lock', chart: 'fa-chart-column', database: 'fa-database',
+      };
+      const ic = ICONS[d.iconType] || (String(d.iconType || '').startsWith('fa-') ? d.iconType : 'fa-circle-check');
+      return `
+<style>
+.sg-fitem{background:${cardBg};border:1px solid ${cardBd};border-radius:12px;padding:1.7rem 1.5rem;height:100%;box-sizing:border-box;}
+.sg-fitem .sg-ico{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:${accent}1a;color:${accent};font-size:1.25rem;margin-bottom:1.1rem;}
+.sg-fitem .sg-ct{font-size:1.05rem;font-weight:800;color:${title};margin:0 0 .5rem;}
+.sg-fitem .sg-cd{font-size:.9rem;line-height:1.55;color:${text};margin:0;}
+</style>
+<div class="sg-fitem">
+  <div class="sg-ico"><i class="fa-solid ${esc(ic)}"${fldIcon('iconType')} aria-hidden="true"></i></div>
+  <h3 class="sg-ct">${fld('titulo', esc(d.titulo || ''))}</h3>
+  <p class="sg-cd">${fld('desc', esc(d.desc || ''))}</p>
+</div>`;
+    },
+  },
+
+  //  PREGUNTA FRECUENTE — un acordeón <details> suelto.
+  'faq-item': {
+    label: 'Pregunta frecuente',
+    description: 'Una pregunta/respuesta suelta (acordeón) para inyectar en una Grilla.',
+    icon: `<i class="fa-regular fa-circle-question"></i>`,
+    validTipos: ['*'],
+    defaultData: { pregunta: '¿Nueva pregunta?', respuesta: 'Respuesta a la pregunta.' },
+    defaultDesign: { itemBg: '', borderColor: '', accentColor: '', titleColor: '', textColor: '' },
+    dataFields: [
+      { name: 'pregunta',  label: 'Pregunta',  type: 'text' },
+      { name: 'respuesta', label: 'Respuesta', type: 'textarea' },
+    ],
+    designFields: [
+      { name: 'itemBg',      label: 'Fondo',           type: 'color' },
+      { name: 'borderColor', label: 'Borde',           type: 'color' },
+      { name: 'accentColor', label: 'Color de acento', type: 'color' },
+      { name: 'titleColor',  label: 'Color pregunta',  type: 'color' },
+      { name: 'textColor',   label: 'Color respuesta', type: 'color' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['faq-item'].defaultData, ...data };
+      const s = { ...SECTIONS['faq-item'].defaultDesign, ...design };
+      const accent = s.accentColor || '#2563eb';
+      const title  = s.titleColor || '#0A1D37';
+      const text   = s.textColor || '#475569';
+      const itemBg = s.itemBg || '#f8fafc';
+      const border = s.borderColor || '#e2e8f0';
+      return `
+<style>
+.sg-faqitem details{background:${itemBg};border:1px solid ${border};border-radius:10px;overflow:hidden;}
+.sg-faqitem summary{list-style:none;cursor:pointer;padding:1.1rem 1.3rem;font-size:1rem;font-weight:700;color:${title};display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.sg-faqitem summary::-webkit-details-marker{display:none;}
+.sg-faqitem summary .sg-chev{color:${accent};transition:transform .25s;flex-shrink:0;}
+.sg-faqitem details[open] summary .sg-chev{transform:rotate(180deg);}
+.sg-faqitem .sg-ans{padding:0 1.3rem 1.2rem;font-size:.94rem;line-height:1.65;color:${text};margin:0;}
+</style>
+<div class="sg-faqitem">
+  <details>
+    <summary>${fld('pregunta', esc(d.pregunta || ''))}<i class="fa-solid fa-chevron-down sg-chev" aria-hidden="true"></i></summary>
+    <p class="sg-ans">${fld('respuesta', esc(d.respuesta || ''))}</p>
+  </details>
+</div>`;
+    },
+  },
+
+  //  PASO DEL PROCESO — una tarjeta de paso suelta. El número se toma de un
+  //  contador CSS que la Grilla incrementa por celda (.grilla-cell).
+  'process-step-item': {
+    label: 'Paso del proceso',
+    description: 'Un paso suelto (número + título + descripción) para inyectar en una Grilla.',
+    icon: `<i class="fa-solid fa-list-ol"></i>`,
+    validTipos: ['*'],
+    defaultData: { numero: '01', titulo: 'Nuevo paso', desc: 'Descripción del paso.' },
+    defaultDesign: { cardBg: '', accentColor: '', titleColor: '', textColor: '' },
+    dataFields: [
+      { name: 'numero', label: 'Número',      type: 'text' },
+      { name: 'titulo', label: 'Título',      type: 'text' },
+      { name: 'desc',   label: 'Descripción', type: 'textarea' },
+    ],
+    designFields: [
+      { name: 'cardBg',      label: 'Fondo de tarjeta', type: 'color' },
+      { name: 'accentColor', label: 'Color de acento',  type: 'color' },
+      { name: 'titleColor',  label: 'Color título',     type: 'color' },
+      { name: 'textColor',   label: 'Color texto',      type: 'color' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['process-step-item'].defaultData, ...data };
+      const s = { ...SECTIONS['process-step-item'].defaultDesign, ...design };
+      const accent = s.accentColor || '#2563eb';
+      const title  = s.titleColor || '#0A1D37';
+      const text   = s.textColor || '#475569';
+      const cardBg = s.cardBg || '#ffffff';
+      return `
+<style>
+.sg-stepitem{background:${cardBg};border:1px solid #e2e8f0;border-radius:12px;padding:1.6rem 1.4rem;position:relative;overflow:hidden;height:100%;box-sizing:border-box;}
+.sg-stepitem::before{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:${accent};}
+.sg-stepitem .sg-step-num{font-size:2.2rem;font-weight:900;line-height:1;color:${accent};opacity:.25;letter-spacing:-.04em;min-height:1em;}
+.sg-stepitem .sg-step-t{font-size:1.05rem;font-weight:800;color:${title};margin:.7rem 0 .5rem;}
+.sg-stepitem .sg-step-d{font-size:.9rem;line-height:1.55;color:${text};margin:0;}
+</style>
+<div class="sg-stepitem">
+  <div class="sg-step-num">${fld('numero', esc(d.numero || ''))}</div>
+  <h3 class="sg-step-t">${fld('titulo', esc(d.titulo || ''))}</h3>
+  <p class="sg-step-d">${fld('desc', esc(d.desc || ''))}</p>
+</div>`;
+    },
+  },
+
   //  PREGUNTAS FRECUENTES — acordeón nativo <details> (sin JS)
   'faq': {
-    label: 'Preguntas frecuentes',
+    label: 'Preguntas frecuentes (legacy)',
     description: 'Acordeón de preguntas y respuestas (FAQ). Hasta 6 pares; los vacíos se ocultan.',
     icon: `<i class="fa-solid fa-circle-question"></i>`,
     validTipos: ['*'],
@@ -2161,10 +2359,10 @@ ${blCss ? `<style>${blCss}</style>` : ''}
 </style>
 <section class="sg-faq">
   <div class="sg-in">
-    <div class="sg-head">
+    ${d.__bare ? '' : `<div class="sg-head">
       ${d.eyebrow ? `<p class="sg-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</p>` : ''}
       ${d.titulo ? `<h2 class="sg-title">${fld('titulo', esc(d.titulo))}</h2>` : ''}
-    </div>
+    </div>`}
     ${items.map(x => `
       <details>
         <summary>${fld(x.qf, esc(x.q))}<i class="fa-solid fa-chevron-down sg-chev" aria-hidden="true"></i></summary>

@@ -8,7 +8,7 @@
 //     bootstrapPage('index', 'plantilla-root');
 //   </script>
 
-import { resolverModulos, renderModulosAgrupados } from './sections.js';
+import { resolverModulos, renderModulosAgrupados, setModuleRegistry } from './sections.js';
 import { cssFilesFor } from './css-pages.js';
 
 const API_BASE = `http://${window.location.hostname}:3000/api`;
@@ -75,6 +75,26 @@ function buildNavItems(botones) {
   links.sort((a, b) => (a.orden || 0) - (b.orden || 0))
        .forEach(b => items.push({ tipo: 'link', titulo: b.titulo, href: b.href || '#' }));
   return items;
+}
+
+// Módulos que las "Grillas" (tipo feature-grid con data.modulos) inyectan por id,
+// resueltos contra el catálogo y de forma recursiva (una Grilla puede inyectar
+// otra). Se usa solo para sumar su CSS — el render los resuelve vía el registro.
+function expandGrillaInjected(secciones, modulos, seen = new Set()) {
+  const out = [];
+  (secciones || []).forEach(sec => {
+    if ((sec.tipo || sec.type) !== 'feature-grid') return;
+    const ids = Array.isArray(sec.data?.modulos) ? sec.data.modulos : [];
+    ids.forEach(id => {
+      if (seen.has(id)) return;
+      seen.add(id);
+      const m = (modulos || []).find(x => x.id_modulo === id);
+      if (!m) return;
+      out.push(m);
+      out.push(...expandGrillaInjected([m], modulos, seen));   // anidadas
+    });
+  });
+  return out;
 }
 
 // ¿La tarjeta pertenece a (se muestra en) la plantilla dada? Lee card.id_pagina
@@ -270,7 +290,19 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
     // CSS (ej: el de "services") igual tiene que cargar.
     const inlineMods = (plantilla.contenedores || [])
       .flat().filter(x => x && typeof x === 'object' && x.inline);
-    ensurePageCss(tipo, secciones.concat(inlineMods));
+    // …y los módulos que las "Grillas" inyectan por id (referencia viva): tampoco
+    // están en `secciones`, pero su CSS (ej: el de las cards en una página interna)
+    // igual tiene que cargar. Se expande de forma recursiva (grilla → grilla → …).
+    const grillaInjected = expandGrillaInjected(secciones, modulos);
+    // El registro permite que el render de una Grilla resuelva sus módulos por id.
+    // A los módulos de cards (services) les filtramos las tarjetas por la página
+    // actual (igual que el render directo): así una Grilla que inyecta cards muestra
+    // SOLO las asignadas a este ítem/plantilla, no todas.
+    const modulosReg = modulos.map(m => (m.tipo === 'services' && Array.isArray(m.data?.cards))
+      ? { ...m, data: { ...m.data, cards: m.data.cards.filter(c => cardEnPlantilla(c, plantilla.id_plantilla)) } }
+      : m);
+    setModuleRegistry(modulosReg);
+    ensurePageCss(tipo, secciones.concat(inlineMods, grillaInjected));
     // Render respetando los contenedores (filas de 1 a 3 módulos) de la plantilla.
     root.innerHTML = renderModulosAgrupados(secciones, plantilla.contenedores);
     // Post-render: conectar funcionalidad que estaba en el HTML estático

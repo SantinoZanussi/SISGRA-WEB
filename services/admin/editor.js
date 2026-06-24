@@ -1,4 +1,4 @@
-import { SECTIONS, TIPOS_HTML, renderModulo, setEditMode, setFieldColors, SERVICE_ICON_CATALOG, SERVICE_LEGACY_ICONS, serviceCardIcon } from '../sections.js';
+import { SECTIONS, TIPOS_HTML, renderModulo, setEditMode, setFieldColors, setModuleRegistry, SERVICE_ICON_CATALOG, SERVICE_LEGACY_ICONS, serviceCardIcon } from '../sections.js';
 import { TIPO_CSS, TYPE_TO_PAGE, cssFilesFor } from '../css-pages.js';
 
 const API = `http://${window.location.hostname}:3000/api`;
@@ -134,12 +134,32 @@ function buildNavItems(botones) {
 // inyectados). Lo usa cssFilesFor para saber qué CSS cargar en el iframe.
 function resolvedMods() {
   const navItems = buildNavItems(e3.navbar);
-  return allContEntries().map(entry => {
+  const base = allContEntries().map(entry => {
     if (esInline(entry)) return entry;   // módulo inline: ya trae tipo/data/design
     const m = modById(entry);
     if (!m) return null;
     return m.tipo === 'nav' ? { ...m, data: { ...m.data, items: navItems } } : m;
   }).filter(Boolean);
+  // Sumar los módulos que las Grillas inyectan por id, para que cargue su CSS.
+  return base.concat(expandGrillaInjectedMods(base));
+}
+
+// Módulos que las Grillas (feature-grid con data.modulos) inyectan por id,
+// resueltos contra el catálogo y de forma recursiva (grilla → grilla → …).
+function expandGrillaInjectedMods(mods, seen = new Set()) {
+  const out = [];
+  (mods || []).forEach(sec => {
+    if ((sec.tipo || sec.type) !== 'feature-grid') return;
+    (Array.isArray(sec.data?.modulos) ? sec.data.modulos : []).forEach(id => {
+      if (seen.has(id)) return;
+      seen.add(id);
+      const m = modById(id);
+      if (!m) return;
+      out.push(m);
+      out.push(...expandGrillaInjectedMods([m], seen));
+    });
+  });
+  return out;
 }
 
 const escAttr = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
@@ -1001,6 +1021,13 @@ function renderCanvas() {
   const iframe = document.getElementById('e3-canvas');
   if (!iframe || !iframe.contentDocument) return;
   const doc = iframe.contentDocument;
+  // Registro para que las Grillas resuelvan sus módulos por id. A las cards les
+  // filtramos las tarjetas por la plantilla activa (igual que el render directo),
+  // así una Grilla que inyecta cards muestra solo las de esta página.
+  const _tplId = e3.activeTpl?.id_plantilla;
+  setModuleRegistry(e3.modulos.map(m => (m.tipo === 'services' && Array.isArray(m.data?.cards))
+    ? { ...m, data: { ...m.data, cards: m.data.cards.filter(c => _cardEnPlantilla(c, _tplId)) } }
+    : m));
   ensureCanvasCss(doc);
   refreshContControls();   // fija activeCont = contenedor incompleto y estado de botones
   if (!e3.conts.length) {
@@ -1805,7 +1832,7 @@ function _modMatches(m, q) {
   const label = SECTIONS[m.tipo]?.label || m.tipo;
   const pag   = GLOBAL_TIPOS_MOD.has(m.tipo) || m.id_pagina === 'all'
     ? 'todas las páginas' : _paginaLabel(m.id_pagina);
-  return `${m.nombre || ''} ${label} ${m.tipo} #${m.id_modulo} ${pag}`
+  return `${m.nombre || ''} ${label} ${m.tipo} #${m.id_modulo} ${pag} ${_tipoAlias(m.tipo)}`
     .toLowerCase().includes(q);
 }
 
@@ -1844,6 +1871,25 @@ const MOD_FAMILIES = [
 const _famByTipo = {};
 MOD_FAMILIES.forEach(f => f.tipos.forEach(t => { _famByTipo[t] = f; }));
 const _familyOf   = tipo => _famByTipo[tipo] || null;
+
+// Tipos "building-block" que SIEMPRE se muestran en el catálogo, aunque tengan 0
+// variantes. Así, borrar la última variante de uno de estos NO hace desaparecer el
+// tipo (antes el catálogo solo listaba tipos con ≥1 módulo): la fila queda con un
+// botón "Nuevo" para volver a crear. Son las piezas reutilizables del editor.
+const ALWAYS_VISIBLE_TIPOS = ['feature-grid', 'feature-item', 'faq-item', 'process-step-item'];
+
+// Alias de búsqueda por tipo: términos extra para encontrar un módulo en el catálogo
+// y en el buscador de la Grilla. Ej: buscar "preguntas frecuentes" encuentra el ítem
+// "Pregunta frecuente" (rótulo singular) y el "Preguntas frecuentes (legacy)".
+const MOD_SEARCH_ALIASES = {
+  'feature-grid':      ['grilla', 'grilla de caracteristicas', 'contenedor'],
+  'feature-item':      ['caracteristica', 'caracteristicas', 'grilla de caracteristicas'],
+  'faq-item':          ['preguntas frecuentes', 'pregunta frecuente', 'faq'],
+  'faq':               ['preguntas frecuentes', 'faq'],
+  'process-step-item': ['pasos del proceso', 'paso del proceso', 'pasos'],
+  'process-steps':     ['pasos del proceso', 'pasos'],
+};
+const _tipoAlias = tipo => (MOD_SEARCH_ALIASES[tipo] || []).join(' ');
 const _familyById = id   => MOD_FAMILIES.find(f => f.id === id) || null;
 
 function renderModCatalog() {
@@ -1885,9 +1931,17 @@ function renderModCatalog() {
     g.variants.push(m);
   });
 
+  // Tipos building-block siempre presentes (aunque tengan 0 variantes): así no se
+  // "pierde" el tipo al borrar su última variante.
+  ALWAYS_VISIBLE_TIPOS.forEach(t => {
+    if (!SECTIONS[t] || _familyOf(t)) return;
+    const g = ensureGroup(t, null, SECTIONS[t]?.label || t);
+    g.tipos.add(t);
+  });
+
   let list = [...groups.values()];
-  // Orden estable: por el menor id_modulo de sus variantes.
-  list.forEach(g => { g.minId = Math.min(...g.variants.map(v => v.id_modulo)); });
+  // Orden estable: por el menor id_modulo de sus variantes (los vacíos van al final).
+  list.forEach(g => { g.minId = g.variants.length ? Math.min(...g.variants.map(v => v.id_modulo)) : Infinity; });
   list.sort((a, b) => a.minId - b.minId);
 
   if (!list.length) {
@@ -1895,15 +1949,36 @@ function renderModCatalog() {
     return;
   }
 
-  // Buscador: coincide si el rótulo del tipo o alguna de sus variantes coincide.
+  // Buscador: coincide si el rótulo del tipo, un alias de alguno de sus tipos, o
+  // alguna de sus variantes coincide (los alias hacen findable también las filas
+  // vacías de los building-block, ej: "preguntas frecuentes" → "Pregunta frecuente").
   const q = _modQuery.trim().toLowerCase();
-  if (q) list = list.filter(g => g.label.toLowerCase().includes(q) || g.variants.some(m => _modMatches(m, q)));
+  if (q) list = list.filter(g =>
+    g.label.toLowerCase().includes(q) ||
+    [...g.tipos].some(t => _tipoAlias(t).toLowerCase().includes(q)) ||
+    g.variants.some(m => _modMatches(m, q)));
   if (!list.length) {
     grid.innerHTML = `<div class="mod-cat-empty">Ningún módulo coincide con “${escAttr(_modQuery.trim())}”.</div>`;
     return;
   }
 
   const rows = list.map(g => {
+    // Tipo building-block sin variantes: fila con acción "Nuevo" (no se pierde el tipo).
+    if (!g.variants.length) {
+      const tipo = [...g.tipos][0] || g.key;
+      return `<div class="blog-item">
+      <div class="blog-info">
+        <div class="mod-row-headline">
+          <span class="blog-title-text">${escAttr(g.label)}</span>
+          <span class="mod-row-badge off">Sin módulos</span>
+        </div>
+        <div class="blog-meta">0 módulos · Tocá “Nuevo” para crear el primero</div>
+      </div>
+      <div class="blog-actions">
+        <button type="button" class="btn-edit-small" data-mod-new="${escAttr(tipo)}">Nuevo</button>
+      </div>
+    </div>`;
+    }
     const tiposArr = g.fam ? g.fam.tipos : [...g.tipos];
     const esGlobal = tiposArr.some(t => GLOBAL_TIPOS_MOD.has(t));
     const totalUsos = g.variants.reduce((s, m) => s + (_modUsos[m.id_modulo] || 0), 0);
@@ -1944,6 +2019,7 @@ function renderModCatalog() {
     else window.openModVer(Number(b.dataset.mod));
   }));
   grid.querySelectorAll('[data-mod-del]').forEach(b => b.addEventListener('click', () => window.eliminarModulo(b.dataset.modDel)));
+  grid.querySelectorAll('[data-mod-new]').forEach(b => b.addEventListener('click', () => nuevaVarianteDeModulo(b.dataset.modNew, null)));
 }
 
 /* Tipos de sección que todavía NO tienen módulo (para el botón "Nuevo") */
@@ -2363,7 +2439,12 @@ function _renderModVerLista(tipo) {
   const body = document.getElementById('modulos-view-body');
   if (!body) return;
   const mods = _mods.filter(x => x.tipo === tipo && !x.data?.soloCard).sort((a, b) => a.id_modulo - b.id_modulo);
-  if (!mods.length) { _closeModVer(); return; }
+  if (!mods.length) {
+    // Sin variantes: NO cerramos (antes sí, y eso "perdía" el tipo). Mostramos un
+    // estado vacío; el botón "Nuevo" del encabezado del modal sigue disponible.
+    body.innerHTML = `<div class="mod-cat-empty">No quedan módulos de este tipo. Tocá <b>Nuevo</b> para crear uno.</div>`;
+    return;
+  }
   body.innerHTML = `<div class="blog-grid">${mods.map(m => {
     const usos  = _modUsos[m.id_modulo] || 0;
     const enUso = usos > 0 || GLOBAL_TIPOS_MOD.has(m.tipo);
@@ -3631,9 +3712,26 @@ function ED_SCRIPT() {
 }
 
 // Construye el srcdoc del iframe (render + CSS del sitio + capa de edición).
+// Módulos que una Grilla (feature-grid con data.modulos) inyecta por id,
+// resueltos contra el catálogo del catálogo de módulos (_mods), recursivo.
+function _grillaInjectedFromMods(tipo, data, seen = new Set()) {
+  if (tipo !== 'feature-grid' || !Array.isArray(data?.modulos)) return [];
+  const out = [];
+  data.modulos.forEach(id => {
+    if (seen.has(id)) return;
+    seen.add(id);
+    const m = _mods.find(x => x.id_modulo === id);
+    if (!m) return;
+    out.push(m);
+    out.push(..._grillaInjectedFromMods(m.tipo, m.data, seen));
+  });
+  return out;
+}
+
 function _moduleSrcdoc({ editable }) {
   const sec = SECTIONS[_curModType];
   if (!sec) return '';
+  setModuleRegistry(_mods);   // para que una Grilla resuelva sus módulos por id
   if (editable) setEditMode(true);
   setFieldColors(_curModData.data?.__colores || {});   // colores por palabra
   const html = sec.render(_curModData.data || {}, _curModData.design || {});
@@ -3641,7 +3739,12 @@ function _moduleSrcdoc({ editable }) {
   if (editable) setEditMode(false);   // se apaga inmediato: el sitio público nunca lo ve
 
   const pageType = TYPE_TO_PAGE[_curModType] || 'index';
-  const cssFiles = TIPO_CSS[pageType] || TIPO_CSS.index;
+  // Si es una Grilla, sumar el CSS de los módulos que inyecta (ej: las cards en
+  // una página interna), resueltos contra el catálogo del catálogo (_mods).
+  const injected = _grillaInjectedFromMods(_curModType, _curModData.data);
+  const cssFiles = injected.length
+    ? cssFilesFor(pageType, injected)
+    : (TIPO_CSS[pageType] || TIPO_CSS.index);
   const origin   = window.location.origin;
   const links    = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">\n' + cssFiles.map(f => `<link rel="stylesheet" href="${origin}${f}">`).join('\n');
 
@@ -3729,14 +3832,17 @@ function openPreviewModal() {
   // Pestaña "Ajustes del módulo" (nombre + ítems del navbar).
   const hasSettings = _renderPreviewModuleSettings();
 
+  // Pestaña "Contenido" (solo Grilla): módulos inyectados por id.
+  const hasContent = _renderPreviewGrillaContent();
+
   // Pestaña "Colores y diseño" (reusa el render de campos → live-sync).
   renderModFieldGroup('design', sec.designFields || [], 'mpm-design-fields');
   const hasDesign = !!(sec.designFields || []).length;
   const designTabBtn = document.getElementById('mpm-tab-btn-design');
   if (designTabBtn) designTabBtn.style.display = hasDesign ? '' : 'none';
 
-  // Pestaña inicial: "Ajustes" si está disponible; si no, "Colores y diseño".
-  _switchPreviewTab(hasSettings ? 'settings' : 'design');
+  // Pestaña inicial: "Ajustes" si está disponible; si no, "Contenido"/"Colores".
+  _switchPreviewTab(hasSettings ? 'settings' : hasContent ? 'content' : 'design');
 
   iframe.srcdoc = _moduleSrcdoc({ editable: true });
   modal.style.display = '';
@@ -3752,6 +3858,97 @@ function closePreviewModal() {
     _previewFromCards = false;
     if (_curCardsMod) _renderCardsLista(_curCardsMod);
   }
+}
+
+/* Pestaña "Contenido" del Preview (solo Grilla = feature-grid): edita los módulos
+   que la Grilla inyecta por id (data.modulos) — reordenar / quitar / insertar.
+   Insertar reutiliza una búsqueda simple sobre el catálogo (_mods), excluyendo la
+   propia Grilla. Devuelve true si la pestaña queda disponible. */
+let _grillaSearchQuery = '';
+function _renderPreviewGrillaContent() {
+  const tabBtn = document.getElementById('mpm-tab-btn-content');
+  const pane   = document.getElementById('mpm-content-fields');
+  const isGrilla = _curModType === 'feature-grid';
+  if (tabBtn) tabBtn.style.display = isGrilla ? '' : 'none';
+  if (!isGrilla) { if (pane) pane.innerHTML = ''; return false; }
+  if (!pane) return false;
+
+  _curModData.data = _curModData.data || {};
+  const ids = Array.isArray(_curModData.data.modulos)
+    ? _curModData.data.modulos
+    : (_curModData.data.modulos = []);
+
+  const info = id => {
+    const m = _mods.find(x => x.id_modulo === id);
+    return m
+      ? { name: m.nombre || '(sin nombre)', sub: `${SECTIONS[m.tipo]?.label || m.tipo} · #${id}`, missing: false }
+      : { name: `#${id}`, sub: 'no está en el catálogo', missing: true };
+  };
+
+  const slotsHtml = ids.length
+    ? ids.map((id, i) => {
+        const { name, sub, missing } = info(id);
+        return `<div class="grilla-slot${missing ? ' is-missing' : ''}">
+          <div class="grilla-slot-info">
+            <span class="grilla-slot-name">${escAttr(name)}</span>
+            <span class="grilla-slot-sub">${escAttr(sub)}</span>
+          </div>
+          <div class="grilla-slot-actions">
+            <button type="button" data-g-up="${i}" title="Subir" ${i === 0 ? 'disabled' : ''}><i class="fa-solid fa-arrow-up"></i></button>
+            <button type="button" data-g-down="${i}" title="Bajar" ${i === ids.length - 1 ? 'disabled' : ''}><i class="fa-solid fa-arrow-down"></i></button>
+            <button type="button" data-g-del="${i}" title="Quitar"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        </div>`;
+      }).join('')
+    : `<div class="grilla-empty">Todavía no inyectaste ningún módulo. Buscá uno abajo para agregarlo.</div>`;
+
+  pane.innerHTML = `
+    <div class="mf-row">
+      <label class="mf-label">Módulos inyectados</label>
+      <div class="grilla-slots">${slotsHtml}</div>
+    </div>
+    <div class="mf-row">
+      <label class="mf-label">Insertar módulo</label>
+      <input type="text" class="form-input mf-input" id="grilla-search" placeholder="Buscar módulo (nombre o tipo)…" autocomplete="off" value="${escAttr(_grillaSearchQuery)}">
+      <div class="grilla-results" id="grilla-results"></div>
+    </div>`;
+
+  const rebuild = () => { _renderPreviewGrillaContent(); _rerenderPreviewIframe(); };
+  pane.querySelectorAll('[data-g-del]').forEach(b => b.addEventListener('click', () => { ids.splice(Number(b.dataset.gDel), 1); rebuild(); }));
+  pane.querySelectorAll('[data-g-up]').forEach(b => b.addEventListener('click', () => {
+    const i = Number(b.dataset.gUp); if (i <= 0) return;
+    [ids[i - 1], ids[i]] = [ids[i], ids[i - 1]]; rebuild();
+  }));
+  pane.querySelectorAll('[data-g-down]').forEach(b => b.addEventListener('click', () => {
+    const i = Number(b.dataset.gDown); if (i >= ids.length - 1) return;
+    [ids[i + 1], ids[i]] = [ids[i], ids[i + 1]]; rebuild();
+  }));
+
+  const input   = pane.querySelector('#grilla-search');
+  const results = pane.querySelector('#grilla-results');
+  const renderResults = () => {
+    const q = _grillaSearchQuery.trim().toLowerCase();
+    if (!q) { results.innerHTML = ''; return; }
+    const matches = _mods.filter(m =>
+      m.id_modulo !== _curModId &&     // no inyectarse a sí misma
+      !m.data?.soloCard &&             // copias sueltas de cards: no
+      `${m.nombre} ${m.tipo} ${SECTIONS[m.tipo]?.label || ''} ${_tipoAlias(m.tipo)}`.toLowerCase().includes(q)
+    ).slice(0, 30);
+    results.innerHTML = matches.length
+      ? matches.map(m => `<div class="grilla-result" data-g-add="${m.id_modulo}">
+          <span class="grilla-slot-name">${escAttr(m.nombre || '(sin nombre)')}</span>
+          <span class="grilla-slot-sub">${escAttr(SECTIONS[m.tipo]?.label || m.tipo)} · #${m.id_modulo}</span>
+        </div>`).join('')
+      : `<div class="grilla-empty">Sin resultados.</div>`;
+    results.querySelectorAll('[data-g-add]').forEach(el => el.addEventListener('click', () => {
+      ids.push(Number(el.dataset.gAdd));
+      _grillaSearchQuery = '';
+      rebuild();
+    }));
+  };
+  input?.addEventListener('input', () => { _grillaSearchQuery = input.value; renderResults(); });
+  renderResults();
+  return true;
 }
 
 /* Duplicar módulo */
@@ -3931,11 +4128,20 @@ window.addEventListener('message', async e => {
     }
     return;
   }
-  // Cambio de ícono + color de una tarjeta de servicios desde el preview.
+  // Cambio de ícono desde el preview. Dos formas según el campo:
+  //  • Campo "plano" (string fa-*), ej: feature-item.iconType → se escribe el
+  //    propio campo con la clase elegida.
+  //  • Tarjeta de servicios (objeto con icono/iconoColor) → subcampos .icono/.iconoColor.
   if (d.__edicon === true) {
     _curModData.data = _curModData.data || {};
-    const card = _getByPath(_curModData.data, d.field) || {};
-    const picked = await window.__iconPicker?.open({ current: serviceCardIcon(card), color: card.iconoColor || '' });
+    const target = _getByPath(_curModData.data, d.field);
+    if (typeof target === 'string' || target == null) {
+      const cur = typeof target === 'string' && target.startsWith('fa-') ? target : '';
+      const picked = await window.__iconPicker?.open({ current: cur, color: '' });
+      if (picked && picked.icono) { _setByPath(_curModData.data, d.field, picked.icono); _rerenderPreviewIframe(); }
+      return;
+    }
+    const picked = await window.__iconPicker?.open({ current: serviceCardIcon(target), color: target.iconoColor || '' });
     if (picked && picked.icono) {
       _setByPath(_curModData.data, d.field + '.icono', picked.icono);
       _setByPath(_curModData.data, d.field + '.iconoColor', picked.color || '');
