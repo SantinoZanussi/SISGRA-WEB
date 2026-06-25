@@ -411,7 +411,7 @@
         "eyebrow": "QUÉ HACEMOS",
         "titulo": "Integramos tecnología\nde punta a punta.",
         "descripcion": "Diseñamos e implementamos soluciones completas que conectan infraestructura, seguridad y sistemas. Resolvemos cada proyecto desde el relevamiento inicial hasta la puesta en marcha, la certificación, la documentación conforme a obra y el mantenimiento. No nos presentamos como una empresa que solo instala productos: somos un integrador tecnológico que releva, diseña, ejecuta, certifica, documenta y mantiene.",
-        "imagen": "/img/img1.png"
+        "imagen": "/img/sisgra-nosotros.png"
       },
       "design": {
         "bg": "#ffffff",
@@ -424,11 +424,13 @@
         "scale": "",
         "marginTop": "",
         "marginBottom": "",
-        "display": ""
+        "display": "",
+        "paddingLeft": "7",
+        "paddingRight": "7"
       },
       "alerta": false,
       "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-25T02:40:58.198Z",
+      "editado_en": "2026-06-25T17:27:45.544Z",
       "id_pagina": 1
     },
     {
@@ -1043,7 +1045,7 @@
         "eyebrow": "QUIÉNES SOMOS",
         "titulo": "Más de tres décadas\nintegrando tecnología.",
         "descripcion": "SISGRA nace en 1991, acompañando el crecimiento de la tecnología informática en empresas, industrias y organizaciones. Desde entonces evolucionamos junto al mercado, ampliando nuestras capacidades para integrar soluciones cada vez más completas en comunicaciones, seguridad electrónica, infraestructura, energía, soporte y desarrollo de software. Nuestra misión es brindar soluciones tecnológicas confiables, adaptadas a cada cliente y orientadas a resultados concretos: continuidad operativa, seguridad, eficiencia, escalabilidad y soporte técnico especializado. Nuestra sede se encuentra en Zona i - Nodo Rosario, dentro de un entorno tecnológico diseñado para promover la innovación y la colaboración entre empresas, universidades, emprendedores e instituciones.",
-        "imagen": "/img/img1.png"
+        "imagen": "/img/nosotros.png"
       },
       "design": {
         "bg": "#ffffff",
@@ -1060,7 +1062,7 @@
       },
       "alerta": false,
       "creado_en": "2026-06-11T18:55:41.557Z",
-      "editado_en": "2026-06-25T02:40:58.198Z"
+      "editado_en": "2026-06-25T17:27:26.479Z"
     },
     {
       "id_modulo": 42,
@@ -1219,20 +1221,37 @@
       ],
       "data": {
         "badge": "INTEGRADOR TECNOLÓGICO · ROSARIO",
-        "titulo1": "Soluciones tecnológicas para industrias,",
-        "titulo2": "empresas e infraestructura crítica.",
+        "titulo1": "Soluciones tecnológicas",
+        "titulo2": "para industrias, empresas e infraestructura crítica.",
         "descripcion": "Integramos comunicaciones, fibra óptica, cableado estructurado, seguridad electrónica, energía, software y soporte técnico para que cada organización opere con mayor control, continuidad y eficiencia. Desde 1991 acompañamos a empresas, industrias y organismos en el diseño, ejecución y mantenimiento de soluciones tecnológicas confiables.",
         "boton_primario": "Solicitar asesoramiento",
         "boton_secundario": "Ver soluciones",
         "stat1_numero": "+30",
         "stat1_label": "AÑOS INTEGRANDO TECNOLOGÍA",
         "stat2_numero": "+15.000",
-        "stat2_label": "PUESTOS DE CABLEADO INSTALADOS"
+        "stat2_label": "PUESTOS DE CABLEADO INSTALADOS",
+        "__colores": {
+          "titulo1": "#ffffff"
+        }
       },
-      "design": {},
+      "design": {
+        "bg": "",
+        "titleColor": "",
+        "accentColor": "",
+        "btnBg": "",
+        "paddingY": "",
+        "titleSize": "",
+        "descSize": "",
+        "btnRadius": "",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
       "alerta": false,
       "creado_en": "2026-06-20T22:27:30.302Z",
-      "editado_en": "2026-06-25T01:34:04.162Z"
+      "editado_en": "2026-06-25T18:44:56.858Z"
     },
     {
       "id_modulo": 61,
@@ -1595,7 +1614,10 @@
           127,
           128
         ],
-        "features": []
+        "features": [],
+        "__colores": {
+          "titulo": "#081930"
+        }
       },
       "design": {
         "bg": "#f8fafc",
@@ -1605,8 +1627,8 @@
         "accentColor": "",
         "cardBg": "",
         "cardBorderColor": "",
-        "cols": "3",
         "paddingY": "",
+        "cols": "3",
         "maxWidth": "",
         "scale": "",
         "marginTop": "",
@@ -1615,7 +1637,7 @@
       },
       "alerta": false,
       "creado_en": "2026-06-24T11:59:41.439Z",
-      "editado_en": "2026-06-25T13:19:26.133Z"
+      "editado_en": "2026-06-25T18:56:20.874Z"
     },
     {
       "id_modulo": 106,
@@ -1636,7 +1658,11 @@
           133,
           134
         ],
-        "features": []
+        "features": [],
+        "__colores": {
+          "intro": "#4a596d",
+          "titulo": "#0a1b33"
+        }
       },
       "design": {
         "bg": "#ffffff",
@@ -1646,8 +1672,8 @@
         "accentColor": "",
         "cardBg": "",
         "cardBorderColor": "",
-        "cols": "3",
         "paddingY": "",
+        "cols": "3",
         "maxWidth": "",
         "scale": "",
         "marginTop": "",
@@ -1656,7 +1682,7 @@
       },
       "alerta": false,
       "creado_en": "2026-06-25T01:34:04.162Z",
-      "editado_en": "2026-06-25T13:19:26.133Z"
+      "editado_en": "2026-06-25T18:37:25.581Z"
     },
     {
       "id_modulo": 107,
@@ -1678,11 +1704,11 @@
         "features": []
       },
       "design": {
-        "bg": "#f8fafc",
-        "eyebrowColor": "",
-        "titleColor": "",
-        "textColor": "",
-        "accentColor": "",
+        "bg": "#0A1D37",
+        "eyebrowColor": "#60a5fa",
+        "titleColor": "#ffffff",
+        "textColor": "rgba(255,255,255,.66)",
+        "accentColor": "#60a5fa",
         "cardBg": "",
         "cardBorderColor": "",
         "cols": "4",
@@ -1990,7 +2016,11 @@
           120,
           121
         ],
-        "features": []
+        "features": [],
+        "__colores": {
+          "titulo": "#0b203c",
+          "intro": "#465467"
+        }
       },
       "design": {
         "bg": "#ffffff",
@@ -2000,8 +2030,8 @@
         "accentColor": "",
         "cardBg": "",
         "cardBorderColor": "",
-        "cols": "3",
         "paddingY": "",
+        "cols": "3",
         "maxWidth": "",
         "scale": "",
         "marginTop": "",
@@ -2010,7 +2040,7 @@
       },
       "alerta": false,
       "creado_en": "2026-06-25T02:20:46.518Z",
-      "editado_en": "2026-06-25T13:19:26.133Z"
+      "editado_en": "2026-06-25T18:57:14.703Z"
     },
     {
       "id_modulo": 116,
@@ -2265,9 +2295,10 @@
         4
       ],
       "data": {
-        "iconType": "lightning",
+        "iconType": "fa-bolt",
         "titulo": "Fibra óptica",
-        "desc": "Tendidos aéreos, subterráneos, interiores y exteriores. Empalmes por fusión, medición OTDR, certificación y mantenimiento."
+        "desc": "Tendidos aéreos, subterráneos, interiores y exteriores. Empalmes por fusión, medición OTDR, certificación y mantenimiento.",
+        "tags": "Aéreo · subterráneo, Empalmes por fusión, OTDR"
       },
       "design": {},
       "alerta": false,
@@ -2282,9 +2313,10 @@
         4
       ],
       "data": {
-        "iconType": "location",
+        "iconType": "fa-network-wired",
         "titulo": "Cableado estructurado",
-        "desc": "Diseño e instalación de redes UTP, racks, patcheras, canalizaciones, puestos de trabajo y certificación de enlaces."
+        "desc": "Diseño e instalación de redes UTP, racks, patcheras, canalizaciones, puestos de trabajo y certificación de enlaces.",
+        "tags": "UTP Cat 6 / 6A, Racks · patcheras, Certificación de enlaces"
       },
       "design": {},
       "alerta": false,
@@ -2299,9 +2331,10 @@
         4
       ],
       "data": {
-        "iconType": "chart",
+        "iconType": "fa-ethernet",
         "titulo": "Networking",
-        "desc": "Switching, routing, enlaces LAN/WAN, configuración de equipos activos y puesta en servicio."
+        "desc": "Switching, routing, enlaces LAN/WAN, configuración de equipos activos y puesta en servicio.",
+        "tags": "Switching · routing, LAN / WAN, Equipos activos"
       },
       "design": {},
       "alerta": false,
@@ -2316,9 +2349,10 @@
         4
       ],
       "data": {
-        "iconType": "shield",
+        "iconType": "fa-wifi",
         "titulo": "Redes inalámbricas",
-        "desc": "WLAN, enlaces punto a punto, cobertura WiFi, vínculos interlan y soluciones para áreas industriales o corporativas."
+        "desc": "WLAN, enlaces punto a punto, cobertura WiFi, vínculos interlan y soluciones para áreas industriales o corporativas.",
+        "tags": "WLAN, Punto a punto, WiFi industrial"
       },
       "design": {},
       "alerta": false,
@@ -2333,9 +2367,10 @@
         4
       ],
       "data": {
-        "iconType": "gear",
+        "iconType": "fa-diagram-project",
         "titulo": "Canalizaciones e infraestructura",
-        "desc": "Bandejas, caños galvanizados, tritubos, cámaras, ductos, piso técnico, gabinetes y salas de comunicación."
+        "desc": "Bandejas, caños galvanizados, tritubos, cámaras, ductos, piso técnico, gabinetes y salas de comunicación.",
+        "tags": "Bandejas · tritubos, Cámaras · ductos, Piso técnico"
       },
       "design": {},
       "alerta": false,
@@ -2350,9 +2385,10 @@
         4
       ],
       "data": {
-        "iconType": "check",
+        "iconType": "fa-magnifying-glass-chart",
         "titulo": "Auditoría y mantenimiento",
-        "desc": "Revisión de redes existentes, detección de fallas, recomendaciones de mejora y soporte contratado."
+        "desc": "Revisión de redes existentes, detección de fallas, recomendaciones de mejora y soporte contratado.",
+        "tags": "Detección de fallas, Recomendaciones, Soporte contratado"
       },
       "design": {},
       "alerta": false,
@@ -2588,9 +2624,10 @@
         7
       ],
       "data": {
-        "iconType": "gear",
+        "iconType": "fa-server",
         "titulo": "Soporte de hardware",
-        "desc": "Asistencia sobre servidores, estaciones de trabajo, impresoras, periféricos, equipos de red y componentes de infraestructura."
+        "desc": "Asistencia sobre servidores, estaciones de trabajo, impresoras, periféricos, equipos de red y componentes de infraestructura.",
+        "tags": "Servidores, Estaciones, Equipos de red"
       },
       "design": {},
       "alerta": false,
@@ -2605,9 +2642,10 @@
         7
       ],
       "data": {
-        "iconType": "check",
+        "iconType": "fa-laptop-code",
         "titulo": "Soporte de software",
-        "desc": "Instalación, configuración, administración y mantenimiento de sistemas operativos, aplicaciones y entornos de trabajo."
+        "desc": "Instalación, configuración, administración y mantenimiento de sistemas operativos, aplicaciones y entornos de trabajo.",
+        "tags": "Sistemas operativos, Aplicaciones, Entornos de trabajo"
       },
       "design": {},
       "alerta": false,
@@ -2622,9 +2660,10 @@
         7
       ],
       "data": {
-        "iconType": "shield",
+        "iconType": "fa-screwdriver-wrench",
         "titulo": "Mantenimiento contratado",
-        "desc": "Planes preventivos y correctivos para dar continuidad, reducir incidentes y mejorar la disponibilidad."
+        "desc": "Planes preventivos y correctivos para dar continuidad, reducir incidentes y mejorar la disponibilidad.",
+        "tags": "Preventivo, Correctivo, Punto único de contacto"
       },
       "design": {},
       "alerta": false,
@@ -2639,9 +2678,10 @@
         7
       ],
       "data": {
-        "iconType": "database",
+        "iconType": "fa-cart-shopping",
         "titulo": "Provisión tecnológica",
-        "desc": "Asesoramiento y provisión de equipamiento informático, redes, seguridad y energía."
+        "desc": "Asesoramiento y provisión de equipamiento informático, redes, seguridad y energía.",
+        "tags": "Equipamiento, Redes · seguridad, Energía"
       },
       "design": {},
       "alerta": false,
@@ -2656,9 +2696,10 @@
         8
       ],
       "data": {
-        "iconType": "database",
+        "iconType": "fa-diagram-project",
         "titulo": "PRES",
-        "desc": "Gestión de obras, recursos, órdenes de trabajo, tickets, compras, documentos y trazabilidad operativa, con acceso del cliente al avance."
+        "desc": "Gestión de obras, recursos, órdenes de trabajo, tickets, compras, documentos y trazabilidad operativa, con acceso del cliente al avance.",
+        "tags": "Obras · OT · tickets, Gantt · agenda, Acceso del cliente"
       },
       "design": {},
       "alerta": false,
@@ -2673,9 +2714,10 @@
         8
       ],
       "data": {
-        "iconType": "gear",
+        "iconType": "fa-ticket",
         "titulo": "QNET",
-        "desc": "Gestión de turnos y atención al público: derivación de personas y visualización de llamados en pantalla."
+        "desc": "Gestión de turnos y atención al público: derivación de personas y visualización de llamados en pantalla.",
+        "tags": "Turnos, Llamados en pantalla, Atención al público"
       },
       "design": {},
       "alerta": false,
@@ -2690,9 +2732,10 @@
         8
       ],
       "data": {
-        "iconType": "check",
+        "iconType": "fa-tv",
         "titulo": "QNET Todo en Uno",
-        "desc": "Solución integral de turnos lista para implementar: software, tótem táctil y parametrización inicial."
+        "desc": "Solución integral de turnos lista para implementar: software, tótem táctil y parametrización inicial.",
+        "tags": "Software, Tótem táctil, Parametrización"
       },
       "design": {},
       "alerta": false,
@@ -2707,9 +2750,10 @@
         8
       ],
       "data": {
-        "iconType": "chart",
+        "iconType": "fa-money-bill-trend-up",
         "titulo": "LCD Exchange",
-        "desc": "Visualización de cotizaciones, información dinámica y contenidos multimedia en pantallas."
+        "desc": "Visualización de cotizaciones, información dinámica y contenidos multimedia en pantallas.",
+        "tags": "Cotizaciones, Multimedia, Pantallas"
       },
       "design": {},
       "alerta": false,
@@ -3034,6 +3078,1070 @@
       "alerta": false,
       "creado_en": "2026-06-25T13:19:26.133Z",
       "editado_en": "2026-06-25T13:19:26.133Z"
+    },
+    {
+      "id_modulo": 180,
+      "tipo": "feature-grid",
+      "nombre": "Fibra — Grilla tipos de tendido",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "eyebrow": "DÓNDE LLEGA LA FIBRA",
+        "titulo": "Un tendido para cada entorno",
+        "intro": "Implementamos redes de fibra óptica en cualquier escenario: sobre líneas de alta tensión, bajo tierra o dentro de planta. Cada entorno define la técnica, los materiales y la canalización.",
+        "modulos": [
+          181,
+          182,
+          183
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#ffffff",
+        "cols": "3"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T17:30:00.000Z",
+      "editado_en": "2026-06-25T17:30:00.000Z"
+    },
+    {
+      "id_modulo": 181,
+      "tipo": "feature-item",
+      "nombre": "Fibra — Tendido aéreo",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "iconType": "fa-tower-broadcast",
+        "titulo": "Tendido aéreo",
+        "desc": "Fibra ADSS autosoportada para instalarse sobre líneas de media y alta tensión, con cálculo de vanos, fijaciones y cruces de ruta.",
+        "tags": "ADSS, Vanos, Cruces de ruta"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:30:00.000Z",
+      "editado_en": "2026-06-25T17:30:00.000Z"
+    },
+    {
+      "id_modulo": 182,
+      "tipo": "feature-item",
+      "nombre": "Fibra — Tendido subterráneo",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "iconType": "fa-road",
+        "titulo": "Tendido subterráneo",
+        "desc": "Obra civil completa: zanjeo, tendido de tritubo y montaje de cámaras de paso para redes protegidas y de largo recorrido.",
+        "tags": "Zanjeo, Tritubo, Cámaras de paso"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:30:00.000Z",
+      "editado_en": "2026-06-25T17:30:00.000Z"
+    },
+    {
+      "id_modulo": 183,
+      "tipo": "feature-item",
+      "nombre": "Fibra — Interior y exterior",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "iconType": "fa-building",
+        "titulo": "Interior y exterior",
+        "desc": "Plantel exterior y redes metropolitanas, y backbone óptico dentro de plantas o edificios.",
+        "tags": "Plantel exterior, Backbone, Metropolitanas"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:30:00.000Z",
+      "editado_en": "2026-06-25T17:30:00.000Z"
+    },
+    {
+      "id_modulo": 184,
+      "tipo": "feature-grid",
+      "nombre": "Fibra — Grilla proceso técnico",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "eyebrow": "DE PUNTA A PUNTA",
+        "titulo": "El recorrido técnico de cada enlace",
+        "intro": "Cada proyecto de fibra atraviesa un ciclo completo, de la ingeniería a la certificación, para entregar una red medida, documentada y lista para producción.",
+        "modulos": [
+          185,
+          186,
+          187,
+          188
+        ],
+        "features": [],
+        "__colores": {
+          "titulo": "#ffffff"
+        }
+      },
+      "design": {
+        "bg": "#0A1D37",
+        "eyebrowColor": "#3b82f6",
+        "titleColor": "#ffffff",
+        "textColor": "rgba(255,255,255,.66)",
+        "accentColor": "#3b82f6",
+        "cardBg": "",
+        "cardBorderColor": "",
+        "paddingY": "",
+        "cols": "4",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T17:30:00.000Z",
+      "editado_en": "2026-06-25T18:05:26.525Z"
+    },
+    {
+      "id_modulo": 185,
+      "tipo": "signal-step",
+      "nombre": "Fibra — Paso 1 ingeniería",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "numero": "01",
+        "icono": "fa-compass-drafting",
+        "titulo": "Ingeniería y diseño",
+        "desc": "Topología, materiales, canalizaciones, enlaces y criterios de certificación."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:30:00.000Z",
+      "editado_en": "2026-06-25T17:30:00.000Z"
+    },
+    {
+      "id_modulo": 186,
+      "tipo": "signal-step",
+      "nombre": "Fibra — Paso 2 empalmes",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "numero": "02",
+        "icono": "fa-fire-flame-curved",
+        "titulo": "Empalmes y ODF",
+        "desc": "Empalmes por fusión, conectorizado y armado de ODF, con la mínima pérdida de señal."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:30:00.000Z",
+      "editado_en": "2026-06-25T17:30:00.000Z"
+    },
+    {
+      "id_modulo": 187,
+      "tipo": "signal-step",
+      "nombre": "Fibra — Paso 3 OTDR",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "numero": "03",
+        "icono": "fa-wave-square",
+        "titulo": "Medición OTDR",
+        "desc": "Reflectometría óptica para verificar la integridad del enlace y certificar resultados."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:30:00.000Z",
+      "editado_en": "2026-06-25T17:30:00.000Z"
+    },
+    {
+      "id_modulo": 188,
+      "tipo": "signal-step",
+      "nombre": "Fibra — Paso 4 documentación",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "numero": "04",
+        "icono": "fa-file-lines",
+        "titulo": "Documentación",
+        "desc": "Planimetría conforme a obra y resultados de medición entregados al cliente."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:30:00.000Z",
+      "editado_en": "2026-06-25T17:30:00.000Z"
+    },
+    {
+      "id_modulo": 190,
+      "tipo": "feature-grid",
+      "nombre": "Fibra — Grilla obras",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "eyebrow": "OBRAS EJECUTADAS",
+        "titulo": "Kilómetros de fibra que ya están en producción",
+        "intro": "Más de 100 km de fibra óptica ejecutados en infraestructura crítica, energía y telecomunicaciones.",
+        "modulos": [
+          191,
+          192,
+          193,
+          194
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#f8fafc",
+        "cols": "4"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T17:30:00.000Z",
+      "editado_en": "2026-06-25T17:30:00.000Z"
+    },
+    {
+      "id_modulo": 191,
+      "tipo": "obra-item",
+      "nombre": "Fibra — Obra Acueducto Norte",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "sector": "Infraestructura hídrica",
+        "metric": "38.000 m",
+        "label": "Fibra instalada",
+        "cliente": "Acueducto Norte — Santa Fe",
+        "desc": "Plantel exterior para telegestión: zanjeo, tritubo, cámaras de paso y salas de comunicación."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:30:00.000Z",
+      "editado_en": "2026-06-25T17:30:00.000Z"
+    },
+    {
+      "id_modulo": 192,
+      "tipo": "obra-item",
+      "nombre": "Fibra — Obra APE La Pampa",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "sector": "Energía · Alta tensión",
+        "metric": "18.000 m",
+        "label": "Fibra ADSS",
+        "cliente": "APE La Pampa",
+        "desc": "Tendido ADSS sobre líneas de 132 / 33 / 13,2 kV, con fijaciones, cálculo de vanos y cruces de ruta."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:30:00.000Z",
+      "editado_en": "2026-06-25T17:30:00.000Z"
+    },
+    {
+      "id_modulo": 193,
+      "tipo": "obra-item",
+      "nombre": "Fibra — Obra Telmex / Claro",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "sector": "Telecomunicaciones",
+        "metric": "Urbano",
+        "label": "Redes ópticas metropolitanas",
+        "cliente": "Telmex / Claro",
+        "desc": "Ingeniería e implementación de redes ópticas urbanas, obra civil, permisos y puesta en servicio."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:30:00.000Z",
+      "editado_en": "2026-06-25T17:30:00.000Z"
+    },
+    {
+      "id_modulo": 194,
+      "tipo": "obra-item",
+      "nombre": "Fibra — Obra Renova",
+      "id_pagina": [
+        5
+      ],
+      "data": {
+        "sector": "Agroindustria · Puerto",
+        "metric": "Backbone",
+        "label": "Integración de sistemas",
+        "cliente": "Renova",
+        "desc": "Backbone óptico que integra CCTV, control de acceso y detección de incendio en planta y puerto."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:30:00.000Z",
+      "editado_en": "2026-06-25T17:30:00.000Z"
+    },
+    {
+      "id_modulo": 200,
+      "tipo": "feature-grid",
+      "nombre": "Seguridad — Grilla sistemas integrados",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "eyebrow": "SISTEMAS INTEGRADOS",
+        "titulo": "Una seguridad que funciona coordinada",
+        "intro": "Una solución efectiva no depende de un único dispositivo, sino de la integración entre video, accesos, detección, comunicaciones y energía.",
+        "modulos": [
+          201,
+          202,
+          203,
+          204
+        ],
+        "features": [],
+        "__colores": {
+          "titulo": "#ffffff"
+        }
+      },
+      "design": {
+        "bg": "#0A1D37",
+        "eyebrowColor": "#60a5fa",
+        "titleColor": "#ffffff",
+        "textColor": "rgba(255,255,255,.66)",
+        "accentColor": "#60a5fa",
+        "cardBg": "",
+        "cardBorderColor": "",
+        "paddingY": "",
+        "cols": "2",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T18:26:19.600Z"
+    },
+    {
+      "id_modulo": 201,
+      "tipo": "system-card",
+      "nombre": "Seguridad — CCTV",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "icono": "fa-video",
+        "titulo": "Videovigilancia CCTV",
+        "desc": "Cámaras IP, domos y PTZ para monitorear instalaciones, procesos, accesos y perímetros, con grabación y visualización remota.",
+        "tags": "IP · domos · PTZ, Antiexplosivas, Lectura de patentes"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T17:55:00.000Z"
+    },
+    {
+      "id_modulo": 202,
+      "tipo": "system-card",
+      "nombre": "Seguridad — Detección de fuego y gas",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "icono": "fa-fire",
+        "titulo": "Detección de fuego y gas",
+        "desc": "Detección temprana para industrias, salas técnicas y áreas clasificadas: detectores, avisadores, sirenas y paneles inteligentes.",
+        "tags": "Áreas clasificadas, Paneles inteligentes, Supervisión"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T17:55:00.000Z"
+    },
+    {
+      "id_modulo": 203,
+      "tipo": "system-card",
+      "nombre": "Seguridad — Control de acceso",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "icono": "fa-fingerprint",
+        "titulo": "Control de acceso",
+        "desc": "Administramos ingresos, restringimos áreas y registramos movimientos de personas y vehículos.",
+        "tags": "Biometría, Molinetes, Barreras vehiculares"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T17:55:00.000Z"
+    },
+    {
+      "id_modulo": 204,
+      "tipo": "system-card",
+      "nombre": "Seguridad — Intrusión perimetral",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "icono": "fa-shield-halved",
+        "titulo": "Intrusión perimetral",
+        "desc": "Prevención de ingresos no autorizados con sensores, cercos y alarmas, integrados con CCTV y accesos para verificar cada evento.",
+        "tags": "Sensores, Cercos, Alarmas + video"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T17:55:00.000Z"
+    },
+    {
+      "id_modulo": 205,
+      "tipo": "feature-grid",
+      "nombre": "Seguridad — Grilla caso Renova",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "eyebrow": "CASO RENOVA",
+        "titulo": "Integración a gran escala en planta y puerto",
+        "intro": "En la planta de procesamiento de soja y puerto de Renova ejecutamos una integración masiva: CCTV industrial, control de acceso de personas y vehículos, detección de fuego y gas, backbone de fibra y cableado Cat 6.",
+        "modulos": [
+          206,
+          207,
+          208,
+          209
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#f8fafc",
+        "cols": "4"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T17:55:00.000Z"
+    },
+    {
+      "id_modulo": 206,
+      "tipo": "stat-item",
+      "nombre": "Seguridad — Renova CCTV",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "numero": "172",
+        "label": "Dispositivos de CCTV"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T17:55:00.000Z"
+    },
+    {
+      "id_modulo": 207,
+      "tipo": "stat-item",
+      "nombre": "Seguridad — Renova accesos",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "numero": "237",
+        "label": "Dispositivos de control de acceso"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T17:55:00.000Z"
+    },
+    {
+      "id_modulo": 208,
+      "tipo": "stat-item",
+      "nombre": "Seguridad — Renova fuego/gas",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "numero": "1.137",
+        "label": "Dispositivos de fuego y gas"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T17:55:00.000Z"
+    },
+    {
+      "id_modulo": 209,
+      "tipo": "stat-item",
+      "nombre": "Seguridad — Renova red",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "numero": "400",
+        "label": "Puntos de red"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T17:55:00.000Z"
+    },
+    {
+      "id_modulo": 210,
+      "tipo": "feature-grid",
+      "nombre": "Seguridad — Grilla FAQ",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "eyebrow": "PREGUNTAS FRECUENTES",
+        "titulo": "Resolvemos tus dudas",
+        "intro": "",
+        "modulos": [
+          211,
+          212,
+          213,
+          214
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#ffffff",
+        "cols": "1"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T17:55:00.000Z"
+    },
+    {
+      "id_modulo": 211,
+      "tipo": "faq-item",
+      "nombre": "Seguridad — FAQ integración existente",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "pregunta": "¿Pueden integrar sistemas nuevos con la infraestructura existente?",
+        "respuesta": "Sí. Relevamos la instalación actual, evaluamos compatibilidades y proponemos una arquitectura que aproveche lo existente cuando conviene."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T17:55:00.000Z"
+    },
+    {
+      "id_modulo": 212,
+      "tipo": "faq-item",
+      "nombre": "Seguridad — FAQ plantas industriales",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "pregunta": "¿Trabajan en plantas industriales y áreas críticas?",
+        "respuesta": "Sí. Tenemos experiencia en proyectos industriales que requieren coordinación, canalizaciones específicas, documentación técnica y sistemas confiables."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T17:55:00.000Z"
+    },
+    {
+      "id_modulo": 213,
+      "tipo": "faq-item",
+      "nombre": "Seguridad — FAQ mantenimiento",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "pregunta": "¿Realizan mantenimiento posterior?",
+        "respuesta": "Sí. Ofrecemos mantenimiento preventivo y correctivo para asegurar el funcionamiento y acompañar futuras ampliaciones."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T17:55:00.000Z"
+    },
+    {
+      "id_modulo": 214,
+      "tipo": "faq-item",
+      "nombre": "Seguridad — FAQ integración total",
+      "id_pagina": [
+        6
+      ],
+      "data": {
+        "pregunta": "¿Pueden integrar CCTV, acceso, intrusión y fuego/gas?",
+        "respuesta": "Sí. Integramos los sistemas para que funcionen coordinados y permitan una gestión centralizada y más eficiente."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T17:55:00.000Z",
+      "editado_en": "2026-06-25T17:55:00.000Z"
+    },
+    {
+      "id_modulo": 220,
+      "tipo": "feature-grid",
+      "nombre": "Soporte — Grilla PRES / trazabilidad",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "eyebrow": "GESTIONADO CON PRES",
+        "titulo": "Soporte con visibilidad y trazabilidad",
+        "intro": "El mantenimiento y cada intervención se gestionan sobre PRES, nuestra plataforma propia: el cliente ve el estado real del servicio y queda todo registrado.",
+        "modulos": [
+          221,
+          222,
+          223,
+          224
+        ],
+        "features": [],
+        "__colores": {
+          "titulo": "#ffffff",
+          "intro": "#ffffff"
+        }
+      },
+      "design": {
+        "bg": "#0A1D37",
+        "eyebrowColor": "#60a5fa",
+        "titleColor": "#ffffff",
+        "textColor": "rgba(255,255,255,.66)",
+        "accentColor": "#60a5fa",
+        "cardBg": "",
+        "cardBorderColor": "",
+        "paddingY": "",
+        "cols": "4",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T18:40:00.000Z",
+      "editado_en": "2026-06-25T18:46:52.329Z"
+    },
+    {
+      "id_modulo": 221,
+      "tipo": "feature-item",
+      "nombre": "Soporte — PRES Visibilidad",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "iconType": "fa-eye",
+        "titulo": "Visibilidad",
+        "desc": "Estado de tickets, órdenes de trabajo, visitas y próximos pasos, siempre disponibles para el cliente.",
+        "tags": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T18:40:00.000Z",
+      "editado_en": "2026-06-25T18:40:00.000Z"
+    },
+    {
+      "id_modulo": 222,
+      "tipo": "feature-item",
+      "nombre": "Soporte — PRES Trazabilidad",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "iconType": "fa-list-check",
+        "titulo": "Trazabilidad",
+        "desc": "Cada intervención queda registrada con responsables, fechas, recursos, documentación y estado.",
+        "tags": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T18:40:00.000Z",
+      "editado_en": "2026-06-25T18:40:00.000Z"
+    },
+    {
+      "id_modulo": 223,
+      "tipo": "feature-item",
+      "nombre": "Soporte — PRES Historial técnico",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "iconType": "fa-clock-rotate-left",
+        "titulo": "Historial técnico",
+        "desc": "Registro histórico por cliente, sitio, equipo o sistema, útil para auditorías, garantías y ampliaciones.",
+        "tags": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T18:40:00.000Z",
+      "editado_en": "2026-06-25T18:40:00.000Z"
+    },
+    {
+      "id_modulo": 224,
+      "tipo": "feature-item",
+      "nombre": "Soporte — PRES Control operativo",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "iconType": "fa-sliders",
+        "titulo": "Control operativo",
+        "desc": "Agenda, recursos, ejecución y seguimiento documental centralizados en un único punto.",
+        "tags": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T18:40:00.000Z",
+      "editado_en": "2026-06-25T18:40:00.000Z"
+    },
+    {
+      "id_modulo": 225,
+      "tipo": "feature-grid",
+      "nombre": "Soporte — Grilla FAQ",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "eyebrow": "PREGUNTAS FRECUENTES",
+        "titulo": "Resolvemos tus dudas",
+        "intro": "",
+        "modulos": [
+          226,
+          227,
+          228
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#ffffff",
+        "cols": "1"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T18:40:00.000Z",
+      "editado_en": "2026-06-25T18:40:00.000Z"
+    },
+    {
+      "id_modulo": 226,
+      "tipo": "faq-item",
+      "nombre": "Soporte — FAQ abono/contrato",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "pregunta": "¿Trabajan con esquema de abono o contrato?",
+        "respuesta": "Sí. El mantenimiento contratado es un esquema recurrente que asegura acompañamiento constante y un punto único de contacto para la gestión técnica."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T18:40:00.000Z",
+      "editado_en": "2026-06-25T18:40:00.000Z"
+    },
+    {
+      "id_modulo": 227,
+      "tipo": "faq-item",
+      "nombre": "Soporte — FAQ mantenimiento posterior",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "pregunta": "¿Realizan mantenimiento posterior?",
+        "respuesta": "Sí. Ofrecemos mantenimiento preventivo y correctivo para asegurar el funcionamiento y acompañar futuras ampliaciones."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T18:40:00.000Z",
+      "editado_en": "2026-06-25T18:40:00.000Z"
+    },
+    {
+      "id_modulo": 228,
+      "tipo": "faq-item",
+      "nombre": "Soporte — FAQ integración existente",
+      "id_pagina": [
+        7
+      ],
+      "data": {
+        "pregunta": "¿Pueden integrar sistemas nuevos con la infraestructura existente?",
+        "respuesta": "Sí. Relevamos la instalación actual, evaluamos compatibilidades y proponemos una arquitectura que aproveche lo existente cuando conviene."
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T18:40:00.000Z",
+      "editado_en": "2026-06-25T18:40:00.000Z"
+    },
+    {
+      "id_modulo": 230,
+      "tipo": "feature-grid",
+      "nombre": "Desarrollo — Grilla diferenciales",
+      "id_pagina": [
+        8
+      ],
+      "data": {
+        "eyebrow": "POR QUÉ NUESTRO SOFTWARE",
+        "titulo": "Software pensado desde la operación real",
+        "intro": "No partimos de una plantilla genérica: desarrollamos desde la experiencia técnica en campo, para que la herramienta sirva en el día a día.",
+        "modulos": [
+          231,
+          232,
+          233
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#f8fafc",
+        "cols": "3"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T19:10:00.000Z",
+      "editado_en": "2026-06-25T19:10:00.000Z"
+    },
+    {
+      "id_modulo": 231,
+      "tipo": "feature-item",
+      "nombre": "Desarrollo — Operación real",
+      "id_pagina": [
+        8
+      ],
+      "data": {
+        "iconType": "fa-industry",
+        "titulo": "Operación real",
+        "desc": "Desarrollado desde la experiencia operativa y técnica en campo: una herramienta práctica para el día a día industrial y empresarial.",
+        "tags": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T19:10:00.000Z",
+      "editado_en": "2026-06-25T19:10:00.000Z"
+    },
+    {
+      "id_modulo": 232,
+      "tipo": "feature-item",
+      "nombre": "Desarrollo — Trazabilidad y control",
+      "id_pagina": [
+        8
+      ],
+      "data": {
+        "iconType": "fa-list-check",
+        "titulo": "Trazabilidad y control",
+        "desc": "Convierte el servicio técnico en un proceso medible, documentado y auditable, sin perder información entre oficina técnica y personal de campo.",
+        "tags": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T19:10:00.000Z",
+      "editado_en": "2026-06-25T19:10:00.000Z"
+    },
+    {
+      "id_modulo": 233,
+      "tipo": "feature-item",
+      "nombre": "Desarrollo — Visibilidad para el cliente",
+      "id_pagina": [
+        8
+      ],
+      "data": {
+        "iconType": "fa-eye",
+        "titulo": "Visibilidad para el cliente",
+        "desc": "El cliente acompaña el ciclo operativo: valida estados y consulta información histórica o en tiempo real.",
+        "tags": ""
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T19:10:00.000Z",
+      "editado_en": "2026-06-25T19:10:00.000Z"
+    },
+    {
+      "id_modulo": 235,
+      "tipo": "feature-grid",
+      "nombre": "Nosotros — Grilla trayectoria",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "eyebrow": "TRAYECTORIA",
+        "titulo": "Más de tres décadas integrando tecnología",
+        "intro": "",
+        "modulos": [
+          236,
+          237,
+          238,
+          239
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#f8fafc",
+        "cols": "4"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T19:10:00.000Z",
+      "editado_en": "2026-06-25T19:10:00.000Z"
+    },
+    {
+      "id_modulo": 236,
+      "tipo": "stat-item",
+      "nombre": "Nosotros — Desde 1991",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "numero": "1991",
+        "label": "Desde — integrando tecnología"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T19:10:00.000Z",
+      "editado_en": "2026-06-25T19:10:00.000Z"
+    },
+    {
+      "id_modulo": 237,
+      "tipo": "stat-item",
+      "nombre": "Nosotros — Puestos",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "numero": "+15.000",
+        "label": "Puestos de cableado instalados"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T19:10:00.000Z",
+      "editado_en": "2026-06-25T19:10:00.000Z"
+    },
+    {
+      "id_modulo": 238,
+      "tipo": "stat-item",
+      "nombre": "Nosotros — Fibra",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "numero": "+100 km",
+        "label": "Fibra óptica ejecutada"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T19:10:00.000Z",
+      "editado_en": "2026-06-25T19:10:00.000Z"
+    },
+    {
+      "id_modulo": 239,
+      "tipo": "stat-item",
+      "nombre": "Nosotros — Áreas",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "numero": "+6",
+        "label": "Áreas de especialidad integradas"
+      },
+      "design": {},
+      "alerta": false,
+      "creado_en": "2026-06-25T19:10:00.000Z",
+      "editado_en": "2026-06-25T19:10:00.000Z"
+    },
+    {
+      "id_modulo": 240,
+      "tipo": "feature-grid",
+      "nombre": "Home — Grilla SISGRA en números",
+      "id_pagina": [
+        1
+      ],
+      "data": {
+        "eyebrow": "SISGRA EN NÚMEROS",
+        "titulo": "Resultados que respaldan cada proyecto",
+        "intro": "",
+        "modulos": [
+          241,
+          242,
+          243,
+          244
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#0A1D37",
+        "cols": "4",
+        "titleColor": "#ffffff",
+        "textColor": "rgba(255,255,255,.66)",
+        "eyebrowColor": "#60a5fa",
+        "accentColor": "#60a5fa"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T19:10:00.000Z",
+      "editado_en": "2026-06-25T19:10:00.000Z"
+    },
+    {
+      "id_modulo": 241,
+      "tipo": "stat-item",
+      "nombre": "Home — Años",
+      "id_pagina": [
+        1
+      ],
+      "data": {
+        "numero": "+30",
+        "label": "Años integrando tecnología"
+      },
+      "design": {
+        "titleColor": "#ffffff",
+        "accentColor": "#60a5fa",
+        "textColor": "rgba(255,255,255,.65)"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T19:10:00.000Z",
+      "editado_en": "2026-06-25T19:10:00.000Z"
+    },
+    {
+      "id_modulo": 242,
+      "tipo": "stat-item",
+      "nombre": "Home — Puestos",
+      "id_pagina": [
+        1
+      ],
+      "data": {
+        "numero": "+15.000",
+        "label": "Puestos de cableado instalados"
+      },
+      "design": {
+        "titleColor": "#ffffff",
+        "accentColor": "#60a5fa",
+        "textColor": "rgba(255,255,255,.65)"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T19:10:00.000Z",
+      "editado_en": "2026-06-25T19:10:00.000Z"
+    },
+    {
+      "id_modulo": 243,
+      "tipo": "stat-item",
+      "nombre": "Home — Fibra",
+      "id_pagina": [
+        1
+      ],
+      "data": {
+        "numero": "+100 km",
+        "label": "Fibra óptica ejecutada"
+      },
+      "design": {
+        "titleColor": "#ffffff",
+        "accentColor": "#60a5fa",
+        "textColor": "rgba(255,255,255,.65)"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T19:10:00.000Z",
+      "editado_en": "2026-06-25T19:10:00.000Z"
+    },
+    {
+      "id_modulo": 244,
+      "tipo": "stat-item",
+      "nombre": "Home — Certificadas",
+      "id_pagina": [
+        1
+      ],
+      "data": {
+        "numero": "100%",
+        "label": "Obras certificadas y documentadas"
+      },
+      "design": {
+        "titleColor": "#ffffff",
+        "accentColor": "#60a5fa",
+        "textColor": "rgba(255,255,255,.65)"
+      },
+      "alerta": false,
+      "creado_en": "2026-06-25T19:10:00.000Z",
+      "editado_en": "2026-06-25T19:10:00.000Z"
     }
   ]
 }

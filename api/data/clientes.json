@@ -6,7 +6,7 @@
     {
       "id": "renova",
       "nombre": "Renova",
-      "imagen": "",
+      "imagen": "/img/renova-removebg-preview.png",
       "url": "",
       "activo": true,
       "estado_perfil": "publicado",
@@ -22,7 +22,7 @@
     {
       "id": "telmex-claro",
       "nombre": "Telmex / Claro",
-      "imagen": "",
+      "imagen": "/img/telmex-removebg-preview.png",
       "url": "",
       "activo": true,
       "estado_perfil": "publicado",
@@ -38,7 +38,7 @@
     {
       "id": "acueducto-norte",
       "nombre": "Acueducto Norte — Santa Fe",
-      "imagen": "",
+      "imagen": "/img/marca-fondo-blanco-2024-removebg-preview-1.png",
       "url": "",
       "activo": true,
       "estado_perfil": "publicado",
@@ -54,7 +54,7 @@
     {
       "id": "ape-la-pampa",
       "nombre": "APE La Pampa",
-      "imagen": "",
+      "imagen": "/img/logo-ape.jpg",
       "url": "",
       "activo": true,
       "estado_perfil": "publicado",
