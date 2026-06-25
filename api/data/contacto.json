@@ -1,12 +1,13 @@
 {
-  "direccion": "Lamadrid 468 (Zona i) — Nave 2, Oficina 05, Rosario, Santa Fe",
-  "telefono": "(+54 341) 421-9570",
-  "email": "infoo@sisgra.com.ar",
-  "whatsapp": "543418610863",
+  "direccion": "Lamadrid 468 (Zona i) — Nave 2, Oficina 05, Nodo Rosario, Rosario, Santa Fe, Argentina",
+  "telefono": "+54 341 5276540",
+  "email": "info@sisgra.com.ar",
+  "whatsapp": "543415276540",
   "facebook": "https://www.facebook.com/sisgra.srl",
   "instagram": "#",
+  "web": "www.sisgra.com.ar",
   "formulario_activo": true,
-  "email_destino": "consultas@sisgra.com.ar",
+  "email_destino": "info@sisgra.com.ar",
   "asunto_defecto": "Consulta desde el sitio web",
-  "formulario_descripcion": "Cuéntenos sobre su organización. Un asesor se comunicará para recomendarle la mejor solución."
+  "formulario_descripcion": "Contanos qué necesitás resolver y nuestro equipo técnico te ayudará a evaluar la mejor solución."
 }

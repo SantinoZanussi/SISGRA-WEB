@@ -87,34 +87,44 @@
 }
 
 .card-icon {
-    color: var(--sisgra-blue);
-    margin-bottom: 2rem;
-    transition: transform 0.2s;
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, rgba(37,99,235,.14), rgba(37,99,235,.04));
+    color: var(--blue-600);
+    box-shadow: inset 0 0 0 1px rgba(37,99,235,.16);
+    margin-bottom: 1.75rem;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .service-card:hover .card-icon {
-    transform: scale(1.03);
+    transform: translateY(-2px) scale(1.04);
+    box-shadow: inset 0 0 0 1px rgba(37,99,235,.28);
 }
 
 .card-icon svg {
-    width: 3rem;
-    height: 3rem;
+    width: 1.85rem;
+    height: 1.85rem;
 }
 
 .card-link {
-    color: var(--sisgra-blue);
+    margin-top: auto;
+    color: var(--blue-600);
     font-weight: 900;
     font-size: 0.625rem;
     text-transform: uppercase;
     letter-spacing: 0.2em;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    transition: transform 0.2s;
+    gap: 0.6rem;
+    transition: gap 0.25s, color 0.25s;
 }
 
 .service-card:hover .card-link {
-    transform: translateX(0.5rem);
+    gap: 1rem;
 }
 
 .card-link span {

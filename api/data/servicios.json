@@ -1,23 +1,29 @@
 {
-  "titulo_seccion": "Portafolio de Soluciones",
-  "eyebrow": "Lo que hacemos",
+  "titulo_seccion": "Soluciones que integramos",
+  "eyebrow": "Qué ofrecemos",
   "cards": [
     {
-      "id": "instalaciones",
-      "titulo": "Instalaciones",
-      "descripcion": "Certificación de cableado Categoría 8, Fibra Óptica y Seguridad Electrónica de vanguardia.",
+      "id": "comunicaciones",
+      "titulo": "Comunicaciones e infraestructura",
+      "descripcion": "Fibra óptica, cableado estructurado, redes LAN/WAN, networking, racks, canalizaciones y certificación de enlaces.",
       "enlace": "./html/cableado_estructurado.html"
     },
     {
+      "id": "seguridad",
+      "titulo": "Seguridad electrónica",
+      "descripcion": "CCTV, control de acceso, intrusión perimetral, detección de incendio y gas, integración de plataformas y monitoreo centralizado.",
+      "enlace": "./html/seguridad.html"
+    },
+    {
       "id": "soporte",
-      "titulo": "Soporte IT",
-      "descripcion": "Mantenimiento integral de infraestructura y asistencia técnica corporativa especializada.",
+      "titulo": "Soporte IT y mantenimiento",
+      "descripcion": "Asistencia técnica preventiva y correctiva para infraestructura informática, hardware, software, redes y equipamiento crítico.",
       "enlace": "./html/soporte_it.html"
     },
     {
       "id": "software",
-      "titulo": "Software",
-      "descripcion": "Soluciones a medida para optimizar procesos logísticos y gestión de datos empresariales.",
+      "titulo": "Desarrollo de software",
+      "descripcion": "Soluciones propias y a medida para gestionar obras, turnos, recursos, trazabilidad, atención al público e información operativa.",
       "enlace": "./html/desarrollo.html"
     }
   ]

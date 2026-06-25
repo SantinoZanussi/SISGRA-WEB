@@ -1882,9 +1882,7 @@ const MOD_SEARCH_ALIASES = {
   'feature-grid':      ['grilla', 'grilla de caracteristicas', 'contenedor'],
   'feature-item':      ['caracteristica', 'caracteristicas', 'grilla de caracteristicas'],
   'faq-item':          ['preguntas frecuentes', 'pregunta frecuente', 'faq'],
-  'faq':               ['preguntas frecuentes', 'faq'],
   'process-step-item': ['pasos del proceso', 'paso del proceso', 'pasos'],
-  'process-steps':     ['pasos del proceso', 'pasos'],
 };
 const _tipoAlias = tipo => (MOD_SEARCH_ALIASES[tipo] || []).join(' ');
 const _familyById = id   => MOD_FAMILIES.find(f => f.id === id) || null;
@@ -2019,10 +2017,14 @@ function renderModCatalog() {
   grid.querySelectorAll('[data-mod-new]').forEach(b => b.addEventListener('click', () => nuevaVarianteDeModulo(b.dataset.modNew, null)));
 }
 
+/* Tipos legacy (autocontenidos) que NO deben poder crearse: su contenido va
+   dentro de una Grilla mediante ítems inyectados (faq-item, process-step-item). */
+const LEGACY_HIDDEN_TIPOS = new Set(['faq', 'process-steps']);
+
 /* Tipos de sección que todavía NO tienen módulo (para el botón "Nuevo") */
 function _tiposSinModulo() {
   const existentes = new Set(_mods.map(m => m.tipo));
-  return Object.keys(SECTIONS).filter(t => !existentes.has(t));
+  return Object.keys(SECTIONS).filter(t => !existentes.has(t) && !LEGACY_HIDDEN_TIPOS.has(t));
 }
 
 /* Llena la lista de checkboxes de "Páginas asignadas" del modal de nuevo módulo. */

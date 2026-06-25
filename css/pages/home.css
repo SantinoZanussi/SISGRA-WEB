@@ -431,8 +431,8 @@ a.logos-cell:hover::after { opacity: 1; }
    SERVICES SECTION
 ================================================ */
 .services-section {
-  /* padding-top: 5rem;
-  padding-bottom: 6rem; */
+  padding-top: 5.5rem;
+  padding-bottom: 5.5rem;
   background-color: var(--white);
 }
 
@@ -502,26 +502,42 @@ a.logos-cell:hover::after { opacity: 1; }
 }
 
 .service-card {
+  position: relative;
   background-color: var(--white);
   padding: 2rem;
-  border: 1px solid var(--slate-100);
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.5s, border-color 0.5s, box-shadow 0.5s;
+  border: 1px solid var(--slate-200);
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(10,29,55,.04), 0 18px 40px -28px rgba(10,29,55,.45);
+  transition: transform .4s cubic-bezier(.2,.7,.2,1), border-color .4s, box-shadow .4s;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue-600), rgba(37,99,235,0));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .4s ease;
 }
 
 @media (min-width: 1024px) {
   .service-card {
-    padding: 3rem;
+    padding: 2.5rem;
   }
 }
 
 .service-card:hover {
-  transform: translateY(-10px);
-  border-color: var(--sisgra-blue);
-  box-shadow: var(--shadow-2xl);
+  transform: translateY(-8px);
+  border-color: rgba(37,99,235,.35);
+  box-shadow: 0 1px 2px rgba(10,29,55,.05), 0 34px 60px -28px rgba(10,29,55,.42);
 }
+
+.service-card:hover::before { transform: scaleX(1); }
 
 .card-title {
   font-size: 1.125rem;

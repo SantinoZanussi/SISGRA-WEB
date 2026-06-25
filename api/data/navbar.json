@@ -16,7 +16,7 @@
       "menu": "CE",
       "href": "/html/blog",
       "orden": 3,
-      "activo": true
+      "activo": false
     },
     {
       "id_menu": 10,
@@ -29,7 +29,7 @@
     },
     {
       "id_menu": 3,
-      "titulo": "Cableado Estructurado",
+      "titulo": "Comunicaciones e Infraestructura",
       "padre": 10,
       "menu": "CE",
       "href": "/html/cableado_estructurado",
@@ -74,12 +74,12 @@
     },
     {
       "id_menu": 8,
-      "titulo": "asdasd",
+      "titulo": "Página de prueba",
       "padre": 0,
       "menu": "CE",
       "href": "/html/btn-8",
       "orden": 10,
-      "activo": true
+      "activo": false
     },
     {
       "id_menu": 9,
