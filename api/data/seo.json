@@ -42,5 +42,21 @@
   "btn-9": {
     "title": "Nosotros · SISGRA S.R.L.",
     "description": "Desde 1991 integramos tecnología para empresas e industrias. Conocé a SISGRA, integrador tecnológico ubicado en Zona i - Nodo Rosario."
+  },
+  "contacto": {
+    "title": "Contacto · SISGRA S.R.L.",
+    "description": "Hablemos de tu próximo proyecto. Estamos en Zona i - Nodo Rosario. Escribinos y nuestro equipo técnico te ayuda a evaluar la mejor solución."
+  },
+  "obras": {
+    "title": "Obras y Casos de éxito · SISGRA S.R.L.",
+    "description": "Experiencia comprobada en obras de alta exigencia: Renova, Telmex/Claro, Acueducto Norte y APE La Pampa. Telecomunicaciones, energía, agroindustria e infraestructura crítica."
+  },
+  "sectores": {
+    "title": "Sectores · SISGRA S.R.L.",
+    "description": "Soluciones tecnológicas por sector: industria, agroindustria y puertos, energía, telecomunicaciones, banca y organismos públicos. Integramos comunicaciones, seguridad, software y soporte."
+  },
+  "pres": {
+    "title": "PRES · Gestor de obras y recursos · SISGRA S.R.L.",
+    "description": "PRES, plataforma propia de SISGRA para gestionar obras, recursos, órdenes de trabajo, tickets, compras, documentación y trazabilidad, con acceso del cliente al avance."
   }
 }

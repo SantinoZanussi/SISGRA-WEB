@@ -23,9 +23,9 @@
       "size": 19811,
       "origen": "existente",
       "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-25T18:43:19.964Z",
+      "editado_en": "2026-06-29T16:36:46.906Z",
       "etiquetas": [
-        "lbl-c8a6e863-ae1c-41b3-971e-6cd2d02acec4"
+        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
       ]
     },
     {
@@ -38,9 +38,9 @@
       "size": 4738,
       "origen": "existente",
       "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-25T18:43:22.887Z",
+      "editado_en": "2026-06-29T16:36:48.960Z",
       "etiquetas": [
-        "lbl-c8a6e863-ae1c-41b3-971e-6cd2d02acec4"
+        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
       ]
     },
     {
@@ -53,7 +53,10 @@
       "size": 86671,
       "origen": "existente",
       "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-24T17:04:02.486Z"
+      "editado_en": "2026-06-29T16:36:51.042Z",
+      "etiquetas": [
+        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
+      ]
     },
     {
       "id": "img-e25fa458-964f-4c3f-a8c1-8c6fc62a6569",
@@ -65,7 +68,10 @@
       "size": 40908,
       "origen": "existente",
       "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-01T17:28:08.281Z"
+      "editado_en": "2026-06-29T16:36:53.808Z",
+      "etiquetas": [
+        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
+      ]
     },
     {
       "id": "img-642137ab-45c3-49f5-a1c8-9d8e754e7d9b",
@@ -77,9 +83,9 @@
       "size": 2162810,
       "origen": "existente",
       "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-25T18:44:56.203Z",
+      "editado_en": "2026-06-29T16:35:42.194Z",
       "etiquetas": [
-        "lbl-57c7bfb1-8bee-46bc-a3c8-b6f6da643348"
+        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
       ]
     },
     {
@@ -92,9 +98,9 @@
       "size": 2394030,
       "origen": "existente",
       "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-25T18:44:58.493Z",
+      "editado_en": "2026-06-29T16:35:44.938Z",
       "etiquetas": [
-        "lbl-57c7bfb1-8bee-46bc-a3c8-b6f6da643348"
+        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
       ]
     },
     {
@@ -119,9 +125,9 @@
       "size": 1926428,
       "origen": "existente",
       "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-25T18:45:09.423Z",
+      "editado_en": "2026-06-29T16:35:48.937Z",
       "etiquetas": [
-        "lbl-57c7bfb1-8bee-46bc-a3c8-b6f6da643348"
+        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
       ]
     },
     {
@@ -159,10 +165,10 @@
       "size": 2071305,
       "origen": "subida",
       "etiquetas": [
-        "lbl-57c7bfb1-8bee-46bc-a3c8-b6f6da643348"
+        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
       ],
       "creado_en": "2026-06-20T22:48:08.080Z",
-      "editado_en": "2026-06-25T18:44:52.634Z"
+      "editado_en": "2026-06-29T16:35:31.226Z"
     },
     {
       "id": "img-c66eea3e-718b-49dc-a6a9-db64eaf0b112",
@@ -174,10 +180,10 @@
       "size": 2071733,
       "origen": "subida",
       "etiquetas": [
-        "lbl-57c7bfb1-8bee-46bc-a3c8-b6f6da643348"
+        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
       ],
       "creado_en": "2026-06-20T22:48:08.091Z",
-      "editado_en": "2026-06-25T18:44:49.210Z"
+      "editado_en": "2026-06-29T16:35:28.977Z"
     },
     {
       "id": "img-35a3ef0f-fe17-4048-ac53-a77982b85cf3",
@@ -189,10 +195,10 @@
       "size": 1891470,
       "origen": "subida",
       "etiquetas": [
-        "lbl-57c7bfb1-8bee-46bc-a3c8-b6f6da643348"
+        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
       ],
       "creado_en": "2026-06-20T22:48:08.099Z",
-      "editado_en": "2026-06-25T18:44:44.740Z"
+      "editado_en": "2026-06-29T16:35:31.650Z"
     },
     {
       "id": "img-963dcac8-8aee-406f-b63f-eab2928a1d5f",
@@ -204,10 +210,10 @@
       "size": 1667983,
       "origen": "subida",
       "etiquetas": [
-        "lbl-57c7bfb1-8bee-46bc-a3c8-b6f6da643348"
+        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
       ],
       "creado_en": "2026-06-24T17:07:36.871Z",
-      "editado_en": "2026-06-25T18:44:41.339Z"
+      "editado_en": "2026-06-29T16:35:35.040Z"
     },
     {
       "id": "img-6f4707c0-5ed6-40e6-a067-ee38e8e10515",
@@ -219,10 +225,10 @@
       "size": 2027780,
       "origen": "subida",
       "etiquetas": [
-        "lbl-57c7bfb1-8bee-46bc-a3c8-b6f6da643348"
+        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
       ],
       "creado_en": "2026-06-24T17:11:57.290Z",
-      "editado_en": "2026-06-25T18:44:38.631Z"
+      "editado_en": "2026-06-29T16:35:18.858Z"
     },
     {
       "id": "img-56686d0f-a574-4255-8ec2-51ffd024aeff",
@@ -234,10 +240,10 @@
       "size": 1959886,
       "origen": "subida",
       "etiquetas": [
-        "lbl-57c7bfb1-8bee-46bc-a3c8-b6f6da643348"
+        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
       ],
       "creado_en": "2026-06-24T17:15:28.539Z",
-      "editado_en": "2026-06-25T18:44:35.474Z"
+      "editado_en": "2026-06-29T16:35:14.040Z"
     },
     {
       "id": "img-c02f6b17-a161-4304-91bb-e951f86654e7",
@@ -249,10 +255,10 @@
       "size": 2144404,
       "origen": "subida",
       "etiquetas": [
-        "lbl-57c7bfb1-8bee-46bc-a3c8-b6f6da643348"
+        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
       ],
       "creado_en": "2026-06-24T17:25:38.112Z",
-      "editado_en": "2026-06-25T18:44:32.471Z"
+      "editado_en": "2026-06-29T16:35:16.531Z"
     },
     {
       "id": "img-10343b25-70ce-49d1-8d68-13e7d097333e",
@@ -264,10 +270,10 @@
       "size": 2060431,
       "origen": "subida",
       "etiquetas": [
-        "lbl-57c7bfb1-8bee-46bc-a3c8-b6f6da643348"
+        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
       ],
       "creado_en": "2026-06-24T17:40:33.740Z",
-      "editado_en": "2026-06-25T18:44:27.049Z"
+      "editado_en": "2026-06-29T16:35:57.232Z"
     },
     {
       "id": "img-97dbc28d-d0a9-4944-b5f9-54b13bc7845e",
@@ -279,10 +285,10 @@
       "size": 17018,
       "origen": "subida",
       "etiquetas": [
-        "lbl-c8a6e863-ae1c-41b3-971e-6cd2d02acec4"
+        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
       ],
       "creado_en": "2026-06-25T16:47:29.093Z",
-      "editado_en": "2026-06-25T18:42:50.717Z"
+      "editado_en": "2026-06-29T16:36:42.098Z"
     },
     {
       "id": "img-a5f48cc9-cdaf-4132-84c3-93bcb7f43e21",
@@ -294,10 +300,10 @@
       "size": 85966,
       "origen": "subida",
       "etiquetas": [
-        "lbl-c8a6e863-ae1c-41b3-971e-6cd2d02acec4"
+        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
       ],
       "creado_en": "2026-06-25T16:58:15.725Z",
-      "editado_en": "2026-06-25T18:42:46.190Z"
+      "editado_en": "2026-06-29T16:36:39.634Z"
     },
     {
       "id": "img-3ad18e68-3921-4679-ab4c-6e43adb40be7",
@@ -309,10 +315,10 @@
       "size": 109934,
       "origen": "subida",
       "etiquetas": [
-        "lbl-c8a6e863-ae1c-41b3-971e-6cd2d02acec4"
+        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
       ],
       "creado_en": "2026-06-25T16:58:15.733Z",
-      "editado_en": "2026-06-25T18:42:43.174Z"
+      "editado_en": "2026-06-29T16:36:35.377Z"
     },
     {
       "id": "img-1c099d09-91b7-44f2-9d03-6945f9275b29",
@@ -324,10 +330,10 @@
       "size": 106807,
       "origen": "subida",
       "etiquetas": [
-        "lbl-c8a6e863-ae1c-41b3-971e-6cd2d02acec4"
+        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
       ],
       "creado_en": "2026-06-25T16:59:38.794Z",
-      "editado_en": "2026-06-25T18:42:39.902Z"
+      "editado_en": "2026-06-29T16:36:33.193Z"
     },
     {
       "id": "img-f29fb2ba-ccaa-4d2f-8a6f-33071a848132",
@@ -339,10 +345,10 @@
       "size": 1890059,
       "origen": "subida",
       "etiquetas": [
-        "lbl-57c7bfb1-8bee-46bc-a3c8-b6f6da643348"
+        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
       ],
       "creado_en": "2026-06-25T17:10:50.872Z",
-      "editado_en": "2026-06-25T18:45:02.831Z"
+      "editado_en": "2026-06-29T16:35:10.388Z"
     },
     {
       "id": "img-b323d613-4533-44f8-ad92-9e7f7659bbaa",
@@ -354,10 +360,10 @@
       "size": 1966225,
       "origen": "subida",
       "etiquetas": [
-        "lbl-57c7bfb1-8bee-46bc-a3c8-b6f6da643348"
+        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
       ],
       "creado_en": "2026-06-25T17:26:55.766Z",
-      "editado_en": "2026-06-25T18:45:05.391Z"
+      "editado_en": "2026-06-29T16:35:06.986Z"
     }
   ],
   "labels": [
@@ -410,34 +416,16 @@
       "grupo": "color"
     },
     {
-      "id": "lbl-3b8dce50-6335-4c4a-8a6e-8088bb226ef2",
-      "nombre": "Ejemplo Plantilla",
-      "color": "#1eff00",
-      "grupo": "plantilla"
-    },
-    {
-      "id": "lbl-1581ddb7-d575-400a-a057-673856842ccb",
-      "nombre": "Ejemplo Módulos",
-      "color": "#b19d20",
+      "id": "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a",
+      "nombre": "Contenido",
+      "color": "#d11cd4",
       "grupo": "modulo"
     },
     {
-      "id": "lbl-b1520c69-6f83-4d97-8eb4-e107d433df9d",
-      "nombre": "Ejemplo Menú",
-      "color": "#f73bf1",
-      "grupo": "menu"
-    },
-    {
-      "id": "lbl-c8a6e863-ae1c-41b3-971e-6cd2d02acec4",
-      "nombre": "clientes",
-      "color": "#3b82f6",
-      "grupo": "color"
-    },
-    {
-      "id": "lbl-57c7bfb1-8bee-46bc-a3c8-b6f6da643348",
-      "nombre": "contenido",
-      "color": "#6e7277",
-      "grupo": "color"
+      "id": "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04",
+      "nombre": "Clientes",
+      "color": "#0062ff",
+      "grupo": "modulo"
     }
   ]
 }

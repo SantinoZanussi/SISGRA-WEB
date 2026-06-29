@@ -8,7 +8,7 @@
         "logoSrc": "/img/sisgra_blanco.png",
         "logoSrcHref": "/",
         "ctaLabel": "Contáctese",
-        "ctaHref": "#contacto",
+        "ctaHref": "/html/contacto",
         "items": [
           {
             "tipo": "link",
@@ -2003,7 +2003,9 @@
       "tipo": "feature-grid",
       "nombre": "Servicios gestionados con PRES",
       "id_pagina": [
-        1
+        1,
+        4,
+        6
       ],
       "data": {
         "eyebrow": "PLATAFORMA PROPIA",
@@ -2088,7 +2090,9 @@
       "tipo": "feature-item",
       "nombre": "Órdenes de trabajo y tickets",
       "id_pagina": [
-        1
+        1,
+        4,
+        6
       ],
       "data": {
         "iconType": "check",
@@ -2105,7 +2109,9 @@
       "tipo": "feature-item",
       "nombre": "Avances y documentación",
       "id_pagina": [
-        1
+        1,
+        4,
+        6
       ],
       "data": {
         "iconType": "database",
@@ -2122,7 +2128,9 @@
       "tipo": "feature-item",
       "nombre": "Coordinación de equipos",
       "id_pagina": [
-        1
+        1,
+        4,
+        6
       ],
       "data": {
         "iconType": "gear",
@@ -2139,7 +2147,9 @@
       "tipo": "feature-item",
       "nombre": "Visibilidad para el cliente",
       "id_pagina": [
-        1
+        1,
+        4,
+        6
       ],
       "data": {
         "iconType": "chart",
@@ -2156,7 +2166,9 @@
       "tipo": "feature-item",
       "nombre": "Trazabilidad total",
       "id_pagina": [
-        1
+        1,
+        4,
+        6
       ],
       "data": {
         "iconType": "shield",
@@ -2765,7 +2777,8 @@
       "tipo": "feature-item",
       "nombre": "Industria y manufactura",
       "id_pagina": [
-        12
+        12,
+        17
       ],
       "data": {
         "iconType": "gear",
@@ -2782,7 +2795,8 @@
       "tipo": "feature-item",
       "nombre": "Agroindustria y puertos",
       "id_pagina": [
-        12
+        12,
+        17
       ],
       "data": {
         "iconType": "location",
@@ -2799,7 +2813,8 @@
       "tipo": "feature-item",
       "nombre": "Energía y servicios públicos",
       "id_pagina": [
-        12
+        12,
+        17
       ],
       "data": {
         "iconType": "lightning",
@@ -2816,7 +2831,8 @@
       "tipo": "feature-item",
       "nombre": "Telecomunicaciones",
       "id_pagina": [
-        12
+        12,
+        17
       ],
       "data": {
         "iconType": "chart",
@@ -2833,7 +2849,8 @@
       "tipo": "feature-item",
       "nombre": "Banca y empresas de servicios",
       "id_pagina": [
-        12
+        12,
+        17
       ],
       "data": {
         "iconType": "shield",
@@ -2850,7 +2867,8 @@
       "tipo": "feature-item",
       "nombre": "Organismos públicos",
       "id_pagina": [
-        12
+        12,
+        17
       ],
       "data": {
         "iconType": "check",
@@ -3522,7 +3540,8 @@
       "tipo": "stat-item",
       "nombre": "Seguridad — Renova CCTV",
       "id_pagina": [
-        6
+        6,
+        16
       ],
       "data": {
         "numero": "172",
@@ -3538,7 +3557,8 @@
       "tipo": "stat-item",
       "nombre": "Seguridad — Renova accesos",
       "id_pagina": [
-        6
+        6,
+        16
       ],
       "data": {
         "numero": "237",
@@ -3554,7 +3574,8 @@
       "tipo": "stat-item",
       "nombre": "Seguridad — Renova fuego/gas",
       "id_pagina": [
-        6
+        6,
+        16
       ],
       "data": {
         "numero": "1.137",
@@ -3570,7 +3591,8 @@
       "tipo": "stat-item",
       "nombre": "Seguridad — Renova red",
       "id_pagina": [
-        6
+        6,
+        16
       ],
       "data": {
         "numero": "400",
@@ -4142,6 +4164,865 @@
       "alerta": false,
       "creado_en": "2026-06-25T19:10:00.000Z",
       "editado_en": "2026-06-25T19:10:00.000Z"
+    },
+    {
+      "id_modulo": 250,
+      "tipo": "ecosistema",
+      "nombre": "Ecosistema — Zona i (Home/Contacto)",
+      "data": {
+        "eyebrow": "ECOSISTEMA TECNOLÓGICO",
+        "titulo": "Parte del ecosistema tecnológico de Rosario",
+        "p1": "SISGRA forma parte del entorno tecnológico de Zona i - Nodo Rosario, un espacio estratégico vinculado al Polo Tecnológico Rosario, donde conviven empresas de base tecnológica, emprendedores, instituciones del conocimiento y actores públicos y privados orientados a la innovación.",
+        "p2": "Estar ubicados en Zona i potencia nuestra capacidad de vinculación, actualización y colaboración, fortaleciendo nuestra propuesta como integradores de soluciones tecnológicas para industrias, empresas e infraestructura crítica.",
+        "frase": "Innovación, ingeniería y experiencia de campo desde el corazón tecnológico de Rosario.",
+        "refs": "Polo Tecnológico Rosario | https://polotecnologico.net/\nZona i | https://polotecnologico.net/zona-i/\nÁrea tecnológica | https://polotecnologico.net/area-tecnologica/\nDossier Zona i | https://polotecnologico.net/wp-content/uploads/2023/08/dossier-Zona-i-6.pdf"
+      },
+      "design": {
+        "bg": "linear-gradient(160deg,#102a52,#0a1d37)",
+        "accentColor": "#38bdf8",
+        "titleColor": "#ffffff",
+        "textColor": "rgba(255,255,255,.72)"
+      }
+    },
+    {
+      "id_modulo": 251,
+      "tipo": "ecosistema",
+      "nombre": "Ecosistema — Ubicados en Zona i (Nosotros)",
+      "data": {
+        "eyebrow": "ZONA i · NODO ROSARIO",
+        "titulo": "Ubicados en Zona i, Nodo Rosario",
+        "p1": "Nuestra sede se encuentra en Zona i - Nodo Rosario, dentro de un entorno tecnológico diseñado para promover la innovación, la colaboración y el desarrollo de empresas de base tecnológica.",
+        "p2": "Esta ubicación no es solo un domicilio operativo: representa una decisión estratégica. Nos permite estar conectados con un ecosistema donde interactúan empresas, universidades, emprendedores e instituciones, generando oportunidades de colaboración, actualización técnica y desarrollo de nuevas soluciones.",
+        "frase": "",
+        "refs": "Polo Tecnológico Rosario | https://polotecnologico.net/\nZona i | https://polotecnologico.net/zona-i/\nÁrea tecnológica | https://polotecnologico.net/area-tecnologica/\nDossier Zona i | https://polotecnologico.net/wp-content/uploads/2023/08/dossier-Zona-i-6.pdf"
+      },
+      "design": {
+        "bg": "linear-gradient(160deg,#102a52,#0a1d37)",
+        "accentColor": "#38bdf8",
+        "titleColor": "#ffffff",
+        "textColor": "rgba(255,255,255,.72)"
+      }
+    },
+    {
+      "id_modulo": 252,
+      "tipo": "text-block",
+      "nombre": "Nosotros — Equipo",
+      "data": {
+        "eyebrow": "EQUIPO",
+        "titulo": "Un equipo técnico con experiencia de campo",
+        "descripcion": "Contamos con profesionales, técnicos y colaboradores especializados en distintas áreas tecnológicas. Nuestra experiencia en campo nos permite resolver proyectos que requieren coordinación, precisión técnica, cumplimiento de plazos y adaptación a entornos operativos exigentes."
+      },
+      "design": {
+        "bg": "#ffffff",
+        "align": "left"
+      }
+    },
+    {
+      "id_modulo": 253,
+      "tipo": "sede",
+      "nombre": "Contacto — Nuestra sede",
+      "data": {
+        "eyebrow": "NUESTRA SEDE",
+        "titulo": "Zona i - Nodo Rosario",
+        "intro": "Estamos ubicados en Zona i - Nodo Rosario, un espacio de referencia para empresas tecnológicas, innovación colaborativa y desarrollo de soluciones aplicadas.",
+        "direccion": "Lamadrid 468 - NAVE 2, Oficina 05, Nodo Rosario, Zona i, Rosario, Santa Fe, Argentina",
+        "telefono": "+54 341 5276540",
+        "telefonoHref": "tel:+543415276540",
+        "email": "info@sisgra.com.ar",
+        "emailHref": "mailto:info@sisgra.com.ar",
+        "web": "www.sisgra.com.ar",
+        "webHref": "https://www.sisgra.com.ar",
+        "mapaSrc": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3348.9!2d-60.6530!3d-32.9440!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b652f52c9a5e3b%3A0x0!2sLamadrid+468%2C+Rosario%2C+Argentina!5e0!3m2!1ses!2sar!4v1680000000000",
+        "mensajeFinal": "Relevamos necesidades, analizamos alternativas y proponemos soluciones tecnológicas alineadas con los objetivos de cada organización."
+      },
+      "design": {
+        "bg": "#f8fafc",
+        "accentColor": "#2563eb"
+      }
+    },
+    {
+      "id_modulo": 271,
+      "tipo": "process-step-item",
+      "nombre": "Seguridad — Paso 01",
+      "data": {
+        "numero": "01",
+        "titulo": "Relevamiento de riesgos",
+        "desc": "Accesos, áreas críticas, flujos de personas y vehículos, infraestructura disponible y necesidades de monitoreo."
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 272,
+      "tipo": "process-step-item",
+      "nombre": "Seguridad — Paso 02",
+      "data": {
+        "numero": "02",
+        "titulo": "Diseño e ingeniería",
+        "desc": "Arquitectura de seguridad, dispositivos, plataformas, canalizaciones, energía, red de datos e integración entre sistemas."
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 273,
+      "tipo": "process-step-item",
+      "nombre": "Seguridad — Paso 03",
+      "data": {
+        "numero": "03",
+        "titulo": "Ejecución certificada",
+        "desc": "Instalación, configuración, pruebas y documentación con personal técnico especializado."
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 274,
+      "tipo": "process-step-item",
+      "nombre": "Seguridad — Paso 04",
+      "data": {
+        "numero": "04",
+        "titulo": "Soporte y mantenimiento",
+        "desc": "Mantenimiento preventivo, correctivo, ampliaciones y mejoras para sostener la operación."
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 270,
+      "tipo": "feature-grid",
+      "nombre": "Seguridad — Grilla proceso de trabajo",
+      "data": {
+        "eyebrow": "PROCESO DE TRABAJO",
+        "titulo": "Cómo abordamos cada proyecto de seguridad",
+        "intro": "De la evaluación de riesgos a la puesta en marcha y el mantenimiento, con personal técnico especializado.",
+        "modulos": [
+          271,
+          272,
+          273,
+          274
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#f8fafc",
+        "cols": "4"
+      }
+    },
+    {
+      "id_modulo": 276,
+      "tipo": "feature-item",
+      "nombre": "Soporte — Menor tiempo de resolución",
+      "data": {
+        "iconType": "fa-gauge-high",
+        "titulo": "Menor tiempo de resolución",
+        "desc": "Resolvemos incidentes más rápido al centralizar el soporte de toda tu infraestructura.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 277,
+      "tipo": "feature-item",
+      "nombre": "Soporte — Mantenimiento preventivo",
+      "data": {
+        "iconType": "fa-shield-halved",
+        "titulo": "Mantenimiento preventivo",
+        "desc": "Anticipamos fallas con monitoreo y rutinas preventivas para sostener la disponibilidad.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 278,
+      "tipo": "feature-item",
+      "nombre": "Soporte — Actualización tecnológica",
+      "data": {
+        "iconType": "fa-arrow-trend-up",
+        "titulo": "Actualización tecnológica",
+        "desc": "Asesoramiento para evolucionar el equipamiento y las plataformas cuando conviene.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 279,
+      "tipo": "feature-item",
+      "nombre": "Soporte — Soporte multiplataforma",
+      "data": {
+        "iconType": "fa-layer-group",
+        "titulo": "Soporte multiplataforma",
+        "desc": "Asistencia sobre múltiples sistemas, marcas y entornos de trabajo.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 280,
+      "tipo": "feature-item",
+      "nombre": "Soporte — Contacto directo con marcas",
+      "data": {
+        "iconType": "fa-handshake",
+        "titulo": "Contacto directo con marcas",
+        "desc": "Gestión con marcas y proveedores para resolver con respaldo del fabricante.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 281,
+      "tipo": "feature-item",
+      "nombre": "Soporte — Acompañamiento en el crecimiento",
+      "data": {
+        "iconType": "fa-chart-line",
+        "titulo": "Acompañamiento en el crecimiento",
+        "desc": "Planificamos la infraestructura para acompañar la expansión de tu operación.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 275,
+      "tipo": "feature-grid",
+      "nombre": "Soporte — Grilla un único punto de contacto",
+      "data": {
+        "eyebrow": "UN ÚNICO PUNTO DE CONTACTO",
+        "titulo": "Tu departamento de sistemas externo",
+        "intro": "Como integradores planificamos, implementamos y administramos hardware, software, redes y servicios, para que tu equipo se concentre en su operación principal.",
+        "modulos": [
+          276,
+          277,
+          278,
+          279,
+          280,
+          281
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#ffffff",
+        "cols": "3"
+      }
+    },
+    {
+      "id_modulo": 260,
+      "tipo": "text-block",
+      "nombre": "Obras — Hero",
+      "data": {
+        "eyebrow": "OBRAS / CASOS DE ÉXITO",
+        "titulo": "Experiencia comprobada en obras de alta exigencia",
+        "descripcion": "Participamos en proyectos de telecomunicaciones, energía, agroindustria, seguridad electrónica e infraestructura crítica, integrando ingeniería, suministros, construcción, certificación y soporte."
+      },
+      "design": {
+        "bg": "linear-gradient(160deg,#102a52,#0a1d37)",
+        "align": "center",
+        "eyebrowColor": "#38bdf8",
+        "titleColor": "#ffffff",
+        "textColor": "rgba(255,255,255,.72)",
+        "titleSize": "clamp(2rem,4.5vw,3.2rem)",
+        "paddingY": "6.5rem"
+      }
+    },
+    {
+      "id_modulo": 262,
+      "tipo": "caso-item",
+      "nombre": "Obras — Caso Renova",
+      "data": {
+        "sector": "Agroindustria · Planta y puerto",
+        "titulo": "Renova",
+        "metric": "",
+        "metricLabel": "",
+        "descripcion": "Planta de procesamiento de soja y puerto: integración de seguridad electrónica e infraestructura de comunicaciones, con documentación conforme a obra.",
+        "bullets": "CCTV industrial\nControl de acceso de personas y vehículos\nDetección de fuego y gas\nBackbone de fibra óptica\nCableado estructurado Cat. 6\nCanalizaciones y tableros\nIngeniería complementaria, puesta en marcha y documentación"
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 263,
+      "tipo": "caso-item",
+      "nombre": "Obras — Caso Telmex / Claro",
+      "data": {
+        "sector": "Telecomunicaciones · Redes urbanas",
+        "titulo": "Telmex / Claro",
+        "metric": "",
+        "metricLabel": "",
+        "descripcion": "Ingeniería e implementación de redes ópticas urbanas: obra civil, tendidos, empalmes y puesta en servicio de equipamiento activo.",
+        "bullets": "Fibra óptica subterránea y aérea\nEmpalmes por fusión\nArmado de ODF\nMedición OTDR\nCanalizaciones urbanas y cruces de calle\nGestión de permisos\nConfiguración de switches y routers"
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 264,
+      "tipo": "caso-item",
+      "nombre": "Obras — Caso Acueducto Norte",
+      "data": {
+        "sector": "Infraestructura hídrica · Santa Fe",
+        "titulo": "Acueducto Norte",
+        "metric": "38.000 m",
+        "metricLabel": "de fibra óptica",
+        "descripcion": "Plantel exterior de fibra óptica para telegestión, acompañando el recorrido del Acueducto Norte.",
+        "bullets": "Zanjeo y tendido de tritubo\nMontaje de cámaras de paso\nCable de fibra óptica y empalmes\nSalas de comunicación\nIngeniería de detalle y planimetría conforme a obra\nCertificación OTDR"
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 265,
+      "tipo": "caso-item",
+      "nombre": "Obras — Caso APE La Pampa",
+      "data": {
+        "sector": "Energía · Alta tensión",
+        "titulo": "APE La Pampa",
+        "metric": "18.000 m",
+        "metricLabel": "de fibra ADSS",
+        "descripcion": "Estación transformadora de 132/33/13,2 kV: tendido de fibra óptica ADSS sobre líneas de media y alta tensión.",
+        "bullets": "Tendido ADSS sobre líneas de MT/AT\nFijaciones y empalmes\nCálculo de vanos\nCruces de ruta\nIngeniería de detalle y planimetría\nCertificación OTDR"
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 261,
+      "tipo": "feature-grid",
+      "nombre": "Obras — Grilla casos",
+      "data": {
+        "eyebrow": "CASOS DESTACADOS",
+        "titulo": "Obras que respaldan nuestra experiencia",
+        "intro": "Desde redes ópticas urbanas hasta plantas industriales, integramos soluciones confiables para clientes de alta exigencia.",
+        "modulos": [
+          262,
+          263,
+          264,
+          265
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#ffffff",
+        "cols": "2"
+      }
+    },
+    {
+      "id_modulo": 266,
+      "tipo": "feature-grid",
+      "nombre": "Obras — Grilla métricas Renova",
+      "data": {
+        "eyebrow": "CASO RENOVA EN NÚMEROS",
+        "titulo": "La escala de una integración industrial",
+        "intro": "Dispositivos integrados en una sola planta y puerto.",
+        "modulos": [
+          206,
+          207,
+          208,
+          209
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#f8fafc",
+        "cols": "4"
+      }
+    },
+    {
+      "id_modulo": 267,
+      "tipo": "tag-list",
+      "nombre": "Obras — Sectores con experiencia",
+      "data": {
+        "eyebrow": "SECTORES",
+        "titulo": "Sectores con experiencia",
+        "intro": "",
+        "tags": "Agroindustria, Energía, Telecomunicaciones, Banca, Organismos públicos, Industria, Servicios, Infraestructura urbana"
+      },
+      "design": {
+        "bg": "#ffffff"
+      }
+    },
+    {
+      "id_modulo": 268,
+      "tipo": "cta",
+      "nombre": "CTA — Obras",
+      "data": {
+        "title": "¿Tenés un proyecto de infraestructura o seguridad?",
+        "desc": "Podemos ayudarte a diseñar, ejecutar y mantener una solución confiable para tu operación.",
+        "btn": "Solicitar asesoramiento",
+        "href": "https://wa.me/543415276540"
+      },
+      "design": {
+        "bg": "#0A1D37",
+        "btnBg": "#2563eb"
+      }
+    },
+    {
+      "id_modulo": 300,
+      "tipo": "text-block",
+      "nombre": "Sectores — Hero",
+      "data": {
+        "eyebrow": "SECTORES",
+        "titulo": "Soluciones para sectores que necesitan operar sin interrupciones",
+        "descripcion": "El cliente industrial no siempre busca por tecnología, sino por problemática: seguridad de planta, conectividad de predios, control de accesos, trazabilidad, mantenimiento o continuidad operativa."
+      },
+      "design": {
+        "bg": "linear-gradient(160deg,#102a52,#0a1d37)",
+        "align": "center",
+        "eyebrowColor": "#38bdf8",
+        "titleColor": "#ffffff",
+        "textColor": "rgba(255,255,255,.72)",
+        "titleSize": "clamp(2rem,4.5vw,3rem)",
+        "paddingY": "6.5rem"
+      }
+    },
+    {
+      "id_modulo": 301,
+      "tipo": "feature-grid",
+      "nombre": "Sectores — Grilla por sector",
+      "data": {
+        "eyebrow": "POR SECTOR",
+        "titulo": "Cada industria, su solución",
+        "intro": "Integramos comunicaciones, seguridad electrónica, energía, software y soporte según la necesidad real de cada sector.",
+        "modulos": [
+          156,
+          157,
+          158,
+          159,
+          160,
+          161
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#ffffff",
+        "cols": "3"
+      }
+    },
+    {
+      "id_modulo": 310,
+      "tipo": "text-block",
+      "nombre": "PRES — Hero",
+      "data": {
+        "eyebrow": "PRODUCTO PROPIO · PRES",
+        "titulo": "PRES — Gestor de obras, recursos y operaciones en planta",
+        "descripcion": "PRES es una plataforma desarrollada por SISGRA para gestionar obras, servicios técnicos y recursos operativos en planta. Centraliza planificación, asignación, ejecución y seguimiento de órdenes de trabajo, tickets, presupuestos, compras, documentación y trazabilidad, con la posibilidad de habilitar al cliente para consultar avances e interactuar sobre la operatoria.\nEn entornos industriales, la eficiencia depende de información clara, tareas bien asignadas y seguimiento en tiempo real: PRES organiza la gestión diaria desde el inicio de jornada hasta la ejecución final de cada trabajo."
+      },
+      "design": {
+        "bg": "linear-gradient(160deg,#102a52,#0a1d37)",
+        "align": "center",
+        "eyebrowColor": "#38bdf8",
+        "titleColor": "#ffffff",
+        "textColor": "rgba(255,255,255,.72)",
+        "titleSize": "clamp(1.9rem,4vw,2.9rem)",
+        "paddingY": "6.5rem"
+      }
+    },
+    {
+      "id_modulo": 312,
+      "tipo": "feature-item",
+      "nombre": "PRES — Inicio de jornada",
+      "data": {
+        "iconType": "fa-clock",
+        "titulo": "Inicio de jornada",
+        "desc": "Registro operativo para iniciar actividades, ordenar el día de trabajo y vincular recursos con tareas asignadas.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 313,
+      "tipo": "feature-item",
+      "nombre": "PRES — Presupuestos",
+      "data": {
+        "iconType": "fa-file-invoice-dollar",
+        "titulo": "Presupuestos",
+        "desc": "Gestión de presupuestos asociados a obras, servicios, materiales y recursos.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 314,
+      "tipo": "feature-item",
+      "nombre": "PRES — Tickets / Gantt",
+      "data": {
+        "iconType": "fa-diagram-project",
+        "titulo": "Tickets / Gantt",
+        "desc": "Administración de tickets y visualización de tareas planificadas para seguir tiempos, prioridades y responsables.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 315,
+      "tipo": "feature-item",
+      "nombre": "PRES — Agenda",
+      "data": {
+        "iconType": "fa-calendar-days",
+        "titulo": "Agenda",
+        "desc": "Planificación de actividades, visitas, trabajos pendientes, recursos y compromisos operativos.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 316,
+      "tipo": "feature-item",
+      "nombre": "PRES — Ejecución",
+      "data": {
+        "iconType": "fa-list-check",
+        "titulo": "Ejecución",
+        "desc": "Seguimiento de tareas en curso, avances, novedades, estados y cierre de trabajos.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 317,
+      "tipo": "feature-item",
+      "nombre": "PRES — Pedidos y compras",
+      "data": {
+        "iconType": "fa-cart-shopping",
+        "titulo": "Pedidos y compras",
+        "desc": "Gestión de solicitudes internas, materiales, recursos, compras y necesidades de ejecución.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 318,
+      "tipo": "feature-item",
+      "nombre": "PRES — Documentos y trazabilidad",
+      "data": {
+        "iconType": "fa-folder-open",
+        "titulo": "Documentos y trazabilidad",
+        "desc": "Gestión documental e historial de acciones, estados, responsables y documentación de cada intervención.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 319,
+      "tipo": "feature-item",
+      "nombre": "PRES — Artículos y vehículos",
+      "data": {
+        "iconType": "fa-truck",
+        "titulo": "Artículos y vehículos",
+        "desc": "Administración de materiales, insumos, repuestos y vehículos afectados a la operación.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 320,
+      "tipo": "feature-item",
+      "nombre": "PRES — Clientes y administración",
+      "data": {
+        "iconType": "fa-users-gear",
+        "titulo": "Clientes y administración",
+        "desc": "Gestión de clientes, proyectos, usuarios, permisos y procesos internos.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 311,
+      "tipo": "feature-grid",
+      "nombre": "PRES — Grilla módulos",
+      "data": {
+        "eyebrow": "MÓDULOS DE PRES",
+        "titulo": "Una plataforma para toda la operación",
+        "intro": "PRES organiza la gestión diaria de equipos, recursos y actividades, del inicio de jornada a la ejecución final de cada trabajo.",
+        "modulos": [
+          312,
+          313,
+          314,
+          315,
+          316,
+          317,
+          318,
+          319,
+          320
+        ],
+        "features": [],
+        "__colores": {
+          "titulo": "#0a1d38",
+          "intro": "#424f61"
+        }
+      },
+      "design": {
+        "bg": "#ffffff",
+        "eyebrowColor": "",
+        "titleColor": "",
+        "textColor": "",
+        "accentColor": "",
+        "cardBg": "",
+        "cardBorderColor": "",
+        "paddingY": "",
+        "cols": "3",
+        "maxWidth": "",
+        "scale": "",
+        "marginTop": "",
+        "marginBottom": "",
+        "display": ""
+      },
+      "id_pagina": null,
+      "alerta": false,
+      "editado_en": "2026-06-29T17:20:36.758Z"
+    },
+    {
+      "id_modulo": 322,
+      "tipo": "feature-item",
+      "nombre": "PRES — Beneficio Centralización",
+      "data": {
+        "iconType": "fa-layer-group",
+        "titulo": "Centralización",
+        "desc": "Centraliza la gestión de obras, servicios y tareas técnicas en una sola plataforma.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 323,
+      "tipo": "feature-item",
+      "nombre": "PRES — Beneficio Asignación y planificación",
+      "data": {
+        "iconType": "fa-diagram-project",
+        "titulo": "Asignación y planificación",
+        "desc": "Asigna órdenes de trabajo y tickets a equipos o recursos, con agenda y visualización tipo Gantt.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 324,
+      "tipo": "feature-item",
+      "nombre": "PRES — Beneficio Avances de campo",
+      "data": {
+        "iconType": "fa-bolt",
+        "titulo": "Avances de campo",
+        "desc": "Registra avances de ejecución, novedades y estados en tiempo real.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 325,
+      "tipo": "feature-item",
+      "nombre": "PRES — Beneficio Pedidos y documentación",
+      "data": {
+        "iconType": "fa-boxes-stacked",
+        "titulo": "Pedidos y documentación",
+        "desc": "Ordena pedidos, compras, artículos, documentos y facturación en un mismo flujo.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 326,
+      "tipo": "feature-item",
+      "nombre": "PRES — Beneficio Trazabilidad auditable",
+      "data": {
+        "iconType": "fa-clipboard-check",
+        "titulo": "Trazabilidad auditable",
+        "desc": "Convierte el servicio técnico en un proceso medible, documentado y auditable, sin perder información entre áreas.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 327,
+      "tipo": "feature-item",
+      "nombre": "PRES — Beneficio Acceso del cliente",
+      "data": {
+        "iconType": "fa-user-check",
+        "titulo": "Acceso del cliente",
+        "desc": "El cliente consulta avances, aporta información, valida estados o acompaña el ciclo operativo cuando se habilita acceso externo.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 321,
+      "tipo": "feature-grid",
+      "nombre": "PRES — Grilla beneficios",
+      "data": {
+        "eyebrow": "BENEFICIOS",
+        "titulo": "Por qué PRES cambia la operación",
+        "intro": "",
+        "modulos": [
+          322,
+          323,
+          324,
+          325,
+          326,
+          327
+        ],
+        "features": []
+      },
+      "design": {
+        "bg": "#0A1D37",
+        "cols": "3",
+        "titleColor": "#ffffff",
+        "textColor": "rgba(255,255,255,.66)",
+        "eyebrowColor": "#60a5fa",
+        "accentColor": "#60a5fa"
+      }
+    },
+    {
+      "id_modulo": 328,
+      "tipo": "cta",
+      "nombre": "CTA — PRES demo",
+      "data": {
+        "title": "¿Querés ver PRES en acción?",
+        "desc": "Agendá una demo y te mostramos cómo gestionar obras, recursos y servicios con trazabilidad de punta a punta.",
+        "btn": "Agendar demo de PRES",
+        "href": "https://wa.me/543415276540"
+      },
+      "design": {
+        "bg": "#0A1D37",
+        "btnBg": "#2563eb"
+      }
+    },
+    {
+      "id_modulo": 331,
+      "tipo": "feature-item",
+      "nombre": "Benchmark — Convergint",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "iconType": "fa-lightbulb",
+        "titulo": "Convergint",
+        "desc": "Posicionarse como integrador de seguridad y tecnología para organizaciones complejas.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 332,
+      "tipo": "feature-item",
+      "nombre": "Benchmark — Everon",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "iconType": "fa-lightbulb",
+        "titulo": "Everon",
+        "desc": "Comunicar diseño, implementación, testing, soporte y cableado como ciclo completo.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 333,
+      "tipo": "feature-item",
+      "nombre": "Benchmark — Ainger Cabling + Security",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "iconType": "fa-lightbulb",
+        "titulo": "Ainger Cabling + Security",
+        "desc": "Mostrar que la seguridad depende de una infraestructura física confiable: red, energía, racks y certificación.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 334,
+      "tipo": "feature-item",
+      "nombre": "Benchmark — EuroTSI",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "iconType": "fa-lightbulb",
+        "titulo": "EuroTSI",
+        "desc": "Concepto de proveedor integral: seguridad, cableado, mantenimiento, consultoría y auditoría.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 335,
+      "tipo": "feature-item",
+      "nombre": "Benchmark — Reliance Security Systems",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "iconType": "fa-lightbulb",
+        "titulo": "Reliance Security Systems",
+        "desc": "Conectividad como base de CCTV, acceso, WiFi y VoIP.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 336,
+      "tipo": "feature-item",
+      "nombre": "Benchmark — SecFire GmbH",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "iconType": "fa-lightbulb",
+        "titulo": "SecFire GmbH",
+        "desc": "Comunicar seguridad como conjunto: incendio, intrusión, CCTV y acceso.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 337,
+      "tipo": "feature-item",
+      "nombre": "Benchmark — Layer 1",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "iconType": "fa-lightbulb",
+        "titulo": "Layer 1",
+        "desc": "Incluir commissioning, integración industrial, documentación as-built y puesta en marcha.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 338,
+      "tipo": "feature-item",
+      "nombre": "Benchmark — Datanet Group UK",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "iconType": "fa-lightbulb",
+        "titulo": "Datanet Group UK",
+        "desc": "Presentar la seguridad como ecosistema unificado, no como equipos aislados.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 339,
+      "tipo": "feature-item",
+      "nombre": "Benchmark — FCPS Electric",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "iconType": "fa-lightbulb",
+        "titulo": "FCPS Electric",
+        "desc": "Diseño, instalación, pruebas y certificación de cableado y fibra.",
+        "tags": ""
+      },
+      "design": {}
+    },
+    {
+      "id_modulo": 340,
+      "tipo": "feature-item",
+      "nombre": "Benchmark — Viasat Energy Services",
+      "id_pagina": [
+        12
+      ],
+      "data": {
+        "iconType": "fa-lightbulb",
+        "titulo": "Viasat Energy Services",
+        "desc": "Integrar fire & gas, CCTV, acceso, LAN, wireless y structured cabling en energía e infraestructura crítica.",
+        "tags": ""
+      },
+      "design": {}
     }
   ]
 }
