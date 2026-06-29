@@ -67,7 +67,6 @@
 
 .hero-title span {
   color: var(--blue-300);
-  font-style: normal;
 }
 
 .hero-desc {
@@ -167,7 +166,6 @@
   box-shadow: var(--shadow-2xl);
   cursor: default;
   flex: 1;
-  min-width: 140px;
 }
 
 @media (min-width: 1024px) {
@@ -525,11 +523,11 @@ a.logos-cell:hover::after { opacity: 1; }
   transition: transform .4s ease;
 }
 
-@media (min-width: 1024px) {
+/* @media (min-width: 1024px) {
   .service-card {
     padding: 2.5rem;
   }
-}
+} */
 
 .service-card:hover {
   transform: translateY(-8px);
@@ -568,9 +566,10 @@ a.logos-cell:hover::after { opacity: 1; }
    ABOUT SECTION
 ================================================ */
 .about-section {
-  padding-top: 5rem;
+  
   padding-bottom: 6rem;
   background-color: white;
+ 
 }
 
 @media (min-width: 768px) {
@@ -583,7 +582,8 @@ a.logos-cell:hover::after { opacity: 1; }
 @media (min-width: 1024px) {
   .about-section {
     padding-top: 0rem;
-    padding-bottom: 21rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }
 

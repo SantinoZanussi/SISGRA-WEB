@@ -1675,11 +1675,21 @@ window.renameTpl = function(id){
 };
 
 let navbarItems = [];
+let navCtaInfo = null;   // botón "Contáctese" (vive en el módulo nav, no es un ítem): se muestra bloqueado
 
 async function loadNavbarItems() {
   try {
     const res = await window.__svc.apiGet('/nav/botones');
     navbarItems = res.botones || [];
+    // el CTA de contacto se gestiona desde el módulo nav; acá solo se lista, bloqueado
+    try {
+      const md = await window.__svc.apiGet('/data/modulos');
+      const list = Array.isArray(md) ? md : (md.modulos || []);
+      const navMod = list.find(m => m.tipo === 'nav');
+      navCtaInfo = (navMod && navMod.data)
+        ? { label: navMod.data.ctaLabel || 'Contáctese', href: navMod.data.ctaHref || '' }
+        : null;
+    } catch (_) { navCtaInfo = null; }
     renderNavbarTable();
   } catch(e) {
     window.__svc.showNotif('Error cargando navbar: ' + e.message, 'error');
@@ -1689,11 +1699,19 @@ async function loadNavbarItems() {
 function renderNavbarTable() {
   const tbody = document.getElementById('navbar-tbody');
   if (!tbody) return;
+  // fila fija del botón "Contáctese": figura en la lista pero con acciones bloqueadas
+  const ctaRow = navCtaInfo ? `<tr>
+        <td>${navCtaInfo.label} <span style="font-size:.5rem;background:#dbeafe;color:#1d4ed8;padding:.1rem .35rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;border-radius:2px;">Botón de contacto</span></td>
+        <td>—</td>
+        <td><span style="font-size:.75rem;color:#94a3b8;">${navCtaInfo.href || 'Sin destino'}</span></td>
+        <td><span class="badge-active">Activo</span></td>
+        <td><span style="font-size:.7rem;color:#475569;font-style:italic;">🔒 bloqueado</span></td>
+      </tr>` : '';
   if (!navbarItems.length) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:2rem;color:#64748b;">No hay ítems</td></tr>';
+    tbody.innerHTML = ctaRow + '<tr><td colspan="5" style="text-align:center;padding:2rem;color:#64748b;">No hay ítems</td></tr>';
     return;
   }
-  tbody.innerHTML = navbarItems
+  tbody.innerHTML = ctaRow + navbarItems
     .slice()
     .sort((a, b) => (a.orden || 0) - (b.orden || 0))
     .map(b => {

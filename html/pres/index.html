@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRES — SISGRA S.R.L.</title>
+  <meta name="description" content="">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="icon" href="/img/sdesigra.png">
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/layout.css">
+  <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+<!-- SHELL — controlado por la plantilla activa "pres" desde el admin -->
+<div id="plantilla-root">
+  <div style="padding:6rem 2rem;text-align:center;color:#94a3b8;font-family:'Inter',system-ui,sans-serif;letter-spacing:.15em;text-transform:uppercase;font-size:.75rem;">Cargando…</div>
+</div>
+<script type="module">
+  import { bootstrapPage } from '/services/page-bootstrap.js';
+  bootstrapPage('pres', 'plantilla-root');
+</script>
+</body>
+</html>

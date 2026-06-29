@@ -525,13 +525,15 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       { name: 'titleColor',   label: 'Color título',              type: 'color' },
       { name: 'textColor',    label: 'Color texto',               type: 'color' },
       { name: 'paddingY',     label: 'Padding vertical sección',  type: 'text', placeholder: 'ej: 5rem' },
+      { name: 'paddingLeft', label: 'Padding izquierdo sección', type: 'text', placeholder: 'ej: 0px ó 2rem' },
+      { name: 'paddingRight', label: 'Padding derecho sección', type: 'text', placeholder: 'ej: 0px ó 2rem' },
       { name: 'titleSize',    label: 'Tamaño título (h3)',         type: 'text', placeholder: 'ej: 2.5rem' },
     ],
     render: (data, design) => {
       const d = { ...SECTIONS.about.defaultData, ...data };
       const s = { ...SECTIONS.about.defaultDesign, ...design };
       return `
-<section id="nosotros" class="about-section"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
+<section id="nosotros" class="about-section"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY, 'padding-left': s.paddingLeft, 'padding-right': s.paddingRight })}>
   <div class="max-w-7xl">
     <div class="about-inner">
       <div class="about-img-wrap">
@@ -590,11 +592,11 @@ ${navCss ? `<style>${navCss}</style>` : ''}
 .sg-cta .sg-cta-in{position:relative;max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:2.5rem;flex-wrap:wrap;}
 .sg-cta .sg-cta-t{font-size:clamp(1.5rem,3vw,2.15rem);font-weight:900;color:#fff;letter-spacing:-.03em;margin:0 0 .55rem;line-height:1.12;max-width:30ch;}
 .sg-cta .sg-cta-d{color:rgba(255,255,255,.66);font-size:1rem;line-height:1.6;margin:0;max-width:54ch;}
-.sg-cta .sg-cta-btn{display:inline-flex;align-items:center;gap:.6rem;background:${btnBg};color:#fff;padding:1rem 2.1rem;font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;white-space:nowrap;flex-shrink:0;border-radius:${rad};box-shadow:0 16px 34px -12px ${btnBg}cc;transition:transform .25s,box-shadow .25s,filter .25s;}
-.sg-cta .sg-cta-btn:hover{transform:translateY(-3px);box-shadow:0 24px 44px -12px ${btnBg}cc;filter:brightness(1.07);}
+.sg-cta .sg-cta-btn{display:inline-flex;align-items:center;gap:.6rem;background:${btnBg};color:#fff;padding:1rem 2.1rem;font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;white-space:nowrap;flex-shrink:0;border-radius:${rad};box-shadow:0 0 50px ${btnBg}cc;transition:transform .25s,box-shadow .25s,filter .25s;}
+.sg-cta .sg-cta-btn:hover{transform:translateY(-3px);box-shadow:0 0 60px ${btnBg}cc;filter:brightness(1.07);}
 .sg-cta .sg-cta-btn i{transition:transform .25s;}
 .sg-cta .sg-cta-btn:hover i{transform:translateX(4px);}
-@media(max-width:680px){.sg-cta .sg-cta-in{flex-direction:column;align-items:flex-start;}}
+@media(max-width:680px){.sg-cta .sg-cta-in{flex-direction:column;align-items:center;}}
 </style>
 <section class="sg-cta">
   <div class="sg-cta-in">
@@ -2134,11 +2136,12 @@ ${gridCss}
     description: 'Una característica suelta (ícono + título + descripción) para inyectar en una Grilla.',
     icon: `<i class="fa-solid fa-square-check"></i>`,
     validTipos: ['*'],
-    defaultData: { iconType: 'check', titulo: 'Nueva característica', desc: 'Descripción de la característica.' },
+    defaultData: { iconType: 'check', titulo: 'Nueva característica', desc: 'Descripción de la característica.', tags: '' },
     defaultDesign: { cardBg: '', cardBorderColor: '', accentColor: '', titleColor: '', textColor: '' },
     dataFields: [
       { name: 'titulo', label: 'Título',      type: 'text' },
       { name: 'desc',   label: 'Descripción', type: 'textarea' },
+      { name: 'tags',   label: 'Chips (separados por coma)', type: 'text' },
     ],
     designFields: [
       { name: 'cardBg',          label: 'Fondo de tarjeta', type: 'color' },
@@ -2161,6 +2164,7 @@ ${gridCss}
         lock: 'fa-lock', chart: 'fa-chart-column', database: 'fa-database',
       };
       const ic = ICONS[d.iconType] || (String(d.iconType || '').startsWith('fa-') ? d.iconType : 'fa-circle-check');
+      const chips = String(d.tags || '').split(',').map(x => x.trim()).filter(Boolean);
       return `
 <style>
 .sg-fitem{position:relative;background:${cardBg};border:1px solid ${cardBd};border-radius:18px;padding:2rem 1.75rem;height:100%;box-sizing:border-box;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s,border-color .35s;box-shadow:0 1px 2px rgba(10,29,55,.04),0 18px 40px -28px rgba(10,29,55,.45);}
@@ -2168,11 +2172,14 @@ ${gridCss}
 .sg-fitem .sg-ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,${accent}24,${accent}0a);color:${accent};font-size:1.3rem;margin-bottom:1.25rem;box-shadow:inset 0 0 0 1px ${accent}26;}
 .sg-fitem .sg-ct{font-size:1.08rem;font-weight:800;letter-spacing:-.01em;color:${title};margin:0 0 .55rem;}
 .sg-fitem .sg-cd{font-size:.92rem;line-height:1.6;color:${text};margin:0;}
+.sg-fitem .sg-chips{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:1.1rem;}
+.sg-fitem .sg-chip{font-size:.7rem;font-weight:700;letter-spacing:.02em;color:${accent};background:${accent}12;border:1px solid ${accent}26;padding:.32rem .7rem;border-radius:999px;}
 </style>
 <div class="sg-fitem">
   <div class="sg-ico"><i class="fa-solid ${esc(ic)}"${fldIcon('iconType')} aria-hidden="true"></i></div>
   <h3 class="sg-ct">${fld('titulo', esc(d.titulo || ''))}</h3>
   <p class="sg-cd">${fld('desc', esc(d.desc || ''))}</p>
+  ${chips.length ? `<div class="sg-chips">${chips.map(x => `<span class="sg-chip">${esc(x)}</span>`).join('')}</div>` : ''}
 </div>`;
     },
   },
@@ -2266,6 +2273,190 @@ ${gridCss}
     },
   },
 
+  // obra/caso con la cifra como protagonista; atómico para inyectar en una Grilla
+  'obra-item': {
+    label: 'Obra / métrica',
+    description: 'Un caso suelto con cifra destacada (sector + número + cliente + detalle) para inyectar en una Grilla.',
+    icon: `<i class="fa-solid fa-ruler-combined"></i>`,
+    validTipos: ['*'],
+    defaultData: { sector: 'Sector', metric: '00.000 m', label: 'Métrica', cliente: 'Cliente', desc: 'Detalle de la obra.' },
+    defaultDesign: { cardBg: '', accentColor: '', titleColor: '', textColor: '' },
+    dataFields: [
+      { name: 'sector',  label: 'Sector / etiqueta', type: 'text' },
+      { name: 'metric',  label: 'Cifra destacada',   type: 'text' },
+      { name: 'label',   label: 'Etiqueta de cifra', type: 'text' },
+      { name: 'cliente', label: 'Cliente',           type: 'text' },
+      { name: 'desc',    label: 'Detalle',           type: 'textarea' },
+    ],
+    designFields: [
+      { name: 'cardBg',      label: 'Fondo de tarjeta', type: 'color' },
+      { name: 'accentColor', label: 'Color de acento',  type: 'color' },
+      { name: 'titleColor',  label: 'Color título',     type: 'color' },
+      { name: 'textColor',   label: 'Color texto',      type: 'color' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['obra-item'].defaultData, ...data };
+      const s = { ...SECTIONS['obra-item'].defaultDesign, ...design };
+      const accent = s.accentColor || '#2563eb';
+      const title  = s.titleColor || '#0A1D37';
+      const text   = s.textColor || '#475569';
+      const cardBg = s.cardBg || '#ffffff';
+      return `
+<style>
+.sg-obra{background:${cardBg};border:1px solid #e8edf3;border-radius:18px;padding:1.8rem 1.5rem;height:100%;box-sizing:border-box;display:flex;flex-direction:column;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;box-shadow:0 1px 2px rgba(10,29,55,.04),0 18px 40px -28px rgba(10,29,55,.45);}
+.sg-obra:hover{transform:translateY(-6px);box-shadow:0 1px 2px rgba(10,29,55,.05),0 30px 55px -26px rgba(10,29,55,.42);}
+.sg-obra .sg-sector{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:${accent};margin:0 0 1.1rem;}
+.sg-obra .sg-metric{font-size:clamp(1.8rem,3vw,2.4rem);font-weight:900;letter-spacing:-.04em;line-height:1;color:${title};background:linear-gradient(180deg,${title} 25%,${accent});-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.sg-obra .sg-mlbl{font-size:.76rem;font-weight:700;color:${accent};margin:.45rem 0 1.15rem;}
+.sg-obra .sg-cli{font-size:1.02rem;font-weight:800;color:${title};margin:0 0 .5rem;}
+.sg-obra .sg-cd{font-size:.86rem;line-height:1.55;color:${text};margin:0;}
+</style>
+<div class="sg-obra">
+  <div class="sg-sector">${fld('sector', esc(d.sector || ''))}</div>
+  <div class="sg-metric">${fld('metric', esc(d.metric || ''))}</div>
+  <div class="sg-mlbl">${fld('label', esc(d.label || ''))}</div>
+  <h3 class="sg-cli">${fld('cliente', esc(d.cliente || ''))}</h3>
+  <p class="sg-cd">${fld('desc', esc(d.desc || ''))}</p>
+</div>`;
+    },
+  },
+
+  // paso de proceso con nodo luminoso sobre fondo oscuro; la línea conecta nodos contiguos dentro de una Grilla
+  'signal-step': {
+    label: 'Paso luminoso (oscuro)',
+    description: 'Un paso con nodo luminoso y número, para inyectar en una Grilla de fondo oscuro (estilo recorrido de señal).',
+    icon: `<i class="fa-solid fa-wave-square"></i>`,
+    validTipos: ['*'],
+    defaultData: { numero: '01', icono: 'fa-circle', titulo: 'Nuevo paso', desc: 'Descripción del paso.' },
+    defaultDesign: { accentColor: '', titleColor: '', textColor: '' },
+    dataFields: [
+      { name: 'numero', label: 'Número',      type: 'text' },
+      { name: 'icono',  label: 'Ícono (fa-)', type: 'text' },
+      { name: 'titulo', label: 'Título',      type: 'text' },
+      { name: 'desc',   label: 'Descripción', type: 'textarea' },
+    ],
+    designFields: [
+      { name: 'accentColor', label: 'Color de acento', type: 'color' },
+      { name: 'titleColor',  label: 'Color título',    type: 'color' },
+      { name: 'textColor',   label: 'Color texto',     type: 'color' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['signal-step'].defaultData, ...data };
+      const s = { ...SECTIONS['signal-step'].defaultDesign, ...design };
+      const accent = s.accentColor || '#3b82f6';
+      const title  = s.titleColor || '#ffffff';
+      const text   = s.textColor || 'rgba(255,255,255,.6)';
+      return `
+<style>
+.sg-sig{position:relative;text-align:center;}
+.sg-sig .sg-line{position:absolute;top:33px;left:-0.75rem;right:-0.75rem;height:2px;background:linear-gradient(90deg,${accent},#22d3ee,${accent});box-shadow:0 0 16px ${accent};opacity:.55;}
+.grilla-cell:first-child .sg-sig .sg-line{left:50%;}
+.grilla-cell:last-child .sg-sig .sg-line{right:50%;}
+.sg-sig .sg-nodewrap{position:relative;width:68px;margin:0 auto 1.1rem;}
+.sg-sig .sg-node{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:#fff;background:linear-gradient(160deg,#13294f,#0a1d37);border:1px solid ${accent}66;box-shadow:0 0 0 6px rgba(10,29,55,.55),0 12px 26px -10px ${accent};position:relative;z-index:1;}
+.sg-sig .sg-num{position:absolute;top:-2px;right:-2px;width:24px;height:24px;border-radius:50%;background:${accent};color:#fff;font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px -2px ${accent};z-index:2;}
+.sg-sig .sg-st{font-size:1rem;font-weight:800;color:${title};letter-spacing:-.01em;margin:0 0 .45rem;}
+.sg-sig .sg-sd{font-size:.85rem;line-height:1.55;color:${text};margin:0;}
+@media(max-width:980px){.sg-sig .sg-line{display:none;}}
+@media(max-width:620px){.sg-sig{display:grid;grid-template-columns:68px 1fr;gap:1rem;align-items:start;text-align:left;}.sg-sig .sg-nodewrap{margin:0;}}
+</style>
+<div class="sg-sig">
+  <div class="sg-line" aria-hidden="true"></div>
+  <div class="sg-nodewrap">
+    <div class="sg-node"><i class="fa-solid ${esc(d.icono || 'fa-circle')}" aria-hidden="true"></i></div>
+    <span class="sg-num">${fld('numero', esc(d.numero || ''))}</span>
+  </div>
+  <div>
+    <h3 class="sg-st">${fld('titulo', esc(d.titulo || ''))}</h3>
+    <p class="sg-sd">${fld('desc', esc(d.desc || ''))}</p>
+  </div>
+</div>`;
+    },
+  },
+
+  // sistema de seguridad: tarjeta oscura con ícono luminoso + chips; atómico para grilla oscura
+  'system-card': {
+    label: 'Sistema de seguridad (oscuro)',
+    description: 'Tarjeta oscura de un sistema (ícono + título + descripción + chips) para inyectar en una Grilla de fondo oscuro.',
+    icon: `<i class="fa-solid fa-shield-halved"></i>`,
+    validTipos: ['*'],
+    defaultData: { icono: 'fa-video', titulo: 'Nuevo sistema', desc: 'Descripción del sistema.', tags: '' },
+    defaultDesign: { accentColor: '', titleColor: '', textColor: '', cardBg: '' },
+    dataFields: [
+      { name: 'icono',  label: 'Ícono (fa-)', type: 'text' },
+      { name: 'titulo', label: 'Título',      type: 'text' },
+      { name: 'desc',   label: 'Descripción', type: 'textarea' },
+      { name: 'tags',   label: 'Chips (separados por coma)', type: 'text' },
+    ],
+    designFields: [
+      { name: 'accentColor', label: 'Color de acento',  type: 'color' },
+      { name: 'titleColor',  label: 'Color título',     type: 'color' },
+      { name: 'textColor',   label: 'Color texto',      type: 'color' },
+      { name: 'cardBg',      label: 'Fondo de tarjeta', type: 'color' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['system-card'].defaultData, ...data };
+      const s = { ...SECTIONS['system-card'].defaultDesign, ...design };
+      const accent = s.accentColor || '#60a5fa';
+      const title  = s.titleColor || '#ffffff';
+      const text   = s.textColor || 'rgba(255,255,255,.62)';
+      const chips = String(d.tags || '').split(',').map(x => x.trim()).filter(Boolean);
+      return `
+<style>
+.sg-syscard{position:relative;height:100%;box-sizing:border-box;background:${s.cardBg || 'linear-gradient(165deg,#102a52,#0a1d37)'};border:1px solid ${accent}2e;border-radius:18px;padding:2rem 1.8rem;overflow:hidden;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s,border-color .35s;box-shadow:0 18px 40px -28px rgba(0,0,0,.6);}
+.sg-syscard::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,${accent},transparent);}
+.sg-syscard:hover{transform:translateY(-6px);border-color:${accent}66;box-shadow:0 30px 55px -26px rgba(0,0,0,.7);}
+.sg-syscard .sg-ico{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.45rem;color:${accent};background:radial-gradient(circle at 30% 30%,${accent}40,${accent}12);border:1px solid ${accent}40;box-shadow:0 0 22px -4px ${accent};}
+.sg-syscard .sg-ct{font-size:1.18rem;font-weight:800;color:${title};letter-spacing:-.01em;margin:1.2rem 0 .55rem;}
+.sg-syscard .sg-cd{font-size:.92rem;line-height:1.6;color:${text};margin:0 0 1.2rem;}
+.sg-syscard .sg-chips{display:flex;flex-wrap:wrap;gap:.45rem;}
+.sg-syscard .sg-chip{font-size:.7rem;font-weight:700;letter-spacing:.02em;color:${accent};background:${accent}1f;border:1px solid ${accent}3a;padding:.32rem .7rem;border-radius:999px;}
+</style>
+<div class="sg-syscard">
+  <div class="sg-ico"><i class="fa-solid ${esc(d.icono || 'fa-shield-halved')}" aria-hidden="true"></i></div>
+  <h3 class="sg-ct">${fld('titulo', esc(d.titulo || ''))}</h3>
+  <p class="sg-cd">${fld('desc', esc(d.desc || ''))}</p>
+  ${chips.length ? `<div class="sg-chips">${chips.map(x => `<span class="sg-chip">${esc(x)}</span>`).join('')}</div>` : ''}
+</div>`;
+    },
+  },
+
+  // métrica suelta (número grande + etiqueta); atómico para grillas de cifras
+  'stat-item': {
+    label: 'Métrica (número)',
+    description: 'Una cifra destacada (número + etiqueta) para inyectar en una Grilla de métricas.',
+    icon: `<i class="fa-solid fa-hashtag"></i>`,
+    validTipos: ['*'],
+    defaultData: { numero: '00', label: 'Métrica' },
+    defaultDesign: { accentColor: '', titleColor: '', textColor: '' },
+    dataFields: [
+      { name: 'numero', label: 'Número',   type: 'text' },
+      { name: 'label',  label: 'Etiqueta', type: 'text' },
+    ],
+    designFields: [
+      { name: 'accentColor', label: 'Color de acento',  type: 'color' },
+      { name: 'titleColor',  label: 'Color del número', type: 'color' },
+      { name: 'textColor',   label: 'Color etiqueta',   type: 'color' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['stat-item'].defaultData, ...data };
+      const s = { ...SECTIONS['stat-item'].defaultDesign, ...design };
+      const accent = s.accentColor || '#2563eb';
+      const title  = s.titleColor || '#0A1D37';
+      const text   = s.textColor || '#475569';
+      return `
+<style>
+.sg-statitem{text-align:center;height:100%;box-sizing:border-box;padding:1.2rem .75rem;display:flex;flex-direction:column;justify-content:center;}
+.sg-statitem .sg-num{font-size:clamp(2.2rem,4.5vw,3rem);font-weight:900;letter-spacing:-.04em;line-height:1;color:${title};background:linear-gradient(180deg,${title} 30%,${accent});-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.sg-statitem .sg-lbl{margin-top:.7rem;font-size:.85rem;font-weight:600;letter-spacing:.02em;color:${text};line-height:1.45;}
+</style>
+<div class="sg-statitem">
+  <div class="sg-num">${fld('numero', esc(d.numero || ''))}</div>
+  <div class="sg-lbl">${fld('label', esc(d.label || ''))}</div>
+</div>`;
+    },
+  },
+
   'faq': {
     label: 'Preguntas frecuentes (legacy)',
     description: 'Acordeón de preguntas y respuestas (FAQ). Hasta 6 pares; los vacíos se ocultan.',
@@ -2347,6 +2538,352 @@ ${gridCss}
     },
   },
 
+  // banda institucional: pertenencia a Zona i / Polo Tecnológico Rosario + frase destacada
+  'ecosistema': {
+    label: 'Ecosistema (Zona i)',
+    description: 'Banda institucional sobre la pertenencia a Zona i / Polo Tecnológico Rosario, con frase destacada.',
+    icon: `<i class="fa-solid fa-diagram-project"></i>`,
+    validTipos: ['*'],
+    defaultData: {
+      eyebrow: 'ECOSISTEMA TECNOLÓGICO',
+      titulo: 'Parte del ecosistema tecnológico de Rosario',
+      p1: 'SISGRA forma parte del entorno tecnológico de Zona i - Nodo Rosario, un espacio estratégico vinculado al Polo Tecnológico Rosario, donde conviven empresas de base tecnológica, emprendedores, instituciones del conocimiento y actores públicos y privados orientados a la innovación.',
+      p2: 'Estar ubicados en Zona i potencia nuestra capacidad de vinculación, actualización y colaboración, fortaleciendo nuestra propuesta como integradores de soluciones tecnológicas para industrias, empresas e infraestructura crítica.',
+      frase: 'Innovación, ingeniería y experiencia de campo desde el corazón tecnológico de Rosario.',
+      // referencias públicas: una por línea, "Texto | URL". El texto que aparezca en
+      // los párrafos se vuelve link, y todas se listan abajo como referencias.
+      refs: 'Polo Tecnológico Rosario | https://polotecnologico.net/\nZona i | https://polotecnologico.net/zona-i/\nÁrea tecnológica | https://polotecnologico.net/area-tecnologica/\nDossier Zona i | https://polotecnologico.net/wp-content/uploads/2023/08/dossier-Zona-i-6.pdf',
+    },
+    defaultDesign: { bg: '', accentColor: '', titleColor: '', textColor: '', paddingY: '' },
+    dataFields: [
+      { name: 'eyebrow', label: 'Eyebrow',         type: 'text' },
+      { name: 'titulo',  label: 'Título',          type: 'text' },
+      { name: 'p1',      label: 'Párrafo 1',       type: 'textarea' },
+      { name: 'p2',      label: 'Párrafo 2',       type: 'textarea' },
+      { name: 'frase',   label: 'Frase destacada', type: 'textarea' },
+      { name: 'refs',    label: 'Referencias (Texto | URL por línea)', type: 'textarea' },
+    ],
+    designFields: [
+      { name: 'bg',          label: 'Fondo de sección', type: 'color' },
+      { name: 'accentColor', label: 'Color de acento',  type: 'color' },
+      { name: 'titleColor',  label: 'Color título',     type: 'color' },
+      { name: 'textColor',   label: 'Color texto',      type: 'color' },
+      { name: 'paddingY',    label: 'Padding vertical',  type: 'text', placeholder: 'ej: 5.5rem' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['ecosistema'].defaultData, ...data };
+      const s = { ...SECTIONS['ecosistema'].defaultDesign, ...design };
+      const accent = s.accentColor || '#38bdf8';
+      const title  = s.titleColor || '#ffffff';
+      const text   = s.textColor || 'rgba(255,255,255,.72)';
+      const bg     = s.bg || 'linear-gradient(160deg,#102a52,#0a1d37)';
+      // refs: "Texto | URL" por línea
+      const refs = String(d.refs || '').split('\n').map(l => {
+        const i = l.indexOf('|'); if (i === -1) return null;
+        const texto = l.slice(0, i).trim(), href = l.slice(i + 1).trim();
+        return (texto && href) ? { texto, href } : null;
+      }).filter(Boolean);
+      // convierte en link las menciones de cada ref dentro del texto, sin romper el escape
+      const linkify = (txt) => {
+        let t = String(txt || ''); const used = [];
+        refs.slice().sort((a, b) => b.texto.length - a.texto.length).forEach((r, i) => {
+          if (t.includes(r.texto)) { t = t.split(r.texto).join(`@@REF${i}@@`); used.push([i, r]); }
+        });
+        t = esc(t);
+        used.forEach(([i, r]) => { t = t.split(`@@REF${i}@@`).join(`<a class="sg-eco-ilink" href="${esc(r.href)}" target="_blank" rel="noopener">${esc(r.texto)}</a>`); });
+        return t;
+      };
+      const refsRow = refs.length
+        ? `<div class="sg-eco-refs"><span class="sg-eco-refs-lbl">Referencias</span>${refs.map(r => `<a href="${esc(r.href)}" target="_blank" rel="noopener">${esc(r.texto)} <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>`).join('')}</div>`
+        : '';
+      return `
+<style>
+.sg-eco{position:relative;overflow:hidden;background:${bg};padding:${s.paddingY || '5.5rem'} 1.5rem;}
+.sg-eco::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 360px at 88% -20%,${accent}22,transparent 70%);pointer-events:none;}
+.sg-eco .sg-in{position:relative;max-width:1080px;margin:0 auto;}
+.sg-eco .sg-eyebrow{display:inline-flex;align-items:center;gap:.7rem;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:800;color:${accent};margin:0 0 1rem;}
+.sg-eco .sg-eyebrow::before{content:"";width:30px;height:2px;background:${accent};border-radius:2px;}
+.sg-eco .sg-title{font-size:clamp(1.7rem,3.4vw,2.5rem);font-weight:900;letter-spacing:-.03em;color:${title};margin:0 0 1.4rem;line-height:1.1;max-width:22ch;}
+.sg-eco .sg-p{font-size:1rem;line-height:1.7;color:${text};margin:0 0 1.1rem;max-width:70ch;}
+.sg-eco .sg-eco-ilink{color:${title};text-decoration:underline;text-underline-offset:3px;text-decoration-color:${accent};text-decoration-thickness:2px;transition:color .2s;}
+.sg-eco .sg-eco-ilink:hover{color:${accent};}
+.sg-eco .sg-frase{margin:2rem 0 0;padding-left:1.3rem;border-left:3px solid ${accent};font-size:clamp(1.15rem,2.3vw,1.6rem);font-weight:800;font-style:italic;letter-spacing:-.02em;color:${title};line-height:1.3;max-width:32ch;}
+.sg-eco .sg-eco-refs{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1.5rem;margin-top:2.2rem;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.14);}
+.sg-eco .sg-eco-refs-lbl{font-size:.66rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:${text};opacity:.7;}
+.sg-eco .sg-eco-refs a{display:inline-flex;align-items:center;gap:.4rem;color:${accent};font-weight:700;font-size:.85rem;text-decoration:none;}
+.sg-eco .sg-eco-refs a:hover{filter:brightness(1.15);text-decoration:underline;text-underline-offset:3px;}
+.sg-eco .sg-eco-refs a i{font-size:.68rem;}
+</style>
+<section class="sg-eco">
+  <div class="sg-in">
+    ${d.eyebrow ? `<p class="sg-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</p>` : ''}
+    ${d.titulo ? `<h2 class="sg-title">${fld('titulo', esc(d.titulo))}</h2>` : ''}
+    ${d.p1 ? `<p class="sg-p">${fld('p1', linkify(d.p1))}</p>` : ''}
+    ${d.p2 ? `<p class="sg-p">${fld('p2', linkify(d.p2))}</p>` : ''}
+    ${d.frase ? `<p class="sg-frase">${fld('frase', linkify(d.frase))}</p>` : ''}
+    ${refsRow}
+  </div>
+</section>`;
+    },
+  },
+
+  // bloque de texto simple (eyebrow + título + descripción); claro u oscuro, alineable
+  'text-block': {
+    label: 'Bloque de texto',
+    description: 'Eyebrow + título + descripción. Sirve de intro, cierre o sección de texto suelta.',
+    icon: `<i class="fa-solid fa-align-left"></i>`,
+    validTipos: ['*'],
+    defaultData: { eyebrow: '', titulo: 'Título de la sección', descripcion: 'Texto descriptivo.' },
+    defaultDesign: { bg: '', align: '', eyebrowColor: '', titleColor: '', textColor: '', titleSize: '', paddingY: '' },
+    dataFields: [
+      { name: 'eyebrow',     label: 'Eyebrow',                     type: 'text' },
+      { name: 'titulo',      label: 'Título',                      type: 'text' },
+      { name: 'descripcion', label: 'Descripción (\\n = párrafo)', type: 'textarea' },
+    ],
+    designFields: [
+      { name: 'bg',           label: 'Fondo de sección',          type: 'color' },
+      { name: 'align',        label: 'Alineación (left/center)',   type: 'text', placeholder: 'left ó center' },
+      { name: 'eyebrowColor', label: 'Color eyebrow / acento',     type: 'color' },
+      { name: 'titleColor',   label: 'Color título',               type: 'color' },
+      { name: 'textColor',    label: 'Color texto',                type: 'color' },
+      { name: 'titleSize',    label: 'Tamaño título',              type: 'text', placeholder: 'ej: 2.5rem' },
+      { name: 'paddingY',     label: 'Padding vertical',           type: 'text', placeholder: 'ej: 5rem' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['text-block'].defaultData, ...data };
+      const s = { ...SECTIONS['text-block'].defaultDesign, ...design };
+      const accent = s.eyebrowColor || '#2563eb';
+      const title  = s.titleColor || '#0A1D37';
+      const text   = s.textColor || '#475569';
+      const center = (s.align || 'left') === 'center';
+      const desc = String(d.descripcion || '').split('\n').map(x => x.trim()).filter(Boolean).map(esc).join('<br><br>');
+      return `
+<style>
+.sg-tblock{background:${esc(s.bg || '#ffffff')};padding:${s.paddingY || '5rem'} 1.5rem;}
+.sg-tblock .sg-in{max-width:820px;margin:0 auto;${center ? 'text-align:center;' : ''}}
+.sg-tblock .sg-eyebrow{display:inline-flex;align-items:center;gap:.7rem;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:800;color:${accent};margin:0 0 1rem;}
+.sg-tblock .sg-eyebrow::before{content:"";width:30px;height:2px;background:${accent};border-radius:2px;}
+.sg-tblock .sg-title{font-size:${s.titleSize || 'clamp(1.7rem,3.4vw,2.4rem)'};font-weight:900;letter-spacing:-.03em;color:${title};margin:0 0 1.1rem;line-height:1.12;}
+.sg-tblock .sg-p{font-size:1.02rem;line-height:1.7;color:${text};margin:0;}
+</style>
+<section class="sg-tblock">
+  <div class="sg-in">
+    ${d.eyebrow ? `<p class="sg-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</p>` : ''}
+    ${d.titulo ? `<h2 class="sg-title">${fld('titulo', esc(d.titulo))}</h2>` : ''}
+    ${desc ? `<p class="sg-p">${fld('descripcion', desc)}</p>` : ''}
+  </div>
+</section>`;
+    },
+  },
+
+  // datos de la sede: dirección, teléfono, email, web + mapa embebido
+  'sede': {
+    label: 'Sede / Contacto',
+    description: 'Datos de la sede (dirección, teléfono, email, web) junto a un mapa embebido.',
+    icon: `<i class="fa-solid fa-location-dot"></i>`,
+    validTipos: ['*'],
+    defaultData: {
+      eyebrow: 'NUESTRA SEDE',
+      titulo: 'Zona i - Nodo Rosario',
+      intro: 'Estamos ubicados en Zona i - Nodo Rosario, un espacio de referencia para empresas tecnológicas, innovación colaborativa y desarrollo de soluciones aplicadas.',
+      direccion: 'Lamadrid 468 - NAVE 2, Oficina 05, Nodo Rosario, Zona i, Rosario, Santa Fe, Argentina',
+      telefono: '+54 341 5276540',
+      telefonoHref: 'tel:+543415276540',
+      email: 'info@sisgra.com.ar',
+      emailHref: 'mailto:info@sisgra.com.ar',
+      web: 'www.sisgra.com.ar',
+      webHref: 'https://www.sisgra.com.ar',
+      mapaSrc: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3348.9!2d-60.6530!3d-32.9440!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95b652f52c9a5e3b%3A0x0!2sLamadrid+468%2C+Rosario%2C+Argentina!5e0!3m2!1ses!2sar!4v1680000000000',
+      mensajeFinal: 'Relevamos necesidades, analizamos alternativas y proponemos soluciones tecnológicas alineadas con los objetivos de cada organización.',
+    },
+    defaultDesign: { bg: '', accentColor: '', titleColor: '', textColor: '', paddingY: '' },
+    dataFields: [
+      { name: 'eyebrow',      label: 'Eyebrow',          type: 'text' },
+      { name: 'titulo',       label: 'Título',           type: 'text' },
+      { name: 'intro',        label: 'Introducción',     type: 'textarea' },
+      { name: 'direccion',    label: 'Dirección',        type: 'textarea' },
+      { name: 'telefono',     label: 'Teléfono',         type: 'text' },
+      { name: 'telefonoHref', label: 'Teléfono — link',  type: 'text' },
+      { name: 'email',        label: 'Email',            type: 'text' },
+      { name: 'emailHref',    label: 'Email — link',     type: 'text' },
+      { name: 'web',          label: 'Sitio web',        type: 'text' },
+      { name: 'webHref',      label: 'Sitio web — link', type: 'text' },
+      { name: 'mapaSrc',      label: 'Mapa (embed URL)', type: 'text' },
+      { name: 'mensajeFinal', label: 'Mensaje final',    type: 'textarea' },
+    ],
+    designFields: [
+      { name: 'bg',          label: 'Fondo de sección', type: 'color' },
+      { name: 'accentColor', label: 'Color de acento',  type: 'color' },
+      { name: 'titleColor',  label: 'Color título',     type: 'color' },
+      { name: 'textColor',   label: 'Color texto',      type: 'color' },
+      { name: 'paddingY',    label: 'Padding vertical', type: 'text', placeholder: 'ej: 5rem' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['sede'].defaultData, ...data };
+      const s = { ...SECTIONS['sede'].defaultDesign, ...design };
+      const accent = s.accentColor || '#2563eb';
+      const title  = s.titleColor || '#0A1D37';
+      const text   = s.textColor || '#475569';
+      const row = (icon, label, value, href) => value ? `
+        <li class="sg-sede-row">
+          <span class="sg-sede-ic"><i class="fa-solid ${icon}" aria-hidden="true"></i></span>
+          <span><span class="sg-sede-lbl">${esc(label)}</span>${href ? `<a href="${esc(href)}">${esc(value)}</a>` : `<span class="sg-sede-val">${esc(value)}</span>`}</span>
+        </li>` : '';
+      return `
+<style>
+.sg-sede{background:${esc(s.bg || '#f8fafc')};padding:${s.paddingY || '5rem'} 1.5rem;}
+.sg-sede .sg-in{max-width:1100px;margin:0 auto;}
+.sg-sede .sg-head{max-width:680px;margin:0 0 2.6rem;}
+.sg-sede .sg-eyebrow{display:inline-flex;align-items:center;gap:.7rem;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:800;color:${accent};margin:0 0 1rem;}
+.sg-sede .sg-eyebrow::before{content:"";width:30px;height:2px;background:${accent};border-radius:2px;}
+.sg-sede .sg-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;letter-spacing:-.03em;color:${title};margin:0 0 .9rem;}
+.sg-sede .sg-intro{font-size:1rem;line-height:1.65;color:${text};margin:0;}
+.sg-sede .sg-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:stretch;}
+.sg-sede .sg-list{list-style:none;margin:0;padding:0;}
+.sg-sede .sg-sede-row{display:flex;gap:1rem;align-items:flex-start;padding:1.1rem 0;border-bottom:1px solid #e2e8f0;}
+.sg-sede .sg-sede-row:first-child{padding-top:0;}
+.sg-sede .sg-sede-ic{flex-shrink:0;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,${accent}24,${accent}0a);color:${accent};font-size:1.05rem;box-shadow:inset 0 0 0 1px ${accent}26;}
+.sg-sede .sg-sede-lbl{display:block;font-size:.68rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:${accent};margin-bottom:.25rem;}
+.sg-sede .sg-sede-val,.sg-sede .sg-sede-row a{font-size:.95rem;line-height:1.5;color:${title};font-weight:600;text-decoration:none;}
+.sg-sede .sg-sede-row a:hover{color:${accent};}
+.sg-sede .sg-map{border-radius:18px;overflow:hidden;border:1px solid #e2e8f0;min-height:300px;box-shadow:0 18px 40px -28px rgba(10,29,55,.45);}
+.sg-sede .sg-map iframe{width:100%;height:100%;min-height:300px;border:0;display:block;}
+.sg-sede .sg-final{margin:2.4rem 0 0;font-size:1rem;line-height:1.7;color:${text};max-width:72ch;}
+@media(max-width:820px){.sg-sede .sg-grid{grid-template-columns:1fr;}}
+</style>
+<section class="sg-sede">
+  <div class="sg-in">
+    <div class="sg-head">
+      ${d.eyebrow ? `<p class="sg-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</p>` : ''}
+      ${d.titulo ? `<h2 class="sg-title">${fld('titulo', esc(d.titulo))}</h2>` : ''}
+      ${d.intro ? `<p class="sg-intro">${fld('intro', esc(d.intro))}</p>` : ''}
+    </div>
+    <div class="sg-grid">
+      <ul class="sg-list">
+        ${row('fa-location-dot', 'Dirección', d.direccion)}
+        ${row('fa-phone', 'Teléfono', d.telefono, d.telefonoHref)}
+        ${row('fa-envelope', 'Email', d.email, d.emailHref)}
+        ${row('fa-globe', 'Sitio web', d.web, d.webHref)}
+      </ul>
+      ${d.mapaSrc ? `<div class="sg-map"><iframe src="${esc(d.mapaSrc)}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa SISGRA"></iframe></div>` : ''}
+    </div>
+    ${d.mensajeFinal ? `<p class="sg-final">${fld('mensajeFinal', esc(d.mensajeFinal))}</p>` : ''}
+  </div>
+</section>`;
+    },
+  },
+
+  // encabezado + chips (etiquetas separadas por coma): sectores, tecnologías, etc.
+  'tag-list': {
+    label: 'Lista de chips',
+    description: 'Encabezado + chips (etiquetas separadas por coma). Útil para sectores, tecnologías, etc.',
+    icon: `<i class="fa-solid fa-tags"></i>`,
+    validTipos: ['*'],
+    defaultData: { eyebrow: 'SECTORES', titulo: 'Sectores con experiencia', intro: '', tags: 'Agroindustria, Energía, Telecomunicaciones, Banca, Organismos públicos, Industria, Servicios, Infraestructura urbana' },
+    defaultDesign: { bg: '', accentColor: '', titleColor: '', textColor: '', paddingY: '' },
+    dataFields: [
+      { name: 'eyebrow', label: 'Eyebrow',                   type: 'text' },
+      { name: 'titulo',  label: 'Título',                    type: 'text' },
+      { name: 'intro',   label: 'Introducción',              type: 'textarea' },
+      { name: 'tags',    label: 'Chips (separados por coma)', type: 'textarea' },
+    ],
+    designFields: [
+      { name: 'bg',          label: 'Fondo de sección', type: 'color' },
+      { name: 'accentColor', label: 'Color de acento',  type: 'color' },
+      { name: 'titleColor',  label: 'Color título',     type: 'color' },
+      { name: 'textColor',   label: 'Color texto',      type: 'color' },
+      { name: 'paddingY',    label: 'Padding vertical', type: 'text', placeholder: 'ej: 4.5rem' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['tag-list'].defaultData, ...data };
+      const s = { ...SECTIONS['tag-list'].defaultDesign, ...design };
+      const accent = s.accentColor || '#2563eb';
+      const title  = s.titleColor || '#0A1D37';
+      const text   = s.textColor || '#475569';
+      const chips = String(d.tags || '').split(',').map(x => x.trim()).filter(Boolean);
+      return `
+<style>
+.sg-taglist{background:${esc(s.bg || '#ffffff')};padding:${s.paddingY || '4.5rem'} 1.5rem;}
+.sg-taglist .sg-in{max-width:1000px;margin:0 auto;}
+.sg-taglist .sg-head{max-width:680px;margin:0 0 2rem;}
+.sg-taglist .sg-eyebrow{display:inline-flex;align-items:center;gap:.7rem;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;font-weight:800;color:${accent};margin:0 0 1rem;}
+.sg-taglist .sg-eyebrow::before{content:"";width:30px;height:2px;background:${accent};border-radius:2px;}
+.sg-taglist .sg-title{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:900;letter-spacing:-.03em;color:${title};margin:0 0 .8rem;}
+.sg-taglist .sg-intro{font-size:1rem;line-height:1.65;color:${text};margin:0;}
+.sg-taglist .sg-chips{display:flex;flex-wrap:wrap;gap:.7rem;}
+.sg-taglist .sg-chip{display:inline-flex;align-items:center;gap:.5rem;font-size:.9rem;font-weight:700;color:${title};background:#f8fafc;border:1px solid #e2e8f0;padding:.6rem 1.1rem;border-radius:999px;transition:transform .25s,border-color .25s,color .25s;}
+.sg-taglist .sg-chip::before{content:"";width:7px;height:7px;border-radius:50%;background:${accent};}
+.sg-taglist .sg-chip:hover{transform:translateY(-2px);border-color:${accent}66;color:${accent};}
+</style>
+<section class="sg-taglist">
+  <div class="sg-in">
+    ${(d.eyebrow || d.titulo || d.intro) ? `<div class="sg-head">
+      ${d.eyebrow ? `<p class="sg-eyebrow">${fld('eyebrow', esc(d.eyebrow))}</p>` : ''}
+      ${d.titulo ? `<h2 class="sg-title">${fld('titulo', esc(d.titulo))}</h2>` : ''}
+      ${d.intro ? `<p class="sg-intro">${fld('intro', esc(d.intro))}</p>` : ''}
+    </div>` : ''}
+    <div class="sg-chips">${chips.map(x => `<span class="sg-chip">${esc(x)}</span>`).join('')}</div>
+  </div>
+</section>`;
+    },
+  },
+
+  // tarjeta de caso/obra con bullets de alcance; atómico para inyectar en una Grilla
+  'caso-item': {
+    label: 'Caso / obra (detalle)',
+    description: 'Tarjeta de caso de éxito con sector, métrica opcional, descripción y alcance, para inyectar en una Grilla.',
+    icon: `<i class="fa-solid fa-helmet-safety"></i>`,
+    validTipos: ['*'],
+    defaultData: { sector: 'Sector', titulo: 'Cliente / obra', metric: '', metricLabel: '', descripcion: 'Descripción del caso.', bullets: 'Alcance 1\nAlcance 2\nAlcance 3' },
+    defaultDesign: { cardBg: '', accentColor: '', titleColor: '', textColor: '' },
+    dataFields: [
+      { name: 'sector',      label: 'Sector / etiqueta',       type: 'text' },
+      { name: 'titulo',      label: 'Cliente / obra',          type: 'text' },
+      { name: 'metric',      label: 'Cifra (opcional)',        type: 'text' },
+      { name: 'metricLabel', label: 'Etiqueta de cifra',       type: 'text' },
+      { name: 'descripcion', label: 'Descripción',             type: 'textarea' },
+      { name: 'bullets',     label: 'Alcance (uno por línea)', type: 'textarea' },
+    ],
+    designFields: [
+      { name: 'cardBg',      label: 'Fondo de tarjeta', type: 'color' },
+      { name: 'accentColor', label: 'Color de acento',  type: 'color' },
+      { name: 'titleColor',  label: 'Color título',     type: 'color' },
+      { name: 'textColor',   label: 'Color texto',      type: 'color' },
+    ],
+    render: (data, design) => {
+      const d = { ...SECTIONS['caso-item'].defaultData, ...data };
+      const s = { ...SECTIONS['caso-item'].defaultDesign, ...design };
+      const accent = s.accentColor || '#2563eb';
+      const title  = s.titleColor || '#0A1D37';
+      const text   = s.textColor || '#475569';
+      const cardBg = s.cardBg || '#ffffff';
+      const bullets = String(d.bullets || '').split('\n').map(x => x.trim()).filter(Boolean);
+      const metric = (d.metric || '').trim()
+        ? `<div class="sg-caso-metric"><span class="sg-caso-num">${fld('metric', esc(d.metric))}</span>${d.metricLabel ? `<span class="sg-caso-mlbl">${fld('metricLabel', esc(d.metricLabel))}</span>` : ''}</div>`
+        : '';
+      return `
+<style>
+.sg-caso{height:100%;box-sizing:border-box;background:${cardBg};border:1px solid #e8edf3;border-radius:18px;padding:2rem 1.8rem;display:flex;flex-direction:column;transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s,border-color .35s;box-shadow:0 1px 2px rgba(10,29,55,.04),0 18px 40px -28px rgba(10,29,55,.45);}
+.sg-caso:hover{transform:translateY(-6px);border-color:${accent}40;box-shadow:0 1px 2px rgba(10,29,55,.05),0 30px 55px -26px rgba(10,29,55,.42);}
+.sg-caso .sg-caso-sector{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:${accent};margin:0 0 .9rem;}
+.sg-caso .sg-caso-t{font-size:1.25rem;font-weight:900;letter-spacing:-.02em;color:${title};margin:0 0 .7rem;}
+.sg-caso .sg-caso-metric{display:flex;align-items:baseline;gap:.6rem;margin:0 0 .9rem;}
+.sg-caso .sg-caso-num{font-size:1.7rem;font-weight:900;letter-spacing:-.03em;color:${accent};line-height:1;}
+.sg-caso .sg-caso-mlbl{font-size:.78rem;font-weight:700;color:${text};}
+.sg-caso .sg-caso-d{font-size:.92rem;line-height:1.6;color:${text};margin:0 0 1.2rem;}
+.sg-caso .sg-caso-list{list-style:none;margin:auto 0 0;padding:0;display:grid;gap:.55rem;}
+.sg-caso .sg-caso-list li{display:flex;gap:.6rem;align-items:flex-start;font-size:.88rem;line-height:1.45;color:${title};}
+.sg-caso .sg-caso-list li i{color:${accent};font-size:.8rem;margin-top:.2rem;flex-shrink:0;}
+</style>
+<div class="sg-caso">
+  <div class="sg-caso-sector">${fld('sector', esc(d.sector || ''))}</div>
+  <h3 class="sg-caso-t">${fld('titulo', esc(d.titulo || ''))}</h3>
+  ${metric}
+  ${d.descripcion ? `<p class="sg-caso-d">${fld('descripcion', esc(d.descripcion))}</p>` : ''}
+  ${bullets.length ? `<ul class="sg-caso-list">${bullets.map(b => `<li><i class="fa-solid fa-circle-check" aria-hidden="true"></i>${esc(b)}</li>`).join('')}</ul>` : ''}
+</div>`;
+    },
+  },
 
 };
 
