@@ -24,8 +24,7 @@ function savePlantillas(data) {
   fs.writeFileSync(PLT_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
-// POST /api/webhook/pres  — público, recibe datos de API PRES
-// Body: { id_pedido, contenido }
+// POST /api/webhook/pres  publico, recibe datos de API PRES
 exports.recibirWebhook = (req, res) => {
   const { id_pedido, contenido } = req.body || {};
   if (!id_pedido) return res.status(400).json({ error: 'Se requiere id_pedido' });
@@ -49,8 +48,7 @@ exports.recibirWebhook = (req, res) => {
   res.status(201).json({ ok: true, id_entrada: entrada.id_entrada });
 };
 
-// GET /api/webhook/cache  [auth]
-// Query opcional: ?procesado=true|false
+// GET /api/webhook/cache  [auth]  query opcional ?procesado=true|false
 exports.listarCache = (req, res) => {
   const { procesado } = req.query;
   let { entradas } = readCache();
@@ -70,9 +68,7 @@ exports.obtenerEntrada = (req, res) => {
   res.json(entrada);
 };
 
-// PATCH /api/webhook/cache/:id  [auth]
-// Edita el contenido antes de publicar en la plantilla
-// Body: { contenido_editado }
+// PATCH /api/webhook/cache/:id  [auth]  edita el contenido antes de publicar
 exports.editarEntrada = (req, res) => {
   const { id } = req.params;
   const { contenido_editado } = req.body || {};
@@ -90,9 +86,7 @@ exports.editarEntrada = (req, res) => {
   res.json({ ok: true, entrada: data.entradas[idx] });
 };
 
-// POST /api/webhook/cache/:id/publicar  [auth]
-// Aplica el contenido (editado o crudo) a una sección de una plantilla
-// Body: { id_plantilla, id_seccion }
+// POST /api/webhook/cache/:id/publicar  [auth]  aplica el contenido a una seccion de una plantilla
 exports.publicarEntrada = (req, res) => {
   const { id } = req.params;
   const { id_plantilla, id_seccion } = req.body || {};
@@ -113,7 +107,6 @@ exports.publicarEntrada = (req, res) => {
   const secIdx    = secciones.findIndex(s => s.id_seccion === id_seccion);
   if (secIdx === -1) return res.status(404).json({ error: 'Sección no encontrada en la plantilla' });
 
-  // Si el usuario editó el contenido se usa contenido_editado, si no el crudo de API PRES
   const contenidoFinal = entrada.editado ? entrada.contenido_editado : entrada.contenido;
   secciones[secIdx].datos_webhook = contenidoFinal;
   secciones[secIdx].editado       = entrada.editado;
@@ -121,7 +114,6 @@ exports.publicarEntrada = (req, res) => {
   plantilla.editado_en            = new Date().toISOString();
   savePlantillas(pltData);
 
-  // Marcar entrada como procesada
   cacheData.entradas[entradaIdx].procesado             = true;
   cacheData.entradas[entradaIdx].id_plantilla_asignada = id_plantilla;
   cacheData.entradas[entradaIdx].id_seccion_asignada   = id_seccion;

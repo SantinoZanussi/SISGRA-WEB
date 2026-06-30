@@ -5,7 +5,7 @@ const { authMiddleware } = require('../middleware/auth');
 
 router.get('/catalogo',   c.catalogo);
 router.get('/log',        authMiddleware, c.listarLog);
-// La API PRES consulta acá (POST) si hay plantillas/módulos vencidos.
+// la API PRES consulta aca si hay vencimientos
 router.post('/check',     c.check);
 
 module.exports = router;

@@ -22,10 +22,10 @@ function guardarLog(data) {
   fs.writeFileSync(LOG_FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
-// GET /api/alertas/catalogo (público) — tipos de alerta disponibles
+// GET /api/alertas/catalogo  publico, tipos de alerta disponibles
 exports.catalogo = (_req, res) => res.json({ catalogo: CATALOGO_ALERTAS });
 
-// GET /api/alertas/log [auth] — historial de vencimientos detectados
+// GET /api/alertas/log  [auth]  historial de vencimientos detectados
 exports.listarLog = (_req, res) => res.json(leerLog());
 
 function leerPlantillas() {
@@ -53,12 +53,11 @@ function detectarVencimientos() {
 
   for (const p of plantillas) {
     if (!estaVencida(p)) continue;
-    // Resolver los módulos de la plantilla y quedarse con los marcados con alerta.
     const mods = (p.id_modulos || []).map(id => byId.get(id)).filter(Boolean);
     for (const m of mods.filter(mod => mod.alerta === true)) {
       const key = `venc|${p.id_plantilla}|${m.id_modulo}|${p.fecha_fin}`;
       const alerta = `${CATALOGO_ALERTAS[ID_VENCIMIENTO]}: módulo "${m.nombre || m.tipo}" de la plantilla "${p.nombre}" (${p.tipo}) venció el ${p.fecha_fin}`;
-      // Respuesta acotada a lo que consume la API PRES: solo plantilla + vencimiento.
+      // respuesta acotada a lo que consume la API PRES
       vencidos.push({
         id_plantilla:     p.id_plantilla,
         nombre_plantilla: p.nombre,
@@ -85,7 +84,7 @@ function detectarVencimientos() {
   return vencidos;
 }
 
-// POST /api/alertas/check — la API PRES consulta si hay módulos/plantillas vencidos
+// POST /api/alertas/check  la API PRES consulta si hay vencimientos
 exports.check = (_req, res) => {
   const vencidos = detectarVencimientos();
   res.json({ ok: true, total: vencidos.length, vencidos });

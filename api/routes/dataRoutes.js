@@ -3,10 +3,10 @@ const router = express.Router();
 const dataController = require('../controllers/dataController');
 const { authMiddleware } = require('../middleware/auth');
 
-// Public: solo lectura
+// publico, solo lectura
 router.get('/:file', dataController.getFile);
 
-// Protegidas: escritura
+// protegidas, escritura
 router.put('/:file', authMiddleware, dataController.updateFile);
 router.patch('/:file/:collection/:id', authMiddleware, dataController.updateItem);
 router.post('/:file/:collection', authMiddleware, dataController.createItem);

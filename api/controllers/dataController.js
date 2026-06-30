@@ -23,7 +23,7 @@ function writeJSON(name, data) {
   fs.writeFileSync(filePath(name), JSON.stringify(data, null, 2), 'utf-8');
 }
 
-// GET /api/data/:file  → devuelve el JSON completo
+// GET /api/data/:file  json completo
 exports.getFile = (req, res) => {
   const { file } = req.params;
   if (!ALLOWED_FILES.includes(file)) return res.status(404).json({ error: 'Archivo no encontrado' });
@@ -32,7 +32,7 @@ exports.getFile = (req, res) => {
   res.json(data);
 };
 
-// PUT /api/data/:file  → reemplaza el JSON completo (requiere auth)
+// PUT /api/data/:file  [auth]  reemplaza el json completo
 exports.updateFile = (req, res) => {
   const { file } = req.params;
   if (!ALLOWED_FILES.includes(file)) return res.status(404).json({ error: 'Archivo no encontrado' });
@@ -45,7 +45,7 @@ exports.updateFile = (req, res) => {
   }
 };
 
-// POST /api/data/:file/:collection  → agrega un item a un array dentro del JSON
+// POST /api/data/:file/:collection  agrega un item al array
 exports.createItem = (req, res) => {
   const { file, collection } = req.params;
   if (!ALLOWED_FILES.includes(file)) return res.status(404).json({ error: 'Archivo no encontrado' });
@@ -59,7 +59,7 @@ exports.createItem = (req, res) => {
   res.status(201).json({ ok: true, item: newItem });
 };
 
-// PATCH /api/data/:file/:collection/:id  → actualiza un item por id
+// PATCH /api/data/:file/:collection/:id  actualiza un item por id
 exports.updateItem = (req, res) => {
   const { file, collection, id } = req.params;
   if (!ALLOWED_FILES.includes(file)) return res.status(404).json({ error: 'Archivo no encontrado' });
@@ -74,7 +74,7 @@ exports.updateItem = (req, res) => {
   res.json({ ok: true, item: data[collection][idx] });
 };
 
-// DELETE /api/data/:file/:collection/:id  → elimina un item por id
+// DELETE /api/data/:file/:collection/:id  elimina un item por id
 exports.deleteItem = (req, res) => {
   const { file, collection, id } = req.params;
   if (!ALLOWED_FILES.includes(file)) return res.status(404).json({ error: 'Archivo no encontrado' });

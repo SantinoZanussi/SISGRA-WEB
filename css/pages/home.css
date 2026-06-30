@@ -1,6 +1,4 @@
-/* ================================================
-   HERO DOTS / BG
-================================================ */
+/* hero dots / bg */
 .hero-dots {
   position: absolute;
   inset: 0;
@@ -10,9 +8,7 @@
   background-position: center;
 }
 
-/* ================================================
-   HERO GRID
-================================================ */
+/* hero grid */
 .hero-grid {
   display: grid;
   gap: 3rem;
@@ -234,9 +230,7 @@
   }
 }
 
-/* ================================================
-   LOGOS / CLIENTS SECTION
-================================================ */
+/* seccion logos / clientes */
 .logos-section {
   padding-top: 4rem;
   padding-bottom: 4rem;
@@ -382,9 +376,7 @@ a.logos-cell::after {
 
 a.logos-cell:hover::after { opacity: 1; }
 
-/* ================================================
-   BLOG SECTION (inicio)
-================================================ */
+/* seccion blog (inicio) */
 .blog-section {
   padding-top: 4rem;
   padding-bottom: 4rem;
@@ -425,9 +417,7 @@ a.logos-cell:hover::after { opacity: 1; }
   font-style: italic;
 }
 
-/* ================================================
-   SERVICES SECTION
-================================================ */
+/* seccion servicios */
 .services-section {
   padding-top: 5.5rem;
   padding-bottom: 5.5rem;
@@ -562,9 +552,7 @@ a.logos-cell:hover::after { opacity: 1; }
   font-weight: 500;
 }
 
-/* ================================================
-   ABOUT SECTION
-================================================ */
+/* seccion nosotros */
 .about-section {
   
   padding-bottom: 6rem;
@@ -682,9 +670,7 @@ a.logos-cell:hover::after { opacity: 1; }
   }
 }
 
-/* ================================================
-   HERO P2 (variant)
-================================================ */
+/* hero p2 (variante) */
 .hero-p2 {
   position: relative;
   min-height: 100dvh;

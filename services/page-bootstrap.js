@@ -1,5 +1,4 @@
-// renderiza la plantilla activa de un tipo en #root y conecta la funcionalidad común
-// (mobile drawer, form submit, contacto/seo globales)
+// renderiza la plantilla activa de un tipo en #root y conecta la funcionalidad comun
 import { resolverModulos, renderModulosAgrupados, setModuleRegistry } from './sections.js';
 import { cssFilesFor } from './css-pages.js';
 
@@ -294,7 +293,7 @@ export async function bootstrapPage(tipo, rootId = 'plantilla-root', opts = {}) 
       Error cargando la plantilla: ${e.message}
     </div>`;
   }
-  }   // ← fin de loadAndRender
+  }
 
   await loadAndRender();
 

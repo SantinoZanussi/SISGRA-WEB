@@ -4,7 +4,7 @@ const { generateId } = require('../utils/id');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const FILE = path.join(DATA_DIR, 'assets.json');
-// Las imágenes se guardan directamente en /img (servida estáticamente por el server)
+// las imagenes se guardan en /img, servido estaticamente
 const IMG_DIR = path.join(__dirname, '..', '..', 'img');
 
 const MIME_EXT = {
@@ -17,7 +17,7 @@ const MIME_EXT = {
   'image/avif': '.avif',
 };
 
-// Extensiones de imagen reconocidas al escanear /img (ext → mime)
+// extensiones reconocidas al escanear /img
 const EXT_MIME = {
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
@@ -28,7 +28,7 @@ const EXT_MIME = {
   '.avif': 'image/avif',
 };
 
-// Paleta de colores tipo Finder con la que se siembran las etiquetas al iniciar
+// paleta con la que se siembran las etiquetas al iniciar
 const DEFAULT_COLOR_LABELS = [
   { nombre: 'Rojo',     color: '#ef4444' },
   { nombre: 'Naranja',  color: '#f97316' },
@@ -54,7 +54,7 @@ function read() {
   return data;
 }
 
-// Siembra la paleta de colores la primera vez (cuando no hay ninguna etiqueta)
+// siembra la paleta la primera vez, cuando no hay etiquetas
 function seedLabels(data) {
   if (data.labels.length) return false;
   data.labels = DEFAULT_COLOR_LABELS.map(l => ({
@@ -70,7 +70,6 @@ function save(data) {
   fs.writeFileSync(FILE, JSON.stringify(data, null, 2), 'utf-8');
 }
 
-// Convierte un nombre a un slug seguro para usar como nombre de archivo
 function slugify(s) {
   return String(s || '')
     .normalize('NFD').replace(/[̀-ͯ]/g, '') // saca acentos
@@ -79,15 +78,14 @@ function slugify(s) {
     .replace(/^-+|-+$/g, '') || 'imagen';
 }
 
-// Nombre legible a partir de un filename (para imágenes detectadas en /img)
+// nombre legible a partir de un filename
 function nombreDesdeArchivo(rel) {
   const base = path.basename(rel, path.extname(rel));
   return base.replace(/[-_]+/g, ' ').trim() || base;
 }
 
-// Devuelve un filename único (dir/base+ext) relativo a IMG_DIR, evitando
-// colisiones en el registro y con archivos ya existentes en disco.
-// excludeFilename permite ignorar el archivo actual al renombrar.
+// filename unico relativo a IMG_DIR evitando colisiones en registro y disco
+// excludeFilename ignora el archivo actual al renombrar
 function uniqueFilename(dir, base, ext, assets, excludeFilename = null) {
   const prefix = dir ? `${dir}/` : '';
   const taken = new Set(
@@ -105,7 +103,7 @@ function uniqueFilename(dir, base, ext, assets, excludeFilename = null) {
   return candidate;
 }
 
-// Escanea /img recursivamente y devuelve rutas de imágenes relativas a IMG_DIR
+// escanea /img recursivo, rutas relativas a IMG_DIR
 function escanearImagenes(dir = IMG_DIR, baseRel = '') {
   let out = [];
   let entries;
@@ -122,18 +120,13 @@ function escanearImagenes(dir = IMG_DIR, baseRel = '') {
   return out;
 }
 
-// Sincroniza el registro con el contenido real de /img:
-//  - importa imágenes presentes en disco que aún no están registradas
-//    (las pre-existentes se importan BLOQUEADAS por seguridad)
-//  - elimina del registro las entradas cuyo archivo ya no existe
-// Devuelve { assets, changed }
+// sincroniza el registro con /img: importa las nuevas (bloqueadas) y borra huerfanas
 function sincronizar(data) {
   const enDisco = escanearImagenes();
   const setDisco = new Set(enDisco);
   const setRegistro = new Set(data.assets.map(a => a.filename));
   let changed = false;
 
-  // Importar nuevas
   for (const rel of enDisco) {
     if (setRegistro.has(rel)) continue;
     const now = new Date().toISOString();
@@ -144,7 +137,7 @@ function sincronizar(data) {
       nombre: nombreDesdeArchivo(rel),
       filename: rel,
       path: `/img/${rel}`,
-      locked: true,            // pre-existentes bloqueadas por seguridad
+      locked: true,            // las pre-existentes se importan bloqueadas por seguridad
       mime: EXT_MIME[path.extname(rel).toLowerCase()] || 'application/octet-stream',
       size,
       origen: 'existente',
@@ -155,7 +148,6 @@ function sincronizar(data) {
     changed = true;
   }
 
-  // Eliminar entradas huérfanas (archivo borrado del disco)
   const before = data.assets.length;
   data.assets = data.assets.filter(a => setDisco.has(a.filename));
   if (data.assets.length !== before) changed = true;
@@ -163,12 +155,12 @@ function sincronizar(data) {
   return changed;
 }
 
-// GET /api/assets  → lista todas las imágenes (subidas + detectadas en /img) + etiquetas
+// GET /api/assets  lista imagenes (subidas + detectadas) y etiquetas
 exports.listar = (_req, res) => {
   const data = read();
   const changed = [sincronizar(data), seedLabels(data)].some(Boolean);
   if (changed) save(data);
-  // Subidas primero, luego las detectadas, ambas por fecha desc
+  // subidas primero, luego detectadas, ambas por fecha desc
   const orden = { subida: 0, existente: 1 };
   const assets = [...data.assets].sort((a, b) => {
     const oa = orden[a.origen] ?? 0, ob = orden[b.origen] ?? 0;
@@ -219,7 +211,7 @@ exports.subir = (req, res) => {
   res.status(201).json({ ok: true, asset });
 };
 
-// PATCH /api/assets/:id  [auth]  { nombre }  → renombra archivo + ruta
+// PATCH /api/assets/:id  [auth]  { nombre }  renombra archivo y ruta
 exports.renombrar = (req, res) => {
   const { id } = req.params;
   const data = read();
@@ -251,7 +243,7 @@ exports.renombrar = (req, res) => {
   res.json({ ok: true, asset });
 };
 
-// PATCH /api/assets/:id/lock  [auth]  → alterna bloqueo
+// PATCH /api/assets/:id/lock  [auth]  alterna bloqueo
 exports.toggleLock = (req, res) => {
   const { id } = req.params;
   const data = read();
@@ -264,7 +256,7 @@ exports.toggleLock = (req, res) => {
   res.json({ ok: true, asset });
 };
 
-// DELETE /api/assets/:id  [auth]  → borra registro + archivo
+// DELETE /api/assets/:id  [auth]  borra registro y archivo
 exports.eliminar = (req, res) => {
   const { id } = req.params;
   const data = read();
@@ -284,11 +276,9 @@ exports.eliminar = (req, res) => {
   res.json({ ok: true });
 };
 
-// Etiquetas (labels)
-// Registro global de etiquetas tipo Finder: colores + categorías
-// (grupo ∈ color | modulo | plantilla | menu). Se asignan a las imágenes.
+// etiquetas: grupo color | modulo | plantilla | menu
 
-// GET /api/assets/labels  → lista las etiquetas (público)
+// GET /api/assets/labels  publico
 exports.listarLabels = (_req, res) => {
   const data = read();
   if (seedLabels(data)) save(data);
@@ -325,7 +315,7 @@ exports.editarLabel = (req, res) => {
   res.json({ ok: true, label });
 };
 
-// DELETE /api/assets/labels/:id  [auth]  → borra la etiqueta y la quita de las imágenes
+// DELETE /api/assets/labels/:id  [auth]  borra la etiqueta y la quita de las imagenes
 exports.eliminarLabel = (req, res) => {
   const { id } = req.params;
   const data = read();

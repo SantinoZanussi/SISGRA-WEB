@@ -18,7 +18,6 @@
  
 <div id="login-screen">
   <div class="login-box">
-    <!-- <div class="login-logo">SISGRA</div> -->
     <div class="login-logo">
       <img src="/img/sisgra_blanco.png" alt="SISGRA Logo"/>
     </div>
@@ -36,7 +35,7 @@
   <div class="layout">
     <div class="sidebar-overlay" id="admin-sidebar-overlay"></div>
 
-    <!-- SIDEBAR -->
+    <!-- sidebar -->
     <aside class="sidebar" id="admin-sidebar">
       <div class="sidebar-brand">
         <img src="/img/sisgra_blanco.png" alt="Sisgra Logo" class="sidebar-logo"/>
@@ -73,7 +72,6 @@
         <i class="fa-solid fa-layer-group"></i>
         Ver todas las plantillas
       </div>
-      <!-- <div class="sidebar-tpl-group" id="sidebar-tpl-list"></div> -->
  
       <div class="sidebar-section-label">Configuración</div>
       <div class="sidebar-item" data-panel="contacto">
@@ -270,10 +268,7 @@
             </div>
           </div>
 
-          <!-- Vista "Tarjetas del módulo" (nivel 2): LISTA de tarjetas en filas.
-               Se abre como segundo modal al tocar "Editar" en una variante del modal "Ver".
-               "Nuevo" abre un modal chico para agregar; "Editar" en una fila abre el
-               editor de una sola tarjeta (nivel 3). -->
+          <!-- tarjetas del modulo (nivel 2): lista en filas; "editar" abre el editor de una tarjeta -->
           <div class="modal-overlay" id="modulos-cards-modal">
             <div class="modal" style="max-width:680px;">
               <div class="modal-header" style="gap:.75rem;">
@@ -288,7 +283,7 @@
               </div>
               <div class="modal-body" style="padding:1rem 1.5rem 1.5rem;">
                 <div id="modulos-cards-note" style="font-size:.7rem;color:#94a3b8;margin-bottom:.85rem;line-height:1.5;"></div>
-                <!-- Título editable de la sección (titulo_seccion = por defecto) + override por página -->
+                <!-- titulo editable de la seccion (por defecto) + override por pagina -->
                 <div class="form-group" style="margin-bottom:1rem;">
                   <label class="form-label"><i class="fa-solid fa-heading" style="margin-right:.4rem;"></i>Título de la sección (por defecto)</label>
                   <input class="form-input" id="modulos-cards-titulo" placeholder="Ej: Portafolio de Soluciones">
@@ -298,7 +293,7 @@
                     <div id="modulos-cards-titulos-por-pagina" style="margin-top:.5rem;"></div>
                   </details>
                 </div>
-                <!-- Ítems del navbar a los que pertenece este módulo (multi) -->
+                <!-- items del navbar a los que pertenece este modulo (multi) -->
                 <div class="section-card" id="modulos-cards-pagina-card" style="margin-bottom:1rem;">
                   <div class="section-card-body" style="padding:1rem;">
                     <label class="form-label">Ítems del navbar</label>
@@ -308,8 +303,7 @@
                 </div>
                 <div id="modulos-cards-body"></div>
               </div>
-              <!-- Footer: solo aparece al CREAR un módulo nuevo (borrador). El
-                   módulo no se persiste hasta tocar "Guardar cambios". -->
+              <!-- footer: solo aparece al crear un modulo nuevo; no se persiste hasta "guardar cambios" -->
               <div class="modal-footer" id="modulos-cards-footer" style="display:none;">
                 <button class="btn-secondary" id="modulos-cards-cancel">Cancelar</button>
                 <button class="btn-save" id="modulos-cards-save"><i class="fa-solid fa-check" style="margin-right:.35rem;"></i>Guardar cambios</button>
@@ -317,8 +311,7 @@
             </div>
           </div>
 
-          <!-- Editor de UNA tarjeta (nivel 3): se abre al tocar "Editar" en una
-               fila de la lista de tarjetas. Tiene su propio botón "Guardar". -->
+          <!-- editor de una tarjeta (nivel 3): se abre al "editar" en una fila; tiene su propio "guardar" -->
           <div class="modal-overlay" id="modulos-card-edit-modal">
             <div class="modal" style="max-width:480px;">
               <div class="modal-header" style="gap:.75rem;">
@@ -330,7 +323,7 @@
               </div>
               <div class="modal-body" style="padding:1rem 1.5rem 1.5rem;">
                 <div id="modulos-card-edit-body"></div>
-                <!-- Pertenencia de la tarjeta: en qué página(s) del menú se muestra -->
+                <!-- pertenencia: en que pagina(s) del menu se muestra la tarjeta -->
                 <div class="section-card" id="modulos-card-edit-pertenececard" style="margin-top:1rem;">
                   <div class="section-card-body" style="padding:1rem;">
                     <label class="form-label"><i class="fa-solid fa-location-dot" style="margin-right:.4rem;"></i>¿En qué páginas se muestra?</label>
@@ -338,7 +331,7 @@
                     <div style="font-size:.7rem;color:#94a3b8;margin-top:.4rem;line-height:1.5;">La tarjeta solo aparece en las páginas (ítems del navbar) marcadas. «Todas las páginas» = en todas. Al insertar el módulo «Cards» en una página, se muestran únicamente las tarjetas asignadas a ese ítem.</div>
                   </div>
                 </div>
-                <!-- Destino de la tarjeta: a qué ítem del navbar apunta "Ver Detalles" -->
+                <!-- destino: a que item del navbar apunta "ver detalles" -->
                 <div class="section-card" id="modulos-card-edit-navcard" style="margin-top:1rem;">
                   <div class="section-card-body" style="padding:1rem;">
                     <label class="form-label"><i class="fa-solid fa-diagram-project" style="margin-right:.4rem;"></i>¿A dónde se dirige?</label>
@@ -354,7 +347,7 @@
             </div>
           </div>
 
-          <!-- Modal chico: agregar una nueva tarjeta a la lista -->
+          <!-- modal chico: agregar una nueva tarjeta a la lista -->
           <div class="modal-overlay" id="modulos-card-new-modal">
             <div class="modal" style="max-width:420px;">
               <div class="modal-header">
@@ -375,7 +368,7 @@
             </div>
           </div>
 
-          <!-- Modal: edición visual en vivo (preview + lápices + colores) -->
+          <!-- modal: edicion visual en vivo (preview + lapices + colores) -->
           <div id="mod-preview-modal" class="mpm" style="display:none;">
             <div class="mpm-backdrop" id="mpm-backdrop"></div>
             <div class="mpm-dialog" role="dialog" aria-modal="true" aria-labelledby="mpm-title">
@@ -417,7 +410,7 @@
 
         </div>
 
-        <!-- NAVBAR ITEMS -->
+        <!-- items del navbar -->
         <div class="panel" id="panel-navbar">
           <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;">
             <div>
@@ -436,7 +429,7 @@
           </div>
         </div>
 
-        <!-- IMÁGENES / ASSETS -->
+        <!-- imagenes / assets -->
         <div class="panel" id="panel-assets">
           <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between;">
             <div>
@@ -456,7 +449,7 @@
           <div id="assets-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;"></div>
         </div>
 
-        <!-- PLANTILLAS overview -->
+        <!-- overview de plantillas -->
         <div class="panel" id="panel-plantillas">
           <div class="page-header">
             <div class="page-title">Plantillas</div>
@@ -473,12 +466,12 @@
           </div>
         </div>
  
-        <!-- EDITOR de PLANTILLA -->
+        <!-- editor de plantilla -->
         <div class="panel" id="panel-tpl-editor" style="padding:0;">
           <div id="tpl-editor-inner"></div>
         </div>
  
-        <!-- CONTACTO -->
+        <!-- contacto -->
         <div class="panel" id="panel-contacto">
           <div class="page-header"><div class="page-title">Datos de Contacto</div></div>
           <div class="section-card">
@@ -496,7 +489,7 @@
           </div>
         </div>
  
-        <!-- SEO -->
+        <!-- seo -->
         <div class="panel" id="panel-seo">
           <div class="page-header"><div class="page-title">SEO &amp; Metadatos</div></div>
           <div class="tab-row" id="seo-tabs">
@@ -515,12 +508,12 @@
   </div>
 </div>
  
-<!-- MODALES -->
+<!-- modales -->
 <div class="modal-overlay" id="modal-cliente">
   <div class="modal" style="max-width:760px;">
     <div class="modal-header"><span class="modal-title">Agregar Cliente</span><button class="modal-close" data-close="modal-cliente"><i class="fa-solid fa-xmark"></i></button></div>
     <div class="modal-body">
-      <!-- Datos del carrusel -->
+      <!-- datos del carrusel -->
       <div class="form-row cols-2">
         <div class="form-group"><label class="form-label">Nombre empresa *</label><input class="form-input" id="c-name" placeholder="Ej: San Cristóbal"/></div>
         <div class="form-group">
@@ -543,7 +536,7 @@
           </select>
         </div>
       </div>
-      <!-- Separador perfil -->
+      <!-- separador perfil -->
       <div style="border-top:1px solid var(--slate-100);margin:1rem 0 1.25rem;padding-top:1.25rem;">
         <div style="font-size:.55rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:var(--slate-400);margin-bottom:1rem;">Perfil del cliente (al hacer clic en el logo)</div>
         <div class="form-row">
@@ -669,7 +662,7 @@
   </div>
 </div>
 
-<!-- MODAL: Nuevo módulo (catálogo) -->
+<!-- modal: nuevo modulo (catalogo) -->
 <div class="modal-overlay" id="modal-nuevo-modulo">
   <div class="modal nm-modal" style="max-width:460px;">
     <div class="modal-header">
@@ -698,7 +691,7 @@
   </div>
 </div>
 
-<!-- MODAL: Detalle de tarjeta de servicios (título / descripción / imagen) -->
+<!-- modal: detalle de tarjeta de servicios (titulo / descripcion / imagen) -->
 <div class="modal-overlay" id="modal-card-detalle">
   <div class="modal" style="max-width:480px;">
     <div class="modal-header">
@@ -731,7 +724,7 @@
   </div>
 </div>
 
-<!-- MODAL: Nuevo ítem del navbar -->
+<!-- modal: nuevo item del navbar -->
 <div class="modal-overlay" id="modal-navbar">
   <div class="modal" style="max-width:520px;">
     <div class="modal-header">
@@ -761,7 +754,7 @@
   </div>
 </div>
 
-<!-- MODAL: Editar ítem del navbar -->
+<!-- modal: editar item del navbar -->
 <div class="modal-overlay" id="modal-editar-navbar">
   <div class="modal" style="max-width:520px;">
     <div class="modal-header">
@@ -799,7 +792,7 @@
   </div>
 </div>
 
-<!-- MODAL: Confirmar eliminación con plantilla vinculada -->
+<!-- modal: confirmar eliminacion con plantilla vinculada -->
 <div class="modal-overlay" id="modal-confirm-nav-delete">
   <div class="modal" style="max-width:460px;">
     <div class="modal-header" style="border-bottom-color:#fca5a5;">

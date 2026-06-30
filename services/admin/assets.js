@@ -1,5 +1,4 @@
-// sección "imágenes" del panel: crud de assets (subir, renombrar, bloquear, eliminar)
-// autocontenido: maneja su propio panel y navegación, sin depender de panel.js
+// seccion "imagenes" del panel: crud de assets, autocontenido (no depende de panel.js)
 import { apiGet, apiPost, apiPatch, apiDelete } from '../api.js';
 import { authToken, API_BASE } from '../store.js';
 import { escAttr, fetchAssets, matchAsset, indexLabels, tagDotsHTML, createFilterBar, GRUPOS, GRUPO_NOMBRES } from './asset-shared.js';

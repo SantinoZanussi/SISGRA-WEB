@@ -20,32 +20,25 @@ function savePlantillas(data) { fs.writeFileSync(PLT_FILE, JSON.stringify(data, 
 
 const nextMenuId = botones => (botones.length ? Math.max(...botones.map(b => Number(b.id_menu) || 0)) : 0) + 1;
 
-// Plantilla vinculada a un id_menu (vía plantilla.id_menu[]).
 function plantillaDeMenu(id_menu, plantillas) {
   return plantillas.find(p => (p.id_menu || []).includes(id_menu)) || null;
 }
 const esCustom = p => !!p && /^btn-/.test(p.tipo || '');
 
-// el menú es un árbol: cada ítem tiene padre (id_menu de otro; 0 = nivel principal)
-// un ítem con hijos se muestra como desplegable; cualquiera puede ser padre
-
-// título del padre de un botón, o null si cuelga de la raíz
-
+// el menu es un arbol: cada item tiene padre (id_menu de otro; 0 = nivel principal)
 function padreTituloDe(boton, botones) {
   if (!boton.padre) return null;
   const p = botones.find(b => b.id_menu === boton.padre);
   return p ? p.titulo : null;
 }
 
-// Valida un valor de `padre` para un ítem: debe ser 0, o el id de otro ítem que
-// no sea él mismo ni un descendiente suyo (evita ciclos). Devuelve el id
-// normalizado o null si es inválido.
+// valida `padre`: 0, o el id de otro item que no sea el mismo ni un descendiente (evita ciclos)
 function validarPadre(botones, padre, idPropio) {
   const id = Number(padre) || 0;
   if (id === 0) return 0;
   if (id === idPropio) return null;
   if (!botones.some(b => b.id_menu === id)) return null;
-  // Subir por la cadena de padres desde el candidato: si aparece idPropio, hay ciclo.
+  // subiendo por la cadena de padres: si aparece idPropio, hay ciclo
   let cur = id;
   const visitados = new Set();
   while (cur && !visitados.has(cur)) {
@@ -56,9 +49,8 @@ function validarPadre(botones, padre, idPropio) {
   return id;
 }
 
-// Orden único: el `orden` de los ítems es único y contiguo (1..N). Al fijar un
-// ítem en una posición se "inserta y corre" el resto (no se intercambia) y luego
-// se reindexa todo a 1..N. Llamado sin (idMover, destino) solo normaliza.
+// orden unico y contiguo 1..N: insertar y correr el resto, luego reindexar
+// sin (idMover, destino) solo normaliza
 function reordenarBotones(botones, idMover, destino) {
   const ordenados = botones.slice().sort((a, b) => (a.orden || 0) - (b.orden || 0));
   if (idMover != null && destino != null) {
@@ -72,8 +64,7 @@ function reordenarBotones(botones, idMover, destino) {
   ordenados.forEach((b, idx) => { b.orden = idx + 1; });
 }
 
-// al borrar un ítem que apunta a una página personalizada (btn-*) se borra
-// también su shell físico html/<tipo>/index.html
+// borra el shell fisico html/<tipo>/index.html de una pagina btn-*
 function borrarShellCustom(tipo) {
   const dir = path.join(HTML_DIR, tipo);
   try { if (fs.existsSync(dir)) fs.rmSync(dir, { recursive: true, force: true }); }
@@ -81,8 +72,7 @@ function borrarShellCustom(tipo) {
 }
 
 // GET /api/nav/botones
-// Devuelve todos los ítems con datos derivados para el panel: título del padre,
-// si tiene hijos (desplegable) y la plantilla vinculada (si la hay).
+// items con datos derivados para el panel: padre, si tiene hijos y plantilla vinculada
 exports.listarBotones = (_req, res) => {
   const { botones } = readNav();
   const { plantillas } = readPlantillas();
@@ -100,9 +90,7 @@ exports.listarBotones = (_req, res) => {
 };
 
 // POST /api/nav/botones  [auth]
-// Body: { titulo, padre?, orden?, activo? }. Crea SOLO el ítem de menú: ya no se
-// genera una plantilla/página automáticamente (la página se vincula aparte desde
-// el panel de Plantillas). El ítem nace sin href.
+// crea solo el item de menu (sin href); la pagina se vincula aparte desde Plantillas
 exports.crearBoton = (req, res) => {
   const { titulo, padre, orden, activo } = req.body || {};
   if (!titulo || !titulo.trim()) return res.status(400).json({ error: 'El campo "titulo" es obligatorio' });
@@ -117,20 +105,18 @@ exports.crearBoton = (req, res) => {
     titulo: titulo.trim(),
     padre:  padreId,
     menu:   'CE',
-    href:   null,                      // sin página: ya no se auto-genera una plantilla
-    orden:  data.botones.length + 1,   // por defecto al final; reordenarBotones lo normaliza
+    href:   null,
+    orden:  data.botones.length + 1,   // al final; reordenarBotones lo normaliza
     activo: activo !== undefined ? activo : true,
   };
   data.botones.push(nuevo);
-  // Si pidieron una posición puntual, insertar y correr; si no, queda al final.
   reordenarBotones(data.botones, id_menu, orden != null ? Number(orden) : null);
   saveNav(data);
 
   res.status(201).json({ ok: true, boton: { ...nuevo, padreTitulo: padreTituloDe(nuevo, data.botones) } });
 };
 
-// PATCH /api/nav/botones/:id   [auth]   (:id = id_menu)
-// Body: { titulo?, padre?, orden?, activo? }
+// PATCH /api/nav/botones/:id  [auth]  (:id = id_menu)
 exports.actualizarBoton = (req, res) => {
   const id = Number(req.params.id);
   const data = readNav();
@@ -147,7 +133,6 @@ exports.actualizarBoton = (req, res) => {
     b.padre = padreId;
   }
 
-  // El orden es único: fijar la posición "inserta y corre" y reindexa 1..N.
   if (req.body.orden !== undefined) {
     reordenarBotones(data.botones, id, Number(req.body.orden));
   }
@@ -156,9 +141,8 @@ exports.actualizarBoton = (req, res) => {
   res.json({ ok: true, boton: { ...b, padreTitulo: padreTituloDe(b, data.botones) } });
 };
 
-// DELETE /api/nav/botones/:id   [auth]   (:id = id_menu)
-// Si el ítem apunta a una página personalizada (btn-*), borra también la
-// plantilla y su HTML. Si es una página del sistema, solo desvincula el id_menu.
+// DELETE /api/nav/botones/:id  [auth]  (:id = id_menu)
+// btn-*: borra tambien plantilla y html; pagina del sistema: solo desvincula el id_menu
 exports.eliminarBoton = (req, res) => {
   const id = Number(req.params.id);
   const data = readNav();
@@ -175,22 +159,21 @@ exports.eliminarBoton = (req, res) => {
     savePlantillas(pltData);
     borrarShellCustom(p.tipo);
   } else if (p) {
-    // Página del sistema: desvincular el id_menu, conservar la plantilla.
+    // pagina del sistema: desvincular el id_menu, conservar la plantilla
     p.id_menu = (p.id_menu || []).filter(m => m !== id);
     savePlantillas(pltData);
   }
 
   data.botones = data.botones.filter(x => x.id_menu !== id);
-  // Subir los hijos del ítem borrado al nivel principal (no perderlos).
+  // los hijos del item borrado suben al nivel principal
   data.botones.forEach(x => { if ((x.padre || 0) === id) x.padre = 0; });
-  // Mantener el orden único y contiguo tras quitar el ítem.
   reordenarBotones(data.botones, null, null);
   saveNav(data);
 
   res.json({ ok: true, plantillaEliminada });
 };
 
-// POST /api/nav/page   — compat: datos de la página de un ítem (por id_menu)
+// POST /api/nav/page  datos de la pagina de un item (por id_menu), se mantiene por compatibilidad
 exports.getPage = (req, res) => {
   const { id_menu } = req.body || {};
   if (id_menu === undefined) return res.status(400).json({ error: 'Se requiere id_menu' });
@@ -202,6 +185,6 @@ exports.getPage = (req, res) => {
   res.json({ id_menu: boton.id_menu, titulo: boton.titulo, href: boton.href, plantilla });
 };
 
-// POST /api/nav/sync  — obsoleto en v2 (el nav se resuelve desde navbar.json en runtime)
+// POST /api/nav/sync  obsoleto en v2: el nav se resuelve desde navbar.json en runtime
 exports.syncPlantillas = (_req, res) =>
   res.json({ ok: true, message: 'Sync obsoleto en v2: el nav se resuelve desde navbar.json en tiempo de render.' });

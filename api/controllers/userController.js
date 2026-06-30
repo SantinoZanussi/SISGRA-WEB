@@ -4,7 +4,6 @@ const { JWT_SECRET } = require('../middleware/auth');
 
 const REAL_HASH = bcryptjs.hashSync("admin", 10);
 
-// login
 exports.loginUser = async (req, res) => {
   const { usuario, password } = req.body;
 

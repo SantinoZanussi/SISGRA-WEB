@@ -483,11 +483,9 @@
 /* SPACER */
 .sec-spacer{background:#fff;}
 
-/* ───────────────────────────────────────────────────────────────────────────
-   MÓDULO "SERVICIOS" — editor de tarjetas dentro del modal "Ver"
-   ─────────────────────────────────────────────────────────────────────────── */
+/* modulo "servicios": editor de tarjetas dentro del modal "ver" */
 .svc-cards-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.85rem;}
-/* Ícono al frente de cada fila de la lista de tarjetas (nivel 2). */
+/* icono al frente de cada fila de la lista de tarjetas */
 .card-row-ico{display:inline-flex;align-items:center;justify-content:center;width:1.6rem;height:1.6rem;border-radius:.35rem;background:var(--slate-50,#f8fafc);font-size:.8rem;flex-shrink:0;}
 .svc-card-row{border:1px solid var(--slate-200);border-radius:.6rem;background:#fff;padding:1rem;display:flex;flex-direction:column;gap:.55rem;box-shadow:0 1px 2px rgba(15,23,42,.04);}
 .svc-card-top{display:flex;align-items:flex-start;justify-content:space-between;}

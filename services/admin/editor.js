@@ -9,11 +9,10 @@ const ICON_CATALOG = ['location', 'lightning', 'shield', 'check', 'camera', 'gea
 const e3 = {
   plantillas: [],
   activeTpl: null,        // { id_plantilla, tipo, nombre, id_menu, id_modulos:[num], contenedores, ... }
-  modulos: [],            // catálogo plano (working copy) — se persiste con PUT /data/modulos
-  navbar: [],             // botones del navbar (para renderizar el nav en el canvas)
-  // Modelo de trabajo de contenedores (filas de 1 a 3 módulos lado a lado):
-  //   conts = [{ cap:Number(1-3), modulos:[id,...] }]
-  // Se serializa a plantilla.contenedores = [[id,...],...] al guardar.
+  modulos: [],            // catalogo plano (working copy), se persiste con PUT /data/modulos
+  navbar: [],             // botones del navbar para renderizar el nav en el canvas
+  // working model de contenedores: conts = [{ cap:1-3, modulos:[id,...] }]
+  // se serializa a plantilla.contenedores = [[id,...],...] al guardar
   conts: [],
   sel: null,              // módulo seleccionado: { ci, mi } (contenedor, índice dentro)
   activeCont: null,       // ci del contenedor destino para insertar módulos
@@ -25,9 +24,8 @@ const e3 = {
 
 const CONT_MAX = 3;   // máximo de módulos por contenedor (fila)
 
-// Contenedores: conversión working-model ↔ persistido
-// plantilla.contenedores ([[id,..],..]) → working conts ([{cap,modulos}]).
-// Migra datos viejos (sin contenedores) a 1 contenedor 1x1 por módulo.
+// plantilla.contenedores [[id,..],..] a working conts [{cap,modulos}]
+// migra datos viejos sin contenedores a 1x1 por modulo
 function contsFromPlantilla(tpl) {
   const raw = (Array.isArray(tpl.contenedores) && tpl.contenedores.length)
     ? tpl.contenedores
@@ -37,56 +35,50 @@ function contsFromPlantilla(tpl) {
     return { cap: Math.max(1, Math.min(CONT_MAX, modulos.length || 1)), modulos };
   });
 }
-// working conts → contenedores persistibles (recorta a la capacidad).
+// working conts a contenedores persistibles, recorta a la capacidad
 function contsToContenedores() {
   return e3.conts.map(c => c.modulos.slice(0, c.cap));
 }
-// ¿Entrada de contenedor inline? (card suelta guardada dentro de la plantilla)
+// entrada de contenedor inline: card suelta guardada en la plantilla
 const esInline = x => x && typeof x === 'object' && x.inline === true;
 
-// ¿Esta card pertenece a esta plantilla? Misma lógica que el sitio público
-// (page-bootstrap.cardEnPlantilla): 'all'/sin asignar → siempre; [ids] → solo si
-// la plantilla está en la lista. Filtra las tarjetas del módulo "Cards" por página.
+// misma logica que page-bootstrap.cardEnPlantilla: 'all'/sin asignar siempre; [ids] solo si la plantilla esta
 function _cardEnPlantilla(card, plantillaId) {
   const p = card && card.id_pagina;
   if (p === 'all' || p == null || p === '') return true;
   const ids = (Array.isArray(p) ? p : [p]).map(Number).filter(n => !isNaN(n));
   return ids.length ? ids.includes(Number(plantillaId)) : true;
 }
-// Todas las entradas de todos los contenedores (ids numéricos + módulos inline).
+// todas las entradas de todos los contenedores (ids + inline)
 function allContEntries() {
   return contsToContenedores().reduce((acc, m) => acc.concat(m), []);
 }
-// lista plana de ids NUMÉRICOS (orden de fila e índice) — canónica para
-// id_modulos. Los módulos inline no tienen id, así que se excluyen.
+// lista plana de ids numericos (canonica para id_modulos); los inline se excluyen
 function allModIds() {
   return allContEntries().filter(x => typeof x === 'number');
 }
-// Mantiene activeTpl.{contenedores,id_modulos} en sync con el working model,
-// por si algún código viejo aún los lee.
+// mantiene activeTpl.{contenedores,id_modulos} en sync por si codigo viejo los lee
 function syncActiveTpl() {
   if (!e3.activeTpl) return;
   e3.activeTpl.contenedores = contsToContenedores();
   e3.activeTpl.id_modulos   = allModIds();
 }
 
-// Un contenedor está INCOMPLETO si tiene menos módulos que su capacidad. Regla:
-// cada contenedor debe llenarse exacto a su capacidad (un 2×1 lleva 2 módulos sí
-// o sí). Devuelve el índice del primer contenedor incompleto, o -1 si están todos
-// completos. Mientras haya uno incompleto NO se puede crear otro ni guardar.
+// indice del primer contenedor incompleto (menos modulos que su cap), o -1
+// con uno incompleto no se puede crear otro ni guardar
 function pendingContIndex() {
   return e3.conts.findIndex(c => c.modulos.length < c.cap);
 }
 
-// Mantiene activeCont apuntando al contenedor incompleto (destino de inserción).
+// activeCont apunta al contenedor incompleto (destino de insercion)
 function refreshContControls() {
   e3.activeCont = pendingContIndex();
 }
 
-// nav/footer = se referencian compartidos; el resto se clona al insertar (modelo híbrido).
+// nav/footer se referencian compartidos; el resto se clona al insertar
 const GLOBAL_TIPOS = new Set(['nav', 'footer', 'footer-full']);
 
-// Catálogo plano de módulos (v2) + navbar. Se recarga al abrir el editor.
+// catalogo plano de modulos v2 + navbar, se recarga al abrir el editor
 async function loadE3Catalog() {
   try {
     const [mr, nr] = await Promise.all([ api('GET', '/modulos'), api('GET', '/data/navbar') ]);
@@ -100,9 +92,7 @@ async function loadE3Catalog() {
 
 const modById = id => e3.modulos.find(m => m.id_modulo === id);
 
-// Items del nav (dropdowns + links) desde navbar.json — igual que el runtime
-// (page-bootstrap): menú jerárquico padre/hijos; un contenedor (encabezado con
-// hijos) se vuelve desplegable, el resto links sueltos.
+// items del nav desde navbar.json (igual que page-bootstrap): jerarquico, padre con hijos = desplegable
 function buildNavItems(botones) {
   const all = botones || [];
   const visibles = b => b.activo !== false && b.href !== '/';
@@ -130,8 +120,7 @@ function buildNavItems(botones) {
   return items;
 }
 
-// Resuelve los módulos de todos los contenedores → instancias (con items de nav
-// inyectados). Lo usa cssFilesFor para saber qué CSS cargar en el iframe.
+// resuelve los modulos de los contenedores a instancias (con items de nav); lo usa cssFilesFor
 function resolvedMods() {
   const navItems = buildNavItems(e3.navbar);
   const base = allContEntries().map(entry => {
@@ -140,12 +129,11 @@ function resolvedMods() {
     if (!m) return null;
     return m.tipo === 'nav' ? { ...m, data: { ...m.data, items: navItems } } : m;
   }).filter(Boolean);
-  // Sumar los módulos que las Grillas inyectan por id, para que cargue su CSS.
+  // suma los modulos que las grillas inyectan por id para cargar su css
   return base.concat(expandGrillaInjectedMods(base));
 }
 
-// Módulos que las Grillas (feature-grid con data.modulos) inyectan por id,
-// resueltos contra el catálogo y de forma recursiva (grilla → grilla → …).
+// modulos que las grillas (feature-grid) inyectan por id, resueltos recursivo contra el catalogo
 function expandGrillaInjectedMods(mods, seen = new Set()) {
   const out = [];
   (mods || []).forEach(sec => {
@@ -188,20 +176,17 @@ function modulesForTipo(_tipo) {
   return Object.entries(SECTIONS);
 }
 
-// pageKey — slug común para unir el navbar (href "/html/fibra_optica") con la
-// lista de páginas (file "html/fibra_optica.html"). La raíz "/" se mapea a "index".
+// slug comun para unir navbar (href "/html/fibra_optica") con la lista de paginas; "/" es "index"
 const pageKey = s => String(s ?? '').replace(/^\//, '').replace(/\.html$/, '') || 'index';
 
-// llena el <select> de "html destino" desde los ítems del navbar: cada ítem es una
-// página posible (usa el tipo de su plantilla vinculada, o btn-{id_menu} si no tiene)
-// los ítems con hijos van como <optgroup>; al final agrega las páginas del sistema
-// el id_menu viaja en data-idmenu para que crearPlantilla vincule la página con su pestaña
+// llena el select de "html destino" desde los items del navbar (tipo de su plantilla o btn-{id_menu})
+// los items con hijos van como optgroup; el id_menu viaja en data-idmenu para vincular la pagina
 function populateTipoSelect() {
   const sel = document.getElementById('np-tipo');
   if (!sel) return;
 
   const botones = e3.navbar || [];
-  // tipo de un ítem: el de su plantilla vinculada, o btn-{id_menu} si no tiene.
+  // tipo de un item: el de su plantilla vinculada, o btn-{id_menu}
   const plantillaDeMenu = idm => (e3.plantillas || []).find(p => (p.id_menu || []).includes(idm));
   const tipoDeItem = b => { const p = plantillaDeMenu(b.id_menu); return p ? p.tipo : `btn-${b.id_menu}`; };
 
@@ -217,7 +202,7 @@ function populateTipoSelect() {
   top.forEach(b => {
     const hijos = hijosDe(b.id_menu);
     if (hijos.length) {
-      // Contenedor desplegable → optgroup; sus hijos son las páginas.
+      // contenedor desplegable: optgroup con sus hijos
       const inner = hijos.map(h => {
         const tipo = tipoDeItem(h); emitidos.add(tipo);
         return opt(tipo, h.titulo, h.id_menu);
@@ -229,7 +214,7 @@ function populateTipoSelect() {
     }
   });
 
-  // Páginas del sistema que no están en el menú (Artículo, Perfil de Cliente).
+  // paginas del sistema que no estan en el menu (articulo, perfil de cliente)
   TIPOS_HTML.forEach(t => {
     if (emitidos.has(t.value)) return;
     emitidos.add(t.value);
@@ -244,8 +229,7 @@ let _e3RestorePending = true;
 
 async function loadPlantillas() {
   try {
-    // También bajamos el navbar para poder rotular cada página personalizada
-    // con el nombre de su ítem del menú (en vez de "Páginas personalizadas").
+    // bajamos el navbar para rotular cada pagina personalizada con el nombre de su item
     const [{ plantillas }, nav] = await Promise.all([
       api('GET', '/plantillas'),
       api('GET', '/data/navbar').catch(() => ({ botones: [] })),
@@ -254,7 +238,7 @@ async function loadPlantillas() {
     e3.navbar = nav.botones || [];
     renderOverview();
     renderSidebarList();
-    // Restaurar estado post-reload DESPUÉS de que los datos están disponibles.
+    // restaura el estado post-reload una vez que los datos estan disponibles
     if (_e3RestorePending) {
       _e3RestorePending = false;
       try {
@@ -265,7 +249,7 @@ async function loadPlantillas() {
             openEditor(tplId);
           }
         }
-        // 'plantillas' es manejado por showPanel() + reloadPlantillas() (ya cargado arriba)
+        // 'plantillas' lo maneja showPanel() + reloadPlantillas(), ya cargado arriba
       } catch(_) {}
     }
   } catch (e) { notif('Error cargando plantillas: ' + e.message, 'error'); }
@@ -291,7 +275,6 @@ function expiryClass(p) {
   return (dias !== null && dias <= 2) ? 'soon' : '';
 }
 
-// Actualiza el banner de vencidas en el dashboard
 function refreshDashVencidas() {
   const banner = document.getElementById('dash-vencidas-banner');
   const text   = document.getElementById('dash-vencidas-text');
@@ -317,13 +300,13 @@ function refreshDashVencidas() {
 function renderOverview() {
   const list = document.getElementById('tpl-overview-list');
   if (!list) return;
-  // Card de una plantilla (reutilizada por los grupos del sistema y los custom).
+  // card de una plantilla (la usan grupos del sistema y custom)
   const cardHtml = (p) => {
     const vencida = isVencida(p);
     const dias    = diasRestantes(p);
     const cls     = expiryClass(p);
     let expiryHtml = '';
-    // El vencimiento se muestra también en borradores (se asigna al crear).
+    // el vencimiento se muestra tambien en borradores (se asigna al crear)
     if (p.fecha_fin) {
       const label = vencida
         ? `Venció el ${fmtFecha(p.fecha_fin)}`
@@ -352,7 +335,7 @@ function renderOverview() {
       </div>`;
   };
 
-  // Header de un grupo + sus cards (o un mensaje de vacío).
+  // header de un grupo + sus cards, o un mensaje de vacio
   const grupoHtml = (label, file, pls, vacioMsg) => `
     <div style="margin-bottom:1.25rem;">
       <div style="display:flex;align-items:center;gap:.75rem;padding:.4rem 0 .5rem;border-bottom:1px solid var(--slate-100);margin-bottom:.5rem;">
@@ -363,12 +346,11 @@ function renderOverview() {
         : pls.map(cardHtml).join('')}
     </div>`;
 
-  // Grupos del sistema (tipos fijos)…
+  // grupos del sistema (tipos fijos)
   let html = TIPOS_HTML.map(t =>
     grupoHtml(t.label, t.file, e3.plantillas.filter(p => p.tipo === t.value), 'Sin plantillas todavía.')
   ).join('');
-  // …y una sección por página personalizada (btn-*), rotulada con el nombre
-  //    de su ítem del navbar (no con un genérico "Páginas personalizadas").
+  // y una seccion por pagina personalizada (btn-*), rotulada con el nombre de su item del navbar
   const customTipos = [...new Set(
     e3.plantillas.filter(p => !TIPOS_HTML.some(t => t.value === p.tipo)).map(p => p.tipo)
   )];
@@ -391,12 +373,10 @@ function renderOverview() {
 
 async function renombrarPlantilla(id, btn) {
   id = Number(id);
-  // Encontrar el span del nombre en la misma fila
   const nameSpan = btn.closest('div').querySelector('.tpl-list-name-text');
   if (!nameSpan) return;
   const nombreActual = e3.plantillas.find(p => p.id_plantilla === id)?.nombre || nameSpan.textContent;
 
-  // Convertir el span en un input inline
   const input = document.createElement('input');
   input.type = 'text';
   input.className = 'tpl-name-input';
@@ -408,7 +388,6 @@ async function renombrarPlantilla(id, btn) {
 
   async function commit() {
     const nuevoNombre = input.value.trim();
-    // Restaurar siempre el span, luego actualizar si cambió
     const span = document.createElement('span');
     span.className = 'tpl-list-name-text';
     span.style.cssText = 'font-weight:700;color:var(--slate-800);font-size:.8125rem;';
@@ -424,7 +403,6 @@ async function renombrarPlantilla(id, btn) {
       await api('PATCH', `/plantillas/${id}`, { nombre: nuevoNombre });
       const p = e3.plantillas.find(x => x.id_plantilla === id);
       if (p) p.nombre = nuevoNombre;
-      // Actualizar también la sidebar
       renderSidebarList();
       notif('✓ Plantilla renombrada');
     } catch (e) {
@@ -491,8 +469,7 @@ function renderSidebarList() {
 async function openNuevaModal(preTipo = '') {
   document.getElementById('np-name').value = '';
   document.getElementById('np-desc').value = '';
-  // Releemos el navbar al abrir para reflejar las pestañas recién creadas en el
-  // selector de "HTML destino" (si no, quedaba con la copia vieja de e3.navbar).
+  // releemos el navbar para reflejar las pestañas recien creadas en el selector de html destino
   try { const nav = await api('GET', '/data/navbar'); e3.navbar = nav.botones || e3.navbar; } catch (_) {}
   populateTipoSelect();
   const tipoSel = document.getElementById('np-tipo');
@@ -505,9 +482,7 @@ async function crearPlantilla() {
   const nombre = document.getElementById('np-name').value.trim();
   const sel = document.getElementById('np-tipo');
   const tipo = sel?.value || '';
-  // La opción lleva el id_menu de su pestaña del navbar (data-idmenu): se manda
-  // para vincular la página con esa pestaña (y, en custom btn-*, el backend le
-  // pone el href para que el menú la enlace).
+  // id_menu (data-idmenu) vincula la pagina con esa pestaña; en btn-* el backend le pone el href
   const idmenu = sel?.selectedOptions?.[0]?.dataset?.idmenu;
   const descripcion = document.getElementById('np-desc').value.trim();
   if (!nombre) return notif('El nombre es requerido', 'error');
@@ -531,7 +506,6 @@ async function activarPlantilla(id) {
     e3.plantillas.forEach(p => {
       if (p.tipo === plantilla.tipo) {
         p.activa = (p.id_plantilla === id);
-        // Sincronizar fechas desde el servidor
         if (p.id_plantilla === id) {
           p.fecha_inicio = plantilla.fecha_inicio;
           p.fecha_fin    = plantilla.fecha_fin;
@@ -581,7 +555,7 @@ async function eliminarPlantilla(id) {
 
 async function openEditor(id) {
   try { sessionStorage.setItem('sisgra_panel', 'tpl-editor'); sessionStorage.setItem('sisgra_tpl', String(id)); } catch(_) {}
-  // Bloquear en pantallas móviles (< 1024px)
+  // bloquea en pantallas moviles (< 1024px)
   if (window.innerWidth < 1024) {
     document.getElementById('e3-mobile-block').classList.add('active');
     return;
@@ -600,8 +574,7 @@ async function openEditor(id) {
     await loadE3Catalog();
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-tpl-editor').classList.add('active');
-    // Editando una plantilla → "Ver todas las plantillas" no debe quedar activo
-    // (si no, se resaltaban los dos en el sidebar).
+    // editando una plantilla: "ver todas las plantillas" no debe quedar activo en el sidebar
     document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
     document.getElementById('topbar-title').textContent = `Editor — ${plantilla.nombre}`;
     renderSidebarList();
@@ -640,13 +613,10 @@ function renderEditorShell() {
       </div>
     </div>
     <style>
-      /* El editor llena el alto disponible con flex; el canvas ocupa todo el alto. */
       #panel-tpl-editor{height:100%;}
       #tpl-editor-inner{display:flex;flex-direction:column;height:100%;min-height:0;}
       .editor-shell{flex:1;min-height:0;height:auto;}
-      /* El preview del e3 ocupa el ancho disponible (con un margen via el padding del
-         scroll), en vez del 1200px fijo de .page-frame.desktop (esa regla la usa el
-         editor legacy con su switcher de viewport, no la tocamos). */
+      /* ancho disponible en vez del 1200px fijo de .page-frame.desktop (esa regla la usa el editor legacy) */
       #e3-canvas.page-frame.desktop{width:100%;min-width:0;max-width:1600px;}
       .e3-props-tabs{display:flex;gap:.25rem;}
       .e3-props-tabs button{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.25rem .55rem;border:1px solid var(--slate-200);background:#fff;color:var(--slate-500);cursor:pointer;border-radius:.3rem;}
@@ -666,7 +636,7 @@ function renderEditorShell() {
     await activarPlantilla(tpl.id_plantilla);
     renderEditorShell();
   });
-  // Click fuera del iframe (en el panel) → cierra el buscador inline del slot.
+  // click fuera del iframe cierra el buscador inline del slot
   document.removeEventListener('mousedown', onParentMouseCloseSlotSearch);
   document.addEventListener('mousedown', onParentMouseCloseSlotSearch);
   document.querySelectorAll('[data-e3-tab]').forEach(t => t.addEventListener('click', () => {
@@ -683,25 +653,19 @@ function renderEditorShell() {
 
 // el buscador vive dentro del slot vacío clickeado: inserta solo en ese contenedor
 // elegir un resultado inserta el módulo al instante (uno por slot)
-/* Páginas asignadas de un módulo, normalizadas: 'all' | [ids].
-   `id_pagina` puede ser null, 'all', un id suelto (datos viejos) o un array
-   de ids (multi-página). Compartido con el catálogo de módulos de abajo. */
+// paginas asignadas normalizadas: 'all' | [ids]; id_pagina puede ser null/'all'/id/array
 function _paginasDe(id_pagina) {
   if (id_pagina === 'all') return 'all';
   if (id_pagina == null || id_pagina === '') return [];
   return (Array.isArray(id_pagina) ? id_pagina : [id_pagina]).map(Number).filter(n => !isNaN(n));
 }
 
-/* ¿La asignación (id_pagina) de una VARIANTE la habilita en la plantilla que se
-   está editando? La asignación es SIEMPRE por variante (nunca por tipo). Reglas:
-     • 'all' o SIN asignar → disponible en TODAS las plantillas.
-     • asignada a ítem(s)  → SOLO en las plantillas vinculadas a esos ítems del navbar.
-   Así, al asignar una variante a un ítem del menú, aparece en el buscador de
-   inserción de la plantilla de ese ítem (y no se "esconde" si no tiene asignación). */
+// habilita una variante en la plantilla en edicion (asignacion siempre por variante)
+// 'all'/sin asignar: todas las plantillas; asignada a items: solo las plantillas de esos items
 function _idPaginaAllowsActiveTpl(idp) {
   const pags = _paginasDe(idp);
-  if (pags === 'all') return true;        // "Todas las páginas" → en todos los buscadores
-  if (pags.length === 0) return false;    // SIN asignar a ningún ítem → no se muestra en ninguno
+  if (pags === 'all') return true;        // todas las paginas
+  if (pags.length === 0) return false;    // sin asignar: no se muestra
   const tplId = e3.activeTpl?.id_plantilla;
   return tplId != null && pags.includes(Number(tplId));
 }
@@ -715,10 +679,7 @@ function searchResults(query) {
   const res = [];
   for (const m of e3.modulos) {
     if (m.data?.soloCard) continue;             // copias inline de una card: no se listan acá
-    // Resultado de MÓDULO entero: si esta VARIANTE está asignada a esta plantilla
-    // (o es global / "Todas" / sin asignar). SIN límite de repetición: el mismo
-    // módulo se puede insertar las veces que se quiera en la misma plantilla
-    // (cada ocurrencia es una referencia más en id_modulos/contenedores).
+    // modulo entero si la variante esta asignada a esta plantilla; sin limite de repeticion
     if (_modAllowedInActiveTpl(m)) {
       const hay = `${m.nombre} ${m.tipo} ${SECTIONS[m.tipo]?.label || ''}`.toLowerCase();
       if (hay.includes(q)) res.push({ kind: 'mod', id_modulo: m.id_modulo, tipo: m.tipo, label: m.nombre, sub: SECTIONS[m.tipo]?.label || m.tipo });
@@ -800,9 +761,7 @@ function closeSlotSearch() {
   renderCanvas();
 }
 
-// Inserta el módulo elegido en ESE contenedor (el del slot donde está el buscador).
-// Referencia DIRECTA al módulo (sin clonar): editar su contenido se refleja en
-// vivo en la plantilla donde está usado.
+// inserta el modulo en ese contenedor; referencia directa (sin clonar), se edita en vivo
 function insertarEnContenedor(ci, id_modulo) {
   const cont = e3.conts[ci];
   if (!cont) return;
@@ -817,10 +776,8 @@ function insertarEnContenedor(ci, id_modulo) {
   notif('✓ Módulo insertado');
 }
 
-// Inserta una TARJETA suelta como módulo INLINE dentro del contenedor: una copia
-// de la card (con `soloCard` → se renderiza sin el título de sección) guardada
-// EN LA PLANTILLA, sin crear ningún módulo en el catálogo. Es independiente:
-// editar la tarjeta original no la modifica.
+// inserta una tarjeta como modulo inline (copia con soloCard) en la plantilla, sin tocar el catalogo
+// es independiente: editar la tarjeta original no la modifica
 function insertarCardEnContenedor(ci, r) {
   const cont = e3.conts[ci];
   if (!cont) return;
@@ -847,20 +804,19 @@ function insertarCardEnContenedor(ci, r) {
   notif('✓ Tarjeta insertada');
 }
 
-// Cierra el buscador del slot al click fuera del iframe (en el panel).
+// cierra el buscador del slot al click fuera del iframe
 function onParentMouseCloseSlotSearch() {
   if (e3.slotSearch) closeSlotSearch();
 }
 
-// Cierra el buscador del slot al click DENTRO del iframe pero fuera de un slot.
+// cierra el buscador al click dentro del iframe pero fuera de un slot
 function onIframeClickCloseSlotSearch(ev) {
   if (!e3.slotSearch) return;
   if (ev.target.closest('.e3-slot')) return;   // clicks en slots: abren/usan el buscador
   closeSlotSearch();
 }
 
-// Crea un contenedor vacío de `cap` columnas (1 a 3) y lo deja activo para insertar.
-// Bloqueado si ya hay un contenedor incompleto (regla #3).
+// crea un contenedor vacio de cap columnas (1-3); bloqueado si hay uno incompleto
 function crearContenedor(cap) {
   if (pendingContIndex() !== -1) {
     notif('Completá el contenedor actual antes de crear otro', 'error');
@@ -870,16 +826,13 @@ function crearContenedor(cap) {
   e3.conts.push({ cap: n, modulos: [] });
   e3.activeCont = e3.conts.length - 1;
   e3.sel = null;
-  // El buscador NO se abre solo: aparece recién al click en "+ Insertar módulo".
+  // el buscador no se abre solo, aparece al click en "+ insertar modulo"
   e3.slotSearch = null;
   markDirty(); renderCanvas(); renderProps();
   notif(`✓ Contenedor ${n}×1 creado — tocá "+ Insertar módulo" para llenar sus ${n} lugar${n > 1 ? 'es' : ''}`);
 }
 
-// Botón "Nuevo contenedor" (al fondo del canvas, dentro del iframe)
-// HTML del botón grande de "Nuevo contenedor" que se renderiza SIEMPRE al final
-// del canvas (los contenedores nuevos siempre aparecen abajo). Si hay un
-// contenedor incompleto, en su lugar se muestra un aviso (no se puede crear otro).
+// html del boton "nuevo contenedor", siempre al final; si hay uno incompleto muestra un aviso
 function buildAddContHtml() {
   if (pendingContIndex() !== -1) {
     return `
@@ -901,9 +854,7 @@ function buildAddContHtml() {
 </div>`;
 }
 
-// Conecta el botón del fondo del canvas: al click, el selector de tamaño (1 a 3
-// módulos en fila) REEMPLAZA al botón en el mismo lugar (sin empujar el layout), y
-// cada celda crea el contenedor. Click fuera del bloque → vuelve al botón.
+// al click, el selector de tamaño reemplaza al boton en su lugar; cada celda crea el contenedor
 function bindAddCont(doc) {
   const wrap = doc.querySelector('[data-addcont]');
   if (!wrap) return;
@@ -930,12 +881,7 @@ function onIframeClickCollapseAddCont(ev) {
   if (wrap) setAddContOpen(wrap, false);
 }
 
-// Iframe con CSS específico por tipo
-
-// Inyecta en el <head> del iframe los <link> de CSS que falten para los módulos
-// actuales (sin quitar los existentes). Se llama en cada render del canvas, así
-// un módulo recién arrastrado de otro tipo obtiene su CSS sin recrear el iframe.
-// La lista de CSS la calcula cssFilesFor (compartida con el runtime).
+// inyecta los <link> de css que falten para los modulos actuales; lista calculada por cssFilesFor
 function ensureCanvasCss(doc) {
   if (!doc || !doc.head) return;
   const have = new Set(
@@ -954,8 +900,7 @@ function initIframe(cb) {
   const iframe = document.getElementById('e3-canvas');
   if (!iframe) return;
   const cssFiles = cssFilesFor(e3.currentTipo, resolvedMods().filter(Boolean));
-  // OJO: usamos `<bo${''}dy>` en vez de `<body>` para evitar que Live Server inyecte
-  // su <script> de auto-reload acá adentro (rompería el template literal del padre).
+  // partimos <body> para que live server no inyecte su auto-reload en el template
   const B = 'bo'+'dy';
   iframe.srcdoc = `<!DOCTYPE html><html lang="es"><head>
 <meta charset="UTF-8">
@@ -973,7 +918,7 @@ ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
   .e3-sec-ctrls .e3-danger{color:#dc2626;}
   .e3-sec-badge{position:absolute;top:8px;left:8px;z-index:9998;background:rgba(15,23,42,.85);color:#fff;font:700 .6rem/1 Inter,system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;padding:.25rem .5rem;border-radius:.25rem;opacity:0;transition:opacity .15s;pointer-events:none;}
   .e3-sec-wrap:hover .e3-sec-badge,.e3-sec-wrap.e3-selected .e3-sec-badge{opacity:1;}
-  /* Contenedores (filas) en el canvas */
+  /* contenedores (filas) en el canvas */
   .e3-cont{position:relative;border:2px dashed #cbd5e1;margin:10px;transition:border-color .15s,box-shadow .15s;}
   .e3-cont.e3-cont-active{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12);}
   .e3-cont-bar{display:flex;align-items:center;justify-content:space-between;gap:.5rem;background:#f1f5f9;border-bottom:1px solid #e2e8f0;padding:.25rem .4rem;font-family:Inter,system-ui,sans-serif;}
@@ -986,7 +931,7 @@ ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
   .e3-slot{position:relative;display:flex;align-items:center;justify-content:center;min-height:90px;border:2px dashed #d4dae3;margin:6px;background:repeating-linear-gradient(45deg,#fafbfc,#fafbfc 8px,#f1f5f9 8px,#f1f5f9 16px);cursor:pointer;transition:border-color .15s,background .15s;}
   .e3-slot:hover{border-color:#60a5fa;}
   .e3-slot-inner{font:700 .68rem/1.3 Inter,system-ui,sans-serif;color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:.4rem;}
-  /* Buscador inline DENTRO del slot clickeado */
+  /* buscador inline dentro del slot clickeado */
   .e3-slot.e3-slot-open{cursor:default;align-items:stretch;background:#fff;border-color:#2563eb;border-style:solid;}
   .e3-slot-search{display:flex;flex-direction:column;gap:.45rem;width:100%;padding:.7rem;font-family:Inter,system-ui,sans-serif;box-sizing:border-box;}
   .e3-slot-search-title{font-size:.58rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#2563eb;display:flex;align-items:center;justify-content:space-between;gap:.5rem;}
@@ -1001,7 +946,7 @@ ${cssFiles.map(c => `<link rel="stylesheet" href="${c}">`).join('\n')}
   .e3-slot-result-name{font-size:.74rem;font-weight:700;color:#1e293b;}
   .e3-slot-result-sub{font-size:.58rem;color:#94a3b8;letter-spacing:.04em;text-transform:uppercase;}
   .e3-slot-empty{font-size:.66rem;color:#94a3b8;padding:.45rem .6rem;}
-  /* Botón "Nuevo contenedor" al fondo del canvas */
+  /* boton "nuevo contenedor" al fondo del canvas */
   .e3-empty-lite{padding:3rem 2rem 1rem;text-align:center;color:#94a3b8;font:700 .82rem/1.6 Inter,system-ui,sans-serif;}
   .e3-empty-lite small{display:block;margin-top:.4rem;font-weight:500;font-size:.68rem;opacity:.8;}
   .e3-addcont{margin:10px;}
@@ -1028,9 +973,7 @@ function renderCanvas() {
   const iframe = document.getElementById('e3-canvas');
   if (!iframe || !iframe.contentDocument) return;
   const doc = iframe.contentDocument;
-  // Registro para que las Grillas resuelvan sus módulos por id. A las cards les
-  // filtramos las tarjetas por la plantilla activa (igual que el render directo),
-  // así una Grilla que inyecta cards muestra solo las de esta página.
+  // registro para que las grillas resuelvan modulos por id; a las cards les filtra por la plantilla activa
   const _tplId = e3.activeTpl?.id_plantilla;
   setModuleRegistry(e3.modulos.map(m => (m.tipo === 'services' && Array.isArray(m.data?.cards))
     ? { ...m, data: { ...m.data, cards: m.data.cards.filter(c => _cardEnPlantilla(c, _tplId)) } }
@@ -1053,8 +996,7 @@ function renderCanvas() {
     for (let mi = 0; mi < cont.cap; mi++) {
       const id = cont.modulos[mi];
       if (id == null) {
-        // Slot vacío: si el buscador está abierto EN ESTE slot, se renderiza
-        // adentro (reemplaza al "+ Insertar módulo"); si no, el mensaje.
+        // slot vacio: si el buscador esta abierto en este slot se renderiza adentro, si no el mensaje
         const abierto = e3.slotSearch && e3.slotSearch.ci === ci && e3.slotSearch.mi === mi;
         slots.push(abierto ? `
 <div class="e3-slot e3-slot-open" data-ci="${ci}" data-mi="${mi}">
@@ -1068,8 +1010,7 @@ function renderCanvas() {
       }
       const inline = esInline(id);
       const m = inline ? id : modById(id);
-      // El preview del módulo "Cards" refleja lo del sitio público para esta página:
-      // filtra las cards asignadas a esta plantilla y usa el título por página.
+      // el preview de "cards" refleja el sitio publico: filtra las cards de esta plantilla y su titulo
       let mRender = m;
       if (m && m.tipo === 'services') {
         const tplId = e3.activeTpl?.id_plantilla;
@@ -1133,8 +1074,7 @@ function renderCanvas() {
       });
     });
   });
-  // Slots vacíos → abren el buscador inline DENTRO del slot clickeado (solo
-  // se puede insertar en ESE contenedor).
+  // slots vacios abren el buscador inline dentro del slot clickeado
   doc.querySelectorAll('.e3-slot:not(.e3-slot-open)').forEach(s => {
     s.addEventListener('click', () => {
       e3.slotSearch = { ci: +s.dataset.ci, mi: +s.dataset.mi, query: '' };
@@ -1142,10 +1082,10 @@ function renderCanvas() {
     });
   });
   bindSlotSearch(doc);
-  // Click dentro del iframe pero fuera de un slot → cierra el buscador.
+  // click dentro del iframe pero fuera de un slot cierra el buscador
   doc.removeEventListener('click', onIframeClickCloseSlotSearch);
   doc.addEventListener('click', onIframeClickCloseSlotSearch);
-  // Botones de la barra del contenedor → mover/eliminar
+  // botones de la barra del contenedor: mover/eliminar
   doc.querySelectorAll('[data-cont-bar]').forEach(bar => {
     const ci = +bar.dataset.contBar;
     bar.querySelectorAll('button[data-cact]').forEach(b => {
@@ -1158,13 +1098,11 @@ function renderCanvas() {
       });
     });
   });
-  // Botón "Nuevo contenedor" al fondo del canvas.
   bindAddCont(doc);
   doc.querySelectorAll('a').forEach(a => a.addEventListener('click', ev => ev.preventDefault()));
   doc.querySelectorAll('form').forEach(f => f.addEventListener('submit', ev => ev.preventDefault()));
 }
 
-// Reordena un módulo dentro de su contenedor (fila).
 function moveModuleInCont(ci, mi, delta) {
   const arr = e3.conts[ci]?.modulos;
   if (!arr) return;
@@ -1178,7 +1116,6 @@ function moveModuleInCont(ci, mi, delta) {
   markDirty(); renderCanvas(); renderProps();
 }
 
-// Quita un módulo de su contenedor (el contenedor queda con un slot libre).
 function removeModuleFromCont(ci, mi) {
   if (!confirm('¿Quitar este módulo del contenedor?')) return;
   e3.conts[ci].modulos.splice(mi, 1);
@@ -1190,7 +1127,6 @@ function removeModuleFromCont(ci, mi) {
   markDirty(); renderCanvas(); renderProps();
 }
 
-// Reordena un contenedor entero (sube/baja la fila).
 function moveContenedor(ci, delta) {
   const j = ci + delta;
   if (j < 0 || j >= e3.conts.length) return;
@@ -1202,7 +1138,6 @@ function moveContenedor(ci, delta) {
   markDirty(); renderCanvas(); renderProps();
 }
 
-// Elimina un contenedor y todos sus módulos.
 function deleteContenedor(ci) {
   const c = e3.conts[ci];
   if (!c) return;
@@ -1238,8 +1173,7 @@ function renderProps() {
   bindAlertaField(sec);
 }
 
-// Props de una TARJETA suelta (módulo inline guardado en la plantilla). Edita la
-// única card del módulo inline en vivo (título, descripción, enlace) y re-renderiza.
+// props de una tarjeta suelta (modulo inline); edita su unica card en vivo
 function renderInlineCardProps(entry, body, typeEl) {
   if (typeEl) typeEl.textContent = 'Tarjeta suelta';
   entry.data = entry.data || {};
@@ -1259,9 +1193,7 @@ function renderInlineCardProps(entry, body, typeEl) {
   });
 }
 
-// Check de alerta a nivel sección (módulo). Se persiste dentro de cada
-// objeto de `secciones`, así el scheduler del backend sabe qué módulos
-// deben disparar la alerta de vencimiento (id_alerta=1) al vencer la plantilla.
+// check de alerta por modulo; el scheduler dispara la alerta de vencimiento (id_alerta=1) al vencer la plantilla
 function alertaFieldHTML(sec) {
   return `<div class="props-field" style="border:1px solid #fed7aa;background:#fff7ed;padding:.6rem;margin-bottom:.85rem;">
     <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9a3412;">
@@ -1509,10 +1441,8 @@ async function guardarPlantilla() {
     return;
   }
   try {
-    // 1) Persistir el catálogo de módulos (clones nuevos + ediciones).
     await api('PUT', '/data/modulos', { modulos: e3.modulos });
-    // 2) Persistir la plantilla. `contenedores` es la fuente de verdad; mandamos
-    //    también id_modulos (aplanado) por compatibilidad — el backend los re-sincroniza.
+    // contenedores es la fuente de verdad; mandamos id_modulos por compatibilidad
     const { plantilla } = await api('PATCH', `/plantillas/${e3.activeTpl.id_plantilla}`, {
       nombre: e3.activeTpl.nombre,
       descripcion: e3.activeTpl.descripcion,
@@ -1538,8 +1468,7 @@ async function guardarPlantilla() {
 
 function goToPlantillas() {
   try { sessionStorage.setItem('sisgra_panel', 'plantillas'); } catch(_) {}
-  // Salimos del editor → ninguna plantilla queda "abierta", así el sidebar no
-  // resalta una plantilla además de "Ver todas las plantillas" (eran 2 activos).
+  // al salir del editor ninguna plantilla queda abierta, asi el sidebar no resalta dos
   e3.activeTpl = null;
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-plantillas').classList.add('active');
@@ -1587,11 +1516,8 @@ function injectDashboardCard() {
   else dash.insertAdjacentElement('afterbegin', card);
 }
 
-// Aviso de cambios sin guardar al salir por el sidebar
-// El botón "← Volver" ya avisa (backToOverview); esto cubre el resto de las
-// salidas del editor: cambiar de panel por el sidebar, "Ver todas las
-// plantillas", logout y "+ Nueva plantilla". Corre en fase CAPTURA para frenar
-// el click ANTES de que llegue a los handlers de navegación.
+// guardia de cambios sin guardar al salir por el sidebar (logout, nueva plantilla, etc.)
+// corre en fase captura para frenar el click antes de los handlers de navegacion
 function onSidebarLeaveGuard(ev) {
   const navBtn = ev.target.closest('.sidebar-item, .sidebar-logout, #btn-nueva-plantilla');
   if (!navBtn) return;
@@ -1602,7 +1528,7 @@ function onSidebarLeaveGuard(ev) {
     ev.preventDefault();
     return;
   }
-  // Sale igual: descartamos el estado del editor para no volver a preguntar.
+  // sale igual: descarta el estado del editor para no volver a preguntar
   e3.slotSearch = null;
   e3.activeTpl = null; e3.conts = []; e3.sel = null; e3.activeCont = null;
   e3.dirty = false;
@@ -1614,12 +1540,11 @@ function initE3() {
   injectSidebarLink();
   injectDashboardCard();
 
-  // Guardia de cambios sin guardar (sidebar / logout / nueva plantilla).
+  // guardia de cambios sin guardar (sidebar / logout / nueva plantilla)
   document.removeEventListener('click', onSidebarLeaveGuard, true);
   document.addEventListener('click', onSidebarLeaveGuard, true);
 
-  // Fix: el botón "Ver todas las plantillas" tiene un handler viejo que
-  // llama openTemplateEditor con un ID del estado legacy. Lo reemplazamos.
+  // el boton "ver todas las plantillas" tenia un handler legacy (openTemplateEditor); lo reemplazamos
   const goBtn = stripListeners(document.getElementById('sidebar-go-plantillas'));
   if (goBtn) goBtn.addEventListener('click', goToPlantillas);
 
@@ -1632,9 +1557,7 @@ function initE3() {
   const c = stripListeners(document.getElementById('crear-plantilla-btn'));
   if (c) c.addEventListener('click', crearPlantilla);
 
-  // El botón "Gestionar Plantillas" del dashboard apuntaba al editor legacy
-  // (openTemplateEditor con state.templates, que está vacío en el sistema e3).
-  // Lo redirigimos al overview de plantillas e3.
+  // "gestionar plantillas" apuntaba al editor legacy; lo redirigimos al overview e3
   const dashBtn = stripListeners(document.getElementById('dash-editar-home'));
   if (dashBtn) dashBtn.addEventListener('click', goToPlantillas);
 
@@ -1646,8 +1569,7 @@ function initE3() {
   window.setActiveTpl = (id) => activarPlantilla(id);
   window.deleteTpl = (id) => eliminarPlantilla(id);
   window.saveTpl = () => guardarPlantilla();
-  // Permite a otros paneles (ej: navbar) refrescar la lista de plantillas tras
-  // crear una página personalizada, sin recargar toda la página.
+  // permite a otros paneles (ej navbar) refrescar la lista sin recargar la pagina
   window.reloadPlantillas = () => loadPlantillas();
 
   loadPlantillas();
@@ -1665,12 +1587,12 @@ if (!tryInit()) {
   obs.observe(appEl, { attributes: true, attributeFilter: ['style'] });
 }
 
-/* MÓDULOS — catálogo plano v2: lista → editor de módulo */
+// catalogo plano de modulos v2: lista y editor de modulo
 const SIMPLE_FIELD_TYPES = ['text','textarea','number','color','toggle'];
 const GLOBAL_TIPOS_MOD = new Set(['nav','footer','footer-full']);
 
-let _mods       = [];      // catálogo plano [{ id_modulo, tipo, nombre, id_pagina, data, design, alerta }]
-let _modUsos    = {};      // id_modulo → cantidad de plantillas que lo usan
+let _mods       = [];      // catalogo plano [{ id_modulo, tipo, nombre, id_pagina, data, design, alerta }]
+let _modUsos    = {};      // id_modulo: cantidad de plantillas que lo usan
 let _plantillas = [];      // lista de plantillas/páginas (para el desplegable "Página asignada")
 let _navbar     = [];      // ítems del navbar (botones), para rotular cada página con su ítem
 let _modQuery   = '';      // texto del buscador del catálogo de módulos
@@ -1678,9 +1600,7 @@ let _curModId   = null;
 let _curModType = null;
 let _curModData = { nombre: '', alerta: false, id_pagina: null, data: {}, design: {} };
 
-/* Ítem del navbar al que apunta una plantilla: { titulo, grupo, orden }.
-   El grupo es el título del contenedor padre (ej: "Instalaciones"); '' si no
-   tiene. Si la página no está en el menú, cae al nombre de la plantilla. */
+// item del navbar al que apunta una plantilla; grupo = titulo del contenedor padre
 function _navInfoDePlantilla(id_plantilla) {
   const p      = _plantillas.find(x => x.id_plantilla === id_plantilla);
   const idMenu = (p?.id_menu || [])[0];
@@ -1694,10 +1614,7 @@ function _navInfoDePlantilla(id_plantilla) {
   };
 }
 
-/* Ítem(s) del navbar a los que pertenece un módulo (o '' si no tiene ninguno
-   válido). Solo cuenta plantillas que resuelven a un ítem REAL del navbar: una
-   referencia a una plantilla inexistente o sin ítem (ej: id_pagina viejo) se
-   ignora en vez de mostrar el id crudo (ej: «13»). */
+// items del navbar a los que pertenece un modulo; ignora referencias a plantillas inexistentes
 function _paginaLabel(id_pagina) {
   const pags = _paginasDe(id_pagina);
   if (pags === 'all') return 'Todas las páginas';
@@ -1708,7 +1625,7 @@ function _paginaLabel(id_pagina) {
     .join(', ');
 }
 
-/* Badge "a dónde pertenece": muestra la página asignada del módulo en el editor. */
+// badge de la pagina a la que pertenece el modulo
 function _paginaBadgeHTML(id_pagina) {
   const esTodas = id_pagina === 'all';
   const label   = esTodas ? 'Todas las páginas' : (_paginaLabel(id_pagina) || 'Sin asignar');
@@ -1718,8 +1635,7 @@ function _paginaBadgeHTML(id_pagina) {
   return `<span class="mod-pertenece ${cls}" title="Página a la que pertenece este módulo"><i class="fa-solid ${icon}"></i> ${escAttr(label)}</span>`;
 }
 
-/* Coloca el badge de página en el header de la tarjeta de contenido que corresponda:
-   en la tarjeta de lista (blog/clientes) si la tiene, o en la de campos en el resto. */
+// coloca el badge de pagina en el header de la tarjeta de contenido o de campos
 function _refreshPaginaBadges() {
   const isList = !!MOD_CONTENT_CONFIG[_curModType];
   const badge  = _paginaBadgeHTML(_curModData.id_pagina);
@@ -1729,17 +1645,12 @@ function _refreshPaginaBadges() {
   if (contentSlot) contentSlot.innerHTML = isList ? badge : '';
 }
 
-/* Arma una lista de checkboxes de páginas dentro de `box` (multi-página):
-   "Todas las páginas" + un check por plantilla. Marcar "Todas" deshabilita
-   el resto. `onChange` recibe el valor normalizado: null | 'all' | [ids]. */
+// lista de checkboxes de paginas (multi-pagina); onChange recibe null | 'all' | [ids]
 function _renderPaginaChecks(box, value, onChange) {
   const pags    = _paginasDe(value);
   const esTodas = pags === 'all';
   const ids     = esTodas ? [] : pags;
-  // Solo plantillas que correspondan a un ÍTEM REAL del navbar: las que tienen un
-  // id_menu que resuelve a un botón existente. Las páginas del sistema sin ítem
-  // (Artículo, Perfil de Cliente) o borradores sin asignar no son ítems del
-  // navbar, así que no se listan acá.
+  // solo plantillas que son item real del navbar; las del sistema sin item o borradores no se listan
   const esItemNavbar = p => {
     const idMenu = (p.id_menu || [])[0];
     return idMenu != null && _navbar.some(b => b.id_menu === idMenu);
@@ -1790,15 +1701,14 @@ function _renderPaginaSelect(selected) {
 }
 
 function _showView(id) {
-  // El editor de módulo es ahora un modal (modulos-editor-view = .modal-overlay),
-  // se abre/cierra con openModal/closeModal, no con este toggle de vistas.
+  // el editor de modulo es un modal (.modal-overlay), se abre/cierra con openModal/closeModal
   ['modulos-catalog-view','modulos-variants-view'].forEach(v => {
     const el = document.getElementById(v);
     if (el) el.style.display = v === id ? '' : 'none';
   });
 }
 
-/* Cerrar el modal del editor de módulo y volver al catálogo */
+// cierra el modal del editor y vuelve al catalogo
 function _closeModEditor() {
   closePreviewModal();
   window.__svc?.closeModal('modulos-editor-view');
@@ -1823,7 +1733,7 @@ window.loadModulos = async function() {
   }
 };
 
-/* ¿El módulo coincide con la búsqueda? Busca en nombre, tipo, label, #id y página. */
+// coincidencia de busqueda: nombre, tipo, label, #id y pagina
 function _modMatches(m, q) {
   if (!q) return true;
   const label = SECTIONS[m.tipo]?.label || m.tipo;
@@ -1833,18 +1743,14 @@ function _modMatches(m, q) {
     .toLowerCase().includes(q);
 }
 
-/* Vista 1: catálogo — UNA fila por sección (formato lista, como el blog)
-   Regla "un módulo por sección": de cada tipo se muestra un solo módulo (el
-   principal). Si un tipo tiene varios, se prefiere uno que esté EN USO y, entre
-   esos, el de menor id. Los demás NO se borran: siguen existiendo y funcionando
-   en sus plantillas, simplemente no aparecen en el catálogo. */
+// catalogo: una fila por tipo (el modulo principal); si hay varios prefiere uno en uso, menor id
 function _principalDeTipo(mods) {
   const enUso = mods.filter(m => (_modUsos[m.id_modulo] || 0) > 0);
   const pool  = enUso.length ? enUso : mods;
   return pool.slice().sort((a, b) => a.id_modulo - b.id_modulo)[0];
 }
 
-/* Texto de "descripción" de la fila: primer campo de texto significativo del módulo. */
+// descripcion de la fila: primer campo de texto significativo del modulo
 const _PREVIEW_FIELDS = ['titulo_seccion', 'titulo', 'titulo1', 'lead', 'descripcion', 'badge', 'eyebrow', 'formTitulo', 'loadingMessage'];
 function _modPreview(m) {
   const d = m.data || {};
@@ -1855,11 +1761,7 @@ function _modPreview(m) {
   return '';
 }
 
-/* FAMILIAS de módulos: agrupan varios `tipo` de sección bajo UNA fila del
-   catálogo ("tipo de módulo"). En el catálogo se ve una sola fila por familia
-   (ej: "Hero" en vez de los 7 tipos de hero); "Lista" abre TODAS las variantes
-   de esos tipos. Los tipos que NO figuran acá son su propia familia (una fila
-   por tipo, como antes — ej: "Cards", "Nosotros", "Navbar"). */
+// familias: agrupan varios tipos bajo una fila del catalogo (ej hero); los demas son su propia familia
 const MOD_FAMILIES = [
   { id: '__hero',   label: 'Hero',   tipos: ['hero', 'hero-centered', 'cableado-hero', 'fibra-hero', 'seguridad-hero', 'soporte-hero', 'desarrollo-hero'] },
   { id: '__footer', label: 'Footer', tipos: ['footer', 'footer-full'] },
@@ -1869,15 +1771,10 @@ const _famByTipo = {};
 MOD_FAMILIES.forEach(f => f.tipos.forEach(t => { _famByTipo[t] = f; }));
 const _familyOf   = tipo => _famByTipo[tipo] || null;
 
-// Tipos "building-block" que SIEMPRE se muestran en el catálogo, aunque tengan 0
-// variantes. Así, borrar la última variante de uno de estos NO hace desaparecer el
-// tipo (antes el catálogo solo listaba tipos con ≥1 módulo): la fila queda con un
-// botón "Nuevo" para volver a crear. Son las piezas reutilizables del editor.
+// tipos building-block siempre visibles aunque tengan 0 variantes (no se pierden al borrar la ultima)
 const ALWAYS_VISIBLE_TIPOS = ['feature-grid', 'feature-item', 'faq-item', 'process-step-item'];
 
-// Alias de búsqueda por tipo: términos extra para encontrar un módulo en el catálogo
-// y en el buscador de la Grilla. Ej: buscar "preguntas frecuentes" encuentra el ítem
-// "Pregunta frecuente" (rótulo singular) y el "Preguntas frecuentes (legacy)".
+// alias de busqueda por tipo: terminos extra para encontrar un modulo (ej "preguntas frecuentes")
 const MOD_SEARCH_ALIASES = {
   'feature-grid':      ['grilla', 'grilla de caracteristicas', 'contenedor'],
   'feature-item':      ['caracteristica', 'caracteristicas', 'grilla de caracteristicas'],
@@ -1892,11 +1789,7 @@ function renderModCatalog() {
   const grid = document.getElementById('modulos-grid');
   if (!grid) return;
 
-  // Recalcular el uso (en cuántas PLANTILLAS distintas se usa cada módulo) desde
-  // las plantillas actuales en CADA render, para que "En uso / Sin usar" y el resto
-  // de la descripción reflejen altas/bajas/uso sin tener que recargar el panel.
-  // Se cuenta por plantilla distinta (un módulo repetido en la misma plantilla
-  // cuenta 1, no infla el total).
+  // recalcula el uso (plantillas distintas por modulo) en cada render; un modulo repetido cuenta 1
   _modUsos = {};
   (_plantillas || []).forEach(p => {
     new Set((p.id_modulos || []).filter(x => typeof x === 'number')).forEach(id => {
@@ -1904,17 +1797,11 @@ function renderModCatalog() {
     });
   });
 
-  // El catálogo lista TIPOS de módulo: una fila por familia (Hero/Footer/Header)
-  // o, para los demás, una fila por tipo de sección. Las copias sueltas de una
-  // card (soloCard, insertadas en plantillas) no son módulos de catálogo: se
-  // omiten de esta vista de gestión.
+  // el catalogo lista tipos; las copias soloCard no son modulos de catalogo y se omiten
   const visibles = _mods.filter(m => !m.data?.soloCard);
 
-  // Agrupar por clave: familia.id si el tipo pertenece a una familia, si no el
-  // propio tipo. Solo se muestran los tipos/familias que TIENEN al menos un
-  // módulo (no se listan familias vacías: no sirven de nada hasta crear uno; se
-  // crean desde el botón "Nuevo" del catálogo).
-  const groups = new Map();   // key → { key, fam, label, tipos:Set, variants:[] }
+  // agrupa por familia.id o por tipo; solo muestra los que tienen al menos un modulo
+  const groups = new Map();   // key: { key, fam, label, tipos:Set, variants:[] }
   const ensureGroup = (key, fam, label) => {
     if (!groups.has(key)) groups.set(key, { key, fam, label, tipos: new Set(), variants: [] });
     return groups.get(key);
@@ -1926,8 +1813,7 @@ function renderModCatalog() {
     g.variants.push(m);
   });
 
-  // Tipos building-block siempre presentes (aunque tengan 0 variantes): así no se
-  // "pierde" el tipo al borrar su última variante.
+  // building-block siempre presentes aunque tengan 0 variantes
   ALWAYS_VISIBLE_TIPOS.forEach(t => {
     if (!SECTIONS[t] || _familyOf(t)) return;
     const g = ensureGroup(t, null, SECTIONS[t]?.label || t);
@@ -1935,7 +1821,7 @@ function renderModCatalog() {
   });
 
   let list = [...groups.values()];
-  // Orden estable: por el menor id_modulo de sus variantes (los vacíos van al final).
+  // orden estable por el menor id_modulo de sus variantes (los vacios al final)
   list.forEach(g => { g.minId = g.variants.length ? Math.min(...g.variants.map(v => v.id_modulo)) : Infinity; });
   list.sort((a, b) => a.minId - b.minId);
 
@@ -1944,9 +1830,7 @@ function renderModCatalog() {
     return;
   }
 
-  // Buscador: coincide si el rótulo del tipo, un alias de alguno de sus tipos, o
-  // alguna de sus variantes coincide (los alias hacen findable también las filas
-  // vacías de los building-block, ej: "preguntas frecuentes" → "Pregunta frecuente").
+  // busca por rotulo del tipo, alias o variantes (los alias encuentran tambien filas vacias)
   const q = _modQuery.trim().toLowerCase();
   if (q) list = list.filter(g =>
     g.label.toLowerCase().includes(q) ||
@@ -1958,7 +1842,7 @@ function renderModCatalog() {
   }
 
   const rows = list.map(g => {
-    // Tipo building-block sin variantes: fila con acción "Nuevo" (no se pierde el tipo).
+    // building-block sin variantes: fila con accion "nuevo"
     if (!g.variants.length) {
       const tipo = [...g.tipos][0] || g.key;
       return `<div class="blog-item">
@@ -1982,15 +1866,12 @@ function renderModCatalog() {
     const badge    = enUso
       ? `<span class="mod-row-badge on">En uso</span>`
       : `<span class="mod-row-badge off">Sin usar</span>`;
-    // Subtítulo: cantidad de variantes + uso. SIN "pertenece" (ahora se ve dentro
-    // de "Lista", por variante — no en la fila del catálogo).
+    // subtitulo: cantidad de variantes + uso (sin "pertenece", ahora se ve dentro de "lista")
     const variantesTxt = `${nVar} ${nVar === 1 ? 'módulo' : 'módulos'}`;
     const usoTxt = esGlobal ? 'Global · todo el sitio'
                  : enUso    ? `En uso en ${totalUsos} plantilla${totalUsos !== 1 ? 's' : ''}`
                             : 'Sin usar todavía';
-    // "Lista": familia → openModVerFamilia(id); tipo suelto → openModVer(principal).
-    // "Eliminar" en todas las filas (borra el módulo principal del tipo/familia,
-    // con confirmación que nombra cuál; si está en uso, eliminarModulo lo impide).
+    // "lista": familia o tipo suelto; "eliminar" borra el principal (si esta en uso, eliminarModulo lo impide)
     const principal = _principalDeTipo(g.variants);
     const listaAttr = g.fam ? `data-fam="${escAttr(g.fam.id)}"` : `data-mod="${principal.id_modulo}"`;
     return `<div class="blog-item">
@@ -2017,24 +1898,23 @@ function renderModCatalog() {
   grid.querySelectorAll('[data-mod-new]').forEach(b => b.addEventListener('click', () => nuevaVarianteDeModulo(b.dataset.modNew, null)));
 }
 
-/* Tipos legacy (autocontenidos) que NO deben poder crearse: su contenido va
-   dentro de una Grilla mediante ítems inyectados (faq-item, process-step-item). */
+// tipos legacy que no deben crearse: su contenido va dentro de una grilla (faq-item, process-step-item)
 const LEGACY_HIDDEN_TIPOS = new Set(['faq', 'process-steps']);
 
-/* Tipos de sección que todavía NO tienen módulo (para el botón "Nuevo") */
+// tipos de seccion que todavia no tienen modulo (para el boton "nuevo")
 function _tiposSinModulo() {
   const existentes = new Set(_mods.map(m => m.tipo));
   return Object.keys(SECTIONS).filter(t => !existentes.has(t) && !LEGACY_HIDDEN_TIPOS.has(t));
 }
 
-/* Llena la lista de checkboxes de "Páginas asignadas" del modal de nuevo módulo. */
+// llena los checkboxes de "paginas asignadas" del modal de nuevo modulo
 function _fillNuevoPaginaSelect() {
   const box = document.getElementById('nm-pagina');
   if (!box) return;
   _renderPaginaChecks(box, null, () => {});
 }
 
-/* Lee las páginas marcadas en el modal de nuevo módulo: null | 'all' | [ids]. */
+// lee las paginas marcadas en el modal de nuevo modulo: null | 'all' | [ids]
 function _nmPaginaValue() {
   const box = document.getElementById('nm-pagina');
   if (!box) return null;
@@ -2044,7 +1924,7 @@ function _nmPaginaValue() {
   return ids.length ? ids : null;
 }
 
-/* Abrir el modal "Nuevo módulo": Sección + Nombre + Página asignada */
+// abre el modal "nuevo modulo": seccion + nombre + pagina asignada
 window.openNuevoModulo = function() {
   const disponibles = _tiposSinModulo();
   const sel    = document.getElementById('nm-tipo');
@@ -2088,7 +1968,7 @@ window.openNuevoModulo = function() {
   window.__svc?.openModal('modal-nuevo-modulo');
 };
 
-/* Crear el módulo elegido en el modal (con su página) y abrir su editor */
+// crea el modulo elegido en el modal y abre su editor
 async function crearModuloDesdeModal() {
   const sel    = document.getElementById('nm-tipo');
   const nombre = document.getElementById('nm-nombre');
@@ -2114,7 +1994,7 @@ async function crearModuloDesdeModal() {
   }
 }
 
-/* Carga un módulo del catálogo en los globales de edición (_curMod*). */
+// carga un modulo del catalogo en los globales de edicion (_curMod*)
 function _setCurMod(m) {
   const sec = SECTIONS[m.tipo] || {};
   _curModId   = m.id_modulo;
@@ -2128,10 +2008,7 @@ function _setCurMod(m) {
   };
 }
 
-/* Vista 2: editor de un módulo del catálogo.
-   Ya no abre el cuestionario de campos: lleva directo al PREVIEW visual
-   (mod-preview-modal), donde el contenido se edita con los lápices y los
-   colores + ítems del navbar viven en el panel lateral. */
+// editor de un modulo: va directo al preview visual; colores e items del navbar en el panel lateral
 window.openModEditor = function(id) {
   const m = _mods.find(x => x.id_modulo === Number(id));
   if (!m) return;
@@ -2142,11 +2019,7 @@ window.openModEditor = function(id) {
   openPreviewModal();
 };
 
-/* Gestión de contenido global embebida (blog posts / clientes)
-   Para los módulos `blog` y `clientes`, el contenido real (artículos / logos)
-   vive en blog.json / clientes.json y se hidrata en vivo en el sitio, por lo
-   que editarlo acá se aplica automáticamente a TODAS las variantes del módulo.
-   Reutilizamos las funciones de gestión definidas en panel.js. */
+// modulos blog/clientes: el contenido real vive en blog.json/clientes.json y aplica a todas las variantes
 const MOD_CONTENT_CONFIG = {
   blog: {
     title: 'Artículos del blog',
@@ -2155,9 +2028,7 @@ const MOD_CONTENT_CONFIG = {
     render: () => window.renderBlogList?.(),
     add:    () => window.openNewPost?.(),
   },
-  // "Listado de artículos" (página Blog): gestiona los MISMOS artículos (blog.json)
-  // que el módulo Blog. Sus campos propios son solo mensajes de estado, por eso
-  // mostramos la lista de artículos en vez de esos campos.
+  // blog-list gestiona los mismos articulos que blog; sus campos propios son solo mensajes de estado
   'blog-list': {
     title: 'Artículos del blog',
     addLabel: '<i class="fa-solid fa-plus"></i> Nuevo artículo',
@@ -2179,9 +2050,7 @@ const MOD_CONTENT_CONFIG = {
   },
 };
 
-// Módulos cuyos campos sueltos son técnicos/secundarios: se ocultan en el editor
-// y la gestión real va por la lista de contenido (ej: blog-list → solo mensajes
-// de estado, se editan los artículos en la lista).
+// modulos cuyos campos sueltos son tecnicos: se ocultan, la gestion va por la lista de contenido
 const MOD_HIDE_DATA_CARD = new Set(['blog-list']);
 
 function renderModContentCard(type) {
@@ -2198,11 +2067,7 @@ function renderModContentCard(type) {
   if (addBtn) { addBtn.innerHTML = cfg.addLabel; addBtn.onclick = cfg.add; }
 }
 
-/* Modal "Ver módulo": SOLO la lista de contenido
-   Desde el catálogo se entra con "Ver". Muestra únicamente la lista del módulo
-   (artículos para blog, clientes para clientes, y para el resto la lista de
-   módulos de esa sección). Recién al tocar "Editar" en la lista se abre el
-   modal de edición correspondiente. */
+// modal "ver modulo": solo la lista de contenido; "editar" abre el modal de edicion
 function _closeModVer() {
   window.__svc?.closeModal('modulos-view-modal');
   const body = document.getElementById('modulos-view-body');
@@ -2210,7 +2075,7 @@ function _closeModVer() {
   _curVerFamilia = null;
 }
 
-/* Lápiz del modal Ver: renombra el módulo desde el encabezado (input inline). */
+// lapiz del modal ver: renombra el modulo desde el encabezado
 function _renameModuloInline(m) {
   const titleEl = document.getElementById('modulos-view-title');
   const penBtn  = document.getElementById('modulos-view-rename');
@@ -2301,9 +2166,7 @@ window.openModVer = function(id) {
     body.innerHTML = cfg.bodyHTML;
     cfg.render();
   } else if (m.tipo === 'services') {
-    // CARDS: "1 tarjeta = 1 módulo". "Ver" lista cada tarjeta (de todos los
-    // módulos de servicios) como una fila; "Editar" abre el editor de UNA
-    // tarjeta y "Nuevo" crea un módulo de una sola tarjeta.
+    // cards "1 tarjeta = 1 modulo": "ver" lista cada tarjeta; "editar" abre una, "nuevo" crea un modulo de una sola
     if (titleEl) titleEl.textContent = sec.label;
     if (noteEl) {
       noteEl.style.display = '';
@@ -2328,8 +2191,7 @@ window.openModVer = function(id) {
   window.__svc?.openModal('modulos-view-modal');
 };
 
-/* CARDS — lista plana de todas las tarjetas de todos los módulos de servicios.
-   Cada fila es UNA tarjeta (modelo "1 tarjeta = 1 módulo"). */
+// lista plana de todas las tarjetas de los modulos de servicios (1 tarjeta = 1 modulo)
 function _allServiceCards() {
   const out = [];
   _mods.filter(x => x.tipo === 'services')
@@ -2382,8 +2244,7 @@ function _renderCardsFlatList() {
   body.querySelectorAll('[data-cf-del]').forEach(b => b.addEventListener('click', () => _deleteCardFlat(b.dataset.cfDel)));
 }
 
-/* Elimina una tarjeta de la lista plana. Si el módulo se queda sin tarjetas y no
-   está en uso, se elimina el módulo entero. */
+// elimina una tarjeta; si el modulo queda sin tarjetas y sin uso, se borra entero
 async function _deleteCardFlat(key) {
   const [mid, idx] = key.split(':');
   const m = _mods.find(x => x.id_modulo === Number(mid));
@@ -2407,9 +2268,7 @@ async function _deleteCardFlat(key) {
   }
 }
 
-/* "Nuevo" en la lista de tarjetas: arma un BORRADOR de módulo de servicios con
-   UNA sola tarjeta y abre el editor de tarjeta. Se persiste (POST) al Guardar.
-   id_pagina (pertenece) arranca null: se define al elegir el destino del navbar. */
+// "nuevo" arma un borrador de modulo de servicios con una sola tarjeta; se persiste al guardar
 function _openNuevaCardFlujo() {
   const sec = SECTIONS['services'];
   if (!sec) return;
@@ -2432,15 +2291,13 @@ function _openNuevaCardFlujo() {
   openCardEditor(draft, 0);
 }
 
-/* Lista genérica (mismo formato que la del blog): los módulos de esa sección.
-   "Editar" cierra este modal y abre el editor del módulo (el otro modal). */
+// lista generica (formato blog) de los modulos de esa seccion; "editar" abre el editor del modulo
 function _renderModVerLista(tipo) {
   const body = document.getElementById('modulos-view-body');
   if (!body) return;
   const mods = _mods.filter(x => x.tipo === tipo && !x.data?.soloCard).sort((a, b) => a.id_modulo - b.id_modulo);
   if (!mods.length) {
-    // Sin variantes: NO cerramos (antes sí, y eso "perdía" el tipo). Mostramos un
-    // estado vacío; el botón "Nuevo" del encabezado del modal sigue disponible.
+    // sin variantes: no cerramos (perdia el tipo); mostramos vacio, "nuevo" sigue disponible
     body.innerHTML = `<div class="mod-cat-empty">No quedan módulos de este tipo. Tocá <b>Nuevo</b> para crear uno.</div>`;
     return;
   }
@@ -2471,8 +2328,7 @@ function _renderModVerLista(tipo) {
   }).join('')}</div>`;
   body.querySelectorAll('[data-ver-edit]').forEach(b => b.addEventListener('click', () => {
     const mod = _mods.find(x => x.id_modulo === Number(b.dataset.verEdit));
-    // Las "cards" (services) se editan tarjeta por tarjeta en el segundo modal,
-    // sin cerrar la lista (se vuelve con "Volver"). El resto abre el editor normal.
+    // las cards se editan tarjeta por tarjeta en el segundo modal; el resto abre el editor normal
     if (mod && mod.tipo === 'services') {
       window.openServiciosCards(b.dataset.verEdit);
     } else {
@@ -2486,10 +2342,8 @@ function _renderModVerLista(tipo) {
   }));
 }
 
-/* ── FAMILIAS: "Lista" de una familia (Hero/Footer/Header) ────────────────────
-   Usa el mismo modal "Ver" pero lista TODAS las variantes de todos los tipos de
-   la familia. Cada fila muestra a qué ítem(s) pertenece (badge) y permite editar
-   (incluye asignar el ítem) o eliminar. "Nuevo" elige el tipo puntual a crear. */
+// "lista" de una familia: lista todas las variantes de sus tipos en el mismo modal "ver"
+// cada fila muestra a que item pertenece y permite editar o eliminar; "nuevo" elige el tipo a crear
 let _curVerFamilia = null;   // familia abierta en el modal "Ver" (null = tipo suelto)
 
 window.openModVerFamilia = function(familyId) {
@@ -2528,7 +2382,7 @@ window.openModVerFamilia = function(familyId) {
   window.__svc?.openModal('modulos-view-modal');
 };
 
-/* Lista de variantes de una familia (todos sus tipos), con badge de pertenencia. */
+// lista de variantes de una familia (todos sus tipos), con badge de pertenencia
 function _renderModVerListaFamilia(fam) {
   const body = document.getElementById('modulos-view-body');
   if (!body) return;
@@ -2594,15 +2448,8 @@ function _nuevaVarianteFamilia(fam) {
 
 document.getElementById('modulos-view-close')?.addEventListener('click', _closeModVer);
 
-/* ───────────────────────────────────────────────────────────────────────────
-   MÓDULO "SERVICIOS" — editor de tarjetas dentro del modal "Ver".
-   En vez de listar las variantes del módulo, listamos cada tarjeta del módulo
-   con edición in-place: ícono + color (selector), título, descripción, texto y
-   URL del enlace, y un detalle (título/descripción/imagen) que en el sitio
-   público se abre como popup al tocar "Ver Detalles".
-   Los cambios se guardan en este módulo (PUT /modulos/:id) con debounce.
-   ─────────────────────────────────────────────────────────────────────────── */
-
+// modulo "servicios": edicion in-place de cada tarjeta (icono, color, texto, enlace, detalle)
+// los cambios se guardan con debounce (PUT /modulos/:id)
 const _svcSaveTimers = {};
 function _saveServiciosModulo(m, immediate) {
   // Borrador sin persistir (flujo "Nuevo"): los cambios viven en memoria y se
@@ -2611,8 +2458,7 @@ function _saveServiciosModulo(m, immediate) {
   clearTimeout(_svcSaveTimers[m.id_modulo]);
   const doSave = async () => {
     try {
-      // Persistimos también id_pagina: el destino de la tarjeta define a qué
-      // ítem/página pertenece el módulo (para el filtro al insertar en plantillas).
+      // persistimos id_pagina: el destino de la tarjeta define a que pagina pertenece el modulo
       const res = await window.__svc.apiPut(`/modulos/${m.id_modulo}`, { data: m.data, id_pagina: m.id_pagina ?? null });
       const idx = _mods.findIndex(x => x.id_modulo === m.id_modulo);
       if (idx !== -1 && res?.modulo) _mods[idx] = res.modulo;
@@ -2653,15 +2499,12 @@ function _servicioCardRowHTML(c, i) {
   </div>`;
 }
 
-/* ── NIVEL 2: lista de tarjetas (services/cards) ──────────────────────────────
-   Se abre al tocar "Editar" en una variante del modal "Ver", encima de la lista
-   de variantes (se vuelve con "Volver"). Muestra cada tarjeta como una fila;
-   "Editar" abre el editor de UNA tarjeta (nivel 3) y "Nuevo" un modal chico. */
+// lista de tarjetas (services/cards), encima de la lista de variantes
+// "editar" abre el editor de una tarjeta y "nuevo" un modal chico
 let _curCardsMod = null;     // módulo cuyas tarjetas se están listando (para "Nuevo")
 
 function _closeModCards() {
-  // Al volver, refrescamos la lista de variantes del modal "Ver" que quedó
-  // abierto detrás: así se ven los módulos recién creados con "Nuevo".
+  // al volver, refresca la lista de variantes del modal "ver" de atras (muestra los nuevos)
   const tipo = _curCardsMod?.tipo;
   window.__svc?.closeModal('modulos-cards-modal');
   const body = document.getElementById('modulos-cards-body');
@@ -2673,8 +2516,7 @@ function _closeModCards() {
   }
 }
 
-// Acepta un id (módulo existente del catálogo) o directamente un objeto módulo
-// (borrador del flujo "Nuevo", todavía sin persistir → m._isNew).
+// acepta un id del catalogo o un objeto modulo (borrador del flujo "nuevo", m._isNew)
 window.openServiciosCards = function(idOrMod) {
   const m = (idOrMod && typeof idOrMod === 'object')
     ? idOrMod
@@ -2697,10 +2539,10 @@ window.openServiciosCards = function(idOrMod) {
     ? 'Módulo nuevo (todavía sin guardar). Cargá las tarjetas y asigná los ítems del navbar, después tocá “Guardar cambios”.'
     : 'Las tarjetas de este módulo. Tocá “Editar” para modificar una, o “Nuevo” para agregar otra.';
   if (addBtn)  addBtn.onclick = () => _openNuevaCardModal(m);
-  // El footer con "Guardar cambios" solo aparece al crear un módulo nuevo.
+  // el footer "guardar cambios" solo aparece al crear un modulo nuevo
   if (footer)  footer.style.display = m._isNew ? '' : 'none';
 
-  // Título editable de la sección (titulo_seccion = por defecto) + override por página.
+  // titulo editable de la seccion (titulo_seccion por defecto) + override por pagina
   const tituloInp = document.getElementById('modulos-cards-titulo');
   if (tituloInp) {
     m.data = m.data || {};
@@ -2718,7 +2560,7 @@ window.openServiciosCards = function(idOrMod) {
   window.__svc?.openModal('modulos-cards-modal');
 };
 
-/* Plantillas que son ítems del navbar (para el editor de título por página). */
+// plantillas que son items del navbar (para el editor de titulo por pagina)
 function _plantillasNavbar() {
   const esItem = p => { const idm = (p.id_menu || [])[0]; return idm != null && _navbar.some(b => b.id_menu === idm); };
   return _plantillas.filter(esItem)
@@ -2726,9 +2568,8 @@ function _plantillasNavbar() {
     .sort((a, b) => a.orden - b.orden);
 }
 
-/* Editor de "título por página": un input por ítem del menú. Vacío = usa el
-   título por defecto (titulo_seccion). Se guarda en m.data.titulos_por_pagina
-   (objeto { id_plantilla: titulo }). */
+// editor de "titulo por pagina": un input por item; vacio usa titulo_seccion
+// se guarda en m.data.titulos_por_pagina ({ id_plantilla: titulo })
 function _renderCardsTitulosPorPagina(m) {
   const box = document.getElementById('modulos-cards-titulos-por-pagina');
   if (!box) return;
@@ -2749,8 +2590,7 @@ function _renderCardsTitulosPorPagina(m) {
   }));
 }
 
-/* Actualiza solo los placeholders (cuando cambia el título por defecto) sin
-   pisar lo que el usuario está tipeando en cada input. */
+// actualiza solo los placeholders sin pisar lo que el usuario tipea
 function _refreshTitulosPlaceholders(m) {
   const box = document.getElementById('modulos-cards-titulos-por-pagina');
   if (!box) return;
@@ -2758,9 +2598,7 @@ function _refreshTitulosPlaceholders(m) {
   box.querySelectorAll('[data-tpp]').forEach(inp => { inp.placeholder = def; });
 }
 
-/* Flujo "Nuevo": arma un BORRADOR de módulo de servicios en memoria (sin POST) y
-   abre el editor de tarjetas. El módulo se crea recién al tocar "Guardar cambios"
-   (_saveCardsDraft). Si se cierra/cancela antes, no se persiste nada. */
+// flujo "nuevo": borrador de modulo de servicios en memoria; se crea recien al "guardar cambios"
 function _openNuevoServiciosModulo(tipo, id_pagina) {
   const sec = SECTIONS[tipo];
   if (!sec) return;
@@ -2778,9 +2616,7 @@ function _openNuevoServiciosModulo(tipo, id_pagina) {
   window.openServiciosCards(draft);
 }
 
-/* "Guardar cambios" del editor de tarjetas. Para un borrador (módulo nuevo) hace
-   el POST que lo crea; para un módulo existente no hace falta (ya se autoguarda),
-   simplemente cierra. */
+// "guardar cambios": para un borrador hace el POST que lo crea; un modulo existente ya se autoguarda
 async function _saveCardsDraft() {
   const m = _curCardsMod;
   if (!m) return;
@@ -2811,9 +2647,7 @@ async function _saveCardsDraft() {
 document.getElementById('modulos-cards-save')?.addEventListener('click', _saveCardsDraft);
 document.getElementById('modulos-cards-cancel')?.addEventListener('click', _closeModCards);
 
-/* Preview del módulo de servicios (mismo modal visual que los demás módulos).
-   Apuntamos los globales _curMod* al módulo de tarjetas en edición (misma
-   referencia de data/design → las ediciones del preview se reflejan en `m`). */
+// preview del modulo de servicios; los globales _curMod* apuntan al modulo en edicion (misma ref)
 let _previewFromCards = false;
 function openCardsPreview() {
   const m = _curCardsMod;
@@ -2825,9 +2659,7 @@ function openCardsPreview() {
   openPreviewModal();
 }
 
-/* Guardar desde el preview cuando se abrió desde el editor de tarjetas. Para un
-   borrador no persiste (lo hace después "Guardar cambios"); para un módulo real
-   hace el PUT completo (data + design + página). */
+// guardar desde el preview cuando viene del editor de tarjetas; un borrador no persiste, uno real hace PUT
 async function _saveCardsFromPreview() {
   const m = _curCardsMod;
   if (!m) return;
@@ -2855,9 +2687,7 @@ async function _saveCardsFromPreview() {
 
 document.getElementById('modulos-cards-preview-btn')?.addEventListener('click', openCardsPreview);
 
-/* Lista de "Ítems del navbar" dentro del editor de tarjetas: permite asignar a
-   qué ítem(s) del navbar pertenece este módulo de servicios. Reusa la misma
-   checklist que el editor de módulo y persiste el cambio (PUT /modulos/:id). */
+// lista de items del navbar a los que pertenece el modulo de servicios; persiste con PUT /modulos/:id
 function _renderCardsPaginaSelect(m) {
   const box  = document.getElementById('modulos-cards-pagina-select');
   const hint = document.getElementById('modulos-cards-pagina-hint');
@@ -2874,7 +2704,7 @@ function _renderCardsPaginaSelect(m) {
     m.id_pagina = v;
     const esTodas = v === 'all';
     if (pagEl) pagEl.innerHTML = _paginaBadgeHTML(esTodas ? 'all' : v);
-    // Borrador: solo se actualiza en memoria; se persiste al "Guardar cambios".
+    // borrador: solo en memoria; se persiste al "guardar cambios"
     if (m._isNew) return;
     try {
       const res = await window.__svc.apiPut(`/modulos/${m.id_modulo}`, { id_pagina: v });
@@ -2891,7 +2721,7 @@ function _renderCardsPaginaSelect(m) {
 document.getElementById('modulos-cards-close')?.addEventListener('click', _closeModCards);
 document.getElementById('modulos-cards-back')?.addEventListener('click', _closeModCards);
 
-/* Lista de tarjetas en filas (mismo formato que las variantes). */
+// lista de tarjetas en filas (formato de las variantes)
 function _renderCardsLista(m) {
   const body = document.getElementById('modulos-cards-body');
   if (!body) return;
@@ -2931,9 +2761,7 @@ function _renderCardsLista(m) {
     }));
 }
 
-/* ── NIVEL 3: editor de UNA tarjeta ───────────────────────────────────────────
-   Reutiliza la fila visual completa (ícono, título, descripción, enlace, detalle)
-   pero mostrando una sola tarjeta, con su propio botón "Guardar". */
+// editor de una sola tarjeta (icono, titulo, descripcion, enlace, detalle) con su propio "guardar"
 let _curCardEdit = null;     // { m, i } de la tarjeta en edición
 
 function openCardEditor(m, i) {
@@ -2952,22 +2780,19 @@ function openCardEditor(m, i) {
   window.__svc?.openModal('modulos-card-edit-modal');
 }
 
-/* Ítems del navbar a los que puede apuntar una tarjeta: botones activos del
-   navbar con un href navegable. */
+// items del navbar a los que puede apuntar una tarjeta (botones activos con href)
 function _navDestItems() {
   return (_navbar || [])
     .filter(b => b.activo !== false && b.href)
     .sort((a, b) => (a.orden || 0) - (b.orden || 0));
 }
 
-/* Ítem del navbar (botón) cuyo href coincide con `href`. */
+// item del navbar cuyo href coincide
 function _navItemByHref(href) {
   return href ? (_navbar || []).find(b => b.href === href) : null;
 }
 
-/* id_pagina (pertenece) que corresponde a un href del navbar: la plantilla cuyo
-   id_menu incluye al ítem de ese href. Devuelve [id_plantilla] o null si el href
-   no mapea a un ítem con plantilla (ej: URL personalizada o «Inicio» sin página). */
+// id_pagina que corresponde a un href del navbar: [id_plantilla] o null si no mapea a una plantilla
 function _idPaginaForNavHref(href) {
   const item = _navItemByHref(href);
   if (!item) return null;
@@ -2975,15 +2800,12 @@ function _idPaginaForNavHref(href) {
   return plt ? [plt.id_plantilla] : null;
 }
 
-/* Etiqueta del ítem del navbar al que pertenece/apunta una tarjeta (para el
-   badge de la lista). '' si no apunta a ningún ítem (sin enlace / URL libre). */
+// etiqueta del item al que apunta una tarjeta; '' si no apunta a ninguno
 function _cardPerteneceLabel(card) {
   return _navItemByHref(card && card.enlace)?.titulo || '';
 }
 
-/* Etiqueta de "pertenece" de una tarjeta para la lista: usa la pertenencia
-   explícita por tarjeta (card.id_pagina); si no está definida, cae al ítem
-   derivado del destino (enlace) para no perder el rótulo de datos viejos. */
+// etiqueta de "pertenece" de una tarjeta; usa card.id_pagina y cae al item del destino para datos viejos
 function _cardPaginaLabel(card) {
   const pags = _paginasDe(card && card.id_pagina);
   if (pags === 'all') return 'Todas las páginas';
@@ -2993,9 +2815,7 @@ function _cardPaginaLabel(card) {
   return _cardPerteneceLabel(card);   // fallback: derivar del destino
 }
 
-/* Selector "¿A dónde se dirige?": elige el ítem del navbar al que apunta el
-   botón "Ver Detalles" de la tarjeta (card.enlace = href del ítem). Incluye la
-   opción "Personalizado" para una URL libre y "Sin enlace". */
+// selector "¿a donde se dirige?": elige el item del navbar (card.enlace = href); incluye personalizado y sin enlace
 function _renderCardNavSelect(m, i) {
   const box = document.getElementById('modulos-card-edit-nav');
   if (!box) return;
@@ -3014,11 +2834,7 @@ function _renderCardNavSelect(m, i) {
     `<input type="text" class="form-input" id="modulos-card-edit-customurl" placeholder="https://…" value="${isCustom ? escAttr(cur) : ''}" style="margin-top:.4rem;${isCustom ? '' : 'display:none;'}">`,
   ].join('');
   const custom = box.querySelector('#modulos-card-edit-customurl');
-  // En módulos de UNA sola tarjeta (modelo "1 tarjeta = 1 módulo") el destino
-  // define también la pertenencia del módulo (m.id_pagina = plantilla del ítem),
-  // para que al armar esa plantilla la tarjeta aparezca al insertar un módulo. En
-  // módulos MULTI-tarjeta la pertenencia es por tarjeta ("¿En qué página(s) se
-  // muestra?", card.id_pagina) y el destino no la toca.
+  // en modulos de 1 tarjeta el destino define tambien la pertenencia (m.id_pagina); en multi-tarjeta es por tarjeta
   const syncPertenenciaModulo = href => {
     if ((m.data?.cards?.length || 0) <= 1) m.id_pagina = _idPaginaForNavHref(href);
   };
@@ -3027,7 +2843,7 @@ function _renderCardNavSelect(m, i) {
     if (v === '__custom__') {
       if (custom) { custom.style.display = ''; custom.focus(); }
       card.enlace = (custom?.value || '').trim();
-      syncPertenenciaModulo(card.enlace);   // URL libre → null
+      syncPertenenciaModulo(card.enlace);   // url libre: null
     } else {
       if (custom) custom.style.display = 'none';
       card.enlace = v;   // '' (sin enlace) o el href del ítem del navbar
@@ -3042,10 +2858,7 @@ function _renderCardNavSelect(m, i) {
   });
 }
 
-/* Selector "¿En qué página(s) se muestra?" de UNA tarjeta: a qué ítem(s) del
-   navbar pertenece la tarjeta (card.id_pagina). Reusa la misma checklist que la
-   pertenencia de módulo. Al renderizar una plantilla, solo se muestran las
-   tarjetas que pertenecen a ese ítem (o las marcadas "Todas" / sin asignar). */
+// selector "¿en que pagina(s) se muestra?" de una tarjeta (card.id_pagina); reusa la checklist de pertenencia
 function _renderCardPerteneceSelect(m, i) {
   const box = document.getElementById('modulos-card-edit-pertenece');
   if (!box) return;
@@ -3102,7 +2915,7 @@ function _closeCardEditor() {
   const nav = document.getElementById('modulos-card-edit-nav');
   if (nav) nav.innerHTML = '';
   _curCardEdit = null;
-  // Si la lista de tarjetas (modal "Ver") quedó abierta detrás, la refrescamos.
+  // si la lista de tarjetas (modal "ver") quedo abierta detras, la refresca
   const verModal = document.getElementById('modulos-view-modal');
   if (verModal?.classList.contains('open')) _renderCardsFlatList();
 }
@@ -3111,7 +2924,7 @@ async function _saveCardEditor() {
   if (!_curCardEdit) { _closeCardEditor(); return; }
   const { m } = _curCardEdit;
   if (m._isNew) {
-    // Nueva tarjeta → crea un módulo de servicios con esta única tarjeta.
+    // nueva tarjeta: crea un modulo de servicios con esta unica tarjeta
     const card = m.data.cards[0] || {};
     const nombre = (card.titulo || '').trim() || 'Cards';
     try {
@@ -3130,10 +2943,7 @@ async function _saveCardEditor() {
       return;
     }
   } else {
-    // Para un módulo existente, el módulo ya se autoguarda en cada cambio; el
-    // botón "Guardar" fuerza un guardado inmediato. Solo en módulos de UNA tarjeta
-    // (modelo "1 tarjeta = 1 módulo") sincronizamos el nombre con el título de la
-    // tarjeta; los módulos legacy con varias tarjetas conservan su nombre.
+    // un modulo existente ya se autoguarda; en modulos de 1 tarjeta sincronizamos el nombre con su titulo
     const card = m.data.cards[_curCardEdit.i] || {};
     if (m.data.cards.length === 1 && card.titulo && card.titulo.trim() && m.nombre !== card.titulo.trim()) {
       m.nombre = card.titulo.trim();
@@ -3151,7 +2961,7 @@ document.getElementById('modulos-card-edit-back')?.addEventListener('click', _cl
 document.getElementById('modulos-card-edit-cancel')?.addEventListener('click', _closeCardEditor);
 document.getElementById('modulos-card-edit-save')?.addEventListener('click', _saveCardEditor);
 
-/* ── Modal chico: agregar una tarjeta a la lista ──────────────────────────── */
+// modal chico: agregar una tarjeta a la lista
 function _openNuevaCardModal(m) {
   _curCardsMod = m;
   const inp = document.getElementById('nc-titulo');
@@ -3194,8 +3004,7 @@ function _refreshCardIconPreview(m, i) {
   if (ic) { ic.className = `fa-solid ${serviceCardIcon(card)}`; ic.style.color = card.iconoColor || '#2563eb'; }
 }
 
-/* Popover flotante reutilizable, anclado a un botón. Vive sobre el body con
-   z-index alto para no quedar recortado por el modal. */
+// popover flotante anclado a un boton, sobre el body con z-index alto
 function _floatPopover(anchor, innerHTML, width) {
   document.querySelectorAll('.svc-float-pop').forEach(p => p.remove());
   const el = document.createElement('div');
@@ -3267,10 +3076,7 @@ function _openEnlaceEditor(anchor, m, i) {
   inp.select();
 }
 
-/* Modal de detalle de tarjeta (título, descripción, imagen) → popup público.
-   Genérico: recibe la card y un callback `onSave` (persistir + refrescar). Lo
-   usan el modal "Ver" (guarda en el módulo) y el preview visual (actualiza
-   _curModData + re-render del iframe). */
+// modal de detalle de tarjeta (titulo, descripcion, imagen); generico, recibe card y onSave
 let _curDetalleTarget = null;
 function _openCardDetalleFor(card, onSave) {
   if (!card) return;
@@ -3326,8 +3132,7 @@ document.getElementById('card-detalle-img')?.addEventListener('input', e => {
   if (prv) { const v = e.target.value || ''; prv.src = v; prv.style.display = v ? '' : 'none'; }
 });
 
-/* Selector de íconos global (Promise) — usado por el preview visual.
-   Devuelve { icono, color } al Aplicar, o null al cancelar. */
+// selector de iconos global (promise); devuelve { icono, color } al aplicar o null al cancelar
 let _iconPickerResolve = null;
 function _ensureIconPicker() {
   if (document.getElementById('iconpicker-overlay')) return;
@@ -3378,7 +3183,7 @@ window.__iconPicker = {
   },
 };
 
-/* Mini-overlay de texto (Promise) — para editar la URL desde el preview. */
+// mini-overlay de texto (promise) para editar la url desde el preview
 let _promptResolve = null;
 function _promptOverlay({ label, value = '', placeholder = '' } = {}) {
   let ov = document.getElementById('svc-prompt-overlay');
@@ -3448,9 +3253,7 @@ function renderModFieldGroup(group, fields, containerId) {
     </div>`;
   }).join('');
 
-  // Para tipos con su propia gestión de contenido (blog/clientes) el aviso de
-  // campos complejos sobra (se editan en la tarjeta de contenido de abajo). Para
-  // el resto (ej: las cards de Servicios) apuntamos al Preview visual.
+  // para tipos con gestion de contenido (blog/clientes) el aviso de campos complejos sobra; el resto apunta al preview
   const hasContentCard = !!MOD_CONTENT_CONFIG[_curModType];
   const complexNote = (complexFields.length && !hasContentCard)
     ? `<div class="mf-advanced">
@@ -3498,8 +3301,7 @@ function renderModFieldGroup(group, fields, containerId) {
   });
 }
 
-/* Editor de campos del módulo Formulario: una fila por campo (etiqueta + tipo +
-   requerido + mover/borrar) editando _curModData.data.campos en vivo. */
+// editor de campos del modulo formulario (etiqueta, tipo, requerido) editando _curModData.data.campos en vivo
 const FM_TIPOS = [
   ['text', 'Texto'], ['textarea', 'Texto largo'], ['email', 'Email'],
   ['tel', 'Teléfono'], ['number', 'Número'], ['date', 'Fecha'],
@@ -3555,12 +3357,9 @@ function renderFormCamposEditor(containerId) {
   });
 }
 
-/* MODAL DE EDICIÓN VISUAL EN VIVO
-   Preview del módulo + lápiz al lado de cada texto editable (cuadro
-   flotante) + panel lateral de colores. El diseño (colores) y el preview
-   ya no van en el editor: viven acá. */
+// modal de edicion visual en vivo: preview del modulo + lapiz por texto editable + panel de colores
 
-// Estilos inyectados DENTRO del iframe (aislados del panel admin).
+// estilos inyectados dentro del iframe (aislados del panel admin)
 const ED_STYLE = `
 .ed-f{outline:1px dashed rgba(37,99,235,.55);outline-offset:2px;cursor:pointer;border-radius:2px;transition:background .1s;}
 .ed-f:hover{outline-style:solid;outline-color:#2563eb;background:rgba(37,99,235,.08);}
@@ -3581,9 +3380,8 @@ const ED_STYLE = `
 [data-imgfield]{cursor:pointer;outline:2px dashed rgba(37,99,235,.6);outline-offset:3px;transition:outline .1s,filter .1s;}
 [data-imgfield]:hover{outline-style:solid;outline-color:#2563eb;filter:brightness(.9);}`;
 
-// Script inyectado DENTRO del iframe: coloca un lápiz al lado de cada texto y
-// maneja el cuadro flotante (editar la palabra + cambiar su color).
-// Recibe del padre: __ft (tipos), __fd (valores), __fl (etiquetas), __fc (colores).
+// script inyectado dentro del iframe: lapiz por texto + cuadro flotante (editar palabra y color)
+// recibe del padre __ft (tipos), __fd (valores), __fl (etiquetas), __fc (colores)
 function ED_SCRIPT() {
   var FT = window.__ft || {}, FD = window.__fd || {}, FL = window.__fl || {}, FC = window.__fc || {};
   var box = null;
@@ -3607,7 +3405,7 @@ function ED_SCRIPT() {
     var ctrl = document.createElement(isLong(name) ? 'textarea' : 'input');
     ctrl.value = (FD[name] != null ? FD[name] : el.textContent);
 
-    // Fila de color
+    // fila de color
     var crow = document.createElement('div'); crow.className = 'ed-box-color';
     var clab = document.createElement('label'); clab.textContent = 'Color';
     var cin = document.createElement('input'); cin.type = 'color';
@@ -3647,12 +3445,12 @@ function ED_SCRIPT() {
     cclr.addEventListener('click', function (e) { e.preventDefault(); applyColor(''); });
     done.addEventListener('click', function (e) { e.preventDefault(); close(); });
   }
-  // Durante la edición, los enlaces NO deben navegar (romperían el preview).
+  // durante la edicion los enlaces no deben navegar (romperian el preview)
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('a');
     if (a) e.preventDefault();
   }, true);
-  // Inserta un lápiz al lado de `el` que dispara `handler`.
+  // inserta un lapiz al lado de el que dispara handler
   function addPencil(el, glyph, title, handler) {
     var p = document.createElement('button');
     p.type = 'button'; p.className = 'ed-pencil'; p.title = title || ''; p.innerHTML = glyph || '✎';
@@ -3666,7 +3464,7 @@ function ED_SCRIPT() {
       el.addEventListener('click', function (e) { e.stopPropagation(); open(el); });
     })(nodes[i]);
   }
-  // Imágenes editables: click → avisar al padre para abrir el selector de imágenes.
+  // imagenes editables: el click avisa al padre para abrir el selector
   var imgs = document.querySelectorAll('[data-imgfield]');
   for (var k = 0; k < imgs.length; k++) {
     (function (el) {
@@ -3677,7 +3475,7 @@ function ED_SCRIPT() {
       });
     })(imgs[k]);
   }
-  // Ícono editable (servicios): lápiz → el padre abre el selector de íconos + color.
+  // icono editable: el lapiz abre el selector de iconos y color en el padre
   var icons = document.querySelectorAll('[data-iconfield]');
   for (var a = 0; a < icons.length; a++) {
     (function (el) {
@@ -3686,7 +3484,7 @@ function ED_SCRIPT() {
       });
     })(icons[a]);
   }
-  // URL de destino del enlace (servicios): lápiz "flechita" → editar la URL.
+  // url de destino del enlace: el lapiz edita la url
   var links = document.querySelectorAll('[data-linkfield]');
   for (var b = 0; b < links.length; b++) {
     (function (el) {
@@ -3695,7 +3493,7 @@ function ED_SCRIPT() {
       });
     })(links[b]);
   }
-  // Detalle del enlace (servicios): lápiz → el padre abre el modal título/descr/imagen.
+  // detalle del enlace: el lapiz abre el modal titulo/descr/imagen en el padre
   var dets = document.querySelectorAll('[data-detallefield]');
   for (var c = 0; c < dets.length; c++) {
     (function (el) {
@@ -3709,9 +3507,7 @@ function ED_SCRIPT() {
   });
 }
 
-// Construye el srcdoc del iframe (render + CSS del sitio + capa de edición).
-// Módulos que una Grilla (feature-grid con data.modulos) inyecta por id,
-// resueltos contra el catálogo del catálogo de módulos (_mods), recursivo.
+// modulos que una grilla (feature-grid) inyecta por id, resueltos recursivo contra _mods
 function _grillaInjectedFromMods(tipo, data, seen = new Set()) {
   if (tipo !== 'feature-grid' || !Array.isArray(data?.modulos)) return [];
   const out = [];
@@ -3737,8 +3533,7 @@ function _moduleSrcdoc({ editable }) {
   if (editable) setEditMode(false);   // se apaga inmediato: el sitio público nunca lo ve
 
   const pageType = TYPE_TO_PAGE[_curModType] || 'index';
-  // Si es una Grilla, sumar el CSS de los módulos que inyecta (ej: las cards en
-  // una página interna), resueltos contra el catálogo del catálogo (_mods).
+  // si es grilla, suma el css de los modulos que inyecta, resueltos contra _mods
   const injected = _grillaInjectedFromMods(_curModType, _curModData.data);
   const cssFiles = injected.length
     ? cssFilesFor(pageType, injected)
@@ -3746,7 +3541,7 @@ function _moduleSrcdoc({ editable }) {
   const origin   = window.location.origin;
   const links    = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">\n' + cssFiles.map(f => `<link rel="stylesheet" href="${origin}${f}">`).join('\n');
 
-  // Mapas para el editor inline (solo campos de texto simples).
+  // mapas para el editor inline (solo campos de texto simples)
   let editStyle = '', editScript = '';
   if (editable) {
     const fields = (sec.dataFields || []).filter(f => f.type === 'text' || f.type === 'textarea');
@@ -3759,12 +3554,12 @@ function _moduleSrcdoc({ editable }) {
     editScript = `<${S}>window.__ft=${j(fTypes)};window.__fd=${j(fData)};window.__fl=${j(fLabels)};window.__fc=${j(colores)};(${ED_SCRIPT})();</${S}>`;
   }
 
-  // Partir los tags para que Live Server no inyecte su hot-reload en el literal.
+  // partimos los tags para que live server no inyecte su hot-reload en el literal
   const _B = 'bo'+'dy', _H = 'hea'+'d';
   return `<!doctype html><html lang="es"><${_H}><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:ital,wght@0,400;0,500;0,700;0,900;1,700;1,900&display=swap" rel="stylesheet">${links}<style>html,body{margin:0;padding:0;}body{overflow-x:hidden;}</style>${editStyle}</${_H}><${_B}>${html}${editScript}</${_B}></html>`;
 }
 
-/* Preview en vivo (debounced): re-renderiza el iframe del modal si está abierto */
+// preview en vivo (debounced): re-renderiza el iframe del modal si esta abierto
 let _previewTimer = null;
 function scheduleLivePreview() {
   const modal = document.getElementById('mod-preview-modal');
@@ -3776,7 +3571,7 @@ function scheduleLivePreview() {
   }, 200);
 }
 
-/* Cambia la pestaña activa del panel lateral del Preview ("settings" | "design"). */
+// cambia la pestaña activa del panel lateral del preview (settings | design)
 function _switchPreviewTab(tab) {
   document.querySelectorAll('.mpm-side-tab').forEach(b =>
     b.classList.toggle('active', b.dataset.mpmTab === tab));
@@ -3784,10 +3579,7 @@ function _switchPreviewTab(tab) {
     p.classList.toggle('active', p.dataset.mpmPane === tab));
 }
 
-/* Pestaña "Ajustes del módulo" del Preview: nombre + ítems del navbar a los que
-   pertenece. Solo se muestra cuando el preview se abre para editar un módulo
-   (no desde el flujo viejo de tarjetas). Los cambios se aplican en memoria y se
-   persisten al tocar "Guardar". Devuelve true si la pestaña queda disponible. */
+// pestaña "ajustes del modulo" del preview: nombre + items del navbar; los cambios se persisten al guardar
 function _renderPreviewModuleSettings() {
   const tabBtn    = document.getElementById('mpm-tab-btn-settings');
   const nombreInp = document.getElementById('mpm-nombre');
@@ -3814,7 +3606,7 @@ function _renderPreviewModuleSettings() {
   return true;
 }
 
-/* Abrir / cerrar el modal de edición visual */
+// abrir / cerrar el modal de edicion visual
 function openPreviewModal() {
   if (!_curModType) return;
   const sec = SECTIONS[_curModType];
@@ -3827,19 +3619,19 @@ function openPreviewModal() {
   const idLbl = _curModId != null ? `· #${_curModId}` : '· nuevo';
   if (titleEl) titleEl.innerHTML = `${sec.icon || ''} ${escAttr(sec.label)} ${idLbl}`;
 
-  // Pestaña "Ajustes del módulo" (nombre + ítems del navbar).
+  // pestaña "ajustes del modulo" (nombre + items del navbar)
   const hasSettings = _renderPreviewModuleSettings();
 
-  // Pestaña "Contenido" (solo Grilla): módulos inyectados por id.
+  // pestaña "contenido" (solo grilla): modulos inyectados por id
   const hasContent = _renderPreviewGrillaContent();
 
-  // Pestaña "Colores y diseño" (reusa el render de campos → live-sync).
+  // pestaña "colores y diseño" (reusa el render de campos, live-sync)
   renderModFieldGroup('design', sec.designFields || [], 'mpm-design-fields');
   const hasDesign = !!(sec.designFields || []).length;
   const designTabBtn = document.getElementById('mpm-tab-btn-design');
   if (designTabBtn) designTabBtn.style.display = hasDesign ? '' : 'none';
 
-  // Pestaña inicial: "Ajustes" si está disponible; si no, "Contenido"/"Colores".
+  // pestaña inicial: "ajustes" si esta disponible, si no "contenido"/"colores"
   _switchPreviewTab(hasSettings ? 'settings' : hasContent ? 'content' : 'design');
 
   iframe.srcdoc = _moduleSrcdoc({ editable: true });
@@ -3850,18 +3642,14 @@ function closePreviewModal() {
   const modal = document.getElementById('mod-preview-modal');
   if (modal) modal.style.display = 'none';
   document.body.style.overflow = '';
-  // Si el preview se abrió desde el editor de tarjetas, refrescamos esa lista
-  // (refleja textos/íconos editados visualmente) y limpiamos el flag.
+  // si el preview venia del editor de tarjetas, refresca esa lista y limpia el flag
   if (_previewFromCards) {
     _previewFromCards = false;
     if (_curCardsMod) _renderCardsLista(_curCardsMod);
   }
 }
 
-/* Pestaña "Contenido" del Preview (solo Grilla = feature-grid): edita los módulos
-   que la Grilla inyecta por id (data.modulos) — reordenar / quitar / insertar.
-   Insertar reutiliza una búsqueda simple sobre el catálogo (_mods), excluyendo la
-   propia Grilla. Devuelve true si la pestaña queda disponible. */
+// pestaña "contenido" del preview (solo grilla): edita los modulos inyectados (data.modulos)
 let _grillaSearchQuery = '';
 function _renderPreviewGrillaContent() {
   const tabBtn = document.getElementById('mpm-tab-btn-content');
@@ -3934,9 +3722,7 @@ function _renderPreviewGrillaContent() {
     ).slice(0, 30);
     if (!matches.length) { results.innerHTML = `<div class="grilla-empty">Sin resultados.</div>`; return; }
 
-    // Agrupar por tipo: ≥ 2 coincidencias del mismo tipo → un solo resultado de tipo
-    // (agrega todos de una vez, igual a cómo funciona el módulo Cards); tipos con
-    // 1 sola coincidencia → resultado individual.
+    // agrupa por tipo: 2+ coincidencias del mismo tipo dan un solo resultado (agrega todas); 1 sola, individual
     const byTipo = new Map();
     matches.forEach(m => { if (!byTipo.has(m.tipo)) byTipo.set(m.tipo, []); byTipo.get(m.tipo).push(m); });
     const grouped = new Set(); // ids cubiertos por un resultado de tipo
@@ -3952,7 +3738,7 @@ function _renderPreviewGrillaContent() {
         <span class="grilla-slot-sub">${escAttr(label)} · ${mods.length} módulos</span>
       </div>`;
     });
-    // Tipos con una sola coincidencia se muestran individualmente
+    // tipos con una sola coincidencia van individuales
     matches.forEach(m => {
       if (grouped.has(m.id_modulo)) return;
       html += `<div class="grilla-result" data-g-add="${m.id_modulo}">
@@ -3978,7 +3764,6 @@ function _renderPreviewGrillaContent() {
   return true;
 }
 
-/* Duplicar módulo */
 window.duplicarModulo = async function(id) {
   const m = _mods.find(x => x.id_modulo === Number(id));
   if (!m) return;
@@ -3999,7 +3784,6 @@ window.duplicarModulo = async function(id) {
   }
 };
 
-/* Eliminar módulo (guarda si está referenciado) */
 window.eliminarModulo = async function(id) {
   const m = _mods.find(x => x.id_modulo === Number(id));
   if (!m) return;
@@ -4016,8 +3800,7 @@ window.eliminarModulo = async function(id) {
   }
 };
 
-// "Nuevo" del modal Ver: agrega otra variante del mismo tipo, hereda la página
-// del módulo visto y abre su editor.
+// "nuevo" del modal ver: agrega otra variante del mismo tipo, hereda la pagina y abre su editor
 async function nuevaVarianteDeModulo(tipo, id_pagina) {
   const sec = SECTIONS[tipo];
   if (!sec) return;
@@ -4032,11 +3815,9 @@ async function nuevaVarianteDeModulo(tipo, id_pagina) {
     _mods.push(res.modulo);
     renderModCatalog();   // refleja el alta en el catálogo al instante
     window.__svc.showNotif('Módulo creado', 'success');
-    // Las "cards" (services) se editan en el segundo modal (tarjeta por tarjeta);
-    // el resto en el editor de campos normal.
+    // las cards se editan en el segundo modal (tarjeta por tarjeta); el resto en el editor de campos
     if (tipo === 'services') {
-      // Refrescamos la lista de variantes del modal "Ver" (abierto detrás) para
-      // que el módulo recién creado aparezca al volver.
+      // refresca la lista de variantes del modal "ver" para que aparezca el nuevo
       _renderModVerLista(tipo);
       openServiciosCards(res.modulo.id_modulo);
     } else {
@@ -4048,7 +3829,7 @@ async function nuevaVarianteDeModulo(tipo, id_pagina) {
   }
 }
 
-/* Guardar el módulo en edición (lo usan el editor y el modal) */
+// guarda el modulo en edicion (lo usan el editor y el modal)
 async function saveCurrentModule() {
   if (!_curModId) return false;
   const nombre = document.getElementById('mpm-nombre')?.value?.trim()
@@ -4067,7 +3848,7 @@ async function saveCurrentModule() {
     _curModData.nombre = nombre;
     const nameEl = document.getElementById('modulos-editor-variant-name');
     if (nameEl) nameEl.textContent = nombre;
-    // Si la lista de variantes del modal "Ver" quedó abierta detrás, la refrescamos.
+    // si la lista de variantes del modal "ver" quedo abierta detras, la refresca
     const verModal = document.getElementById('modulos-view-modal');
     if (verModal?.classList.contains('open') && !MOD_CONTENT_CONFIG[_curModType] && _curModType !== 'services') {
       _renderModVerLista(_curModType);
@@ -4081,27 +3862,27 @@ async function saveCurrentModule() {
   }
 }
 
-/* Buscador del catálogo de módulos */
+// buscador del catalogo de modulos
 document.getElementById('modulos-search')?.addEventListener('input', e => {
   _modQuery = e.target.value || '';
   renderModCatalog();
 });
 
-/* Botón único "Nuevo" del catálogo + modal de creación */
+// boton "nuevo" del catalogo + modal de creacion
 document.getElementById('modulos-nuevo-btn')?.addEventListener('click', () => window.openNuevoModulo());
 document.getElementById('nm-crear-btn')?.addEventListener('click', crearModuloDesdeModal);
 
-/* Botón: abrir el modal de edición visual (Preview) */
+// boton: abrir el modal de edicion visual (preview)
 document.getElementById('modulos-preview-btn')?.addEventListener('click', () => {
   _previewFromCards = false;
   openPreviewModal();
 });
 
-/* Pestañas del panel lateral (Ajustes / Colores y diseño) */
+// pestañas del panel lateral (ajustes / colores y diseño)
 document.querySelectorAll('.mpm-side-tab').forEach(btn =>
   btn.addEventListener('click', () => _switchPreviewTab(btn.dataset.mpmTab)));
 
-/* Modal: cerrar */
+// modal: cerrar
 document.getElementById('mpm-close')?.addEventListener('click', closePreviewModal);
 document.getElementById('mpm-backdrop')?.addEventListener('click', closePreviewModal);
 document.addEventListener('keydown', e => {
@@ -4110,15 +3891,14 @@ document.addEventListener('keydown', e => {
   if (modal && modal.style.display !== 'none') closePreviewModal();
 });
 
-/* Modal: guardar (deja el modal abierto). Según de dónde se abrió el preview,
-   guarda el módulo de tarjetas o el módulo del editor normal. */
+// modal: guardar (deja el modal abierto); guarda el modulo de tarjetas o el del editor segun de donde se abrio
 document.getElementById('mpm-save')?.addEventListener('click', () => {
   if (_previewFromCards) _saveCardsFromPreview();
   else saveCurrentModule();
   closePreviewModal();
 });
 
-// Asigna un valor por "path" con puntos/índices (ej: "cards.0.titulo").
+// asigna un valor por path con puntos/indices (ej "cards.0.titulo")
 function _setByPath(obj, path, val) {
   const parts = String(path).split('.');
   let o = obj;
@@ -4130,22 +3910,22 @@ function _setByPath(obj, path, val) {
   o[parts[parts.length - 1]] = val;
 }
 
-// Lee un valor por "path" con puntos/índices (ej: "cards.0.titulo").
+// lee un valor por path con puntos/indices (ej "cards.0.titulo")
 function _getByPath(obj, path) {
   return String(path).split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
 }
 
-/* Re-renderiza el iframe del preview (refleja cambios en _curModData). */
+// re-renderiza el iframe del preview (refleja cambios en _curModData)
 function _rerenderPreviewIframe() {
   const iframe = document.getElementById('mpm-iframe');
   if (iframe) iframe.srcdoc = _moduleSrcdoc({ editable: true });
 }
 
-/* Ediciones inline (texto, color y ahora imágenes) que llegan del iframe */
+// ediciones inline (texto, color, imagenes) que llegan del iframe
 window.addEventListener('message', async e => {
   const d = e.data;
   if (!d || !d.field) return;
-  // Cambio de imagen desde el preview: abre el selector y re-renderiza el iframe.
+  // cambio de imagen desde el preview: abre el selector y re-renderiza
   if (d.__edimg === true) {
     const current = _getByPath(_curModData.data || {}, d.field) || '';
     const path = await window.__imgPicker?.open({ current });
@@ -4156,8 +3936,7 @@ window.addEventListener('message', async e => {
     }
     return;
   }
-  // cambio de ícono desde el preview, según el campo:
-  // campo plano (string fa-*) se escribe directo; tarjeta de servicios usa subcampos .icono/.iconoColor
+  // cambio de icono desde el preview: campo plano (string fa-*) directo; tarjeta usa .icono/.iconoColor
   if (d.__edicon === true) {
     _curModData.data = _curModData.data || {};
     const target = _getByPath(_curModData.data, d.field);
@@ -4175,7 +3954,7 @@ window.addEventListener('message', async e => {
     }
     return;
   }
-  // Cambio de la URL de destino del enlace de una tarjeta desde el preview.
+  // cambio de la url de destino del enlace de una tarjeta desde el preview
   if (d.__edlink === true) {
     _curModData.data = _curModData.data || {};
     const current = _getByPath(_curModData.data, d.field) || '';
@@ -4183,7 +3962,7 @@ window.addEventListener('message', async e => {
     if (url !== null) { _setByPath(_curModData.data, d.field, url.trim()); _rerenderPreviewIframe(); }
     return;
   }
-  // Editar el detalle (título/descr/imagen) de una tarjeta desde el preview.
+  // editar el detalle (titulo/descr/imagen) de una tarjeta desde el preview
   if (d.__eddetalle === true) {
     _curModData.data = _curModData.data || {};
     const card = _getByPath(_curModData.data, d.field);
@@ -4199,12 +3978,12 @@ window.addEventListener('message', async e => {
   }
 });
 
-/* Botón: volver al catálogo / Cancelar */
+// boton: volver al catalogo / cancelar
 document.getElementById('modulos-variants-back-btn')?.addEventListener('click', renderModCatalog);
 document.getElementById('modulos-back-btn')?.addEventListener('click', _closeModEditor);
 document.getElementById('modulos-cancel-btn')?.addEventListener('click', _closeModEditor);
 
-/* Botón: guardar módulo (editor) */
+// boton: guardar modulo (editor)
 document.getElementById('modulos-save-btn')?.addEventListener('click', async () => {
   const ok = await saveCurrentModule();
   if (ok) _closeModEditor();

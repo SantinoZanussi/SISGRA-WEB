@@ -22,9 +22,7 @@ function nextId(modulos) {
   return (nums.length ? Math.max(...nums) : 0) + 1;
 }
 
-// Normaliza la(s) página(s) asignada(s): '' / null / undefined → null.
-// Acepta 'all', un array de ids (multi-página), un id numérico suelto
-// (datos viejos) o, por compatibilidad, texto libre.
+// normaliza la pagina asignada: null, 'all', array de ids, id suelto o texto legacy
 function normPagina(v) {
   if (v === undefined || v === null || v === '') return null;
   if (Array.isArray(v)) {
@@ -55,7 +53,7 @@ exports.obtener = (req, res) => {
   res.json({ modulo: m });
 };
 
-// GET /api/modulos/:id/usos  → plantillas que lo usan
+// GET /api/modulos/:id/usos  plantillas que lo usan
 exports.usos = (req, res) => {
   res.json({ usos: plantillasQueUsan(Number(req.params.id)) });
 };

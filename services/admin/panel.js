@@ -973,33 +973,27 @@ function renderPageSections(tplId){
     </div>
   `).join('');
  
-  // Attach inline editing and section selection
   tpl.sections.forEach(sec=>{
     const slot = container.querySelector(`.section-slot[data-sec-id="${sec.id}"]`);
     if(!slot) return;
     const render = slot.querySelector('.section-render');
     attachInlineEdits(sec, render, tplId);
- 
-    // Click to select section
+
     slot.addEventListener('click', e=>{
-      // Don't trigger if locked, clicking controls or editing
       if(sec.locked) return;
       if(e.target.closest('.section-controls')) return;
       if(e.target.dataset.editing) return;
- 
+
       state.selectedSectionId = sec.id;
-      // Highlight
       document.querySelectorAll('.section-slot').forEach(s=>s.classList.remove('selected-section'));
       slot.classList.add('selected-section');
-      // Load props
       const typeLabel = SECTION_TYPES.flatMap(g=>g.items).find(i=>i.type===sec.type)?.label||sec.type;
       const ptEl = document.getElementById('props-section-type');
       if(ptEl) ptEl.textContent = typeLabel;
       buildPropsPanel(sec.id, tpl);
     });
   });
- 
-  // Init drag-reorder on section handles
+
   initSectionReorder(tplId);
 }
  
@@ -1090,7 +1084,6 @@ window.removeSection = function(tplId, secId){
   showNotif('✓ Sección eliminada');
 };
  
-// Returns val if defined and non-empty, otherwise falls back to fallback
 function _sv(val, fallback){ return (val !== undefined && val !== '') ? val : (fallback || ''); }
 
 window.saveTpl = async function(id){
@@ -1112,7 +1105,7 @@ window.saveTpl = async function(id){
       const d = aboutSec.data||{};
       const cur = await apiGet('/data/nosotros').catch(()=>({}));
       const c = cur||{};
-      // Only override fields that have been explicitly set in the editor
+      // solo pisa los campos seteados en el editor
       jobs.push(apiPut('/data/nosotros', {
         ...c,
         eyebrow:     _sv(d.eyebrow,     c.eyebrow),
@@ -1140,7 +1133,7 @@ window.saveTpl = async function(id){
       }));
     }
 
-    // Save extra sections (cta, spacer, etc.) not covered by dedicated JSON files
+    // guarda secciones extra (cta, spacer) que no tienen json propio
     const CORE_TYPES = new Set(['hero','hero-centered','about','logos','news','services','contact','footer','nav']);
     const extraSecs = tpl.sections.filter(s => !CORE_TYPES.has(s.type) && !s.locked);
     jobs.push(apiPut('/data/extra_sections', { sections: extraSecs.map(s=>({type:s.type,data:s.data||{}})) }));
@@ -1171,8 +1164,7 @@ function initTrayDragDrop(tplId){
   const trayBody = document.getElementById('tray-body');
   const pageFrame = document.getElementById('page-frame');
   const tpl = state.templates.find(t=>t.id===tplId);
- 
-  // Also allow double-click to append
+
   trayBody.querySelectorAll('.tray-chip').forEach(chip=>{
     chip.addEventListener('dragstart', e=>{
       dragNewType = chip.dataset.stype;
@@ -1189,7 +1181,6 @@ function initTrayDragDrop(tplId){
     });
   });
  
-  // Page sections as drop target
   const pageSecContainer = document.getElementById('page-sections');
   if(!pageSecContainer) return;
  
@@ -1206,7 +1197,6 @@ function initTrayDragDrop(tplId){
     e.preventDefault();
     pageSecContainer.style.outline='';
     if(!dragNewType) return;
-    // Determine insertion point
     const target = e.target.closest('.section-slot');
     const insertBeforeId = target ? target.dataset.secId : null;
     addSectionToTemplate(tplId, dragNewType, insertBeforeId);
@@ -1228,7 +1218,6 @@ function addSectionToTemplate(tplId, type, insertBeforeId){
     tpl.sections.push(newSec);
   }
   renderPageSections(tplId);
-  // Auto-select new section
   state.selectedSectionId = newSec.id;
   const tplRef = state.templates.find(t=>t.id===tplId);
   buildPropsPanel(newSec.id, tplRef);
@@ -1263,7 +1252,7 @@ function initTraySearch(){
       chip.style.display = (name+desc).includes(q)?'':'none';
     });
     document.querySelectorAll('.tray-group-label').forEach(lbl=>{
-      // Hide label if all chips in group are hidden
+      // oculta la etiqueta del grupo si todos sus chips estan ocultos
       let next = lbl.nextElementSibling;
       let anyVisible = false;
       while(next && !next.classList.contains('tray-group-label')){
@@ -1403,7 +1392,6 @@ window.deletePost = async function(id){
 async function saveBlogPost(){
   const item={titulo:document.getElementById('b-title').value.trim(),categoria:document.getElementById('b-categoria').value,estado:document.getElementById('b-estado').value,fecha:document.getElementById('b-fecha').value,extracto:document.getElementById('b-extracto').value.trim(),contenido:document.getElementById('b-content').innerHTML,imagen:document.getElementById('b-img').value.trim()};
   if(!item.titulo) return showNotif('El título es requerido','error');
-  //if(!item.imagen) return showNotif('La imagen de portada es obligatoria','error');
   if(state.editingPostId){ await apiPatch('/data/blog/posts/'+state.editingPostId,item); const i=state.blog.posts.findIndex(x=>x.id===state.editingPostId); if(i>-1) state.blog.posts[i]={...state.blog.posts[i],...item}; }
   else { const r=await apiPost('/data/blog/posts',item); state.blog.posts = state.blog.posts||[]; state.blog.posts.unshift(r.item); }
   closeModal('modal-blog'); renderBlogList(); showNotif('✓ Artículo guardado');
@@ -1444,9 +1432,7 @@ function heroJsonToSectionData(h){
   };
 }
 
-// Las pestañas de SEO se generan dinámicamente desde las plantillas existentes
-// (ver buildSeoTabs). La clave SEO de cada página = su `tipo` de plantilla, con
-// index→home (igual que el resolutor del sitio público en page-bootstrap.js).
+// la clave seo de cada pagina es su tipo de plantilla, con index como home (ver buildSeoTabs)
 const SEO_LABELS = { home:'Inicio', blog:'Blog', articulo:'Artículo', cableado:'Cableado', fibra:'Fibra Óptica', seguridad:'Seguridad', soporte:'Soporte IT', desarrollo:'Desarrollo', cliente:'Clientes' };
 const SEO_ORDER  = ['home','cableado','fibra','seguridad','soporte','desarrollo','blog','articulo','cliente'];
 const seoKeyForTipo = (tipo) => tipo === 'index' ? 'home' : tipo;
@@ -1454,10 +1440,7 @@ let SEO_PAGES = ['home'];   // se completa en buildSeoTabs() desde /plantillas
 const seoData = {};
 SEO_PAGES.forEach(p=>{ seoData[p]={title:'',description:''}; });
  
-// Genera las pestañas de SEO a partir de las plantillas que existen ahora mismo:
-// una pestaña por página (tipo de plantilla, deduplicado). Así aparece la pestaña
-// de una plantilla nueva y desaparece la de una que se borró. Se llama al cargar y
-// cada vez que se entra al panel SEO (showPanel('seo')).
+// arma las pestañas de seo: una por pagina existente (tipo de plantilla, deduplicado)
 async function buildSeoTabs(){
   const tabsEl = document.getElementById('seo-tabs');
   if(!tabsEl) return;
@@ -1780,11 +1763,8 @@ function navDescendientes(id) {
   return out;
 }
 
-// Opciones del <select> de padre: "0 — Sin grupo" (raíz) + el resto de los
-// ítems. Cada opción se muestra como «[id_plantilla] - título» (el id de la
-// plantilla vinculada, o «—» si el ítem todavía no tiene página).
-// `excludeId` saca al propio ítem y a sus descendientes (un ítem no puede
-// colgar de sí mismo ni de un hijo suyo).
+// opciones del select de padre: 0 (raiz) + el resto de los items
+// excludeId saca al propio item y a sus descendientes para no crear ciclos
 function fillNavPadreSelect(sel, selectedPadre, excludeId) {
   if (!sel) return;
   const excluidos = excludeId ? navDescendientes(excludeId).add(excludeId) : new Set();
@@ -1795,14 +1775,12 @@ function fillNavPadreSelect(sel, selectedPadre, excludeId) {
     .sort((a, b) => (a.orden || 0) - (b.orden || 0))
     .forEach(b => {
       if (excluidos.has(b.id_menu)) return;
-      //const idPlt = b.plantilla ? b.plantilla.id : '—';
       opts.push(`<option value="${b.id_menu}"${sel0 === b.id_menu ? ' selected' : ''}>${b.id_menu && b.plantilla ? b.id_menu : '/'} - ${b.titulo}</option>`);
     });
   sel.innerHTML = opts.join('');
 }
 
-// Opciones del <select> de orden: posiciones 1..total. `total` permite reservar
-// un lugar extra al crear (el ítem nuevo todavía no está en navbarItems).
+// opciones del select de orden: posiciones 1..total; total reserva un lugar extra al crear
 function fillNavOrdenSelect(sel, selectedOrden, total) {
   if (!sel) return;
   const n = total || navbarItems.length || 1;
@@ -1830,7 +1808,6 @@ function initApp(){
     new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'}) + ' · ' +
     new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
  
-  //renderSidebarTemplates();
   renderTemplateOverview();
   Promise.all([
     apiGet('/data/blog').catch(()=>null),
@@ -1920,10 +1897,7 @@ function initApp(){
     openTemplateEditor(state.currentTplId);
   });
  
-  // Editor de texto enriquecido
-  // El prompt() del navegador colapsa la selección del contenteditable, por eso
-  // antes fallaban "enlace" e "insertar imagen". Guardamos el rango y lo
-  // restauramos antes de ejecutar el comando.
+  // prompt() colapsa la seleccion del contenteditable; guardamos y restauramos el rango
   let savedRange = null;
   function saveSelection(){
     const sel = window.getSelection();
@@ -1992,8 +1966,7 @@ function initApp(){
     btn.addEventListener('click',()=>closeModal(btn.dataset.close));
   });
   document.querySelectorAll('.modal-overlay').forEach(overlay=>{
-    // Solo cerrar si el click empieza Y termina sobre el overlay (no al arrastrar
-    // selección de texto desde dentro del modal, ni por un click accidental al borde).
+    // cierra solo si el click empieza y termina sobre el overlay, no al arrastrar texto
     let downOnOverlay = false;
     overlay.addEventListener('mousedown', e=>{ downOnOverlay = (e.target===overlay); });
     overlay.addEventListener('click', e=>{ if(e.target===overlay && downOnOverlay) overlay.classList.remove('open'); });

@@ -1,5 +1,4 @@
-// galería compartida (la usan assets.js y image-picker.js): carga de assets+etiquetas,
-// filtrado tipo finder y una barra de filtros reutilizable
+// galeria compartida (assets.js e image-picker.js): assets+etiquetas, filtrado y barra de filtros
 import { apiGet } from '../api.js';
 
 export const escAttr = s => String(s ?? '')
@@ -33,7 +32,7 @@ export function matchAsset(asset, filters) {
   const ids = filters?.labelIds;
   if (ids && ids.size) {
     const tags = asset.etiquetas || [];
-    for (const id of ids) if (!tags.includes(id)) return false; // AND
+    for (const id of ids) if (!tags.includes(id)) return false;
   }
   return true;
 }

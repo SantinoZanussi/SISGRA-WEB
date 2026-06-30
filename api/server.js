@@ -12,7 +12,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 
-// Force no-cache en todas las respuestas API. Sin esto, el browser cachea
+// no-cache en todas las respuestas, el browser cachea sin esto
 app.use((req, res, next) => {
   res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.set('Pragma', 'no-cache');
@@ -21,7 +21,6 @@ app.use((req, res, next) => {
   next();
 });
 
-//* API ROUTES
 const userRoutes = require("./routes/userRoutes");
 app.use("/api/auth", userRoutes);
 
@@ -49,10 +48,8 @@ app.use("/api/assets", assetRoutes);
 const contactosRoutes = require("./routes/contactosRoutes");
 app.use("/api/contactos", contactosRoutes);
 
-// Shell genérico para páginas de plantilla "custom" (sin archivo .html físico).
-// Shell genérico que hidrata una plantilla (por su `tipo`) con page-bootstrap.
-// Lo usan tanto /p/:slug (páginas custom) como la página 404 (catch-all): no hay
-// archivos .html físicos, todo sale de módulos + plantilla.
+// shell que hidrata una plantilla por su tipo con page-bootstrap
+// lo usan /p/:slug (custom) y la 404, sin html fisico: todo sale de modulos + plantilla
 function pageShellHtml(tipo) {
   return `<!DOCTYPE html>
 <html lang="es">
@@ -79,14 +76,12 @@ function pageShellHtml(tipo) {
 </html>`;
 }
 
-// Página 404: ya no hay 404.html físico. Se sirve el shell que hidrata la
-// plantilla activa de tipo "404" (navbar + mensaje 404 + footer), con status 404.
+// sirve el shell de la plantilla activa tipo 404 con status 404
 function render404(res) {
   res.status(404).type('html').send(pageShellHtml('404'));
 }
 
-// /p/:slug hidrata la plantilla cuyo tipo === slug usando page-bootstrap, igual
-// que las páginas del sistema pero servido desde un único shell compartido.
+// /p/:slug hidrata la plantilla cuyo tipo === slug desde un shell compartido
 app.get('/p/:slug', (req, res) => {
   const slug = String(req.params.slug || '');
   if (!/^[a-zA-Z0-9_-]+$/.test(slug)) return render404(res);
@@ -109,7 +104,6 @@ function getLocalIPv4() {
   const nets = os.networkInterfaces();
   for (const name of Object.keys(nets)) {
     for (const net of nets[name]) {
-      // Solo IPv4 y no internas (loopback)
       if (net.family === 'IPv4' && !net.internal) {
         return net.address;
       }

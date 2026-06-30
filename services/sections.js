@@ -475,7 +475,6 @@ ${navCss ? `<style>${navCss}</style>` : ''}
     </div>`;
       // columnas = nº de cards (1-3); home.css lo lee vía --cards-cols
       const nCols = Math.min(4, Math.max(1, (d.cards || []).length));
-      // ${header}
       return `
 <section id="servicios" class="services-section${d.soloCard ? ' services-section--solo' : ''}"${css({ background: s.bg, 'padding-top': s.paddingY, 'padding-bottom': s.paddingY })}>
   <div class="max-w-7xl">
@@ -2010,11 +2009,6 @@ ${blCss ? `<style>${blCss}</style>` : ''}
       titulo: 'TITULO 1',
       intro: '',
       modulos: [],
-      // features: [
-      //   { iconType: 'shield', titulo: 'Certificación bajo norma', desc: 'Trabajamos según estándares internacionales para garantizar calidad y escalabilidad.' },
-      //   { iconType: 'gear',   titulo: 'Soluciones a medida',      desc: 'Cada proyecto se diseña según las necesidades reales de su organización.' },
-      //   { iconType: 'check',  titulo: 'Resultados verificables',  desc: 'Entregamos documentación y mediciones de cada punto implementado.' },
-      // ],
       features: [],
     },
     defaultDesign: { bg: '#ffffff', eyebrowColor: '', titleColor: '', textColor: '', accentColor: '', cardBg: '', cardBorderColor: '', paddingY: '', cols: '' },
