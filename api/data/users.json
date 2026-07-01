@@ -1,0 +1,10 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "usuario": "admin",
+      "password_hash": "$2y$10$p.E8pWrAwDwrWeiqjXbeKuX5JJBpDH/xL6Y5hMtusG3SBFeMFpbKi",
+      "role": "admin"
+    }
+  ]
+}

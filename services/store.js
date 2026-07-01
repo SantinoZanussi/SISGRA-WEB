@@ -1,4 +1,4 @@
-export const API_BASE = `http://${window.location.hostname}:3000/api`;
+export const API_BASE = '/api';
 export const state = {
   hero:     null,
   nosotros: null,

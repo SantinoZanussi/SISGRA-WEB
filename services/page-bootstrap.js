@@ -2,7 +2,7 @@
 import { resolverModulos, renderModulosAgrupados, setModuleRegistry } from './sections.js';
 import { cssFilesFor } from './css-pages.js';
 
-const API_BASE = `http://${window.location.hostname}:3000/api`;
+const API_BASE = '/api';
 
 // carga font awesome una sola vez si no está presente
 const FONT_AWESOME_HREF = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css';

@@ -1401,7 +1401,7 @@ function doLogin(){
   const u = document.getElementById('l-user').value.trim();
   const p = document.getElementById('l-pass').value.trim();
   const err = document.getElementById('login-error');
-  fetch(`http://${window.location.hostname}:3000/api/auth/login`,{
+  fetch(`/api/auth/login`,{
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({usuario:u,password:p})

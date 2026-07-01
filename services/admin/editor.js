@@ -1,7 +1,7 @@
 import { SECTIONS, TIPOS_HTML, renderModulo, setEditMode, setFieldColors, setModuleRegistry, SERVICE_ICON_CATALOG, SERVICE_LEGACY_ICONS, serviceCardIcon } from '../sections.js';
 import { TIPO_CSS, TYPE_TO_PAGE, cssFilesFor } from '../css-pages.js';
 
-const API = `http://${window.location.hostname}:3000/api`;
+const API = '/api';
 const token = () => sessionStorage.getItem('sisgra_token');
 
 const ICON_CATALOG = ['location', 'lightning', 'shield', 'check', 'camera', 'gear', 'lock', 'chart', 'database'];

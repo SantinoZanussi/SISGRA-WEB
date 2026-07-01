@@ -1,0 +1,31 @@
+# Apache: sirve el sitio estatico y enruta la API a PHP.
+# El proyecto asume estar en la raiz del documentroot (el front usa rutas /css, /services, /img).
+
+RewriteEngine On
+
+# expone el header Authorization a PHP (Apache lo filtra por defecto -> romperia el auth)
+RewriteCond %{HTTP:Authorization} ^(.+)$
+RewriteRule ^ - [E=HTTP_AUTHORIZATION:%1]
+
+# /api/* -> front controller PHP
+RewriteRule ^api(/.*)?$ api/index.php [QSA,L]
+
+# /p/<slug> -> shell que hidrata la plantilla de ese tipo (fallback de paginas custom)
+RewriteRule ^p/([a-zA-Z0-9_-]+)/?$ shell.php?tipo=$1 [QSA,L]
+
+# el resto (index.html, css, services, img, html/<tipo>/) lo sirve Apache directo
+DirectoryIndex index.html
+
+# paginas inexistentes -> shell de la plantilla 404 (equivale al catch-all del server Node)
+ErrorDocument 404 /shell.php
+
+# subir el limite de subida a 12 MB para las imagenes del panel (10 MB + margen)
+# solo aplica con mod_php; bajo PHP-FPM/CGI ajustar en php.ini (sino da error 500)
+<IfModule mod_php.c>
+  php_value upload_max_filesize 12M
+  php_value post_max_size 12M
+</IfModule>
+<IfModule mod_php7.c>
+  php_value upload_max_filesize 12M
+  php_value post_max_size 12M
+</IfModule>
