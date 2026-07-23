@@ -8,7 +8,7 @@ class Store {
     const ALLOWED = [
         'hero', 'nosotros', 'servicios', 'clientes', 'blog',
         'contacto', 'seo', 'paginas', 'categorias', 'extra_sections', 'tpl_designs',
-        'navbar', 'modulos',
+        'navbar', 'modulos', 'social',
     ];
 
     public static function path($name) {

@@ -124,7 +124,7 @@ function showPanel(id){
  
   const NAMES = {
     dashboard:'Dashboard', modulos:'Catálogo de Módulos', navbar:'Ítems del Navbar', clientes:'Clientes',
-    blog:'Blog / Noticias', contacto:'Datos de Contacto', seo:'SEO & Meta',
+    blog:'Blog / Noticias', contacto:'Datos de Contacto', seo:'SEO & Meta', social:'Redes Sociales',
     plantillas:'Plantillas', 'tpl-editor':'Editor de Plantilla', assets:'Imágenes',
   };
   document.getElementById('topbar-title').textContent = NAMES[id] || id;
@@ -132,8 +132,10 @@ function showPanel(id){
   if (id === 'navbar'    && typeof loadNavbarItems          === 'function') loadNavbarItems();
   if (id === 'modulos'   && typeof window.loadModulos        === 'function') window.loadModulos();
   if (id === 'seo'       && typeof buildSeoTabs              === 'function') buildSeoTabs();
+  if (id === 'social'    && typeof loadSocialConfig         === 'function') loadSocialConfig();
   if (id === 'plantillas'&& typeof window.reloadPlantillas   === 'function') window.reloadPlantillas();
- 
+  if (id === 'dashboard') refreshDashStats();
+
   // el panel editor no tiene padding, lo sobreescribimos
   const ca = document.querySelector('.content-area');
   if(id === 'tpl-editor'){
@@ -163,6 +165,64 @@ function renderSidebarTemplates(){
   });
 }
  
+// tarjetas del dashboard que salen de blog/clientes (la de plantillas la maneja editor.js)
+function refreshDashStats(){
+  const posts = state.blog?.posts || [];
+  const bc = document.getElementById('dash-blog-count');
+  const bs = document.getElementById('dash-blog-sub');
+  if(bc) bc.textContent = posts.length;
+  if(bs){
+    const publicados = posts.filter(p=>p.estado==='publicado').length;
+    const borradores = posts.length - publicados;
+    bs.innerHTML = `<span class="stat-card-indicator ${borradores>0?'ind-amber':'ind-green'}"></span>`
+      + `${publicados} publicado${publicados===1?'':'s'} · ${borradores} borrador${borradores===1?'':'es'}`;
+  }
+
+  const clientes = state.clientes?.clientes || [];
+  const cc = document.getElementById('dash-clientes-count');
+  const cs = document.getElementById('dash-clientes-sub');
+  if(cc) cc.textContent = clientes.length;
+  if(cs){
+    const visibles = clientes.filter(c=>c.activo!==false).length;
+    const carrusel = !!state.clientes?.carrusel_activo;
+    cs.innerHTML = `<span class="stat-card-indicator ${carrusel?'ind-blue':'ind-amber'}"></span>`
+      + `${visibles} visible${visibles===1?'':'s'} · carrusel ${carrusel?'activo':'pausado'}`;
+  }
+
+  refreshUltimaEdicion();
+}
+
+// fecha real del ultimo guardado: la saca del mtime de los JSON de datos
+let _ultEdPend = null;
+function refreshUltimaEdicion(){
+  if(!document.getElementById('dash-last-edit') && !document.getElementById('dash-date')) return;
+  // varias llamadas del mismo tick (blog + clientes + panel) comparten la consulta
+  if(!_ultEdPend){
+    const req = apiGet('/meta/ultima-edicion');
+    if(!req) return;   // el bridge de servicios todavia no cargo
+    _ultEdPend = req.catch(()=>null);
+    _ultEdPend.then(()=>setTimeout(()=>{ _ultEdPend = null; }, 0));
+  }
+  _ultEdPend.then(r=>pintarUltimaEdicion(r?.fecha || null));
+}
+
+function pintarUltimaEdicion(fecha){
+  const valEl = document.getElementById('dash-last-edit');
+  const subEl = document.getElementById('dash-date');
+  if(!fecha){
+    if(valEl) valEl.textContent = '—';
+    if(subEl) subEl.textContent = 'Sin datos';
+    return;
+  }
+  const d = new Date(fecha);
+  const soloDia = x => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const dias = Math.round((soloDia(new Date()) - soloDia(d)) / 86400000);
+  if(valEl) valEl.textContent = dias<=0 ? 'Hoy' : dias===1 ? 'Ayer' : `Hace ${dias} días`;
+  if(subEl) subEl.textContent =
+    d.toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'}) + ' · ' +
+    d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+}
+
 function renderTemplateOverview(){
   const list = document.getElementById('tpl-overview-list');
   list.innerHTML = state.templates.map((t,i) => `
@@ -180,7 +240,7 @@ function renderTemplateOverview(){
       </div>
     </div>
   `).join('');
-  document.getElementById('dash-tpl-count').textContent = state.templates.length;
+  // la tarjeta "Plantillas" del dashboard la llena editor.js con la lista real de /plantillas
 }
  
 window.setActiveTpl = async function(id){
@@ -1352,8 +1412,9 @@ function renderBlogList(){
         <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" onclick="deletePost('${p.id}')">Eliminar</button>
       </div>
     </div>`).join('');
+  refreshDashStats();
 }
- 
+
 function openNewPost(){
   state.editingPostId = null;
   const mt = document.getElementById('modal-blog')?.querySelector('.modal-title'); if(mt) mt.textContent = 'Nuevo artículo';
@@ -1364,6 +1425,8 @@ function openNewPost(){
   const c = document.getElementById('b-content'); if(c) c.innerHTML='';
   const e = document.getElementById('b-estado'); if(e) e.value='borrador';
   updateImgPreview('b-img','b-img-preview');
+  loadModulosRedes('');
+  const rb=document.getElementById('b-redes-estado'); if(rb){ rb.style.display='none'; rb.innerHTML=''; }
   openModal('modal-blog');
 }
 window.openNewPost = openNewPost;
@@ -1380,6 +1443,8 @@ window.editPost = function(id){
   const cat = document.getElementById('b-categoria'); if(cat) cat.value=p.categoria||'Infraestructura';
   const e = document.getElementById('b-estado'); if(e) e.value=p.estado||'borrador';
   updateImgPreview('b-img','b-img-preview');
+  loadModulosRedes(p.id_modulo_redes||'');
+  renderRedesEstado(p);
   openModal('modal-blog');
 }
 window.deletePost = async function(id){
@@ -1390,13 +1455,313 @@ window.deletePost = async function(id){
   showNotif('✓ Artículo eliminado');
 }
 async function saveBlogPost(){
-  const item={titulo:document.getElementById('b-title').value.trim(),categoria:document.getElementById('b-categoria').value,estado:document.getElementById('b-estado').value,fecha:document.getElementById('b-fecha').value,extracto:document.getElementById('b-extracto').value.trim(),contenido:document.getElementById('b-content').innerHTML,imagen:document.getElementById('b-img').value.trim()};
+  const modRedesVal = document.getElementById('b-modulo-redes')?.value || '';
+  const item={titulo:document.getElementById('b-title').value.trim(),categoria:document.getElementById('b-categoria').value,estado:document.getElementById('b-estado').value,fecha:document.getElementById('b-fecha').value,extracto:document.getElementById('b-extracto').value.trim(),contenido:document.getElementById('b-content').innerHTML,imagen:document.getElementById('b-img').value.trim(),id_modulo_redes:modRedesVal?Number(modRedesVal):null};
   if(!item.titulo) return showNotif('El título es requerido','error');
-  if(state.editingPostId){ await apiPatch('/data/blog/posts/'+state.editingPostId,item); const i=state.blog.posts.findIndex(x=>x.id===state.editingPostId); if(i>-1) state.blog.posts[i]={...state.blog.posts[i],...item}; }
-  else { const r=await apiPost('/data/blog/posts',item); state.blog.posts = state.blog.posts||[]; state.blog.posts.unshift(r.item); }
-  closeModal('modal-blog'); renderBlogList(); showNotif('✓ Artículo guardado');
+
+  // ¿publicar en redes? solo si estado=publicado y hay alguna red pendiente
+  let doSocial = false;
+  if(item.estado === 'publicado'){
+    const cfg = state.social || {};
+    const cur = state.editingPostId ? (state.blog.posts.find(x=>x.id===state.editingPostId) || {}) : {};
+    const prev = cur.redes || {};
+    // pendiente = red activada en la config y todavía no publicada en este artículo
+    const pend = n => (cfg['publicar_'+n] !== false) && prev[n]?.estado !== 'publicado';
+
+    if(pend('ig') || pend('fb') || pend('li')){
+      let meta = {}, li = {};
+      try { meta = await apiGet('/social/status') || {}; } catch(_){}
+      try { li   = await apiGet('/social/linkedin/status') || {}; } catch(_){}
+
+      const nombres = [];
+      if(meta.conectado && pend('ig')) nombres.push('Instagram');
+      if(meta.conectado && pend('fb')) nombres.push('Facebook');
+      if(li.conectado   && pend('li')) nombres.push('LinkedIn');
+
+      if(nombres.length){
+        if(!item.id_modulo_redes){
+          if(!confirm('No importaste un módulo de Redes sociales, así que no se publicará en redes.\n¿Guardar el artículo igual?')) return;
+        } else {
+          if(!confirm('Al publicar oficialmente, este artículo también se publicará en '+nombres.join(', ')+' con el módulo de redes importado.\n¿Continuar?')) return;
+          doSocial = true;
+        }
+      }
+    }
+  }
+
+  // guardar el post
+  let id = state.editingPostId;
+  try {
+    if(id){
+      await apiPatch('/data/blog/posts/'+id,item);
+      const i=state.blog.posts.findIndex(x=>x.id===id); if(i>-1) state.blog.posts[i]={...state.blog.posts[i],...item};
+    } else {
+      const r=await apiPost('/data/blog/posts',item); id=r.item.id;
+      state.blog.posts = state.blog.posts||[]; state.blog.posts.unshift(r.item);
+    }
+  } catch(e){ return showNotif('Error al guardar: '+e.message,'error'); }
+  showNotif('✓ Artículo guardado');
+
+  if(doSocial) await publishPostToSocial(id);
+  closeModal('modal-blog'); renderBlogList();
+}
+
+// llena el select de módulos de Redes sociales importables + su thumbnail
+async function loadModulosRedes(selectedId){
+  const sel = document.getElementById('b-modulo-redes');
+  if(!sel) return;
+  let mods = [];
+  try { const r = await apiGet('/modulos'); mods = (r.modulos||[]).filter(m=>m.tipo==='social-post'); } catch(_){}
+  state.socialModules = mods;
+  const sid = selectedId!=null ? String(selectedId) : '';
+  sel.innerHTML = '<option value="">— Ninguno —</option>' +
+    mods.map(m=>`<option value="${m.id_modulo}"${String(m.id_modulo)===sid?' selected':''}>${socEsc(m.nombre||('Post #'+m.id_modulo))}</option>`).join('');
+  updateModRedesThumb();
+}
+function updateModRedesThumb(){
+  const sel = document.getElementById('b-modulo-redes');
+  const thumb = document.getElementById('b-modulo-redes-thumb');
+  if(!sel || !thumb) return;
+  const mod = (state.socialModules||[]).find(m=>String(m.id_modulo)===sel.value);
+  const src = mod?.data?.imagen_generada || mod?.data?.imagen_fondo || '';
+  if(src){ thumb.src=src; thumb.style.display='block'; } else { thumb.src=''; thumb.style.display='none'; }
+}
+
+// dispara la publicación a las redes pendientes y refleja el resultado
+async function publishPostToSocial(id){
+  showNotif('Publicando en redes…');
+  try{
+    const r = await apiPost('/social/publish/'+id, {});
+    const redes = r.redes || {};
+    const i = state.blog.posts.findIndex(x=>x.id===id);
+    if(i>-1) state.blog.posts[i].redes = {...(state.blog.posts[i].redes||{}), ...redes};
+    const siglas = { fb:'FB', ig:'IG', li:'LinkedIn' };
+    const msgs = [];
+    ['fb','ig','li'].forEach(net=>{ if(redes[net]) msgs.push(siglas[net]+': '+(redes[net].estado==='publicado'?'✓':'✗')); });
+    const hayError = Object.values(redes).some(x=>x && x.estado==='error');
+    showNotif((hayError?'⚠ Redes con errores — ':'✓ Publicado en redes — ')+msgs.join(' · '), hayError?'error':'success');
+  }catch(e){
+    showNotif('No se pudo publicar en redes: '+e.message, 'error');
+  }
+}
+
+// estado por red dentro del modal, con botón Reintentar para las que fallaron
+function renderRedesEstado(post){
+  const box = document.getElementById('b-redes-estado');
+  if(!box) return;
+  const redes = (post && post.redes) || {};
+  const nets = [['fb','Facebook'],['ig','Instagram'],['li','LinkedIn']].filter(([k])=>redes[k]);
+  if(!nets.length){ box.style.display='none'; box.innerHTML=''; return; }
+  box.style.display='block';
+  box.innerHTML = '<div style="font-weight:700;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--slate-400);margin-bottom:.45rem;">Estado en redes</div>' +
+    nets.map(([k,label])=>{
+      const r = redes[k], ok = r.estado==='publicado';
+      return `<div style="display:flex;align-items:center;gap:.5rem;font-size:.8rem;margin-bottom:.3rem;">
+        <span style="color:${ok?'#16a34a':'#dc2626'};font-weight:700;">${ok?'●':'○'}</span>
+        <span style="font-weight:600;">${label}:</span>
+        <span style="color:var(--slate-500);flex:1;">${ok?'publicado':socEsc(r.error||'error')}</span>
+        ${ok?'':`<button type="button" class="btn-edit-small b-retry" data-red="${k}">Reintentar</button>`}
+      </div>`;
+    }).join('');
+  box.querySelectorAll('.b-retry').forEach(b=> b.addEventListener('click', ()=> retryRed(post.id, b.dataset.red)));
+}
+
+async function retryRed(id, red){
+  const nom = { ig:'Instagram', fb:'Facebook', li:'LinkedIn' }[red] || red;
+  showNotif('Reintentando '+nom+'…');
+  try{
+    const r = await apiPost('/social/publish/'+id, {red});
+    const res = (r.redes||{})[red];
+    const i = state.blog.posts.findIndex(x=>x.id===id);
+    if(i>-1){ state.blog.posts[i].redes = {...(state.blog.posts[i].redes||{}), ...(r.redes||{})}; renderRedesEstado(state.blog.posts[i]); }
+    showNotif(res && res.estado==='publicado' ? '✓ Publicado en '+nom : '✗ '+((res&&res.error)||'Error'), res&&res.estado==='publicado'?'success':'error');
+  }catch(e){ showNotif('Error: '+e.message,'error'); }
 }
  
+// ---- Redes sociales: config de hashtags + link en bio (social.json) ----
+const SOCIAL_CATS_FALLBACK = ['Infraestructura','Fibra Óptica','Seguridad','Soporte IT'];
+
+// escape mínimo para atributos (panel.js no es módulo, no tiene escAttr)
+function socEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// categorías reales del select de blog, para que los sets queden alineados
+function socCategorias(){
+  const sel = document.getElementById('b-categoria');
+  const opts = sel ? [...sel.options].map(o=>(o.value||o.textContent).trim()).filter(Boolean) : [];
+  return opts.length ? opts : SOCIAL_CATS_FALLBACK;
+}
+
+// "#a #b" o "a, b" -> ["#a","#b"] (normaliza el # y saca duplicados)
+function socParseTags(str){
+  const out = [];
+  (str||'').split(/[\s,]+/).forEach(t=>{
+    t = t.trim().replace(/^#+/,'');
+    if(t && !out.includes('#'+t)) out.push('#'+t);
+  });
+  return out;
+}
+function socFmtTags(arr){ return (arr||[]).join(' '); }
+
+async function loadSocialConfig(){
+  let cfg = {};
+  try { cfg = (await apiGet('/data/social')) || {}; } catch(_){ cfg = {}; }
+  state.social = cfg;
+
+  const ig = document.getElementById('soc-pub-ig'); if(ig) ig.checked = cfg.publicar_ig !== false;
+  const fb = document.getElementById('soc-pub-fb'); if(fb) fb.checked = cfg.publicar_fb !== false;
+  const li = document.getElementById('soc-pub-li'); if(li) li.checked = cfg.publicar_li !== false;
+  const su = document.getElementById('soc-sitio-url'); if(su) su.value = cfg.sitio_url || '';
+  const lb = document.getElementById('soc-link-bio'); if(lb) lb.value = cfg.link_bio || '';
+  const base = document.getElementById('soc-hashtags-base'); if(base) base.value = socFmtTags(cfg.hashtags_base);
+
+  const cont = document.getElementById('soc-hashtags-cats');
+  if(cont){
+    const porCat = cfg.hashtags_por_categoria || {};
+    cont.innerHTML = socCategorias().map(cat=>`
+      <div class="form-group" style="margin-bottom:.5rem;">
+        <label class="form-label" style="font-weight:600;color:var(--slate-600);">${socEsc(cat)}</label>
+        <input class="form-input soc-cat-input" data-cat="${socEsc(cat)}" value="${socEsc(socFmtTags(porCat[cat]))}" placeholder="#..."/>
+      </div>`).join('');
+  }
+
+  loadSocialStatus();
+  loadLinkedinStatus();
+}
+window.loadSocialConfig = loadSocialConfig;
+
+// estado de conexión con Meta (no expone el token)
+async function loadSocialStatus(){
+  const box = document.getElementById('soc-status');
+  const bConn = document.getElementById('soc-connect');
+  const bDisc = document.getElementById('soc-disconnect');
+  if(!box) return;
+  let s = {};
+  try { s = (await apiGet('/social/status')) || {}; }
+  catch(e){ box.innerHTML = '<span style="color:var(--red-400);">No se pudo leer el estado.</span>'; return; }
+
+  if(!s.configurado){
+    box.innerHTML = '<span style="color:#b45309;">⚠ Falta configurar las credenciales de Meta en el servidor (META_APP_ID / META_APP_SECRET).</span>';
+    if(bConn) bConn.disabled = true;
+    if(bDisc) bDisc.style.display = 'none';
+    return;
+  }
+  if(bConn) bConn.disabled = false;
+  if(s.conectado){
+    const ig = s.ig_ok ? `IG @${socEsc(s.ig_username||'')}` : '<span style="color:#b45309;">IG no vinculado</span>';
+    box.innerHTML = `<span style="color:#16a34a;font-weight:600;">● Conectado</span> — Página "${socEsc(s.page_name||'')}" · ${ig}`;
+    if(bConn) bConn.innerHTML = '<i class="fa-solid fa-rotate"></i> Reconectar';
+    if(bDisc) bDisc.style.display = 'inline-flex';
+  } else {
+    box.innerHTML = '<span style="color:var(--slate-500);">No conectado. Autorizá la app de Meta para publicar en IG y Facebook.</span>';
+    if(bConn) bConn.innerHTML = '<i class="fa-brands fa-facebook"></i> Conectar con Meta';
+    if(bDisc) bDisc.style.display = 'none';
+  }
+}
+
+async function connectMeta(){
+  let url;
+  try { url = (await apiGet('/social/connect'))?.url; }
+  catch(e){ return showNotif('Error: '+e.message, 'error'); }
+  if(!url) return showNotif('No se pudo iniciar la conexión', 'error');
+
+  const pop = window.open(url, 'meta-oauth', 'width=600,height=720');
+  const onMsg = (ev)=>{
+    if(ev.data && ev.data.source === 'meta-oauth'){
+      window.removeEventListener('message', onMsg);
+      if(ev.data.ok) showNotif('✓ Conectado con Meta'); else showNotif('No se completó la conexión', 'error');
+      loadSocialStatus();
+    }
+  };
+  window.addEventListener('message', onMsg);
+  // fallback: si cierran el popup a mano, refrescar el estado igual
+  const timer = setInterval(()=>{ if(pop && pop.closed){ clearInterval(timer); window.removeEventListener('message', onMsg); loadSocialStatus(); } }, 1000);
+}
+
+async function disconnectMeta(){
+  if(!confirm('¿Desconectar la cuenta de Meta? Los artículos ya no se publicarán en las redes hasta reconectar.')) return;
+  try { await apiPost('/social/disconnect', {}); showNotif('Cuenta desconectada'); loadSocialStatus(); }
+  catch(e){ showNotif('Error: '+e.message, 'error'); }
+}
+
+// estado de conexión con LinkedIn (el token vence a los ~60 días)
+async function loadLinkedinStatus(){
+  const box = document.getElementById('soc-li-status');
+  const bConn = document.getElementById('soc-li-connect');
+  const bDisc = document.getElementById('soc-li-disconnect');
+  if(!box) return;
+  let s = {};
+  try { s = (await apiGet('/social/linkedin/status')) || {}; }
+  catch(e){ box.innerHTML = '<span style="color:var(--red-400);">No se pudo leer el estado.</span>'; return; }
+
+  if(!s.configurado){
+    box.innerHTML = '<span style="color:#b45309;">⚠ Falta configurar las credenciales de LinkedIn en el servidor (LI_CLIENT_ID / LI_CLIENT_SECRET).</span>';
+    if(bConn) bConn.disabled = true;
+    if(bDisc) bDisc.style.display = 'none';
+    return;
+  }
+  if(bConn) bConn.disabled = false;
+  if(s.conectado){
+    const nombre = s.org_name ? `"${socEsc(s.org_name)}"` : 'tu Página';
+    const vence = s.vencido
+      ? '<span style="color:var(--red-400);font-weight:600;"> · acceso vencido, reconectá</span>'
+      : (s.dias_restantes !== null && s.dias_restantes <= 7
+          ? `<span style="color:#b45309;font-weight:600;"> · vence en ${s.dias_restantes} día(s)</span>`
+          : (s.dias_restantes !== null ? `<span style="color:var(--slate-400);"> · vence en ${s.dias_restantes} días</span>` : ''));
+    box.innerHTML = `<span style="color:#16a34a;font-weight:600;">● Conectado</span> — Página ${nombre}${vence}`;
+    if(bConn) bConn.innerHTML = '<i class="fa-solid fa-rotate"></i> Reconectar';
+    if(bDisc) bDisc.style.display = 'inline-flex';
+  } else {
+    box.innerHTML = '<span style="color:var(--slate-500);">No conectado. Autorizá la app para publicar en la Página de empresa.</span>';
+    if(bConn) bConn.innerHTML = '<i class="fa-brands fa-linkedin"></i> Conectar con LinkedIn';
+    if(bDisc) bDisc.style.display = 'none';
+  }
+}
+
+async function connectLinkedin(){
+  let url;
+  try { url = (await apiGet('/social/linkedin/connect'))?.url; }
+  catch(e){ return showNotif('Error: '+e.message, 'error'); }
+  if(!url) return showNotif('No se pudo iniciar la conexión', 'error');
+
+  const pop = window.open(url, 'li-oauth', 'width=600,height=720');
+  const onMsg = (ev)=>{
+    if(ev.data && ev.data.source === 'meta-oauth'){
+      window.removeEventListener('message', onMsg);
+      if(ev.data.ok) showNotif('✓ Conectado con LinkedIn'); else showNotif('No se completó la conexión', 'error');
+      loadLinkedinStatus();
+    }
+  };
+  window.addEventListener('message', onMsg);
+  const timer = setInterval(()=>{ if(pop && pop.closed){ clearInterval(timer); window.removeEventListener('message', onMsg); loadLinkedinStatus(); } }, 1000);
+}
+
+async function disconnectLinkedin(){
+  if(!confirm('¿Desconectar LinkedIn? Los artículos ya no se publicarán ahí hasta reconectar.')) return;
+  try { await apiPost('/social/linkedin/disconnect', {}); showNotif('LinkedIn desconectado'); loadLinkedinStatus(); }
+  catch(e){ showNotif('Error: '+e.message, 'error'); }
+}
+
+async function saveSocialConfig(){
+  const porCat = {};
+  document.querySelectorAll('#soc-hashtags-cats .soc-cat-input').forEach(inp=>{
+    if(inp.dataset.cat) porCat[inp.dataset.cat] = socParseTags(inp.value);
+  });
+  const cfg = {
+    publicar_ig: document.getElementById('soc-pub-ig')?.checked !== false,
+    publicar_fb: document.getElementById('soc-pub-fb')?.checked !== false,
+    publicar_li: document.getElementById('soc-pub-li')?.checked !== false,
+    sitio_url: (document.getElementById('soc-sitio-url')?.value || '').trim(),
+    link_bio: (document.getElementById('soc-link-bio')?.value || '').trim(),
+    hashtags_base: socParseTags(document.getElementById('soc-hashtags-base')?.value),
+    hashtags_por_categoria: porCat,
+  };
+  try {
+    await apiPut('/data/social', cfg);
+    state.social = cfg;
+    showNotif('✓ Configuración de redes guardada');
+  } catch(e){ showNotif('Error: '+e.message, 'error'); }
+}
+
 function doLogin(){
   const u = document.getElementById('l-user').value.trim();
   const p = document.getElementById('l-pass').value.trim();
@@ -1545,6 +1910,7 @@ function renderClientesList(){
       </td>
     </tr>`;
   }).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--slate-400);padding:1rem;font-size:.75rem;">Sin clientes</td></tr>';
+  refreshDashStats();
 }
 window.renderClientesList = renderClientesList;
 
@@ -1627,7 +1993,6 @@ async function saveCliente(){
     document.getElementById('c-img').value='';
     showNotif(state.editingClienteId ? '✓ Cliente actualizado' : '✓ Cliente agregado');
     state.editingClienteId = null;
-    const cc=document.getElementById('dash-clientes-count'); if(cc) cc.textContent=(state.clientes.clientes||[]).length;
   } catch(e){ showNotif('Error al guardar: '+(e.message||'error'),'error'); }
 }
 
@@ -1638,7 +2003,6 @@ window.deleteCliente = async function(id){
     const r = await apiPut('/data/clientes', updated);
     state.clientes = r?.data || updated;
     renderClientesList();
-    const cc=document.getElementById('dash-clientes-count'); if(cc) cc.textContent=(state.clientes.clientes||[]).length;
     showNotif('✓ Cliente eliminado');
   } catch(e){ showNotif('Error al eliminar','error'); }
 };
@@ -1804,11 +2168,10 @@ window.editarNavItem = function(id_menu) {
 };
 
 function initApp(){
-  document.getElementById('dash-date').textContent =
-    new Date().toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'}) + ' · ' +
-    new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
- 
+  refreshUltimaEdicion();
   renderTemplateOverview();
+  // config de redes para el disparo automático al publicar (Fase 4)
+  apiGet('/data/social').then(s=>{ if(s) state.social=s; }).catch(()=>{});
   Promise.all([
     apiGet('/data/blog').catch(()=>null),
     apiGet('/data/clientes').catch(()=>null),
@@ -1819,14 +2182,10 @@ function initApp(){
     const tpl = state.templates.find(t=>t.id==='tpl-index');
     if(blog){
       state.blog=blog;
-      const posts=blog.posts||[];
-      const bc=document.getElementById('dash-blog-count'); if(bc) bc.textContent=posts.length;
-      const bs=document.getElementById('dash-blog-sub'); if(bs) bs.innerHTML=`<span class="stat-card-indicator ind-amber"></span>${posts.filter(p=>p.estado==='publicado').length} publicados`;
       if(tpl){ const ns=tpl.sections.find(s=>s.id==='s-blog'); if(ns) ns.data={...ns.data,title:blog.titulo_seccion||''}; }
     }
     if(clientes){
       state.clientes=clientes;
-      const cc=document.getElementById('dash-clientes-count'); if(cc) cc.textContent=(clientes.clientes||[]).length;
       const tog=document.getElementById('clientes-carrusel'); if(tog) tog.checked=!!clientes.carrusel_activo;
       if(tpl){ const ls=tpl.sections.find(s=>s.id==='s-logos'); if(ls) ls.data={...ls.data,title:clientes.titulo_seccion||''}; }
     }
@@ -1845,6 +2204,7 @@ function initApp(){
     }
     renderBlogList();
     renderClientesList();
+    refreshDashStats();
     refreshCanvas();
   });
 
@@ -2031,10 +2391,16 @@ function initApp(){
   attachImgPicker('b-img','b-img-preview');
   attachImgPicker('c-img','c-img-preview');
   attachImgPicker('c-imagen-dest','c-imagen-dest-preview');
+  document.getElementById('b-modulo-redes')?.addEventListener('change', updateModRedesThumb);
   document.getElementById('guardar-cliente-btn')?.addEventListener('click', saveCliente);
   document.getElementById('abrir-modal-blog')?.addEventListener('click',openNewPost);
   document.getElementById('dash-nuevo-post')?.addEventListener('click',()=>{ showPanel('modulos'); openNewPost(); });
   document.getElementById('guardar-blog')?.addEventListener('click',saveBlogPost);
+  document.getElementById('guardar-social')?.addEventListener('click',saveSocialConfig);
+  document.getElementById('soc-connect')?.addEventListener('click',connectMeta);
+  document.getElementById('soc-disconnect')?.addEventListener('click',disconnectMeta);
+  document.getElementById('soc-li-connect')?.addEventListener('click',connectLinkedin);
+  document.getElementById('soc-li-disconnect')?.addEventListener('click',disconnectLinkedin);
 
   // Restaurar panel activo tras recarga (Live Server / hot-reload)
   try {

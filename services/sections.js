@@ -608,6 +608,36 @@ ${navCss ? `<style>${navCss}</style>` : ''}
 </section>`;
     },
   },
+
+  'social-post': {
+    label: 'Redes sociales',
+    description: 'Portada para publicar en Instagram y Facebook: imagen de fondo, título, descripción y hashtags.',
+    icon: `<i class="fa-solid fa-share-nodes"></i>`,
+    validTipos: [],   // no es una sección de página; se edita con su editor propio (canvas)
+    defaultData: {
+      titulo: '',
+      categoria: '',
+      imagen_fondo: '',
+      descripcion: '',
+      hashtags: [],
+      hashtags_grupos: [],
+      hashtags_propios: '',
+      imagen_generada: '',   // JPEG 1080×1350 rasterizado al guardar
+    },
+    defaultDesign: {
+      colorTitulo: '#ffffff',
+      colorAcento: '#38bdf8',
+      mostrarLogo: true,
+    },
+    // el editor real es services/admin/social-editor.js (canvas). Este render es un fallback.
+    render: (data) => {
+      const d = { ...SECTIONS['social-post'].defaultData, ...data };
+      const img = d.imagen_generada || d.imagen_fondo || '';
+      return `<section style="padding:1.5rem;text-align:center;color:#475569;font-family:Inter,system-ui,sans-serif;">
+        ${img ? `<img src="${esc(img)}" alt="${esc(d.titulo)}" style="max-width:320px;width:100%;border-radius:12px;"/>` : 'Portada de redes sociales'}
+      </section>`;
+    },
+  },
 'error-404': {
     label: 'Mensaje 404',
     description: 'Bloque de página no encontrada: número 404, título, texto y botones.',

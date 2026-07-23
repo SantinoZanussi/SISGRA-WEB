@@ -74,6 +74,10 @@
       </div>
  
       <div class="sidebar-section-label">Configuración</div>
+      <div class="sidebar-item" data-panel="social">
+        <i class="fa-solid fa-share-nodes"></i>
+        Redes Sociales
+      </div>
       <div class="sidebar-item" data-panel="contacto">
         <i class="fa-solid fa-envelope"></i>
         Datos de Contacto
@@ -127,8 +131,8 @@
           <div class="stats-row">
             <div class="stat-card">
               <div class="stat-card-label">Plantillas</div>
-              <div class="stat-card-value" id="dash-tpl-count">2</div>
-              <div class="stat-card-sub"><span class="stat-card-indicator ind-green"></span>1 activa</div>
+              <div class="stat-card-value" id="dash-tpl-count">—</div>
+              <div class="stat-card-sub" id="dash-tpl-sub"><span class="stat-card-indicator ind-green"></span>Cargando...</div>
             </div>
             <div class="stat-card">
               <div class="stat-card-label">Posts de blog</div>
@@ -138,11 +142,11 @@
             <div class="stat-card">
               <div class="stat-card-label">Clientes</div>
               <div class="stat-card-value" id="dash-clientes-count">—</div>
-              <div class="stat-card-sub"><span class="stat-card-indicator ind-blue"></span>Carrusel</div>
+              <div class="stat-card-sub" id="dash-clientes-sub"><span class="stat-card-indicator ind-blue"></span>Cargando...</div>
             </div>
             <div class="stat-card">
               <div class="stat-card-label">Última edición</div>
-              <div class="stat-card-value" style="font-size:1.1rem;padding-top:.4rem;">Hoy</div>
+              <div class="stat-card-value" id="dash-last-edit" style="font-size:1.1rem;padding-top:.4rem;">—</div>
               <div class="stat-card-sub" id="dash-date"></div>
             </div>
           </div>
@@ -489,6 +493,74 @@
           </div>
         </div>
  
+        <!-- redes sociales -->
+        <div class="panel" id="panel-social">
+          <div class="page-header"><div class="page-title">Redes Sociales</div></div>
+
+          <div class="section-card">
+            <div class="section-card-header"><span class="section-card-title">Conexión con Meta</span></div>
+            <div class="section-card-body">
+              <div id="soc-status" style="font-size:.85rem;color:var(--slate-500);">Cargando estado…</div>
+              <div style="display:flex;gap:.6rem;margin-top:.9rem;flex-wrap:wrap;">
+                <button class="btn-secondary" id="soc-connect"><i class="fa-brands fa-facebook"></i> Conectar con Meta</button>
+                <button class="btn-secondary" id="soc-disconnect" style="display:none;color:var(--red-400);border-color:var(--red-400);">Desconectar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-card-header"><span class="section-card-title">Conexión con LinkedIn</span></div>
+            <div class="section-card-body">
+              <div id="soc-li-status" style="font-size:.85rem;color:var(--slate-500);">Cargando estado…</div>
+              <div style="display:flex;gap:.6rem;margin-top:.9rem;flex-wrap:wrap;">
+                <button class="btn-secondary" id="soc-li-connect"><i class="fa-brands fa-linkedin"></i> Conectar con LinkedIn</button>
+                <button class="btn-secondary" id="soc-li-disconnect" style="display:none;color:var(--red-400);border-color:var(--red-400);">Desconectar</button>
+              </div>
+              <span style="font-size:.7rem;color:var(--slate-400);display:block;margin-top:.6rem;">El acceso de LinkedIn vence a los ~60 días; cuando se acerque el vencimiento te avisa acá para reconectar.</span>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-card-header"><span class="section-card-title">Publicación automática</span></div>
+            <div class="section-card-body">
+              <p style="font-size:.8rem;color:var(--slate-500);margin:0 0 1rem;">Al publicar un artículo oficialmente, también se sube a las redes que estén activadas.</p>
+              <div class="form-row" style="display:flex;gap:1.5rem;flex-wrap:wrap;">
+                <label class="form-label" style="display:flex;align-items:center;gap:.5rem;cursor:pointer;margin:0;"><input type="checkbox" id="soc-pub-ig"/> Publicar en Instagram</label>
+                <label class="form-label" style="display:flex;align-items:center;gap:.5rem;cursor:pointer;margin:0;"><input type="checkbox" id="soc-pub-fb"/> Publicar en Facebook</label>
+                <label class="form-label" style="display:flex;align-items:center;gap:.5rem;cursor:pointer;margin:0;"><input type="checkbox" id="soc-pub-li"/> Publicar en LinkedIn</label>
+              </div>
+              <div class="form-row"><div class="form-group">
+                <label class="form-label">URL del sitio (https)</label>
+                <input class="form-input" id="soc-sitio-url" placeholder="https://sisgra.com"/>
+                <span style="font-size:.7rem;color:var(--slate-400);">Se usa para armar las URLs absolutas de las imágenes y el link al artículo en las publicaciones.</span>
+              </div></div>
+              <div class="form-row"><div class="form-group">
+                <label class="form-label">Link en bio (Instagram)</label>
+                <input class="form-input" id="soc-link-bio" placeholder="https://sisgra.com"/>
+                <span style="font-size:.7rem;color:var(--slate-400);">En Instagram el link del texto no es clickeable; se muestra este enlace como "link en bio".</span>
+              </div></div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-card-header"><span class="section-card-title">Hashtags</span></div>
+            <div class="section-card-body">
+              <div class="form-row"><div class="form-group">
+                <label class="form-label">Base <span class="img-dim-hint">se agregan a todos los posts</span></label>
+                <input class="form-input" id="soc-hashtags-base" placeholder="#SISGRA #Telecomunicaciones"/>
+              </div></div>
+              <div class="form-group">
+                <label class="form-label">Por categoría <span class="img-dim-hint">se acumulan sobre los base</span></label>
+                <div id="soc-hashtags-cats"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:flex-end;">
+            <button class="btn-save" id="guardar-social">Guardar configuración</button>
+          </div>
+        </div>
+
         <!-- seo -->
         <div class="panel" id="panel-seo">
           <div class="page-header"><div class="page-title">SEO &amp; Metadatos</div></div>
@@ -609,10 +681,23 @@
           </select>
         </div>
       </div>
+      <div id="b-redes-aviso" style="display:flex;gap:.5rem;align-items:flex-start;background:#eff6ff;border:1px solid #bfdbfe;border-radius:.5rem;padding:.6rem .75rem;margin-bottom:1rem;font-size:.78rem;color:#1e40af;">
+        <i class="fa-solid fa-circle-info" style="margin-top:.15rem;"></i>
+        <span>Al publicar oficialmente (estado <b>Publicado</b>), el artículo también se subirá a <b>Instagram</b> y <b>Facebook</b> según lo configurado en <b>Redes Sociales</b>.</span>
+      </div>
+      <div id="b-redes-estado" style="display:none;background:var(--slate-50);border:1px solid var(--slate-200);border-radius:.5rem;padding:.6rem .75rem;margin-bottom:1rem;"></div>
       <div class="form-row"><div class="form-group">
-        <label class="form-label">Imagen de portada (URL) *</label>
+        <label class="form-label">Portada web (URL) *</label>
         <input class="form-input" id="b-img" placeholder="/img/articulo.png"/>
         <img id="b-img-preview" class="img-path-preview" src="" alt=""/>
+      </div></div>
+      <div class="form-row"><div class="form-group">
+        <label class="form-label">Módulo de Redes sociales <span class="img-dim-hint">imagen + descripción + hashtags para IG/FB</span></label>
+        <div style="display:flex;gap:.6rem;align-items:center;">
+          <select class="form-select" id="b-modulo-redes" style="flex:1;"><option value="">— Ninguno —</option></select>
+          <img id="b-modulo-redes-thumb" src="" alt="" style="display:none;height:60px;width:auto;border-radius:6px;border:1px solid var(--slate-200);object-fit:cover;"/>
+        </div>
+        <span style="font-size:.7rem;color:var(--slate-400);">Se crea/edita en <b>Catálogo de Módulos → Redes sociales</b>. De ahí salen la imagen, la descripción y los hashtags de la publicación.</span>
       </div></div>
       <div class="form-row"><div class="form-group"><label class="form-label">Extracto</label><textarea class="form-textarea" id="b-extracto" placeholder="Resumen breve..."></textarea></div></div>
       <div class="form-group" style="margin-bottom:1rem;">
@@ -828,6 +913,7 @@
 <script type="module" src="/services/admin/editor.js"></script>
 <script type="module" src="/services/admin/image-picker.js"></script>
 <script type="module" src="/services/admin/assets.js"></script>
+<script type="module" src="/services/admin/social-editor.js"></script>
 
 <div class="e3-mobile-block" id="e3-mobile-block">
   <div class="e3-mobile-block-card">

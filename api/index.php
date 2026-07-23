@@ -8,6 +8,9 @@ require __DIR__ . '/lib/Http.php';
 require __DIR__ . '/lib/Jwt.php';
 require __DIR__ . '/lib/Auth.php';
 require __DIR__ . '/lib/Store.php';
+require __DIR__ . '/lib/SocialStore.php';
+require __DIR__ . '/lib/MetaService.php';
+require __DIR__ . '/lib/LinkedinService.php';
 foreach (glob(__DIR__ . '/controllers/*.php') as $c) require $c;
 
 // mismo origen que el front (Apache sirve el sitio y la API juntos)
@@ -37,6 +40,8 @@ $routes = [
     ['PATCH',  '/data/:file/:collection/:id',        ['DataController', 'updateItem'],       true],
     ['POST',   '/data/:file/:collection',            ['DataController', 'createItem'],       true],
     ['DELETE', '/data/:file/:collection/:id',        ['DataController', 'deleteItem'],       true],
+
+    ['GET',    '/meta/ultima-edicion',               ['DataController', 'ultimaEdicion'],    true],
 
     ['GET',    '/plantillas/tipos',                  ['PlantillaController', 'listarTipos'],  false],
     ['GET',    '/plantillas/activa/:tipo',           ['PlantillaController', 'activaPorTipo'],false],
@@ -86,6 +91,18 @@ $routes = [
 
     ['POST',   '/contactos',                         ['ContactosController', 'crear'],        false],
     ['GET',    '/contactos',                         ['ContactosController', 'listar'],       true],
+
+    ['GET',    '/social/status',                     ['SocialController', 'status'],          true],
+    ['GET',    '/social/connect',                    ['SocialController', 'connect'],         true],
+    ['GET',    '/social/callback',                   ['SocialController', 'callback'],        false],
+    ['POST',   '/social/disconnect',                 ['SocialController', 'disconnect'],      true],
+
+    ['GET',    '/social/linkedin/status',            ['SocialController', 'liStatus'],        true],
+    ['GET',    '/social/linkedin/connect',           ['SocialController', 'liConnect'],       true],
+    ['GET',    '/social/linkedin/callback',          ['SocialController', 'liCallback'],      false],
+    ['POST',   '/social/linkedin/disconnect',        ['SocialController', 'liDisconnect'],    true],
+
+    ['POST',   '/social/publish/:id',                ['SocialController', 'publish'],         true],
 ];
 
 try {

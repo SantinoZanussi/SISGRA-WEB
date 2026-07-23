@@ -160,7 +160,10 @@ async function api(method, path, body) {
   if (body !== undefined) opts.body = JSON.stringify(body);
   const r = await fetch(`${API}${path}`, opts);
   const data = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(data.error || `${method} ${path} → ${r.status}`);
+  if (!r.ok) {
+    if (r.status === 401) window.__svc?.sessionExpired?.();
+    throw new Error(data.error || `${method} ${path} → ${r.status}`);
+  }
   return data;
 }
 
@@ -275,6 +278,22 @@ function expiryClass(p) {
   return (dias !== null && dias <= 2) ? 'soon' : '';
 }
 
+// tarjeta "Plantillas" del dashboard: totales reales de la lista cargada
+function refreshDashPlantillas() {
+  const countEl = document.getElementById('dash-tpl-count');
+  const subEl   = document.getElementById('dash-tpl-sub');
+  if (!countEl || !subEl) return;
+  const total      = e3.plantillas.length;
+  const vencidas   = e3.plantillas.filter(p => isVencida(p)).length;
+  const activas    = e3.plantillas.filter(p => p.activa && !isVencida(p)).length;
+  const borradores = e3.plantillas.filter(p => !p.activa).length;
+  countEl.textContent = total;
+  const ind = vencidas > 0 ? 'ind-red' : activas > 0 ? 'ind-green' : 'ind-amber';
+  const partes = [`${activas} activa${activas === 1 ? '' : 's'}`, `${borradores} borrador${borradores === 1 ? '' : 'es'}`];
+  if (vencidas > 0) partes.push(`${vencidas} vencida${vencidas === 1 ? '' : 's'}`);
+  subEl.innerHTML = `<span class="stat-card-indicator ${ind}"></span>${partes.join(' · ')}`;
+}
+
 function refreshDashVencidas() {
   const banner = document.getElementById('dash-vencidas-banner');
   const text   = document.getElementById('dash-vencidas-text');
@@ -369,6 +388,7 @@ function renderOverview() {
   list.querySelectorAll('[data-e3-eliminar]').forEach(b => b.addEventListener('click', () => eliminarPlantilla(b.dataset.e3Eliminar)));
   list.querySelectorAll('[data-e3-rename]').forEach(b => b.addEventListener('click', () => renombrarPlantilla(b.dataset.e3Rename, b)));
   refreshDashVencidas();
+  refreshDashPlantillas();
 }
 
 async function renombrarPlantilla(id, btn) {
@@ -1772,7 +1792,7 @@ MOD_FAMILIES.forEach(f => f.tipos.forEach(t => { _famByTipo[t] = f; }));
 const _familyOf   = tipo => _famByTipo[tipo] || null;
 
 // tipos building-block siempre visibles aunque tengan 0 variantes (no se pierden al borrar la ultima)
-const ALWAYS_VISIBLE_TIPOS = ['feature-grid', 'feature-item', 'faq-item', 'process-step-item'];
+const ALWAYS_VISIBLE_TIPOS = ['feature-grid', 'feature-item', 'faq-item', 'process-step-item', 'social-post'];
 
 // alias de busqueda por tipo: terminos extra para encontrar un modulo (ej "preguntas frecuentes")
 const MOD_SEARCH_ALIASES = {
@@ -1780,6 +1800,7 @@ const MOD_SEARCH_ALIASES = {
   'feature-item':      ['caracteristica', 'caracteristicas', 'grilla de caracteristicas'],
   'faq-item':          ['preguntas frecuentes', 'pregunta frecuente', 'faq'],
   'process-step-item': ['pasos del proceso', 'paso del proceso', 'pasos'],
+  'social-post':       ['redes sociales', 'instagram', 'facebook', 'portada', 'post'],
 };
 const _tipoAlias = tipo => (MOD_SEARCH_ALIASES[tipo] || []).join(' ');
 const _familyById = id   => MOD_FAMILIES.find(f => f.id === id) || null;
@@ -2014,6 +2035,8 @@ window.openModEditor = function(id) {
   if (!m) return;
   const sec = SECTIONS[m.tipo];
   if (!sec) { window.__svc.showNotif('Tipo de módulo desconocido: ' + m.tipo, 'error'); return; }
+  // los posts de redes sociales tienen su propio editor (canvas + rasterizado)
+  if (m.tipo === 'social-post' && window.__socialEditor) { window.__socialEditor.open(m); return; }
   _setCurMod(m);
   _previewFromCards = false;
   openPreviewModal();
@@ -2120,6 +2143,40 @@ function _renameModuloInline(m) {
   });
 }
 
+// renombra un módulo puntual desde su fila en la lista (edición inline sobre el título)
+function _renameModuloRow(m, spanEl, onDone) {
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'mod-rename-input';
+  input.value = m.nombre || '';
+  spanEl.style.display = 'none';
+  spanEl.insertAdjacentElement('afterend', input);
+  input.focus();
+  input.select();
+
+  let cerrado = false;
+  const restaurar = () => { if (cerrado) return; cerrado = true; input.remove(); spanEl.style.display = ''; };
+  const guardar = async () => {
+    const nuevo = input.value.trim();
+    restaurar();
+    if (!nuevo || nuevo === m.nombre) return;
+    try {
+      await window.__svc.apiPut(`/modulos/${m.id_modulo}`, { nombre: nuevo });
+      m.nombre = nuevo;
+      window.__svc.showNotif('Módulo renombrado', 'success');
+      renderModCatalog();
+      if (typeof onDone === 'function') onDone();
+    } catch (e) {
+      window.__svc.showNotif('Error: ' + e.message, 'error');
+    }
+  };
+  input.addEventListener('blur', guardar);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter')  { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { restaurar(); }
+  });
+}
+
 window.openModVer = function(id) {
   const m = _mods.find(x => x.id_modulo === Number(id));
   if (!m) return;
@@ -2141,8 +2198,10 @@ window.openModVer = function(id) {
   // encabezado para no sugerir que el tipo entero está asignado a una plantilla.
   if (pagEl) pagEl.innerHTML = '';
 
+  // el encabezado muestra el label del TIPO, no un módulo: no se renombra desde acá.
+  // Renombrar es por módulo, desde cada fila de la lista.
   const renameBtn = document.getElementById('modulos-view-rename');
-  if (renameBtn) { renameBtn.style.display = ''; renameBtn.onclick = () => _renameModuloInline(m); }
+  if (renameBtn) { renameBtn.style.display = 'none'; renameBtn.onclick = null; }
 
   // El contenido compartido (#blog-list / #clientes-tbody) debe existir en UN
   // solo lugar: limpiamos el del editor para que render() apunte a este modal.
@@ -2321,6 +2380,7 @@ function _renderModVerLista(tipo) {
       </div>
       <div class="mod-row-pertenece">${pertenece}</div>
       <div class="blog-actions">
+        <button type="button" class="btn-edit-small" data-ver-rename="${m.id_modulo}">Renombrar</button>
         <button type="button" class="btn-edit-small" data-ver-edit="${m.id_modulo}">Editar</button>
         <button type="button" class="btn-edit-small" style="color:var(--red-400);border-color:var(--red-400);" data-ver-del="${m.id_modulo}">Eliminar</button>
       </div>
@@ -2335,6 +2395,11 @@ function _renderModVerLista(tipo) {
       _closeModVer();
       window.openModEditor(b.dataset.verEdit);
     }
+  }));
+  body.querySelectorAll('[data-ver-rename]').forEach(b => b.addEventListener('click', () => {
+    const mod = _mods.find(x => x.id_modulo === Number(b.dataset.verRename));
+    const span = b.closest('.blog-item')?.querySelector('.blog-title-text');
+    if (mod && span) _renameModuloRow(mod, span, () => _renderModVerLista(tipo));
   }));
   body.querySelectorAll('[data-ver-del]').forEach(b => b.addEventListener('click', async () => {
     await window.eliminarModulo(b.dataset.verDel);

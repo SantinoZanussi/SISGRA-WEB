@@ -1,0 +1,62 @@
+{
+  "publicar_ig": true,
+  "publicar_fb": true,
+  "publicar_li": true,
+  "sitio_url": "https://sisgra.com",
+  "link_bio": "https://sisgra.com",
+  "hashtags_base": [
+    "#SISGRA", 
+    "#Telecomunicaciones", 
+    "#Conectividad", 
+    "#IntegradorTecnologico", 
+    "#ContinuidadOperativa", 
+    "#Rosario", 
+    "#ZonaI", 
+    "#IngenieriaDeCampo"
+  ],
+  "hashtags_por_categoria": {
+    "Infraestructura": [
+      "#Infraestructura", 
+      "#Redes", 
+      "#Datacenter", 
+      "#CableadoEstructurado", 
+      "#Networking", 
+      "#CertificacionDeRedes", 
+      "#Racks"
+    ],
+    "Fibra Óptica": [
+      "#FibraOptica", 
+      "#FTTH", 
+      "#InternetPorFibra", 
+      "#MedicionOTDR", 
+      "#EmpalmePorFusion", 
+      "#InfraestructuraCritica", 
+      "#FibraADSS"
+    ],
+    "Seguridad": [
+      "#Seguridad", 
+      "#CCTV", 
+      "#SeguridadElectronica", 
+      "#ControlDeAcceso", 
+      "#DeteccionDeIncendio", 
+      "#FuegoYGas", 
+      "#IntrusionPerimetral"
+    ],
+    "Soporte IT": [
+      "#SoporteIT", 
+      "#IT", 
+      "#Tecnologia", 
+      "#MantenimientoPreventivo", 
+      "#ContinuidadTecnologica", 
+      "#AsistenciaTecnica"
+    ],
+    "Software y Productos": [
+      "#SoftwareAMedida", 
+      "#PlataformaPRES", 
+      "#Trazabilidad", 
+      "#GestionDeObras", 
+      "#QNET", 
+      "#LCDExchange"
+    ]
+  }
+}

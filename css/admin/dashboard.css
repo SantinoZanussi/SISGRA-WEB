@@ -10,6 +10,7 @@
 .ind-green{background:var(--green-500);}
 .ind-amber{background:var(--amber-400);}
 .ind-blue{background:var(--blue-400);}
+.ind-red{background:var(--red-400);}
 
 /* Dashboard banner (plantillas vencidas / próximas a vencer) */
 .dash-vencidas-banner{background:#7f1d1d;border-left:3px solid #ef4444;padding:.875rem 1.25rem;display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;}

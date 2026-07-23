@@ -1,4 +1,4 @@
-import { authToken, API_BASE } from './store.js';
+import { authToken, API_BASE, clearAuthToken } from './store.js';
 
 function authHeaders() {
   return {
@@ -7,13 +7,28 @@ function authHeaders() {
   };
 }
 
+// sesión inválida/expirada: limpia el token y vuelve al login. Autocura tokens viejos
+// (p.ej. los que quedaron de la época de Node, firmados con otro secret).
+export function sessionExpired() {
+  clearAuthToken();
+  const app = document.getElementById('app');
+  const login = document.getElementById('login-screen');
+  if (app && login) {
+    app.style.display = 'none';
+    login.style.display = '';
+    const err = document.getElementById('login-error');
+    if (err) { err.textContent = 'Tu sesión expiró. Volvé a iniciar sesión.'; err.style.display = 'block'; }
+  }
+}
+
 async function parseError(r, label) {
+  if (r.status === 401) sessionExpired();
   const data = await r.json().catch(() => ({}));
   throw new Error(data.error || `${label} → ${r.status}`);
 }
 
 export async function apiGet(path) {
-  const r = await fetch(`${API_BASE}${path}`);
+  const r = await fetch(`${API_BASE}${path}`, { headers: { 'Authorization': `Bearer ${authToken}` } });
   if (!r.ok) await parseError(r, `GET ${path}`);
   return r.json();
 }

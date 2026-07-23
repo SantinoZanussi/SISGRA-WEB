@@ -1,0 +1,9 @@
+# Bloquea el acceso directo a los secretos (tokens de Meta).
+# El front controller ya enruta /api/* a index.php; esto es defensa extra.
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>

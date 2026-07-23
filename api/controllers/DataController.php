@@ -77,6 +77,24 @@ class DataController {
         Http::json(['ok' => true]);
     }
 
+    // GET /api/meta/ultima-edicion  [auth]
+    // mtime mas reciente entre los JSON de contenido; los logs y backups no cuentan como edicion
+    public static function ultimaEdicion() {
+        $ignorar = ['users', 'alertas_log', 'contactos_log', 'webhook_cache', 'plantillas_backup'];
+        $ultima  = 0;
+        $archivo = null;
+        foreach (glob(DATA_DIR . '/*.json') as $fp) {
+            $name = basename($fp, '.json');
+            if (in_array($name, $ignorar, true)) continue;
+            $mt = filemtime($fp);
+            if ($mt && $mt > $ultima) { $ultima = $mt; $archivo = $name; }
+        }
+        Http::json([
+            'fecha'   => $ultima ? iso_from_ms($ultima * 1000) : null,
+            'archivo' => $archivo,
+        ]);
+    }
+
     private static function findById($arr, $id) {
         foreach ($arr as $i => $item) {
             if ((isset($item['id']) ? $item['id'] : null) === $id) return $i;
