@@ -5075,6 +5075,72 @@
                 "tags": ""
             },
             "design": {}
+        },
+        {
+            "id_modulo": 341,
+            "tipo": "social-post",
+            "nombre": "Post de Prueba",
+            "id_pagina": null,
+            "data": {
+                "titulo": "Título de prueba",
+                "categoria": "Fibra Óptica",
+                "imagen_fondo": "/img/fondoinicio.png",
+                "descripcion": "asdawdadsadsadsadsaddsa",
+                "hashtags": [
+                    "#SISGRA",
+                    "#Telecomunicaciones",
+                    "#Conectividad",
+                    "#IntegradorTecnologico",
+                    "#ContinuidadOperativa",
+                    "#Rosario",
+                    "#ZonaI",
+                    "#IngenieriaDeCampo",
+                    "#Infraestructura",
+                    "#Redes",
+                    "#Datacenter",
+                    "#CableadoEstructurado",
+                    "#Networking",
+                    "#CertificacionDeRedes",
+                    "#Racks",
+                    "#FibraOptica",
+                    "#FTTH",
+                    "#InternetPorFibra",
+                    "#MedicionOTDR",
+                    "#EmpalmePorFusion",
+                    "#InfraestructuraCritica",
+                    "#FibraADSS",
+                    "#Seguridad",
+                    "#CCTV",
+                    "#SeguridadElectronica",
+                    "#ControlDeAcceso",
+                    "#DeteccionDeIncendio",
+                    "#FuegoYGas",
+                    "#IntrusionPerimetral",
+                    "#SoporteIT",
+                    "#IT",
+                    "#Tecnologia",
+                    "#MantenimientoPreventivo",
+                    "#ContinuidadTecnologica",
+                    "#AsistenciaTecnica"
+                ],
+                "hashtags_grupos": [
+                    "base",
+                    "Infraestructura",
+                    "Fibra Óptica",
+                    "Seguridad",
+                    "Soporte soluciones tecnológicas"
+                ],
+                "hashtags_propios": "",
+                "imagen_generada": "/img/post-de-prueba-redes.jpg"
+            },
+            "design": {
+                "colorTitulo": "#ffffff",
+                "colorAcento": "#38bdf8",
+                "mostrarLogo": true
+            },
+            "alerta": false,
+            "creado_en": "2026-07-23T18:22:08.828Z",
+            "editado_en": "2026-07-23T18:22:34.287Z"
         }
     ]
 }

@@ -379,6 +379,19 @@
             ],
             "creado_en": "2026-07-23T17:47:27.542Z",
             "editado_en": "2026-07-23T17:51:53.168Z"
+        },
+        {
+            "id": "img-3a11bb36-2e08-49aa-a383-0c6d55bbea67",
+            "nombre": "Post de Prueba redes",
+            "filename": "post-de-prueba-redes.jpg",
+            "path": "/img/post-de-prueba-redes.jpg",
+            "locked": false,
+            "mime": "image/jpeg",
+            "size": 205199,
+            "origen": "subida",
+            "etiquetas": [],
+            "creado_en": "2026-07-23T18:22:34.278Z",
+            "editado_en": "2026-07-23T18:22:34.278Z"
         }
     ],
     "labels": [

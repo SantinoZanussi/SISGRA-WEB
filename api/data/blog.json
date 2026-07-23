@@ -1,5 +1,37 @@
 {
-  "titulo_seccion": "Novedades & Blog",
-  "visible": true,
-  "posts": []
+    "titulo_seccion": "Novedades & Blog",
+    "visible": true,
+    "posts": [
+        {
+            "titulo": "titulo de prueba",
+            "categoria": "Fibra Óptica",
+            "estado": "borrador",
+            "fecha": "2026-07-23",
+            "extracto": "sadsadas",
+            "contenido": "dasdasdasdsadsad",
+            "imagen": "",
+            "id_modulo_redes": 341,
+            "id": "po-1784832778788",
+            "redes": {
+                "fb": {
+                    "estado": "error",
+                    "post_id": null,
+                    "error": "Meta: Missing or invalid image file",
+                    "en": "2026-07-23T18:56:11.752Z"
+                },
+                "ig": {
+                    "estado": "error",
+                    "post_id": null,
+                    "error": "Meta: Only photo or video can be accepted as media type.",
+                    "en": "2026-07-23T18:56:12.619Z"
+                },
+                "li": {
+                    "estado": "error",
+                    "post_id": null,
+                    "error": "Falta conectar la Página de empresa de LinkedIn",
+                    "en": "2026-07-23T18:56:12.619Z"
+                }
+            }
+        }
+    ]
 }
