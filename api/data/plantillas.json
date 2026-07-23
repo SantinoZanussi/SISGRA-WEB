@@ -1,714 +1,714 @@
 {
-  "plantillas": [
-    {
-      "id_plantilla": 1,
-      "tipo": "index",
-      "nombre": "Inicio principal",
-      "descripcion": "Plantilla por defecto del home",
-      "activa": true,
-      "id_menu": [
-        1
-      ],
-      "id_modulos": [
-        1,
-        60,
-        43,
-        8,
-        7,
-        115,
-        5,
-        63,
-        93,
-        240,
-        250,
-        2
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          60
-        ],
-        [
-          43
-        ],
-        [
-          8
-        ],
-        [
-          7
-        ],
-        [
-          115
-        ],
-        [
-          5
-        ],
-        [
-          63
-        ],
-        [
-          93
-        ],
-        [
-          240
-        ],
-        [
-          250
-        ],
-        [
-          2
-        ]
-      ],
-      "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-29T16:47:20.478Z",
-      "fecha_inicio": "2026-06-24T16:53:59.313Z",
-      "fecha_fin": "2026-07-01T16:53:59.313Z"
-    },
-    {
-      "id_plantilla": 2,
-      "tipo": "blog",
-      "nombre": "Blog",
-      "descripcion": "Plantilla para el Blog",
-      "activa": true,
-      "id_menu": [
-        2
-      ],
-      "id_modulos": [
-        1,
-        9,
-        3
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          9
-        ],
-        [
-          3
-        ]
-      ],
-      "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-24T16:53:58.512Z",
-      "fecha_inicio": "2026-06-24T16:53:58.512Z",
-      "fecha_fin": "2026-07-01T16:53:58.512Z"
-    },
-    {
-      "id_plantilla": 3,
-      "tipo": "articulo",
-      "nombre": "Artículo",
-      "descripcion": "Plantilla para los Artículos",
-      "activa": true,
-      "id_menu": [],
-      "id_modulos": [
-        1,
-        75,
-        11,
-        3
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          75
-        ],
-        [
-          11
-        ],
-        [
-          3
-        ]
-      ],
-      "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-24T16:53:58.041Z",
-      "fecha_inicio": "2026-06-24T16:53:58.041Z",
-      "fecha_fin": "2026-07-01T16:53:58.041Z"
-    },
-    {
-      "id_plantilla": 4,
-      "tipo": "cableado",
-      "nombre": "Cableado",
-      "descripcion": "Plantilla para el Cableado Estructurado",
-      "activa": true,
-      "id_menu": [
-        3
-      ],
-      "id_modulos": [
-        1,
-        12,
-        106,
-        107,
-        115,
-        78,
-        3
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          12
-        ],
-        [
-          106
-        ],
-        [
-          107
-        ],
-        [
-          115
-        ],
-        [
-          78
-        ],
-        [
-          3
-        ]
-      ],
-      "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-29T16:47:20.480Z",
-      "fecha_inicio": "2026-06-24T16:53:56.913Z",
-      "fecha_fin": "2026-07-01T16:53:56.913Z"
-    },
-    {
-      "id_plantilla": 5,
-      "tipo": "fibra",
-      "nombre": "Fibra Óptica",
-      "descripcion": "Plantilla para la Fibra Óptica",
-      "activa": true,
-      "id_menu": [
-        4
-      ],
-      "id_modulos": [
-        1,
-        13,
-        180,
-        184,
-        190,
-        81,
-        3
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          13
-        ],
-        [
-          180
-        ],
-        [
-          184
-        ],
-        [
-          190
-        ],
-        [
-          81
-        ],
-        [
-          3
-        ]
-      ],
-      "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-25T02:40:58.198Z",
-      "fecha_inicio": "2026-06-24T16:53:55.706Z",
-      "fecha_fin": "2026-07-01T16:53:55.706Z"
-    },
-    {
-      "id_plantilla": 6,
-      "tipo": "seguridad",
-      "nombre": "Seguridad",
-      "descripcion": "Plantilla para la Seguridad",
-      "activa": true,
-      "id_menu": [
-        5
-      ],
-      "id_modulos": [
-        1,
-        14,
-        200,
-        270,
-        205,
-        115,
-        210,
-        84,
-        3
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          14
-        ],
-        [
-          200
-        ],
-        [
-          270
-        ],
-        [
-          205
-        ],
-        [
-          115
-        ],
-        [
-          210
-        ],
-        [
-          84
-        ],
-        [
-          3
-        ]
-      ],
-      "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-29T16:47:20.480Z",
-      "fecha_inicio": "2026-06-24T16:54:00.578Z",
-      "fecha_fin": "2026-07-01T16:54:00.578Z"
-    },
-    {
-      "id_plantilla": 7,
-      "tipo": "soporte",
-      "nombre": "Soporte IT",
-      "descripcion": "Plantilla para el Soporte IT",
-      "activa": true,
-      "id_menu": [
-        6
-      ],
-      "id_modulos": [
-        1,
-        37,
-        110,
-        275,
-        220,
-        225,
-        87,
-        3
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          37
-        ],
-        [
-          110
-        ],
-        [
-          275
-        ],
-        [
-          220
-        ],
-        [
-          225
-        ],
-        [
-          87
-        ],
-        [
-          3
-        ]
-      ],
-      "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-29T16:47:20.480Z",
-      "fecha_inicio": "2026-06-24T16:54:01.010Z",
-      "fecha_fin": "2026-07-01T16:54:01.010Z"
-    },
-    {
-      "id_plantilla": 8,
-      "tipo": "desarrollo",
-      "nombre": "Desarrollo",
-      "descripcion": "Plantilla para el Desarrollo de Software",
-      "activa": true,
-      "id_menu": [
-        7
-      ],
-      "id_modulos": [
-        1,
-        16,
-        111,
-        230,
-        90,
-        3
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          16
-        ],
-        [
-          111
-        ],
-        [
-          230
-        ],
-        [
-          90
-        ],
-        [
-          3
-        ]
-      ],
-      "creado_en": "2026-05-24T00:00:00.000Z",
-      "editado_en": "2026-06-25T02:40:58.198Z",
-      "fecha_inicio": "2026-06-24T16:54:01.497Z",
-      "fecha_fin": "2026-07-01T16:54:01.497Z"
-    },
-    {
-      "id_plantilla": 9,
-      "tipo": "cliente",
-      "nombre": "Clientes",
-      "descripcion": "Plantilla base para el perfil de cada cliente (accedido desde el carrusel).",
-      "activa": true,
-      "id_menu": [],
-      "id_modulos": [
-        1,
-        92,
-        18,
-        3
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          92
-        ],
-        [
-          18
-        ],
-        [
-          3
-        ]
-      ],
-      "creado_en": "2026-05-28T00:00:00.000Z",
-      "editado_en": "2026-06-24T16:54:02.601Z",
-      "fecha_fin": "2026-07-01T16:54:02.601Z",
-      "fecha_inicio": "2026-06-24T16:54:02.601Z"
-    },
-    {
-      "id_plantilla": 10,
-      "tipo": "btn-8",
-      "nombre": "Plantilla TEST",
-      "descripcion": "Página personalizada generada automáticamente para realizar pruebas.",
-      "activa": true,
-      "id_menu": [
-        8
-      ],
-      "id_modulos": [
-        1,
-        21,
-        24,
-        26,
-        27,
-        36,
-        3,
-        93,
-        7
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          21
-        ],
-        [
-          24
-        ],
-        [
-          26,
-          27
-        ],
-        [
-          36
-        ],
-        [
-          3
-        ],
-        [
-          93
-        ],
-        [
-          7
-        ]
-      ],
-      "creado_en": "2026-06-03T17:20:07.004Z",
-      "editado_en": "2026-06-24T12:24:01.637Z",
-      "fecha_inicio": "2026-06-03T17:40:40.173Z",
-      "fecha_fin": "2026-06-24T17:40:40.173Z"
-    },
-    {
-      "id_plantilla": 12,
-      "tipo": "btn-9",
-      "nombre": "Nosotros",
-      "descripcion": "Plantilla para hablar sobre nosotros",
-      "activa": true,
-      "id_menu": [
-        9
-      ],
-      "id_modulos": [
-        1,
-        45,
-        41,
-        235,
-        113,
-        251,
-        112,
-        252,
-        116,
-        114,
-        3
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          45
-        ],
-        [
-          41
-        ],
-        [
-          235
-        ],
-        [
-          113
-        ],
-        [
-          251
-        ],
-        [
-          112
-        ],
-        [
-          252
-        ],
-        [
-          116
-        ],
-        [
-          114
-        ],
-        [
-          3
-        ]
-      ],
-      "creado_en": "2026-06-05T17:20:07.004Z",
-      "editado_en": "2026-06-29T18:07:45.778Z",
-      "fecha_inicio": "2026-06-25T16:50:19.648Z",
-      "fecha_fin": "2026-07-02T16:50:19.648Z"
-    },
-    {
-      "id_plantilla": 14,
-      "tipo": "404",
-      "nombre": "404 — Página no encontrada",
-      "descripcion": "Página de error que se muestra en cualquier ruta inexistente.",
-      "activa": true,
-      "fecha_inicio": "2026-06-18T13:49:51.090Z",
-      "fecha_fin": null,
-      "id_menu": [],
-      "id_modulos": [
-        1,
-        59,
-        3
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          59
-        ],
-        [
-          3
-        ]
-      ],
-      "creado_en": "2026-06-18T13:49:51.090Z",
-      "editado_en": "2026-06-18T13:49:51.090Z"
-    },
-    {
-      "id_plantilla": 15,
-      "tipo": "contacto",
-      "nombre": "Contacto",
-      "descripcion": "Página de contacto: formulario, sede y ecosistema Zona i.",
-      "activa": true,
-      "id_menu": [],
-      "id_modulos": [
-        1,
-        43,
-        42,
-        253,
-        250,
-        3
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          43
-        ],
-        [
-          42
-        ],
-        [
-          253
-        ],
-        [
-          250
-        ],
-        [
-          3
-        ]
-      ],
-      "creado_en": "2026-06-29T16:47:20.480Z",
-      "editado_en": "2026-06-29T18:09:25.428Z",
-      "fecha_inicio": "2026-06-29T16:47:20.480Z",
-      "fecha_fin": "2027-06-29T16:47:20.480Z"
-    },
-    {
-      "id_plantilla": 16,
-      "tipo": "obras",
-      "nombre": "Obras / Casos de éxito",
-      "descripcion": "Casos de éxito: Renova, Telmex/Claro, Acueducto Norte, APE.",
-      "activa": true,
-      "id_menu": [
-        12
-      ],
-      "id_modulos": [
-        1,
-        260,
-        261,
-        266,
-        267,
-        268,
-        3
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          260
-        ],
-        [
-          261
-        ],
-        [
-          266
-        ],
-        [
-          267
-        ],
-        [
-          268
-        ],
-        [
-          3
-        ]
-      ],
-      "creado_en": "2026-06-29T16:47:20.480Z",
-      "editado_en": "2026-06-29T16:47:20.480Z",
-      "fecha_inicio": "2026-06-29T16:47:20.480Z",
-      "fecha_fin": "2027-06-29T16:47:20.480Z"
-    },
-    {
-      "id_plantilla": 17,
-      "tipo": "sectores",
-      "nombre": "Sectores",
-      "descripcion": "Soluciones por sector / industria.",
-      "activa": true,
-      "id_menu": [
-        13
-      ],
-      "id_modulos": [
-        1,
-        300,
-        301,
-        63,
-        3
-      ],
-      "contenedores": [
-        [
-          1
-        ],
-        [
-          300
-        ],
-        [
-          301
-        ],
-        [
-          63
-        ],
-        [
-          3
-        ]
-      ],
-      "creado_en": "2026-06-29T17:12:58.407Z",
-      "editado_en": "2026-06-29T17:12:58.407Z",
-      "fecha_inicio": "2026-06-29T17:12:58.407Z",
-      "fecha_fin": "2027-06-29T17:12:58.408Z"
-    },
-    {
-      "id_plantilla": 18,
-      "tipo": "pres",
-      "nombre": "PRES",
-      "descripcion": "Landing del producto propio PRES: módulos, beneficios y demo.",
-      "activa": true,
-      "id_menu": [
-        14
-      ],
-      "id_modulos": [
-        43,
-        1,
-        310,
-        311,
-        321,
-        328,
-        3
-      ],
-      "contenedores": [
-        [
-          43
-        ],
-        [
-          1
-        ],
-        [
-          310
-        ],
-        [
-          311
-        ],
-        [
-          321
-        ],
-        [
-          328
-        ],
-        [
-          3
-        ]
-      ],
-      "creado_en": "2026-06-29T17:12:58.407Z",
-      "editado_en": "2026-06-29T18:08:21.358Z",
-      "fecha_inicio": "2026-06-29T17:12:58.407Z",
-      "fecha_fin": "2027-06-29T17:12:58.408Z"
-    }
-  ]
+    "plantillas": [
+        {
+            "id_plantilla": 1,
+            "tipo": "index",
+            "nombre": "Inicio principal",
+            "descripcion": "Plantilla por defecto del home",
+            "activa": true,
+            "id_menu": [
+                1
+            ],
+            "id_modulos": [
+                1,
+                60,
+                43,
+                8,
+                7,
+                115,
+                5,
+                63,
+                93,
+                61,
+                250,
+                2
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    60
+                ],
+                [
+                    43
+                ],
+                [
+                    8
+                ],
+                [
+                    7
+                ],
+                [
+                    115
+                ],
+                [
+                    5
+                ],
+                [
+                    63
+                ],
+                [
+                    93
+                ],
+                [
+                    61
+                ],
+                [
+                    250
+                ],
+                [
+                    2
+                ]
+            ],
+            "creado_en": "2026-05-24T00:00:00.000Z",
+            "editado_en": "2026-07-23T17:49:54.488Z",
+            "fecha_inicio": "2026-07-23T17:49:23.567Z",
+            "fecha_fin": "2026-07-30T17:49:23.567Z"
+        },
+        {
+            "id_plantilla": 2,
+            "tipo": "blog",
+            "nombre": "Blog",
+            "descripcion": "Plantilla para el Blog",
+            "activa": true,
+            "id_menu": [
+                2
+            ],
+            "id_modulos": [
+                1,
+                9,
+                3
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    9
+                ],
+                [
+                    3
+                ]
+            ],
+            "creado_en": "2026-05-24T00:00:00.000Z",
+            "editado_en": "2026-07-23T17:49:24.046Z",
+            "fecha_inicio": "2026-07-23T17:49:24.046Z",
+            "fecha_fin": "2026-07-30T17:49:24.046Z"
+        },
+        {
+            "id_plantilla": 3,
+            "tipo": "articulo",
+            "nombre": "Artículo",
+            "descripcion": "Plantilla para los Artículos",
+            "activa": true,
+            "id_menu": [],
+            "id_modulos": [
+                1,
+                75,
+                11,
+                3
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    75
+                ],
+                [
+                    11
+                ],
+                [
+                    3
+                ]
+            ],
+            "creado_en": "2026-05-24T00:00:00.000Z",
+            "editado_en": "2026-07-23T17:49:24.631Z",
+            "fecha_inicio": "2026-07-23T17:49:24.631Z",
+            "fecha_fin": "2026-07-30T17:49:24.631Z"
+        },
+        {
+            "id_plantilla": 4,
+            "tipo": "cableado",
+            "nombre": "Cableado",
+            "descripcion": "Plantilla para el Cableado Estructurado",
+            "activa": true,
+            "id_menu": [
+                3
+            ],
+            "id_modulos": [
+                1,
+                12,
+                106,
+                107,
+                115,
+                78,
+                3
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    12
+                ],
+                [
+                    106
+                ],
+                [
+                    107
+                ],
+                [
+                    115
+                ],
+                [
+                    78
+                ],
+                [
+                    3
+                ]
+            ],
+            "creado_en": "2026-05-24T00:00:00.000Z",
+            "editado_en": "2026-07-23T17:49:25.102Z",
+            "fecha_inicio": "2026-07-23T17:49:25.102Z",
+            "fecha_fin": "2026-07-30T17:49:25.102Z"
+        },
+        {
+            "id_plantilla": 5,
+            "tipo": "fibra",
+            "nombre": "Fibra Óptica",
+            "descripcion": "Plantilla para la Fibra Óptica",
+            "activa": true,
+            "id_menu": [
+                4
+            ],
+            "id_modulos": [
+                1,
+                13,
+                180,
+                184,
+                190,
+                81,
+                3
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    13
+                ],
+                [
+                    180
+                ],
+                [
+                    184
+                ],
+                [
+                    190
+                ],
+                [
+                    81
+                ],
+                [
+                    3
+                ]
+            ],
+            "creado_en": "2026-05-24T00:00:00.000Z",
+            "editado_en": "2026-07-23T17:49:26.286Z",
+            "fecha_inicio": "2026-07-23T17:49:26.286Z",
+            "fecha_fin": "2026-07-30T17:49:26.286Z"
+        },
+        {
+            "id_plantilla": 6,
+            "tipo": "seguridad",
+            "nombre": "Seguridad",
+            "descripcion": "Plantilla para la Seguridad",
+            "activa": true,
+            "id_menu": [
+                5
+            ],
+            "id_modulos": [
+                1,
+                14,
+                200,
+                270,
+                205,
+                115,
+                210,
+                84,
+                3
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    14
+                ],
+                [
+                    200
+                ],
+                [
+                    270
+                ],
+                [
+                    205
+                ],
+                [
+                    115
+                ],
+                [
+                    210
+                ],
+                [
+                    84
+                ],
+                [
+                    3
+                ]
+            ],
+            "creado_en": "2026-05-24T00:00:00.000Z",
+            "editado_en": "2026-07-23T17:49:26.710Z",
+            "fecha_inicio": "2026-07-23T17:49:26.710Z",
+            "fecha_fin": "2026-07-30T17:49:26.710Z"
+        },
+        {
+            "id_plantilla": 7,
+            "tipo": "soporte",
+            "nombre": "Soporte soluciones tecnológicas",
+            "descripcion": "Plantilla para el Soporte soluciones tecnológicas",
+            "activa": true,
+            "id_menu": [
+                6
+            ],
+            "id_modulos": [
+                1,
+                37,
+                110,
+                275,
+                220,
+                225,
+                87,
+                3
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    37
+                ],
+                [
+                    110
+                ],
+                [
+                    275
+                ],
+                [
+                    220
+                ],
+                [
+                    225
+                ],
+                [
+                    87
+                ],
+                [
+                    3
+                ]
+            ],
+            "creado_en": "2026-05-24T00:00:00.000Z",
+            "editado_en": "2026-07-23T17:49:27.415Z",
+            "fecha_inicio": "2026-07-23T17:49:27.415Z",
+            "fecha_fin": "2026-07-30T17:49:27.415Z"
+        },
+        {
+            "id_plantilla": 8,
+            "tipo": "desarrollo",
+            "nombre": "Desarrollo",
+            "descripcion": "Plantilla para el Desarrollo de Software",
+            "activa": true,
+            "id_menu": [
+                7
+            ],
+            "id_modulos": [
+                1,
+                16,
+                111,
+                230,
+                90,
+                3
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    16
+                ],
+                [
+                    111
+                ],
+                [
+                    230
+                ],
+                [
+                    90
+                ],
+                [
+                    3
+                ]
+            ],
+            "creado_en": "2026-05-24T00:00:00.000Z",
+            "editado_en": "2026-07-23T17:49:28.031Z",
+            "fecha_inicio": "2026-07-23T17:49:28.031Z",
+            "fecha_fin": "2026-07-30T17:49:28.031Z"
+        },
+        {
+            "id_plantilla": 9,
+            "tipo": "cliente",
+            "nombre": "Clientes",
+            "descripcion": "Plantilla base para el perfil de cada cliente (accedido desde el carrusel).",
+            "activa": true,
+            "id_menu": [],
+            "id_modulos": [
+                1,
+                92,
+                18,
+                3
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    92
+                ],
+                [
+                    18
+                ],
+                [
+                    3
+                ]
+            ],
+            "creado_en": "2026-05-28T00:00:00.000Z",
+            "editado_en": "2026-07-23T17:49:28.863Z",
+            "fecha_fin": "2026-07-30T17:49:28.863Z",
+            "fecha_inicio": "2026-07-23T17:49:28.863Z"
+        },
+        {
+            "id_plantilla": 10,
+            "tipo": "btn-8",
+            "nombre": "Plantilla TEST",
+            "descripcion": "Página personalizada generada automáticamente para realizar pruebas.",
+            "activa": true,
+            "id_menu": [
+                8
+            ],
+            "id_modulos": [
+                1,
+                21,
+                24,
+                26,
+                27,
+                36,
+                3,
+                93,
+                7
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    21
+                ],
+                [
+                    24
+                ],
+                [
+                    26,
+                    27
+                ],
+                [
+                    36
+                ],
+                [
+                    3
+                ],
+                [
+                    93
+                ],
+                [
+                    7
+                ]
+            ],
+            "creado_en": "2026-06-03T17:20:07.004Z",
+            "editado_en": "2026-07-23T17:49:29.310Z",
+            "fecha_inicio": "2026-07-23T17:49:29.310Z",
+            "fecha_fin": "2026-07-30T17:49:29.310Z"
+        },
+        {
+            "id_plantilla": 12,
+            "tipo": "btn-9",
+            "nombre": "Nosotros",
+            "descripcion": "Plantilla para hablar sobre nosotros",
+            "activa": true,
+            "id_menu": [
+                9
+            ],
+            "id_modulos": [
+                1,
+                45,
+                41,
+                235,
+                113,
+                251,
+                112,
+                252,
+                116,
+                114,
+                3
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    45
+                ],
+                [
+                    41
+                ],
+                [
+                    235
+                ],
+                [
+                    113
+                ],
+                [
+                    251
+                ],
+                [
+                    112
+                ],
+                [
+                    252
+                ],
+                [
+                    116
+                ],
+                [
+                    114
+                ],
+                [
+                    3
+                ]
+            ],
+            "creado_en": "2026-06-05T17:20:07.004Z",
+            "editado_en": "2026-07-23T17:49:30.655Z",
+            "fecha_inicio": "2026-07-23T17:49:30.655Z",
+            "fecha_fin": "2026-07-30T17:49:30.655Z"
+        },
+        {
+            "id_plantilla": 14,
+            "tipo": "404",
+            "nombre": "404 — Página no encontrada",
+            "descripcion": "Página de error que se muestra en cualquier ruta inexistente.",
+            "activa": true,
+            "fecha_inicio": "2026-06-18T13:49:51.090Z",
+            "fecha_fin": null,
+            "id_menu": [],
+            "id_modulos": [
+                1,
+                59,
+                3
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    59
+                ],
+                [
+                    3
+                ]
+            ],
+            "creado_en": "2026-06-18T13:49:51.090Z",
+            "editado_en": "2026-06-18T13:49:51.090Z"
+        },
+        {
+            "id_plantilla": 15,
+            "tipo": "contacto",
+            "nombre": "Contacto",
+            "descripcion": "Página de contacto: formulario, sede y ecosistema Zona i.",
+            "activa": true,
+            "id_menu": [],
+            "id_modulos": [
+                1,
+                43,
+                42,
+                253,
+                250,
+                3
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    43
+                ],
+                [
+                    42
+                ],
+                [
+                    253
+                ],
+                [
+                    250
+                ],
+                [
+                    3
+                ]
+            ],
+            "creado_en": "2026-06-29T16:47:20.480Z",
+            "editado_en": "2026-06-29T18:09:25.428Z",
+            "fecha_inicio": "2026-06-29T16:47:20.480Z",
+            "fecha_fin": "2027-06-29T16:47:20.480Z"
+        },
+        {
+            "id_plantilla": 16,
+            "tipo": "obras",
+            "nombre": "Obras / Casos de éxito",
+            "descripcion": "Casos de éxito: Renova, Telmex/Claro, Acueducto Norte, APE.",
+            "activa": true,
+            "id_menu": [
+                12
+            ],
+            "id_modulos": [
+                1,
+                260,
+                261,
+                266,
+                267,
+                268,
+                3
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    260
+                ],
+                [
+                    261
+                ],
+                [
+                    266
+                ],
+                [
+                    267
+                ],
+                [
+                    268
+                ],
+                [
+                    3
+                ]
+            ],
+            "creado_en": "2026-06-29T16:47:20.480Z",
+            "editado_en": "2026-06-29T16:47:20.480Z",
+            "fecha_inicio": "2026-06-29T16:47:20.480Z",
+            "fecha_fin": "2027-06-29T16:47:20.480Z"
+        },
+        {
+            "id_plantilla": 17,
+            "tipo": "sectores",
+            "nombre": "Sectores",
+            "descripcion": "Soluciones por sector / industria.",
+            "activa": true,
+            "id_menu": [
+                13
+            ],
+            "id_modulos": [
+                1,
+                300,
+                301,
+                63,
+                3
+            ],
+            "contenedores": [
+                [
+                    1
+                ],
+                [
+                    300
+                ],
+                [
+                    301
+                ],
+                [
+                    63
+                ],
+                [
+                    3
+                ]
+            ],
+            "creado_en": "2026-06-29T17:12:58.407Z",
+            "editado_en": "2026-06-29T17:12:58.407Z",
+            "fecha_inicio": "2026-06-29T17:12:58.407Z",
+            "fecha_fin": "2027-06-29T17:12:58.408Z"
+        },
+        {
+            "id_plantilla": 18,
+            "tipo": "pres",
+            "nombre": "PRES",
+            "descripcion": "Landing del producto propio PRES: módulos, beneficios y demo.",
+            "activa": true,
+            "id_menu": [
+                14
+            ],
+            "id_modulos": [
+                43,
+                1,
+                310,
+                311,
+                321,
+                328,
+                3
+            ],
+            "contenedores": [
+                [
+                    43
+                ],
+                [
+                    1
+                ],
+                [
+                    310
+                ],
+                [
+                    311
+                ],
+                [
+                    321
+                ],
+                [
+                    328
+                ],
+                [
+                    3
+                ]
+            ],
+            "creado_en": "2026-06-29T17:12:58.407Z",
+            "editado_en": "2026-06-29T18:08:21.358Z",
+            "fecha_inicio": "2026-06-29T17:12:58.407Z",
+            "fecha_fin": "2027-06-29T17:12:58.408Z"
+        }
+    ]
 }

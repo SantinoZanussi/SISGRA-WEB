@@ -7,7 +7,7 @@ import { escAttr } from './asset-shared.js';
 
 const W = 1080, H = 1350;
 const LOGO_SRC = '/img/sisgra_blanco.png';
-const CATS_FALLBACK = ['Infraestructura', 'Fibra Óptica', 'Seguridad', 'Soporte IT'];
+const CATS_FALLBACK = ['Infraestructura', 'Fibra Óptica', 'Seguridad', 'Soporte soluciones tecnológicas'];
 
 const S = {
   mod: null,          // módulo en edición

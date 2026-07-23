@@ -19,7 +19,7 @@ const PANEL_NAMES = {
   'p-cableado':   'Cableado Estructurado',
   'p-fibra':      'Fibra Óptica',
   'p-seguridad':  'Seguridad Electrónica',
-  'p-soporte':    'Soporte IT',
+  'p-soporte':    'Soporte soluciones tecnológicas',
   'p-desarrollo': 'Desarrollo de Software',
   contacto:     'Datos de Contacto',
   seo:          'SEO & Meta',

@@ -56,7 +56,7 @@
     },
     {
       "id_menu": 6,
-      "titulo": "Soporte IT",
+      "titulo": "Soporte soluciones tecnológicas",
       "padre": 0,
       "menu": "CE",
       "href": "/html/soporte_it",

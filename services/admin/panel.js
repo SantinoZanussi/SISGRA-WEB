@@ -433,7 +433,7 @@ function renderSectionHTML(sec){
         <div style="background:#060e1c;padding:.75rem 2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;">
           <div style="font-family:monospace;font-weight:900;letter-spacing:.1em;color:#fff;font-size:.75rem;">SISGRA</div>
           <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
-            ${['Cableado Estructurado','Fibra Óptica','Seguridad Electrónica','Soporte IT','Software','Blog'].map(l=>`<span style="font-size:.45rem;color:rgba(255,255,255,.4);">${l}</span>`).join('')}
+            ${['Cableado Estructurado','Fibra Óptica','Seguridad Electrónica','Soporte soluciones tecnológicas','Software','Blog'].map(l=>`<span style="font-size:.45rem;color:rgba(255,255,255,.4);">${l}</span>`).join('')}
           </div>
           <div style="font-size:.45rem;color:rgba(255,255,255,.2);white-space:nowrap;">FB</div>
         </div>
@@ -1579,7 +1579,7 @@ async function retryRed(id, red){
 }
  
 // ---- Redes sociales: config de hashtags + link en bio (social.json) ----
-const SOCIAL_CATS_FALLBACK = ['Infraestructura','Fibra Óptica','Seguridad','Soporte IT'];
+const SOCIAL_CATS_FALLBACK = ['Infraestructura','Fibra Óptica','Seguridad','Soporte soluciones tecnológicas'];
 
 // escape mínimo para atributos (panel.js no es módulo, no tiene escAttr)
 function socEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -1798,7 +1798,7 @@ function heroJsonToSectionData(h){
 }
 
 // la clave seo de cada pagina es su tipo de plantilla, con index como home (ver buildSeoTabs)
-const SEO_LABELS = { home:'Inicio', blog:'Blog', articulo:'Artículo', cableado:'Cableado', fibra:'Fibra Óptica', seguridad:'Seguridad', soporte:'Soporte IT', desarrollo:'Desarrollo', cliente:'Clientes' };
+const SEO_LABELS = { home:'Inicio', blog:'Blog', articulo:'Artículo', cableado:'Cableado', fibra:'Fibra Óptica', seguridad:'Seguridad', soporte:'Soporte soluciones tecnológicas', desarrollo:'Desarrollo', cliente:'Clientes' };
 const SEO_ORDER  = ['home','cableado','fibra','seguridad','soporte','desarrollo','blog','articulo','cliente'];
 const seoKeyForTipo = (tipo) => tipo === 'index' ? 'home' : tipo;
 let SEO_PAGES = ['home'];   // se completa en buildSeoTabs() desde /plantillas

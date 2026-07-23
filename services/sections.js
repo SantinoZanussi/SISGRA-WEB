@@ -67,7 +67,7 @@ export const SECTIONS = {
           { titulo: 'Seguridad Electrónica', href: '/html/seguridad' },
         ] },
         { tipo: 'link', titulo: 'Blog',                   href: '/html/blog' },
-        { tipo: 'link', titulo: 'Soporte IT',             href: '/html/soporte_it' },
+        { tipo: 'link', titulo: 'Soporte soluciones tecnológicas',             href: '/html/soporte_it' },
         { tipo: 'link', titulo: 'Desarrollo de Software', href: '/html/desarrollo' },
       ],
     },
@@ -380,7 +380,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       titulo_seccion: 'Novedades & Blog',
       posts: [
         { titulo: 'Certificación Cat 8: el estándar que toda empresa necesita', extracto: 'Conocé por qué la Categoría 8 es la elección inteligente para infraestructuras de alta demanda de datos.', categoria: 'Novedades', imagen: '' },
-        { titulo: 'Cómo reducir el tiempo de inactividad con soporte IT proactivo', extracto: 'Estrategias comprobadas para mantener tu infraestructura funcionando con 99.9% de disponibilidad.', categoria: 'Soporte IT', imagen: '' },
+        { titulo: 'Cómo reducir el tiempo de inactividad con soporte soluciones tecnológicas proactivo', extracto: 'Estrategias comprobadas para mantener tu infraestructura funcionando con 99.9% de disponibilidad.', categoria: 'Soporte soluciones tecnológicas', imagen: '' },
         { titulo: 'Fibra Óptica FTTH: conectividad sin límites para tu empresa', extracto: 'Ventajas de implementar fibra óptica en instalaciones corporativas de gran escala en Argentina.', categoria: 'Instalaciones', imagen: '' },
       ],
     },
@@ -443,7 +443,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       eyebrow: 'Lo que hacemos',
       cards: [
         { id: 'instalaciones', icono: 'fa-server',  iconoColor: '', titulo: 'Instalaciones', descripcion: 'Cableado Cat 8, Fibra Óptica FTTH/FTTX y Seguridad Electrónica certificada bajo normas TIA/EIA para entornos corporativos exigentes.', linkText: 'Ver Detalles', enlace: '/html/cableado_estructurado', detalle: { titulo: '', descripcion: '', imagen: '' } },
-        { id: 'soporte',       icono: 'fa-headset', iconoColor: '', titulo: 'Soporte IT',    descripcion: 'Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.', linkText: 'Ver Detalles', enlace: '/html/soporte_it', detalle: { titulo: '', descripcion: '', imagen: '' } },
+        { id: 'soporte',       icono: 'fa-headset', iconoColor: '', titulo: 'Soporte soluciones tecnológicas',    descripcion: 'Mantenimiento integral de infraestructura tecnológica, asistencia técnica 24/7 y gestión proactiva para garantizar continuidad operativa.', linkText: 'Ver Detalles', enlace: '/html/soporte_it', detalle: { titulo: '', descripcion: '', imagen: '' } },
         { id: 'software',      icono: 'fa-code',    iconoColor: '', titulo: 'Desarrollo de Software', descripcion: 'Soluciones digitales a medida: sistemas de gestión logística, control de inventario y procesos empresariales integrados.', linkText: 'Ver Detalles', enlace: '/html/desarrollo', detalle: { titulo: '', descripcion: '', imagen: '' } },
       ],
     },
@@ -791,7 +791,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
         { label: 'Cableado Estructurado', href: '/html/cableado_estructurado' },
         { label: 'Fibra Óptica',          href: '/html/fibra_optica' },
         { label: 'Seguridad Electrónica', href: '/html/seguridad' },
-        { label: 'Soporte IT',            href: '/html/soporte_it' },
+        { label: 'Soporte soluciones tecnológicas',            href: '/html/soporte_it' },
         { label: 'Desarrollo de Software',href: '/html/desarrollo' },
         { label: 'Blog',                  href: '/html/blog' },
       ],
@@ -838,8 +838,10 @@ ${navCss ? `<style>${navCss}</style>` : ''}
       const paper  = s.textColor     || '#f8fafc';
       const fog    = s.mutedColor    || '#94a3b8';
       const wm     = s.wordmarkColor || '#0f1f35';
-      const servicios = (d.servicios || []).map((sv, i) =>
-        `<li><a href="${esc(sv.href)}">${fld('servicios.' + i + '.label', esc(sv.label))}</a></li>`).join('');
+      const servicios = (d.servicios || []).map((sv, i) => {
+        const nt = /\.pdf(\?|#|$)/i.test(sv.href || '') ? ' target="_blank" rel="noopener"' : '';
+        return `<li><a href="${esc(sv.href)}"${nt}>${fld('servicios.' + i + '.label', esc(sv.label))}</a></li>`;
+      }).join('');
       return `
 <style>
 .sgf-foot .sgf-wm{position:relative;z-index:1;border-bottom:1px solid var(--rule);padding:42px 1.5rem 30px;display:flex;align-items:flex-end;justify-content:space-between;gap:28px;flex-wrap:wrap;}
@@ -1193,7 +1195,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
   },
 
   'soporte-hero': {
-    label: 'Hero Soporte IT',
+    label: 'Hero Soporte soluciones tecnológicas',
     description: 'Hero soporte: texto izq + dashboard mockup der',
     icon: `<i class="fa-solid fa-table-columns"></i>`,
     validTipos: ['soporte'],
@@ -1295,7 +1297,7 @@ ${navCss ? `<style>${navCss}</style>` : ''}
               <div class="dash-subvalue ${d.dashStat2Highlight ? 'text-green' : ''}">${fld('dashStat2Value', esc(d.dashStat2Value))}</div>
             </div>
           </div>
-          <button class="btn-remote">${fld('btnRemote', esc(String(d.btnRemote ?? '').replace(/\s*🎧\s*$/,'')))} <i class="fa-solid fa-headset" aria-hidden="true"></i></button>
+          ${String(d.btnRemote ?? '').trim() ? `<button class="btn-remote">${fld('btnRemote', esc(String(d.btnRemote).replace(/\s*🎧\s*$/,'')))} <i class="fa-solid fa-headset" aria-hidden="true"></i></button>` : ''}
         </div>
       </div>
       <div class="dash-decor"></div>
@@ -1759,7 +1761,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
         { label: 'Cableado Estructurado', href: '/html/cableado_estructurado' },
         { label: 'Fibra Óptica',          href: '/html/fibra_optica' },
         { label: 'Seguridad Electrónica', href: '/html/seguridad' },
-        { label: 'Soporte IT',            href: '/html/soporte_it' },
+        { label: 'Soporte soluciones tecnológicas',            href: '/html/soporte_it' },
         { label: 'Desarrollo de Software',href: '/html/desarrollo' },
         { label: 'Blog',                  href: '/html/blog' },
       ],
@@ -1814,7 +1816,7 @@ ${blCss ? `<style>${blCss}</style>` : ''}
     <div class="footer-col">
       <div class="col-label"${css({ color: s.colLabelColor })}>${fld('col1Label', esc(d.col1Label))}</div>
       <ul class="services-list">
-        ${(d.servicios||[]).map((sv, i) => `<li><a href="${esc(sv.href)}"${css({ color: s.linkColor })}>${fld('servicios.'+i+'.label', esc(sv.label))}</a></li>`).join('')}
+        ${(d.servicios||[]).map((sv, i) => `<li><a href="${esc(sv.href)}"${/\.pdf(\?|#|$)/i.test(sv.href||'') ? ' target="_blank" rel="noopener"' : ''}${css({ color: s.linkColor })}>${fld('servicios.'+i+'.label', esc(sv.label))}</a></li>`).join('')}
       </ul>
     </div>
     <div class="footer-col">

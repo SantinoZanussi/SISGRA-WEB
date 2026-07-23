@@ -1,431 +1,446 @@
 {
-  "assets": [
-    {
-      "id": "img-c607bbce-3246-452a-a95b-95a5be8b7e9a",
-      "nombre": "chatgptfoto",
-      "filename": "chatgptfoto.png",
-      "path": "/img/chatgptfoto.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 1619041,
-      "origen": "existente",
-      "creado_en": "2026-06-01T01:15:25.896Z",
-      "editado_en": "2026-06-25T18:42:47.109Z",
-      "etiquetas": []
-    },
-    {
-      "id": "img-b14249d2-ea50-4dda-bf36-6bc8f695e648",
-      "nombre": "sancristobal",
-      "filename": "clients/fondo/sancristobal.png",
-      "path": "/img/clients/fondo/sancristobal.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 19811,
-      "origen": "existente",
-      "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-29T16:36:46.906Z",
-      "etiquetas": [
-        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
-      ]
-    },
-    {
-      "id": "img-a7da701d-ab34-4d4a-8bdc-43e4744df1eb",
-      "nombre": "syngenta",
-      "filename": "clients/fondo/syngenta.png",
-      "path": "/img/clients/fondo/syngenta.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 4738,
-      "origen": "existente",
-      "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-29T16:36:48.960Z",
-      "etiquetas": [
-        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
-      ]
-    },
-    {
-      "id": "img-8777908f-b433-481c-9cbe-91a613153c43",
-      "nombre": "sancristobal",
-      "filename": "clients/sancristobal.png",
-      "path": "/img/clients/sancristobal.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 86671,
-      "origen": "existente",
-      "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-29T16:36:51.042Z",
-      "etiquetas": [
-        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
-      ]
-    },
-    {
-      "id": "img-e25fa458-964f-4c3f-a8c1-8c6fc62a6569",
-      "nombre": "syngenta",
-      "filename": "clients/syngenta.png",
-      "path": "/img/clients/syngenta.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 40908,
-      "origen": "existente",
-      "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-29T16:36:53.808Z",
-      "etiquetas": [
-        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
-      ]
-    },
-    {
-      "id": "img-642137ab-45c3-49f5-a1c8-9d8e754e7d9b",
-      "nombre": "fondoinicio",
-      "filename": "fondoinicio.png",
-      "path": "/img/fondoinicio.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 2162810,
-      "origen": "existente",
-      "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-29T16:35:42.194Z",
-      "etiquetas": [
-        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
-      ]
-    },
-    {
-      "id": "img-ba785df8-ef75-4aac-9582-8f188066ddb4",
-      "nombre": "img1",
-      "filename": "img1.png",
-      "path": "/img/img1.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 2394030,
-      "origen": "existente",
-      "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-29T16:35:44.938Z",
-      "etiquetas": [
-        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
-      ]
-    },
-    {
-      "id": "img-0de96d78-40cc-44c7-bb19-3a6dac1aa219",
-      "nombre": "sdesigra",
-      "filename": "sdesigra.png",
-      "path": "/img/sdesigra.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 1295,
-      "origen": "existente",
-      "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-01T01:15:25.897Z"
-    },
-    {
-      "id": "img-0e279b5c-5f4f-4aab-8d1f-8f4d1f9344cd",
-      "nombre": "seguridadelectronica",
-      "filename": "seguridadelectronica.png",
-      "path": "/img/seguridadelectronica.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 1926428,
-      "origen": "existente",
-      "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-29T16:35:48.937Z",
-      "etiquetas": [
-        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
-      ]
-    },
-    {
-      "id": "img-a939ed7d-289b-42af-b424-df8c8cc0a670",
-      "nombre": "sisgra azul",
-      "filename": "sisgra_azul.png",
-      "path": "/img/sisgra_azul.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 14696,
-      "origen": "existente",
-      "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-01T01:15:25.897Z"
-    },
-    {
-      "id": "img-3210640c-1f43-416f-9e71-542ffa4a40ca",
-      "nombre": "sisgra blanco",
-      "filename": "sisgra_blanco.png",
-      "path": "/img/sisgra_blanco.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 8688,
-      "origen": "existente",
-      "creado_en": "2026-06-01T01:15:25.897Z",
-      "editado_en": "2026-06-01T23:20:34.394Z",
-      "etiquetas": []
-    },
-    {
-      "id": "img-40c8cb3a-ef64-4030-9d0a-447329175cdd",
-      "nombre": "camaras_seguridad",
-      "filename": "camaras-seguridad.png",
-      "path": "/img/camaras-seguridad.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 2071305,
-      "origen": "subida",
-      "etiquetas": [
-        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
-      ],
-      "creado_en": "2026-06-20T22:48:08.080Z",
-      "editado_en": "2026-06-29T16:35:31.226Z"
-    },
-    {
-      "id": "img-c66eea3e-718b-49dc-a6a9-db64eaf0b112",
-      "nombre": "empalme_fibraoptica",
-      "filename": "empalme-fibraoptica.png",
-      "path": "/img/empalme-fibraoptica.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 2071733,
-      "origen": "subida",
-      "etiquetas": [
-        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
-      ],
-      "creado_en": "2026-06-20T22:48:08.091Z",
-      "editado_en": "2026-06-29T16:35:28.977Z"
-    },
-    {
-      "id": "img-35a3ef0f-fe17-4048-ac53-a77982b85cf3",
-      "nombre": "servidores_soporteit",
-      "filename": "servidores-soporteit.png",
-      "path": "/img/servidores-soporteit.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 1891470,
-      "origen": "subida",
-      "etiquetas": [
-        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
-      ],
-      "creado_en": "2026-06-20T22:48:08.099Z",
-      "editado_en": "2026-06-29T16:35:31.650Z"
-    },
-    {
-      "id": "img-963dcac8-8aee-406f-b63f-eab2928a1d5f",
-      "nombre": "programacion",
-      "filename": "programacion.png",
-      "path": "/img/programacion.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 1667983,
-      "origen": "subida",
-      "etiquetas": [
-        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
-      ],
-      "creado_en": "2026-06-24T17:07:36.871Z",
-      "editado_en": "2026-06-29T16:35:35.040Z"
-    },
-    {
-      "id": "img-6f4707c0-5ed6-40e6-a067-ee38e8e10515",
-      "nombre": "cámaras",
-      "filename": "camaras.png",
-      "path": "/img/camaras.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 2027780,
-      "origen": "subida",
-      "etiquetas": [
-        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
-      ],
-      "creado_en": "2026-06-24T17:11:57.290Z",
-      "editado_en": "2026-06-29T16:35:18.858Z"
-    },
-    {
-      "id": "img-56686d0f-a574-4255-8ec2-51ffd024aeff",
-      "nombre": "medición",
-      "filename": "medicion.png",
-      "path": "/img/medicion.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 1959886,
-      "origen": "subida",
-      "etiquetas": [
-        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
-      ],
-      "creado_en": "2026-06-24T17:15:28.539Z",
-      "editado_en": "2026-06-29T16:35:14.040Z"
-    },
-    {
-      "id": "img-c02f6b17-a161-4304-91bb-e951f86654e7",
-      "nombre": "instalación",
-      "filename": "instalacion.png",
-      "path": "/img/instalacion.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 2144404,
-      "origen": "subida",
-      "etiquetas": [
-        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
-      ],
-      "creado_en": "2026-06-24T17:25:38.112Z",
-      "editado_en": "2026-06-29T16:35:16.531Z"
-    },
-    {
-      "id": "img-10343b25-70ce-49d1-8d68-13e7d097333e",
-      "nombre": "soporte",
-      "filename": "soporte.png",
-      "path": "/img/soporte.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 2060431,
-      "origen": "subida",
-      "etiquetas": [
-        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
-      ],
-      "creado_en": "2026-06-24T17:40:33.740Z",
-      "editado_en": "2026-06-29T16:35:57.232Z"
-    },
-    {
-      "id": "img-97dbc28d-d0a9-4944-b5f9-54b13bc7845e",
-      "nombre": "logo-ape",
-      "filename": "logo-ape.jpg",
-      "path": "/img/logo-ape.jpg",
-      "locked": true,
-      "mime": "image/jpeg",
-      "size": 17018,
-      "origen": "subida",
-      "etiquetas": [
-        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
-      ],
-      "creado_en": "2026-06-25T16:47:29.093Z",
-      "editado_en": "2026-06-29T16:36:42.098Z"
-    },
-    {
-      "id": "img-a5f48cc9-cdaf-4132-84c3-93bcb7f43e21",
-      "nombre": "Renova-removebg-preview",
-      "filename": "renova-removebg-preview.png",
-      "path": "/img/renova-removebg-preview.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 85966,
-      "origen": "subida",
-      "etiquetas": [
-        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
-      ],
-      "creado_en": "2026-06-25T16:58:15.725Z",
-      "editado_en": "2026-06-29T16:36:39.634Z"
-    },
-    {
-      "id": "img-3ad18e68-3921-4679-ab4c-6e43adb40be7",
-      "nombre": "telmex-removebg-preview",
-      "filename": "telmex-removebg-preview.png",
-      "path": "/img/telmex-removebg-preview.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 109934,
-      "origen": "subida",
-      "etiquetas": [
-        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
-      ],
-      "creado_en": "2026-06-25T16:58:15.733Z",
-      "editado_en": "2026-06-29T16:36:35.377Z"
-    },
-    {
-      "id": "img-1c099d09-91b7-44f2-9d03-6945f9275b29",
-      "nombre": "marca-fondo-blanco-2024-removebg-preview (1)",
-      "filename": "marca-fondo-blanco-2024-removebg-preview-1.png",
-      "path": "/img/marca-fondo-blanco-2024-removebg-preview-1.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 106807,
-      "origen": "subida",
-      "etiquetas": [
-        "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
-      ],
-      "creado_en": "2026-06-25T16:59:38.794Z",
-      "editado_en": "2026-06-29T16:36:33.193Z"
-    },
-    {
-      "id": "img-f29fb2ba-ccaa-4d2f-8a6f-33071a848132",
-      "nombre": "sisgra_nosotros",
-      "filename": "sisgra-nosotros.png",
-      "path": "/img/sisgra-nosotros.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 1890059,
-      "origen": "subida",
-      "etiquetas": [
-        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
-      ],
-      "creado_en": "2026-06-25T17:10:50.872Z",
-      "editado_en": "2026-06-29T16:35:10.388Z"
-    },
-    {
-      "id": "img-b323d613-4533-44f8-ad92-9e7f7659bbaa",
-      "nombre": "nosotros",
-      "filename": "nosotros.png",
-      "path": "/img/nosotros.png",
-      "locked": true,
-      "mime": "image/png",
-      "size": 1966225,
-      "origen": "subida",
-      "etiquetas": [
-        "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
-      ],
-      "creado_en": "2026-06-25T17:26:55.766Z",
-      "editado_en": "2026-06-29T16:35:06.986Z"
-    }
-  ],
-  "labels": [
-    {
-      "id": "lbl-0db5df12-da86-44b5-8fcd-e587e0f27a7b",
-      "nombre": "Rojo",
-      "color": "#ef4444",
-      "grupo": "color"
-    },
-    {
-      "id": "lbl-d5dcaeb9-e97d-4bc6-8168-ed6e5fb01f8f",
-      "nombre": "Naranja",
-      "color": "#f97316",
-      "grupo": "color"
-    },
-    {
-      "id": "lbl-51ed47b4-355a-446a-b736-9d6d30197d92",
-      "nombre": "Amarillo",
-      "color": "#eab308",
-      "grupo": "color"
-    },
-    {
-      "id": "lbl-abbdd095-f3e1-4323-aa01-fb8653bdc9df",
-      "nombre": "Verde",
-      "color": "#22c55e",
-      "grupo": "color"
-    },
-    {
-      "id": "lbl-4450ec2d-836e-4c6f-842f-67ea9f9e05fe",
-      "nombre": "Azul",
-      "color": "#3b82f6",
-      "grupo": "color"
-    },
-    {
-      "id": "lbl-e0303a1c-ab65-420b-ab2b-32748b2613f8",
-      "nombre": "Violeta",
-      "color": "#8b5cf6",
-      "grupo": "color"
-    },
-    {
-      "id": "lbl-4652751b-4b94-46c6-828b-6e032e9d56bd",
-      "nombre": "Rosa",
-      "color": "#ec4899",
-      "grupo": "color"
-    },
-    {
-      "id": "lbl-71b4126f-da74-4d89-b443-e16900adc888",
-      "nombre": "Gris",
-      "color": "#64748b",
-      "grupo": "color"
-    },
-    {
-      "id": "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a",
-      "nombre": "Contenido",
-      "color": "#d11cd4",
-      "grupo": "modulo"
-    },
-    {
-      "id": "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04",
-      "nombre": "Clientes",
-      "color": "#0062ff",
-      "grupo": "modulo"
-    }
-  ]
+    "assets": [
+        {
+            "id": "img-c607bbce-3246-452a-a95b-95a5be8b7e9a",
+            "nombre": "chatgptfoto",
+            "filename": "chatgptfoto.png",
+            "path": "/img/chatgptfoto.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 1619041,
+            "origen": "existente",
+            "creado_en": "2026-06-01T01:15:25.896Z",
+            "editado_en": "2026-06-25T18:42:47.109Z",
+            "etiquetas": []
+        },
+        {
+            "id": "img-b14249d2-ea50-4dda-bf36-6bc8f695e648",
+            "nombre": "sancristobal",
+            "filename": "clients/fondo/sancristobal.png",
+            "path": "/img/clients/fondo/sancristobal.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 19811,
+            "origen": "existente",
+            "creado_en": "2026-06-01T01:15:25.897Z",
+            "editado_en": "2026-06-29T16:36:46.906Z",
+            "etiquetas": [
+                "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
+            ]
+        },
+        {
+            "id": "img-a7da701d-ab34-4d4a-8bdc-43e4744df1eb",
+            "nombre": "syngenta",
+            "filename": "clients/fondo/syngenta.png",
+            "path": "/img/clients/fondo/syngenta.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 4738,
+            "origen": "existente",
+            "creado_en": "2026-06-01T01:15:25.897Z",
+            "editado_en": "2026-06-29T16:36:48.960Z",
+            "etiquetas": [
+                "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
+            ]
+        },
+        {
+            "id": "img-8777908f-b433-481c-9cbe-91a613153c43",
+            "nombre": "sancristobal",
+            "filename": "clients/sancristobal.png",
+            "path": "/img/clients/sancristobal.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 86671,
+            "origen": "existente",
+            "creado_en": "2026-06-01T01:15:25.897Z",
+            "editado_en": "2026-06-29T16:36:51.042Z",
+            "etiquetas": [
+                "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
+            ]
+        },
+        {
+            "id": "img-e25fa458-964f-4c3f-a8c1-8c6fc62a6569",
+            "nombre": "syngenta",
+            "filename": "clients/syngenta.png",
+            "path": "/img/clients/syngenta.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 40908,
+            "origen": "existente",
+            "creado_en": "2026-06-01T01:15:25.897Z",
+            "editado_en": "2026-06-29T16:36:53.808Z",
+            "etiquetas": [
+                "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
+            ]
+        },
+        {
+            "id": "img-642137ab-45c3-49f5-a1c8-9d8e754e7d9b",
+            "nombre": "fondoinicio",
+            "filename": "fondoinicio.png",
+            "path": "/img/fondoinicio.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 2162810,
+            "origen": "existente",
+            "creado_en": "2026-06-01T01:15:25.897Z",
+            "editado_en": "2026-06-29T16:35:42.194Z",
+            "etiquetas": [
+                "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
+            ]
+        },
+        {
+            "id": "img-ba785df8-ef75-4aac-9582-8f188066ddb4",
+            "nombre": "img1",
+            "filename": "img1.png",
+            "path": "/img/img1.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 2394030,
+            "origen": "existente",
+            "creado_en": "2026-06-01T01:15:25.897Z",
+            "editado_en": "2026-06-29T16:35:44.938Z",
+            "etiquetas": [
+                "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
+            ]
+        },
+        {
+            "id": "img-0de96d78-40cc-44c7-bb19-3a6dac1aa219",
+            "nombre": "sdesigra",
+            "filename": "sdesigra.png",
+            "path": "/img/sdesigra.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 1295,
+            "origen": "existente",
+            "creado_en": "2026-06-01T01:15:25.897Z",
+            "editado_en": "2026-06-01T01:15:25.897Z"
+        },
+        {
+            "id": "img-0e279b5c-5f4f-4aab-8d1f-8f4d1f9344cd",
+            "nombre": "seguridadelectronica",
+            "filename": "seguridadelectronica.png",
+            "path": "/img/seguridadelectronica.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 1926428,
+            "origen": "existente",
+            "creado_en": "2026-06-01T01:15:25.897Z",
+            "editado_en": "2026-06-29T16:35:48.937Z",
+            "etiquetas": [
+                "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
+            ]
+        },
+        {
+            "id": "img-a939ed7d-289b-42af-b424-df8c8cc0a670",
+            "nombre": "sisgra azul",
+            "filename": "sisgra_azul.png",
+            "path": "/img/sisgra_azul.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 14696,
+            "origen": "existente",
+            "creado_en": "2026-06-01T01:15:25.897Z",
+            "editado_en": "2026-06-01T01:15:25.897Z"
+        },
+        {
+            "id": "img-3210640c-1f43-416f-9e71-542ffa4a40ca",
+            "nombre": "sisgra blanco",
+            "filename": "sisgra_blanco.png",
+            "path": "/img/sisgra_blanco.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 8688,
+            "origen": "existente",
+            "creado_en": "2026-06-01T01:15:25.897Z",
+            "editado_en": "2026-06-01T23:20:34.394Z",
+            "etiquetas": []
+        },
+        {
+            "id": "img-40c8cb3a-ef64-4030-9d0a-447329175cdd",
+            "nombre": "camaras_seguridad",
+            "filename": "camaras-seguridad.png",
+            "path": "/img/camaras-seguridad.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 2071305,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
+            ],
+            "creado_en": "2026-06-20T22:48:08.080Z",
+            "editado_en": "2026-06-29T16:35:31.226Z"
+        },
+        {
+            "id": "img-c66eea3e-718b-49dc-a6a9-db64eaf0b112",
+            "nombre": "empalme_fibraoptica",
+            "filename": "empalme-fibraoptica.png",
+            "path": "/img/empalme-fibraoptica.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 2071733,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
+            ],
+            "creado_en": "2026-06-20T22:48:08.091Z",
+            "editado_en": "2026-06-29T16:35:28.977Z"
+        },
+        {
+            "id": "img-35a3ef0f-fe17-4048-ac53-a77982b85cf3",
+            "nombre": "servidores_soporteit",
+            "filename": "servidores-soporteit.png",
+            "path": "/img/servidores-soporteit.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 1891470,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
+            ],
+            "creado_en": "2026-06-20T22:48:08.099Z",
+            "editado_en": "2026-06-29T16:35:31.650Z"
+        },
+        {
+            "id": "img-963dcac8-8aee-406f-b63f-eab2928a1d5f",
+            "nombre": "programacion",
+            "filename": "programacion.png",
+            "path": "/img/programacion.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 1667983,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
+            ],
+            "creado_en": "2026-06-24T17:07:36.871Z",
+            "editado_en": "2026-06-29T16:35:35.040Z"
+        },
+        {
+            "id": "img-6f4707c0-5ed6-40e6-a067-ee38e8e10515",
+            "nombre": "cámaras",
+            "filename": "camaras.png",
+            "path": "/img/camaras.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 2027780,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
+            ],
+            "creado_en": "2026-06-24T17:11:57.290Z",
+            "editado_en": "2026-06-29T16:35:18.858Z"
+        },
+        {
+            "id": "img-56686d0f-a574-4255-8ec2-51ffd024aeff",
+            "nombre": "medición",
+            "filename": "medicion.png",
+            "path": "/img/medicion.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 1959886,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
+            ],
+            "creado_en": "2026-06-24T17:15:28.539Z",
+            "editado_en": "2026-06-29T16:35:14.040Z"
+        },
+        {
+            "id": "img-c02f6b17-a161-4304-91bb-e951f86654e7",
+            "nombre": "instalación",
+            "filename": "instalacion.png",
+            "path": "/img/instalacion.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 2144404,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
+            ],
+            "creado_en": "2026-06-24T17:25:38.112Z",
+            "editado_en": "2026-06-29T16:35:16.531Z"
+        },
+        {
+            "id": "img-10343b25-70ce-49d1-8d68-13e7d097333e",
+            "nombre": "soporte",
+            "filename": "soporte.png",
+            "path": "/img/soporte.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 2060431,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
+            ],
+            "creado_en": "2026-06-24T17:40:33.740Z",
+            "editado_en": "2026-06-29T16:35:57.232Z"
+        },
+        {
+            "id": "img-97dbc28d-d0a9-4944-b5f9-54b13bc7845e",
+            "nombre": "logo-ape",
+            "filename": "logo-ape.jpg",
+            "path": "/img/logo-ape.jpg",
+            "locked": true,
+            "mime": "image/jpeg",
+            "size": 17018,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
+            ],
+            "creado_en": "2026-06-25T16:47:29.093Z",
+            "editado_en": "2026-06-29T16:36:42.098Z"
+        },
+        {
+            "id": "img-a5f48cc9-cdaf-4132-84c3-93bcb7f43e21",
+            "nombre": "Renova-removebg-preview",
+            "filename": "renova-removebg-preview.png",
+            "path": "/img/renova-removebg-preview.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 85966,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
+            ],
+            "creado_en": "2026-06-25T16:58:15.725Z",
+            "editado_en": "2026-06-29T16:36:39.634Z"
+        },
+        {
+            "id": "img-3ad18e68-3921-4679-ab4c-6e43adb40be7",
+            "nombre": "telmex-removebg-preview",
+            "filename": "telmex-removebg-preview.png",
+            "path": "/img/telmex-removebg-preview.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 109934,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
+            ],
+            "creado_en": "2026-06-25T16:58:15.733Z",
+            "editado_en": "2026-06-29T16:36:35.377Z"
+        },
+        {
+            "id": "img-1c099d09-91b7-44f2-9d03-6945f9275b29",
+            "nombre": "marca-fondo-blanco-2024-removebg-preview (1)",
+            "filename": "marca-fondo-blanco-2024-removebg-preview-1.png",
+            "path": "/img/marca-fondo-blanco-2024-removebg-preview-1.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 106807,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04"
+            ],
+            "creado_en": "2026-06-25T16:59:38.794Z",
+            "editado_en": "2026-06-29T16:36:33.193Z"
+        },
+        {
+            "id": "img-f29fb2ba-ccaa-4d2f-8a6f-33071a848132",
+            "nombre": "sisgra_nosotros",
+            "filename": "sisgra-nosotros.png",
+            "path": "/img/sisgra-nosotros.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 1890059,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
+            ],
+            "creado_en": "2026-06-25T17:10:50.872Z",
+            "editado_en": "2026-06-29T16:35:10.388Z"
+        },
+        {
+            "id": "img-b323d613-4533-44f8-ad92-9e7f7659bbaa",
+            "nombre": "nosotros",
+            "filename": "nosotros.png",
+            "path": "/img/nosotros.png",
+            "locked": true,
+            "mime": "image/png",
+            "size": 1966225,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
+            ],
+            "creado_en": "2026-06-25T17:26:55.766Z",
+            "editado_en": "2026-06-29T16:35:06.986Z"
+        },
+        {
+            "id": "img-4e6aad65-8b43-4c3e-a372-3ee38626a08a",
+            "nombre": "sisgra_nosotros2",
+            "filename": "sisgra-nosotros2.jpg",
+            "path": "/img/sisgra-nosotros2.jpg",
+            "locked": true,
+            "mime": "image/jpeg",
+            "size": 151440,
+            "origen": "subida",
+            "etiquetas": [
+                "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a"
+            ],
+            "creado_en": "2026-07-23T17:47:27.542Z",
+            "editado_en": "2026-07-23T17:51:53.168Z"
+        }
+    ],
+    "labels": [
+        {
+            "id": "lbl-0db5df12-da86-44b5-8fcd-e587e0f27a7b",
+            "nombre": "Rojo",
+            "color": "#ef4444",
+            "grupo": "color"
+        },
+        {
+            "id": "lbl-d5dcaeb9-e97d-4bc6-8168-ed6e5fb01f8f",
+            "nombre": "Naranja",
+            "color": "#f97316",
+            "grupo": "color"
+        },
+        {
+            "id": "lbl-51ed47b4-355a-446a-b736-9d6d30197d92",
+            "nombre": "Amarillo",
+            "color": "#eab308",
+            "grupo": "color"
+        },
+        {
+            "id": "lbl-abbdd095-f3e1-4323-aa01-fb8653bdc9df",
+            "nombre": "Verde",
+            "color": "#22c55e",
+            "grupo": "color"
+        },
+        {
+            "id": "lbl-4450ec2d-836e-4c6f-842f-67ea9f9e05fe",
+            "nombre": "Azul",
+            "color": "#3b82f6",
+            "grupo": "color"
+        },
+        {
+            "id": "lbl-e0303a1c-ab65-420b-ab2b-32748b2613f8",
+            "nombre": "Violeta",
+            "color": "#8b5cf6",
+            "grupo": "color"
+        },
+        {
+            "id": "lbl-4652751b-4b94-46c6-828b-6e032e9d56bd",
+            "nombre": "Rosa",
+            "color": "#ec4899",
+            "grupo": "color"
+        },
+        {
+            "id": "lbl-71b4126f-da74-4d89-b443-e16900adc888",
+            "nombre": "Gris",
+            "color": "#64748b",
+            "grupo": "color"
+        },
+        {
+            "id": "lbl-f9535ab6-8e86-4637-9555-b085bc253d2a",
+            "nombre": "Contenido",
+            "color": "#d11cd4",
+            "grupo": "modulo"
+        },
+        {
+            "id": "lbl-e769d766-af42-45f0-8e2b-e2779e5eee04",
+            "nombre": "Clientes",
+            "color": "#0062ff",
+            "grupo": "modulo"
+        }
+    ]
 }
