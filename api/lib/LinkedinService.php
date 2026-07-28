@@ -185,7 +185,11 @@ class LinkedinService {
         if ($sitio) {
             $partes[] = 'Nota completa: ' . rtrim($sitio, '/') . '/html/articulo/?id=' . rawurlencode(field($contenido, 'id', ''));
         }
-        if ($tags) $partes[] = implode(' ', array_values(array_unique($tags)));
+        if ($tags) {
+            $tags = array_values(array_unique($tags));
+            if (count($tags) > 30) $tags = array_slice($tags, 0, 30); // mismo tope que IG, por prolijidad
+            $partes[] = implode(' ', $tags);
+        }
         return implode("\n\n", $partes);
     }
 

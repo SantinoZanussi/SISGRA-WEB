@@ -5,7 +5,7 @@
 putenv('META_APP_ID=');       // App ID de la app de Meta
 putenv('META_APP_SECRET=');   // App Secret (NUNCA se commitea)
 putenv('META_PAGE_ID=');      // opcional: ID de la Página de FB a usar (si no, la primera)
-// putenv('META_REDIRECT_URI=https://tu-dominio.com/api/social/callback'); // opcional
+putenv('META_REDIRECT_URI=https://tu-dominio.com/api/social/callback'); // opcional
 // putenv('META_GRAPH_VER=v21.0'); // opcional
 
 // --- LinkedIn ---

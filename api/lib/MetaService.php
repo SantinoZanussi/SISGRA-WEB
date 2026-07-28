@@ -46,7 +46,15 @@ class MetaService {
         if ($res === false) throw new Exception('Error de red con Meta: ' . $err);
         $json = json_decode($res, true);
         if (!is_array($json)) throw new Exception('Respuesta inválida de Meta (HTTP ' . $code . ')');
-        if (isset($json['error'])) throw new Exception('Meta: ' . ($json['error']['message'] ?? 'error desconocido'));
+        if (isset($json['error'])) {
+            $e = $json['error'];
+            // el mensaje "para el usuario" suele explicar el motivo real (aspecto de la imagen, etc.);
+            // el genérico "Invalid parameter" solo no alcanza para diagnosticar
+            $msg = !empty($e['error_user_msg']) ? $e['error_user_msg'] : ($e['message'] ?? 'error desconocido');
+            if (!empty($e['error_user_title']) && !empty($e['error_user_msg'])) $msg = $e['error_user_title'] . ': ' . $e['error_user_msg'];
+            if (isset($e['error_subcode'])) $msg .= ' [subcode ' . $e['error_subcode'] . ']';
+            throw new Exception('Meta: ' . $msg);
+        }
         return $json;
     }
     private static function httpGet($url)          { return self::exec($url, null); }
@@ -129,7 +137,11 @@ class MetaService {
         } else { // ig: el link del caption no es clickeable -> se apunta al link en bio
             if (field($cfg, 'link_bio', '')) $partes[] = 'Nota completa en el link de nuestra bio 👆';
         }
-        if ($tags) $partes[] = implode(' ', array_values(array_unique($tags)));
+        if ($tags) {
+            $tags = array_values(array_unique($tags));
+            if (count($tags) > 30) $tags = array_slice($tags, 0, 30); // Instagram no acepta más de 30 hashtags
+            $partes[] = implode(' ', $tags);
+        }
 
         return implode("\n\n", $partes);
     }

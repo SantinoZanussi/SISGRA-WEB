@@ -147,7 +147,20 @@ function computeHashtags() {
 
 function refreshHashtagsPreview() {
   const box = document.getElementById('se-htag-preview');
-  if (box) box.textContent = computeHashtags().join(' ') || '—';
+  if (!box) return;
+  const tags = computeHashtags();
+  box.textContent = tags.join(' ') || '—';
+
+  // contador: Instagram no acepta más de 30 hashtags por publicación
+  let cnt = document.getElementById('se-htag-count');
+  if (!cnt) {
+    cnt = document.createElement('span');
+    cnt.id = 'se-htag-count';
+    box.parentElement?.appendChild(cnt);
+  }
+  const n = tags.length, over = n > 30;
+  cnt.textContent = ` (${n}/30${over ? ' — IG usará solo los primeros 30' : ''})`;
+  cnt.style.cssText = 'font-size:.72rem;font-weight:700;margin-left:.35rem;color:' + (over ? '#dc2626' : '#94a3b8') + ';';
 }
 
 function renderHashtagGrupos(selectedKeys) {
