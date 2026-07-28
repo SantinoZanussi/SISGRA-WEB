@@ -1468,15 +1468,15 @@ async function saveBlogPost(){
     // pendiente = red activada en la config y todavía no publicada en este artículo
     const pend = n => (cfg['publicar_'+n] !== false) && prev[n]?.estado !== 'publicado';
 
-    if(pend('ig') || pend('fb') || pend('li')){
-      let meta = {}, li = {};
+    if(pend('ig') || pend('fb')){   // + pend('li') cuando se reactive LinkedIn
+      let meta = {};
       try { meta = await apiGet('/social/status') || {}; } catch(_){}
-      try { li   = await apiGet('/social/linkedin/status') || {}; } catch(_){}
+      // LinkedIn (a futuro): let li={}; try { li = await apiGet('/social/linkedin/status')||{}; } catch(_){}
 
       const nombres = [];
       if(meta.conectado && pend('ig')) nombres.push('Instagram');
       if(meta.conectado && pend('fb')) nombres.push('Facebook');
-      if(li.conectado   && pend('li')) nombres.push('LinkedIn');
+      // if(li.conectado && pend('li')) nombres.push('LinkedIn');
 
       if(nombres.length){
         if(!item.id_modulo_redes){
@@ -1535,9 +1535,9 @@ async function publishPostToSocial(id){
     const redes = r.redes || {};
     const i = state.blog.posts.findIndex(x=>x.id===id);
     if(i>-1) state.blog.posts[i].redes = {...(state.blog.posts[i].redes||{}), ...redes};
-    const siglas = { fb:'FB', ig:'IG', li:'LinkedIn' };
+    const siglas = { fb:'FB', ig:'IG', li:'LinkedIn' };  // 'li' queda para cuando se reactive LinkedIn
     const msgs = [];
-    ['fb','ig','li'].forEach(net=>{ if(redes[net]) msgs.push(siglas[net]+': '+(redes[net].estado==='publicado'?'✓':'✗')); });
+    ['fb','ig'].forEach(net=>{ if(redes[net]) msgs.push(siglas[net]+': '+(redes[net].estado==='publicado'?'✓':'✗')); });
     const hayError = Object.values(redes).some(x=>x && x.estado==='error');
     showNotif((hayError?'⚠ Redes con errores — ':'✓ Publicado en redes — ')+msgs.join(' · '), hayError?'error':'success');
   }catch(e){
@@ -1550,7 +1550,7 @@ function renderRedesEstado(post){
   const box = document.getElementById('b-redes-estado');
   if(!box) return;
   const redes = (post && post.redes) || {};
-  const nets = [['fb','Facebook'],['ig','Instagram'],['li','LinkedIn']].filter(([k])=>redes[k]);
+  const nets = [['fb','Facebook'],['ig','Instagram']].filter(([k])=>redes[k]);  // + ['li','LinkedIn'] a futuro
   if(!nets.length){ box.style.display='none'; box.innerHTML=''; return; }
   box.style.display='block';
   box.innerHTML = '<div style="font-weight:700;font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--slate-400);margin-bottom:.45rem;">Estado en redes</div>' +
@@ -1609,7 +1609,7 @@ async function loadSocialConfig(){
 
   const ig = document.getElementById('soc-pub-ig'); if(ig) ig.checked = cfg.publicar_ig !== false;
   const fb = document.getElementById('soc-pub-fb'); if(fb) fb.checked = cfg.publicar_fb !== false;
-  const li = document.getElementById('soc-pub-li'); if(li) li.checked = cfg.publicar_li !== false;
+  // LinkedIn (a futuro): const li = document.getElementById('soc-pub-li'); if(li) li.checked = cfg.publicar_li !== false;
   const su = document.getElementById('soc-sitio-url'); if(su) su.value = cfg.sitio_url || '';
   const lb = document.getElementById('soc-link-bio'); if(lb) lb.value = cfg.link_bio || '';
   const base = document.getElementById('soc-hashtags-base'); if(base) base.value = socFmtTags(cfg.hashtags_base);
@@ -1625,7 +1625,7 @@ async function loadSocialConfig(){
   }
 
   loadSocialStatus();
-  loadLinkedinStatus();
+  // loadLinkedinStatus();  // LinkedIn deshabilitado (a futuro)
 }
 window.loadSocialConfig = loadSocialConfig;
 
@@ -1683,6 +1683,7 @@ async function disconnectMeta(){
   catch(e){ showNotif('Error: '+e.message, 'error'); }
 }
 
+/* ==== LinkedIn DESHABILITADO (se retoma a futuro; NO borrar) ====
 // estado de conexión con LinkedIn (el token vence a los ~60 días)
 async function loadLinkedinStatus(){
   const box = document.getElementById('soc-li-status');
@@ -1740,6 +1741,7 @@ async function disconnectLinkedin(){
   try { await apiPost('/social/linkedin/disconnect', {}); showNotif('LinkedIn desconectado'); loadLinkedinStatus(); }
   catch(e){ showNotif('Error: '+e.message, 'error'); }
 }
+==== fin LinkedIn ==== */
 
 async function saveSocialConfig(){
   const porCat = {};
@@ -1749,7 +1751,7 @@ async function saveSocialConfig(){
   const cfg = {
     publicar_ig: document.getElementById('soc-pub-ig')?.checked !== false,
     publicar_fb: document.getElementById('soc-pub-fb')?.checked !== false,
-    publicar_li: document.getElementById('soc-pub-li')?.checked !== false,
+    // publicar_li: document.getElementById('soc-pub-li')?.checked !== false,  // LinkedIn a futuro
     sitio_url: (document.getElementById('soc-sitio-url')?.value || '').trim(),
     link_bio: (document.getElementById('soc-link-bio')?.value || '').trim(),
     hashtags_base: socParseTags(document.getElementById('soc-hashtags-base')?.value),
@@ -2399,8 +2401,9 @@ function initApp(){
   document.getElementById('guardar-social')?.addEventListener('click',saveSocialConfig);
   document.getElementById('soc-connect')?.addEventListener('click',connectMeta);
   document.getElementById('soc-disconnect')?.addEventListener('click',disconnectMeta);
-  document.getElementById('soc-li-connect')?.addEventListener('click',connectLinkedin);
-  document.getElementById('soc-li-disconnect')?.addEventListener('click',disconnectLinkedin);
+  // LinkedIn (a futuro; NO borrar):
+  // document.getElementById('soc-li-connect')?.addEventListener('click',connectLinkedin);
+  // document.getElementById('soc-li-disconnect')?.addEventListener('click',disconnectLinkedin);
 
   // Restaurar panel activo tras recarga (Live Server / hot-reload)
   try {

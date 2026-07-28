@@ -10,7 +10,7 @@ require __DIR__ . '/lib/Auth.php';
 require __DIR__ . '/lib/Store.php';
 require __DIR__ . '/lib/SocialStore.php';
 require __DIR__ . '/lib/MetaService.php';
-require __DIR__ . '/lib/LinkedinService.php';
+// require __DIR__ . '/lib/LinkedinService.php'; // LinkedIn deshabilitado (se retoma a futuro)
 foreach (glob(__DIR__ . '/controllers/*.php') as $c) require $c;
 
 // mismo origen que el front (Apache sirve el sitio y la API juntos)
@@ -97,10 +97,11 @@ $routes = [
     ['GET',    '/social/callback',                   ['SocialController', 'callback'],        false],
     ['POST',   '/social/disconnect',                 ['SocialController', 'disconnect'],      true],
 
-    ['GET',    '/social/linkedin/status',            ['SocialController', 'liStatus'],        true],
-    ['GET',    '/social/linkedin/connect',           ['SocialController', 'liConnect'],       true],
-    ['GET',    '/social/linkedin/callback',          ['SocialController', 'liCallback'],      false],
-    ['POST',   '/social/linkedin/disconnect',        ['SocialController', 'liDisconnect'],    true],
+    // LinkedIn deshabilitado (se retoma a futuro; NO borrar):
+    // ['GET',    '/social/linkedin/status',            ['SocialController', 'liStatus'],        true],
+    // ['GET',    '/social/linkedin/connect',           ['SocialController', 'liConnect'],       true],
+    // ['GET',    '/social/linkedin/callback',          ['SocialController', 'liCallback'],      false],
+    // ['POST',   '/social/linkedin/disconnect',        ['SocialController', 'liDisconnect'],    true],
 
     ['POST',   '/social/publish/:id',                ['SocialController', 'publish'],         true],
 ];

@@ -34,7 +34,7 @@ define('META_PAGE_ID',     getenv('META_PAGE_ID') ?: '');
 // redirect del OAuth; si queda vacío se arma desde el host del request
 define('META_REDIRECT_URI', getenv('META_REDIRECT_URI') ?: '');
 
-// --- LinkedIn (publica en la Página de empresa) ---
+/* --- LinkedIn (DESHABILITADO: se retomará a futuro. NO borrar.) ---
 define('LI_CLIENT_ID',     getenv('LI_CLIENT_ID') ?: '');
 define('LI_CLIENT_SECRET', getenv('LI_CLIENT_SECRET') ?: '');
 // id numérico de la Página de empresa; si falta se autodetecta con rw_organization_admin
@@ -42,6 +42,7 @@ define('LI_ORG_ID',        getenv('LI_ORG_ID') ?: '');
 define('LI_REDIRECT_URI',  getenv('LI_REDIRECT_URI') ?: '');
 // header Linkedin-Version, en formato YYYYMM (LinkedIn saca de servicio las viejas)
 define('LI_VERSION',       getenv('LI_VERSION') ?: '202607');
+*/
 
 // flags para que el JSON de salida sea igual al que emitia Node (unicode y / sin escapar)
 define('JSON_FLAGS', JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

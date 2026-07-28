@@ -2,7 +2,12 @@
 // Cliente de la API de LinkedIn (versionada): OAuth, subida de imagen y publicación
 // en la Página de empresa. A diferencia de Meta, LinkedIn NO acepta la imagen por URL:
 // hay que registrar el upload y mandar el binario. Tokens en SocialStore (sub-clave linkedin).
-
+//
+// ==== DESHABILITADO: se retomará a futuro. NO borrar. ====
+// No se carga desde api/index.php (require comentado). Para reactivar: descomentar el require +
+// las rutas + la config (config.php/env.php) + los métodos LinkedIn de SocialStore + las
+// referencias en SocialController + el frontend (panel.js y el HTML del panel), y esta clase.
+/*
 class LinkedinService {
 
     const AUTH_URL  = 'https://www.linkedin.com/oauth/v2/authorization';
@@ -245,3 +250,4 @@ class LinkedinService {
         return $res['headers']['x-restli-id'] ?? ($res['json']['id'] ?? '');
     }
 }
+*/

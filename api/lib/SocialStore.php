@@ -28,7 +28,8 @@ class SocialStore {
         return !empty($d['page_id']) && !empty($d['page_token']);
     }
 
-    // ---- LinkedIn: vive en la sub-clave 'linkedin' del mismo archivo seguro ----
+    /* ==== LinkedIn DESHABILITADO (se retomará a futuro; NO borrar) ====
+       Vive en la sub-clave 'linkedin' del mismo archivo seguro.
 
     public static function readLinkedin() {
         $d = self::read();
@@ -51,4 +52,5 @@ class SocialStore {
         $li = self::readLinkedin();
         return !empty($li['access_token']) && !empty($li['org_urn']);
     }
+    ==== fin LinkedIn ==== */
 }

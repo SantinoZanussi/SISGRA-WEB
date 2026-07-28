@@ -66,7 +66,7 @@ class SocialController {
         Http::json(['ok' => true]);
     }
 
-    // ---- LinkedIn ----
+    /* ==== LinkedIn DESHABILITADO (se retomará a futuro; NO borrar) ====
 
     // GET /api/social/linkedin/status  [auth]
     public static function liStatus() {
@@ -128,19 +128,19 @@ class SocialController {
         SocialStore::clearLinkedin();
         Http::json(['ok' => true]);
     }
+    ==== fin LinkedIn deshabilitado ==== */
 
     // POST /api/social/publish/:id  [auth]  publica un post; body opcional {red:'ig'|'fb'}
     public static function publish($id) {
         $post = self::findPost($id);
         if (!$post) Http::error('Artículo no encontrado', 404);
-        if (!SocialStore::isConnected() && !SocialStore::isLinkedinConnected()) {
-            Http::error('No hay ninguna red conectada. Conectá Meta o LinkedIn primero.', 400);
-        }
+        if (!SocialStore::isConnected()) Http::error('No hay conexión con Meta. Conectá la cuenta primero.', 400);
+        // LinkedIn (a futuro): sería → if (!SocialStore::isConnected() && !SocialStore::isLinkedinConnected()) { ... }
         if (empty($post['id_modulo_redes'])) Http::error('El artículo no tiene un módulo de Redes sociales importado', 400);
 
         $cfg  = Store::read('social', true) ?: [];
         $b    = Http::body();
-        $only = (isset($b['red']) && in_array($b['red'], ['ig', 'fb', 'li'], true)) ? $b['red'] : null;
+        $only = (isset($b['red']) && in_array($b['red'], ['ig', 'fb'], true)) ? $b['red'] : null; // + 'li' cuando se reactive LinkedIn
 
         // el disparo automático (sin red) solo publica las pendientes; Reintentar (con red) fuerza esa red
         $redes = self::publishPost($post, $cfg, $only, $only === null);
@@ -161,10 +161,11 @@ class SocialController {
         $out    = [];
         $wantFb = ($cfg['publicar_fb'] ?? true) && (!$only || $only === 'fb') && !($skipDone && $done('fb'));
         $wantIg = ($cfg['publicar_ig'] ?? true) && (!$only || $only === 'ig') && !($skipDone && $done('ig'));
-        $wantLi = ($cfg['publicar_li'] ?? true) && (!$only || $only === 'li') && !($skipDone && $done('li'));
         if ($wantFb) $out['fb'] = self::tryPublish(function () use ($contenido, $cfg) { return MetaService::publishFacebook($contenido, $cfg); });
         if ($wantIg) $out['ig'] = self::tryPublish(function () use ($contenido, $cfg) { return MetaService::publishInstagram($contenido, $cfg); });
-        if ($wantLi) $out['li'] = self::tryPublish(function () use ($contenido, $cfg) { return LinkedinService::publicar($contenido, $cfg); });
+        // LinkedIn (a futuro; NO borrar):
+        // $wantLi = ($cfg['publicar_li'] ?? true) && (!$only || $only === 'li') && !($skipDone && $done('li'));
+        // if ($wantLi) $out['li'] = self::tryPublish(function () use ($contenido, $cfg) { return LinkedinService::publicar($contenido, $cfg); });
         return $out;
     }
 
